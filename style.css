@@ -12,6 +12,21 @@ header {
   font-size: 24px;
 }
 
+.site-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 40px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #333;
+}
+
+.site-header .logo-link h1 {
+  margin: 0;
+  color: #ff8533;
+  font-size: 24px;
+  cursor: pointer;
+}
+
 main {
   max-width: 800px;
   margin: auto;
