@@ -68,11 +68,6 @@ button.coffee-btn:hover {
   box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3);
 }
 
-.support-text {
-  color: #aaa;
-  margin-top: 15px;
-}
-
 .section {
   margin-top: 60px;
   text-align: center;
