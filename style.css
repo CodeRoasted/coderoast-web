@@ -77,6 +77,25 @@ button.coffee-btn:hover {
   margin-bottom: 15px;
 }
 
+.site-footer {
+  margin-top: 60px;
+  padding: 20px 0;
+  border-top: 1px solid #333;
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.site-footer a {
+  color: #ff8533;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
 ul {
   list-style: none;
   padding: 0;
