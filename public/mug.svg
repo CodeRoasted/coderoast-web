@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 112" role="img" aria-label="CodeRoast">
+  <title>CodeRoast</title>
+
+  <!-- 1. MUG BODY -->
+  <path d="M 20 46 L 108 46 L 100 102 Q 64 110 28 102 Z" fill="#111827"/>
+
+  <!-- 2. HANDLE (D-ring, right side) -->
+  <path d="M 108 57 C 124 57 128 65 128 72 C 128 79 124 87 108 87
+           L 108 82 C 120 82 124 78 124 72 C 124 66 120 61 108 61 Z" fill="#111827"/>
+
+  <!-- 3. RIM outer ellipse -->
+  <ellipse cx="64" cy="46" rx="44" ry="11" fill="#1F2937"/>
+
+  <!-- 4. RIM inner depth -->
+  <ellipse cx="64" cy="45" rx="37" ry="9" fill="#374151"/>
+
+  <!-- 5. COFFEE SURFACE (dark brown, inside the opening) -->
+  <ellipse cx="64" cy="47" rx="33" ry="7" fill="#2C1810"/>
+  <ellipse cx="54" cy="46" rx="10" ry="2.5" fill="#4A2C18" opacity="0.75"/>
+
+  <!-- 6. FLAMES — rise from coffee surface (y≈47) up above the rim -->
+
+  <!-- Left flame (orange) -->
+  <path d="M 50 47 C 40 34 39 19 48 9 C 57 19 57 34 62 47 Z" fill="#F97316"/>
+
+  <!-- Right flame (orange) -->
+  <path d="M 66 47 C 71 34 71 19 80 9 C 89 19 88 34 78 47 Z" fill="#F97316"/>
+
+  <!-- Center flame (deep red, tallest) -->
+  <path d="M 55 47 C 47 28 50 11 64 4 C 78 11 81 28 73 47 Z" fill="#DC2626"/>
+
+  <!-- Center flame inner highlight -->
+  <path d="M 59 45 C 53 30 55 16 64 8 C 73 16 75 30 69 45 Z" fill="#FCA5A5"/>
+
+  <!-- 7. FRONT RIM BAND — drawn last on top of flame bases.
+       The near-facing rim arc hides only the base of the flames,
+       leaving the tips visible above: flames appear to rise from inside. -->
+  <!-- Outer face: arc from (20,46) clockwise through (64,57) to (108,46) -->
+  <path d="M 20 46 A 44 11 0 0 1 108 46 L 106 54 Q 64 64 22 54 Z" fill="#1F2937"/>
+  <!-- Inner face (lighter depth stripe) -->
+  <path d="M 27 46 A 37 9 0 0 1 101 46 L 99 53 Q 64 61 29 53 Z" fill="#374151"/>
+
+  <!-- CodeRoast label on mug body -->
+  <text
+    x="64" y="86"
+    font-family="'Space Grotesk', 'Inter', system-ui, sans-serif"
+    font-size="13" font-weight="700" fill="white" fill-opacity="0.90"
+    text-anchor="middle" letter-spacing="-0.3"
+  >CodeRoast</text>
+
+  <!-- Left body glint -->
+  <path d="M 25 55 L 29 95" stroke="white" stroke-opacity="0.06"
+        stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Drop shadow -->
+  <ellipse cx="64" cy="109" rx="38" ry="6" fill="rgba(0,0,0,0.10)"/>
+</svg>

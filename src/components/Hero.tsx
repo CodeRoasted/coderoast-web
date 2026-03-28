@@ -28,7 +28,7 @@ export default function Hero() {
                     >
                         <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
                         <span className="text-sm font-medium text-brand-700 dark:text-brand-300">
-                            Open Source Developer Tools
+                            C++20 · Real-Time · High-Performance
                         </span>
                     </motion.div>
 

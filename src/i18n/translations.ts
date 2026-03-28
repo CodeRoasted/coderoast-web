@@ -7,44 +7,44 @@ const translations = {
             licensing: 'Licensing',
         },
         hero: {
-            tagline: 'Crafting Elegant Developer Tools',
+            tagline: 'Where Logs Turn Into Decisions',
             subtitle:
-                'We build beautifully simple tools that make complex development workflows feel effortless.',
+                'Build ultra-fast C++20 systems that transform raw log streams into real-time insights — before issues even surface.',
             cta: 'Explore Our Work',
             ctaSecondary: 'Support the Project',
         },
         portfolio: {
-            title: 'Our Creations',
-            subtitle: 'Tools designed with passion, built for developers who care about quality.',
+            title: 'What We\'re Building',
+            subtitle: 'Two high-performance C++20 systems, engineered from scratch for real-time log intelligence.',
             insight: {
                 name: 'Insight',
                 description:
-                    'See the big picture. Insight gives you a bird\'s-eye view of your projects, surfacing the patterns and connections that matter most.',
+                    'A C++20 log analysis engine built for real-time scale. Insight tokenizes raw log streams, extracts semantic templates using the Drain algorithm, builds behavioral transition graphs, and detects anomalies via statistical drift detection (ADWIN, Page-Hinkley) — processing millions of events with minimal latency.',
                 status: 'In Development',
             },
             logcraft: {
                 name: 'LogCraft',
                 description:
-                    'Logs, beautifully tamed. LogCraft transforms raw log data into clear, actionable narratives — so you spend less time searching and more time solving.',
-                status: 'Active',
+                    'A multi-agent, real-time log generation engine written in C++20. Define complex system behaviors in YAML — agents with phases, event rates, error bursts, and latency curves. LogCraft simulates entire distributed systems, emitting structured, realistic log streams at high throughput.',
+                status: 'In Development',
             },
             playground: {
                 name: 'Insight Playground',
                 description:
-                    'Experiment freely. Powered by LogCraft, the Playground lets you explore, test, and visualize your data in a safe, sandboxed environment — no setup required.',
+                    'The live fusion of LogCraft and Insight. Generate realistic multi-agent log streams and watch Insight analyze them in real-time — all in your browser, no install required.',
                 status: 'Coming Soon',
             },
         },
         comingSoon: {
-            title: 'More on the Horizon',
+            title: 'On the Roadmap',
             subtitle:
-                'We\'re always cooking up new ideas. Stay tuned for upcoming tools, integrations, and features.',
+                'REST API for live scenario control, Kafka output from LogCraft, HTTP streaming pipeline, and the full Insight Playground — the complete log intelligence suite, launching soon.',
             badge: 'Coming Soon',
         },
         donation: {
-            title: 'Fuel the Roast',
+            title: 'Fuel the Build',
             subtitle:
-                'CodeRoast is built with love and late-night coffee. If our tools save you time, consider buying us a cup.',
+                'This project is built with passion, C++20, and a lot of late-night coffee. If you find value in what we\'re crafting, consider fueling the next session.',
             cta: 'Buy Me a Coffee',
         },
         licensing: {
@@ -53,8 +53,8 @@ const translations = {
                 'Flexible options for individuals and teams. Pricing details coming soon.',
             badge: 'Coming Soon',
             free: {
-                name: 'Open Source',
-                description: 'Core tools, always free. Contribute, fork, enjoy.',
+                name: 'Personal',
+                description: 'Binary access for personal projects and exploration. Community forum support.',
             },
             pro: {
                 name: 'Pro',
@@ -80,44 +80,44 @@ const translations = {
             licensing: 'Licences',
         },
         hero: {
-            tagline: 'Des outils élégants pour développeurs',
+            tagline: 'Là où les Logs Deviennent des Décisions',
             subtitle:
-                'Nous créons des outils simples et élégants qui rendent les workflows complexes agréables et fluides.',
+                'Construisez des systèmes C++20 ultra-rapides qui transforment vos flux de logs bruts en insights temps réel — avant que les problèmes ne surgissent.',
             cta: 'Découvrir nos créations',
             ctaSecondary: 'Soutenir le projet',
         },
         portfolio: {
-            title: 'Nos Créations',
-            subtitle: 'Des outils conçus avec passion, pour les développeurs exigeants.',
+            title: 'Ce Qu\'on Construit',
+            subtitle: 'Deux systèmes C++20 hautes performances, conçus de zéro pour l\'intelligence log en temps réel.',
             insight: {
                 name: 'Insight',
                 description:
-                    'Voyez l\'ensemble. Insight vous offre une vue panoramique de vos projets, révélant les connexions et les patterns qui comptent.',
+                    'Un moteur d\'analyse de logs C++20 pour la performance à grande échelle. Insight tokenise les flux bruts, extrait des templates sémantiques via l\'algorithme Drain, construit des graphes de transitions comportementaux, et détecte les anomalies par dérive statistique (ADWIN, Page-Hinkley).',
                 status: 'En développement',
             },
             logcraft: {
                 name: 'LogCraft',
                 description:
-                    'Des logs, magnifiquement domptés. LogCraft transforme vos données brutes en récits clairs et exploitables — moins de recherche, plus de solutions.',
-                status: 'Actif',
+                    'Un moteur de génération de logs multi-agents en temps réel écrit en C++20. Décrivez le comportement de vos systèmes en YAML — agents, phases, taux d\'événements, rafales d\'erreurs et courbes de latence. LogCraft simule des systèmes distribués entiers à haut débit.',
+                status: 'En développement',
             },
             playground: {
                 name: 'Insight Playground',
                 description:
-                    'Expérimentez librement. Propulsé par LogCraft, le Playground vous permet d\'explorer, tester et visualiser vos données dans un environnement sécurisé — aucune installation requise.',
+                    'La fusion en direct de LogCraft et Insight. Générez des flux de logs multi-agents et regardez Insight les analyser en temps réel, directement dans votre navigateur. Zéro installation requise.',
                 status: 'Bientôt disponible',
             },
         },
         comingSoon: {
-            title: 'D\'autres nouveautés à venir',
+            title: 'Sur la Feuille de Route',
             subtitle:
-                'Nous avons toujours de nouvelles idées en préparation. Restez à l\'écoute pour les prochains outils et fonctionnalités.',
+                'API REST pour le contrôle de scénarios en direct, sortie Kafka, pipeline HTTP streaming, et l\'Insight Playground complet — la suite d\'intelligence log, bientôt disponible.',
             badge: 'Bientôt',
         },
         donation: {
-            title: 'Alimentez le Roast',
+            title: 'Alimenter la Build',
             subtitle:
-                'CodeRoast est construit avec amour et beaucoup de café. Si nos outils vous font gagner du temps, offrez-nous une tasse.',
+                'Ce projet est construit avec passion, C++20 et beaucoup de café. Si ce que nous créons vous apporte de la valeur, pensez à alimenter la prochaine session nocturne.',
             cta: 'Offrir un café',
         },
         licensing: {
@@ -126,8 +126,8 @@ const translations = {
                 'Des options flexibles pour individus et équipes. Détails des tarifs à venir.',
             badge: 'Bientôt disponible',
             free: {
-                name: 'Open Source',
-                description: 'Les outils essentiels, toujours gratuits. Contribuez, forkez, profitez.',
+                name: 'Personnel',
+                description: 'Accès binaire pour vos projets personnels et l\'exploration. Support communautaire.',
             },
             pro: {
                 name: 'Pro',

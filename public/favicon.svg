@@ -1,10 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f9a825"/>
-      <stop offset="100%" style="stop-color:#ef6c00"/>
-    </linearGradient>
-  </defs>
-  <rect width="100" height="100" rx="20" fill="url(#g)"/>
-  <text x="50" y="68" font-size="55" font-family="monospace" font-weight="bold" fill="white" text-anchor="middle">CR</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 112">
+  <!-- Mug body -->
+  <path d="M 20 46 L 108 46 L 100 102 Q 64 110 28 102 Z" fill="#111827"/>
+  <!-- Handle -->
+  <path d="M 108 57 C 124 57 128 65 128 72 C 128 79 124 87 108 87 L 108 82 C 120 82 124 78 124 72 C 124 66 120 61 108 61 Z" fill="#111827"/>
+  <!-- Rim outer -->
+  <ellipse cx="64" cy="46" rx="44" ry="11" fill="#1F2937"/>
+  <!-- Rim inner depth -->
+  <ellipse cx="64" cy="45" rx="37" ry="9" fill="#374151"/>
+  <!-- Coffee -->
+  <ellipse cx="64" cy="47" rx="33" ry="7" fill="#2C1810"/>
+  <!-- Left flame -->
+  <path d="M 50 47 C 40 34 39 19 48 9 C 57 19 57 34 62 47 Z" fill="#F97316"/>
+  <!-- Right flame -->
+  <path d="M 66 47 C 71 34 71 19 80 9 C 89 19 88 34 78 47 Z" fill="#F97316"/>
+  <!-- Center flame (red, tallest) -->
+  <path d="M 55 47 C 47 28 50 11 64 4 C 78 11 81 28 73 47 Z" fill="#DC2626"/>
+  <!-- Center flame highlight -->
+  <path d="M 59 45 C 53 30 55 16 64 8 C 73 16 75 30 69 45 Z" fill="#FCA5A5"/>
+  <!-- Front rim band drawn LAST — overlaps flame bases so only tips show above -->
+  <path d="M 20 46 A 44 11 0 0 1 108 46 L 106 54 Q 64 64 22 54 Z" fill="#1F2937"/>
+  <path d="M 27 46 A 37 9 0 0 1 101 46 L 99 53 Q 64 61 29 53 Z" fill="#374151"/>
 </svg>

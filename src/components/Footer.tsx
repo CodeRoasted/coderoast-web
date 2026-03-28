@@ -1,4 +1,5 @@
-import { Github, Twitter, Mail } from 'lucide-react'
+import { Github, Mail } from 'lucide-react'
+import Logo from './Logo'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export default function Footer() {
@@ -12,11 +13,12 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="flex flex-col items-center md:items-start gap-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
-                                <span className="text-white font-bold text-sm font-display">CR</span>
-                            </div>
+                            <Logo size="sm" />
                             <span className="font-display font-bold text-lg text-gray-900 dark:text-white">
-                                CodeRoast
+                                <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-orange-500 bg-clip-text text-transparent">
+                                    Code
+                                </span>
+                                Roast
                             </span>
                         </div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -27,7 +29,7 @@ export default function Footer() {
                     {/* Social links */}
                     <div className="flex items-center gap-4">
                         <a
-                            href="https://github.com/coderoast"
+                            href="https://github.com/Manu-CodeRoast"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2 rounded-full text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
@@ -36,16 +38,7 @@ export default function Footer() {
                             <Github className="w-5 h-5" />
                         </a>
                         <a
-                            href="https://twitter.com/coderoast"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-                            aria-label="Twitter"
-                        >
-                            <Twitter className="w-5 h-5" />
-                        </a>
-                        <a
-                            href="mailto:hello@coderoast.dev"
+                            href="mailto:contact@coderoast.fr"
                             className="p-2 rounded-full text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
                             aria-label="Email"
                         >

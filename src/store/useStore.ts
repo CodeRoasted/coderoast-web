@@ -11,18 +11,10 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => ({
-    theme: (typeof window !== 'undefined' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-        ? 'dark'
-        : 'light',
+    theme: 'dark',
     language: 'en',
 
-    toggleTheme: () =>
-        set((state) => {
-            const next = state.theme === 'dark' ? 'light' : 'dark'
-            document.documentElement.classList.toggle('dark', next === 'dark')
-            return { theme: next }
-        }),
+    toggleTheme: () => { }, // dark-only — light theme removed
 
     setLanguage: (lang: Language) => set({ language: lang }),
 }))

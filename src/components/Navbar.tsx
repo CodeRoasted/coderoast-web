@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
-import ThemeToggle from './ThemeToggle'
 import LanguageToggle from './LanguageToggle'
+import Logo from './Logo'
 import { useTranslation } from '@/hooks/useTranslation'
 
 const navLinks = [
@@ -26,12 +26,13 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <a href="#hero" className="flex items-center gap-2 group">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
-                            <span className="text-white font-bold text-sm font-display">CR</span>
-                        </div>
-                        <span className="font-display font-bold text-xl text-gray-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                            CodeRoast
+                    <a href="#hero" className="flex items-center gap-2 group hover:opacity-80 transition-opacity">
+                        <Logo size="sm" />
+                        <span className="font-display font-bold text-xl text-gray-900 dark:text-white">
+                            <span className="bg-gradient-to-r from-brand-600 via-brand-500 to-orange-500 bg-clip-text text-transparent">
+                                Code
+                            </span>
+                            Roast
                         </span>
                     </a>
 
@@ -51,7 +52,6 @@ export default function Navbar() {
                     {/* Controls */}
                     <div className="flex items-center gap-3">
                         <LanguageToggle />
-                        <ThemeToggle />
                         <button
                             className="md:hidden p-2 text-gray-600 dark:text-gray-300"
                             onClick={() => setIsOpen(!isOpen)}

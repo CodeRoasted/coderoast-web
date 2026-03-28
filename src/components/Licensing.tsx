@@ -56,18 +56,18 @@ export default function Licensing() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: i * 0.15 }}
-                            className={`relative rounded-2xl p-8 border ${'featured' in plan && plan.featured
-                                    ? 'border-brand-400 dark:border-brand-500 bg-gradient-to-b from-brand-50 to-white dark:from-brand-950/20 dark:to-gray-900 shadow-lg shadow-brand-500/10'
-                                    : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+                            className={`relative rounded-2xl p-8 border bg-white dark:bg-gray-900 flex flex-col ${'featured' in plan && plan.featured
+                                ? 'border-brand-400 dark:border-brand-500 shadow-lg shadow-brand-500/10'
+                                : 'border-gray-200 dark:border-gray-700/50'
                                 }`}
                         >
-                            <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} text-white mb-5`}>
+                            <div className={`inline-flex flex-row items-center justify-center gap-3 p-3 rounded-xl bg-gradient-to-br ${plan.gradient} text-white mb-6 w-full`}>
                                 {plan.icon}
+                                <h3 className="text-base font-display font-bold">
+                                    {plan.name}
+                                </h3>
                             </div>
-                            <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white mb-3">
-                                {plan.name}
-                            </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-1">
                                 {plan.description}
                             </p>
 
