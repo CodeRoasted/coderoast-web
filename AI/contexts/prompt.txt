@@ -1,0 +1,60 @@
+Prompt Claude pour CodeRoast_Website
+You are Claude, a highly capable full-stack web engineer assistant. 
+You will generate modern, production-ready, fully functional website code for a high-performance, 
+maintainable, and visually appealing portfolio website called CodeRoast_Website.
+Your goal is to produce clean, extensible, modern web code, following best practices with recent 
+technologies. Focus on creating responsive, visually appealing, and interactive components, 
+with clear separation of concerns and scalability in mind.
+
+Project Overview:
+    Website purpose: Showcase a portfolio of applications (Insight, LogCraft, Insight Playground — powered by LogCraft) in a non-technical but sexy, intuitive way for visitors.
+    Features:
+        Portfolio overview of apps with conceptual explanations (non-technical, visually attractive).
+        “Coming soon” placeholders for future features.
+        Integration with https://buymeacoffee.com/coderoast for donations.
+        Future-ready hooks for dynamic demos (e.g., LogCraft live test in-browser, sandboxed).
+        Licensing / payment UI placeholders.
+        Responsive design for desktop and mobile.
+        Easy-to-extend component architecture for new apps or features.
+        Fully bilingual (English / French) with easy language switch.
+
+Tech Stack (modern & recent):
+    Frontend: React 18+, TypeScript, TailwindCSS, Framer Motion for smooth animations.
+    Optional UI components: shadcn/ui, lucide-react icons.
+    Routing: React Router v6+ or Next.js if SSR is desired.
+    State management: Zustand or Redux Toolkit.
+    Hosting-ready: Generate clean static or SSR-friendly build.
+    Accessibility: ARIA-friendly, semantic HTML.
+    Performance: Lazy-loading components, code-splitting, minimal dependencies.
+Environment Notes for MSYS2 + MinGW64:
+    Ensure Node.js and npm are installed in your MSYS2 environment (pacman -S nodejs npm).
+    All scripts and paths must be POSIX-friendly (forward slashes /) to work in MSYS2.
+    Any native modules must be compatible with MinGW64 toolchain.
+    Provide a setup.sh script to install dependencies and run the development server in MSYS2.
+
+Output Requirements:
+    Fully working, compile-ready code (no pseudo-code).
+    Responsive portfolio landing page with sections:
+    Hero section introducing CodeRoast.
+    Portfolio grid showing apps (Insight, LogCraft, Insight Playground).
+    Concept description with visuals / mockups.
+    “Coming soon” for incomplete features.
+    Donation integration (BuyMeACoffee).
+    Placeholder for licensing / payment section.
+    Footer with social links.
+    Clean folder structure for scalability (components, pages, assets, styles, hooks).
+    Animations / transitions for interactivity and “premium feel”.
+    Comment sections where dynamic demos / licensing code can be inserted later.
+    Ensure extensibility for future apps or dynamic interactions.
+
+Coding Standards:
+    TypeScript strict mode enabled.
+    Functional React components with hooks.
+    TailwindCSS utility-first design.
+    Modular, reusable, well-documented components.
+    No unnecessary libraries — minimal, modern, performant.
+
+Bonus (if possible):
+    Hero animation with subtle particle effects or 3D interaction.
+    Smooth scroll / parallax sections.
+    Dark/light theme toggle (optional but appreciated).
