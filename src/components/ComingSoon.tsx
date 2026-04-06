@@ -1,11 +1,17 @@
 import { motion } from 'framer-motion'
-import { Sparkles, Rocket, Zap } from 'lucide-react'
+import { Globe, Play, Plug } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
 
-const futureItems = [
-    { icon: <Rocket className="w-6 h-6" />, gradient: 'from-indigo-500 to-blue-500' },
-    { icon: <Zap className="w-6 h-6" />, gradient: 'from-emerald-500 to-teal-500' },
-    { icon: <Sparkles className="w-6 h-6" />, gradient: 'from-rose-500 to-pink-500' },
+const icons = [
+    <Globe className="w-6 h-6" key="globe" />,
+    <Play className="w-6 h-6" key="play" />,
+    <Plug className="w-6 h-6" key="plug" />,
+]
+
+const gradients = [
+    'from-indigo-500 to-blue-500',
+    'from-emerald-500 to-teal-500',
+    'from-rose-500 to-pink-500',
 ]
 
 export default function ComingSoon() {
@@ -32,21 +38,25 @@ export default function ComingSoon() {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                    {futureItems.map((item, i) => (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    {t.comingSoon.items.map((item, i) => (
                         <motion.div
-                            key={i}
+                            key={item.title}
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: i * 0.1 }}
                             className="flex flex-col items-center p-8 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 transition-colors"
                         >
-                            <div className={`p-4 rounded-xl bg-gradient-to-br ${item.gradient} text-white mb-4`}>
-                                {item.icon}
+                            <div className={`p-4 rounded-xl bg-gradient-to-br ${gradients[i]} text-white mb-4`}>
+                                {icons[i]}
                             </div>
-                            <div className="w-24 h-3 rounded-full bg-gray-200 dark:bg-gray-700 mb-2" />
-                            <div className="w-16 h-3 rounded-full bg-gray-100 dark:bg-gray-800" />
+                            <h3 className="text-lg font-display font-bold text-gray-900 dark:text-white mb-2">
+                                {item.title}
+                            </h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 text-center leading-relaxed">
+                                {item.description}
+                            </p>
                         </motion.div>
                     ))}
                 </div>

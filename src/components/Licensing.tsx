@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Shield, Gem, Building2 } from 'lucide-react'
+import { Shield, Gem, Building2, Check } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export default function Licensing() {
@@ -67,17 +67,44 @@ export default function Licensing() {
                                     {plan.name}
                                 </h3>
                             </div>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 flex-1">
+
+                            {/* Price */}
+                            <div className="mb-4 text-center">
+                                <span className="text-3xl font-display font-bold text-gray-900 dark:text-white">
+                                    {plan.price}
+                                </span>
+                                {plan.period && (
+                                    <span className="text-sm text-gray-500 dark:text-gray-400 ml-1">
+                                        {plan.period}
+                                    </span>
+                                )}
+                            </div>
+
+                            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 text-center">
                                 {plan.description}
                             </p>
 
-                            {/* TODO: Insert pricing and payment integration here */}
+                            {/* Feature list */}
+                            {'features' in plan && (
+                                <ul className="space-y-3 mb-8 flex-1">
+                                    {(plan.features as string[]).map((feature) => (
+                                        <li key={feature} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                            <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                            {feature}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
 
-                            <div className="h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                                <span className="text-sm text-gray-400 dark:text-gray-500 font-medium">
-                                    {t.licensing.badge}
-                                </span>
-                            </div>
+                            {/* CTA */}
+                            <button
+                                className={`w-full py-3 rounded-lg font-semibold text-sm transition-all duration-200 ${'featured' in plan && plan.featured
+                                    ? 'bg-gradient-to-r from-brand-600 to-brand-500 text-white hover:shadow-lg hover:shadow-brand-500/25'
+                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                    }`}
+                            >
+                                {plan.cta}
+                            </button>
                         </motion.div>
                     ))}
                 </div>

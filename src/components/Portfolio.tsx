@@ -57,6 +57,7 @@ export default function Portfolio() {
                             icon={app.icon}
                             gradient={app.gradient}
                             index={i}
+                            highlights={'highlights' in app ? (app.highlights as string[]) : undefined}
                         />
                     ))}
                 </div>

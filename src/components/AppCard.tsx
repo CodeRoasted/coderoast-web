@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Check } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 interface AppCardProps {
@@ -8,9 +9,10 @@ interface AppCardProps {
     icon: ReactNode
     gradient: string
     index: number
+    highlights?: string[]
 }
 
-export default function AppCard({ name, description, status, icon, gradient, index }: AppCardProps) {
+export default function AppCard({ name, description, status, icon, gradient, index, highlights }: AppCardProps) {
     const isActive = status === 'Active' || status === 'Actif'
     const isComingSoon = status.toLowerCase().includes('coming') || status.toLowerCase().includes('bientôt')
 
@@ -34,10 +36,10 @@ export default function AppCard({ name, description, status, icon, gradient, ind
                     </div>
                     <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold ${isActive
-                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                                : isComingSoon
-                                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
-                                    : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                            : isComingSoon
+                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
+                                : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
                             }`}
                     >
                         {status}
@@ -53,6 +55,18 @@ export default function AppCard({ name, description, status, icon, gradient, ind
                 <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-sm">
                     {description}
                 </p>
+
+                {/* Highlights */}
+                {highlights && highlights.length > 0 && (
+                    <ul className="mt-4 space-y-2">
+                        {highlights.map((h) => (
+                            <li key={h} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                {h}
+                            </li>
+                        ))}
+                    </ul>
+                )}
 
                 {/* Future: dynamic demo hook */}
                 {/* TODO: Insert dynamic demo component here for live in-browser testing */}
