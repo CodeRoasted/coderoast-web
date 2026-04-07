@@ -16,6 +16,8 @@ export default function Portfolio() {
             ...t.portfolio.logcraft,
             icon: <ScrollText className="w-6 h-6" />,
             gradient: 'from-brand-500 to-orange-500',
+            link: '/logcraft',
+            badge: 'BETA',
         },
         {
             ...t.portfolio.playground,
@@ -58,6 +60,8 @@ export default function Portfolio() {
                             gradient={app.gradient}
                             index={i}
                             highlights={'highlights' in app ? (app.highlights as string[]) : undefined}
+                            link={'link' in app ? (app.link as string) : undefined}
+                            badge={'badge' in app ? (app.badge as string) : undefined}
                         />
                     ))}
                 </div>

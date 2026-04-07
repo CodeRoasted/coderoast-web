@@ -6,7 +6,6 @@ import Footer from '@/components/Footer'
 const Portfolio = lazy(() => import('@/components/Portfolio'))
 const ComingSoon = lazy(() => import('@/components/ComingSoon'))
 const Donation = lazy(() => import('@/components/Donation'))
-const Licensing = lazy(() => import('@/components/Licensing'))
 
 function LoadingFallback() {
     return (
@@ -30,9 +29,6 @@ export default function Home() {
                 </Suspense>
                 <Suspense fallback={<LoadingFallback />}>
                     <Donation />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <Licensing />
                 </Suspense>
             </main>
             <Footer />
