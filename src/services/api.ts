@@ -8,7 +8,9 @@ export interface ScenarioMeta {
     duration: string
 }
 
-const API_BASE = '/api'
+// API base URL — can be overridden via VITE_API_BASE environment variable
+// Default: relative path for local dev, production should use api.coderoast.fr subdomain
+const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
     const resp = await fetch(`${API_BASE}${url}`, {
