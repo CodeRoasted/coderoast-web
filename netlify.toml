@@ -6,12 +6,11 @@
 [build.environment]
   VITE_API_BASE = "https://coderoast.fr/api"
 
-# Proxy /api/* requests to VPS backend (152.228.134.160)
+# Redirect /api/* to api.coderoast.fr
 [[redirects]]
   from = "/api/*"
-  to = "http://152.228.134.160:8080/api/:splat"
+  to = "https://api.coderoast.fr/:splat"
   status = 200
-  force = true
 
 [[headers]]
   for = "/assets/*"
