@@ -49,9 +49,19 @@ export class EngineWebSocket {
     private doConnect() {
         if (!this.engineId) return
 
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-        const host = window.location.host
-        const url = `${protocol}//${host}/ws/engine?id=${encodeURIComponent(this.engineId)}`
+        let url: string
+        const apiBase = import.meta.env.VITE_API_BASE
+
+        if (apiBase && (apiBase.startsWith('http://') || apiBase.startsWith('https://'))) {
+            // Production: absolute URL to API server
+            const protocol = apiBase.startsWith('https') ? 'wss:' : 'ws:'
+            const domain = apiBase.replace(/^https?:\/\//, '')
+            url = `${protocol}//${domain}/ws/engine?id=${encodeURIComponent(this.engineId)}`
+        } else {
+            // Development: relative path (proxied by Vite)
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+            url = `${protocol}//${window.location.host}/ws/engine?id=${encodeURIComponent(this.engineId)}`
+        }
 
         this.ws = new WebSocket(url)
 
