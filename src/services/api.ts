@@ -22,7 +22,7 @@ export interface LoginResponse {
 const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 function authHeaders(): Record<string, string> {
-    const { token, user } = useAuthStore.getState()
+    const { token } = useAuthStore.getState()
     const headers: Record<string, string> = { 'Content-Type': 'application/json' }
     if (token) {
         headers['Authorization'] = `Bearer ${token}`
