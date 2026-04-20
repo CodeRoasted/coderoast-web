@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from '@/pages/Home'
-import { lazy, Suspense } from 'react'
+import { useAuthStore } from '@/store/useAuthStore'
+import { login } from '@/services/api'
 
 const LogCraftPage = lazy(() => import('@/pages/LogCraft'))
 const Lab = lazy(() => import('@/pages/Playground'))
@@ -15,9 +16,16 @@ function SpinnerFallback() {
 }
 
 export default function App() {
+    const setAuth = useAuthStore((s) => s.setAuth)
+    const clearAuth = useAuthStore((s) => s.clearAuth)
+
     useEffect(() => {
         document.documentElement.classList.add('dark')
-    }, [])
+
+        login()
+            .then(({ token, user }) => setAuth(token, user))
+            .catch(() => clearAuth())
+    }, [setAuth, clearAuth])
 
     return (
         <BrowserRouter>

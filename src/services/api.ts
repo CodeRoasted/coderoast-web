@@ -1,4 +1,5 @@
 import type { EngineInfo, EngineSnapshot } from '@/types/engine'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export interface ScenarioMeta {
     id: string
@@ -8,13 +9,30 @@ export interface ScenarioMeta {
     duration: string
 }
 
+export interface LoginResponse {
+    token: string
+    user: {
+        id: string
+        name: string
+    }
+}
+
 // API base URL — can be overridden via VITE_API_BASE environment variable
 // Default: relative path for local dev, production should use api.coderoast.fr subdomain
 const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
+function authHeaders(): Record<string, string> {
+    const { token, user } = useAuthStore.getState()
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+    }
+    return headers
+}
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
     const resp = await fetch(`${API_BASE}${url}`, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         ...options,
     })
     if (!resp.ok) {
@@ -22,6 +40,14 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
         throw new Error(body.error || `HTTP ${resp.status}`)
     }
     return resp.json()
+}
+
+export async function login(): Promise<LoginResponse> {
+    return request('/login', { method: 'POST' })
+}
+
+export async function logout(): Promise<void> {
+    await request('/logout', { method: 'POST' })
 }
 
 export async function createEngine(yaml: string): Promise<{ engine_id: string; message: string }> {
