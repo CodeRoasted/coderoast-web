@@ -1,8 +1,19 @@
+import { useState } from 'react'
 import { Activity, AlertTriangle, Zap } from 'lucide-react'
 import type { AgentSnapshot, HealthState } from '@/types/engine'
+import { useTranslation } from '@/hooks/useTranslation'
+import Tooltip from '@/components/Tooltip'
 
 interface Props {
     agent: AgentSnapshot
+    /**
+     * When the engine is running and the parent wires in a command
+     * sender, each card exposes a live-tuning panel. Omit the callbacks
+     * to render the card in read-only mode (e.g. before Start).
+     */
+    onSetRate?: (name: string, rps: number) => void
+    onSetErrorRate?: (name: string, rate: number) => void
+    onBurst?: (name: string, count: number) => void
 }
 
 const healthStyles: Record<HealthState, { bg: string; text: string; border: string }> = {
@@ -12,8 +23,18 @@ const healthStyles: Record<HealthState, { bg: string; text: string; border: stri
     Recovering: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30' },
 }
 
-export default function AgentCard({ agent }: Props) {
+export default function AgentCard({ agent, onSetRate, onSetErrorRate, onBurst }: Props) {
+    const t = useTranslation()
     const style = healthStyles[agent.health] ?? healthStyles.Healthy
+    const hasLiveControls = Boolean(onSetRate || onSetErrorRate || onBurst)
+
+    // Live-control inputs are uncontrolled against the snapshot so the
+    // slider doesn't jerk back every 200ms when a new snapshot arrives;
+    // we seed them from the snapshot on first mount and leave editing
+    // to the user thereafter.
+    const [rateInput, setRateInput] = useState(agent.rate_rps)
+    const [errorInput, setErrorInput] = useState(Math.round(agent.error_ratio * 100))
+    const [burstInput, setBurstInput] = useState(100)
 
     return (
         <div
@@ -74,6 +95,80 @@ export default function AgentCard({ agent }: Props) {
                         <span className="text-[10px] bg-amber-900/50 text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1">
                             <Zap className="w-3 h-3" /> Cascade
                         </span>
+                    )}
+                </div>
+            )}
+
+            {hasLiveControls && (
+                <div className="mt-3 pt-3 border-t border-gray-800 space-y-2">
+                    {onSetRate && (
+                        <Tooltip content={t.lab.rateTip} placement="top">
+                            <div className="flex items-center gap-2 w-full">
+                                <span className="text-[10px] text-gray-500 uppercase tracking-wider w-10">
+                                    {t.lab.rate}
+                                </span>
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={500}
+                                    step={1}
+                                    value={rateInput}
+                                    onChange={(e) => setRateInput(Number(e.target.value))}
+                                    onMouseUp={() => onSetRate(agent.name, rateInput)}
+                                    onTouchEnd={() => onSetRate(agent.name, rateInput)}
+                                    className="flex-1 accent-brand-500"
+                                />
+                                <span className="text-[10px] font-mono text-gray-300 w-14 text-right">
+                                    {rateInput.toFixed(0)} rps
+                                </span>
+                            </div>
+                        </Tooltip>
+                    )}
+                    {onSetErrorRate && (
+                        <Tooltip content={t.lab.errorsTip} placement="top">
+                            <div className="flex items-center gap-2 w-full">
+                                <span className="text-[10px] text-gray-500 uppercase tracking-wider w-10">
+                                    Err
+                                </span>
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    step={1}
+                                    value={errorInput}
+                                    onChange={(e) => setErrorInput(Number(e.target.value))}
+                                    onMouseUp={() => onSetErrorRate(agent.name, errorInput / 100)}
+                                    onTouchEnd={() => onSetErrorRate(agent.name, errorInput / 100)}
+                                    className="flex-1 accent-amber-500"
+                                />
+                                <span className="text-[10px] font-mono text-gray-300 w-14 text-right">
+                                    {errorInput}%
+                                </span>
+                            </div>
+                        </Tooltip>
+                    )}
+                    {onBurst && (
+                        <Tooltip content={t.lab.burstTip} placement="top">
+                            <div className="flex items-center gap-2 w-full">
+                                <span className="text-[10px] text-gray-500 uppercase tracking-wider w-10">
+                                    {t.lab.burst}
+                                </span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={100000}
+                                    value={burstInput}
+                                    onChange={(e) => setBurstInput(Number(e.target.value))}
+                                    className="flex-1 bg-gray-800 border border-gray-700 rounded px-2 py-1 text-xs text-gray-200 focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/60 outline-none"
+                                />
+                                <button
+                                    onClick={() => onBurst(agent.name, burstInput)}
+                                    className="px-2 py-1 bg-purple-700 hover:bg-purple-600 text-white text-xs font-medium rounded transition-colors"
+                                >
+                                    {t.lab.send}
+                                </button>
+                            </div>
+                        </Tooltip>
                     )}
                 </div>
             )}

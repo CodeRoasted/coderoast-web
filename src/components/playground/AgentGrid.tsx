@@ -4,9 +4,12 @@ import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
     agents: AgentSnapshot[]
+    onSetRate?: (name: string, rps: number) => void
+    onSetErrorRate?: (name: string, rate: number) => void
+    onBurst?: (name: string, count: number) => void
 }
 
-export default function AgentGrid({ agents }: Props) {
+export default function AgentGrid({ agents, onSetRate, onSetErrorRate, onBurst }: Props) {
     const t = useTranslation()
 
     if (agents.length === 0) {
@@ -20,7 +23,13 @@ export default function AgentGrid({ agents }: Props) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {agents.map((agent) => (
-                <AgentCard key={agent.name} agent={agent} />
+                <AgentCard
+                    key={agent.name}
+                    agent={agent}
+                    onSetRate={onSetRate}
+                    onSetErrorRate={onSetErrorRate}
+                    onBurst={onBurst}
+                />
             ))}
         </div>
     )

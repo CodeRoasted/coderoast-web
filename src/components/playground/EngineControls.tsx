@@ -1,5 +1,6 @@
-import { Play, Square, Trash2 } from 'lucide-react'
+import { Play, Square, Trash2, Zap } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
+import Tooltip from '@/components/Tooltip'
 
 interface Props {
     isRunning: boolean
@@ -7,15 +8,16 @@ interface Props {
     onStart: () => void
     onStop: () => void
     onDestroy: () => void
+    onCascade?: () => void
 }
 
-export default function EngineControls({ isRunning, hasEngine, onStart, onStop, onDestroy }: Props) {
+export default function EngineControls({ isRunning, hasEngine, onStart, onStop, onDestroy, onCascade }: Props) {
     const t = useTranslation()
 
     if (!hasEngine) return null
 
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
             {!isRunning ? (
                 <button
                     onClick={onStart}
@@ -32,6 +34,17 @@ export default function EngineControls({ isRunning, hasEngine, onStart, onStop, 
                     <Square className="w-4 h-4" />
                     {t.lab.stop}
                 </button>
+            )}
+            {isRunning && onCascade && (
+                <Tooltip content={t.lab.cascadeTip}>
+                    <button
+                        onClick={onCascade}
+                        className="flex items-center gap-2 px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                        <Zap className="w-4 h-4" />
+                        {t.lab.cascade}
+                    </button>
+                </Tooltip>
             )}
             <button
                 onClick={onDestroy}

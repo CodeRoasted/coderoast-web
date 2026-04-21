@@ -143,6 +143,22 @@ export default function Lab() {
         engineWs.sendCommand({ type: 'stop' })
     }, [])
 
+    const handleCascade = useCallback(() => {
+        engineWs.sendCommand({ type: 'cascade' })
+    }, [])
+
+    const handleSetRate = useCallback((name: string, rps: number) => {
+        engineWs.sendCommand({ type: 'set_rate', agent: name, rps })
+    }, [])
+
+    const handleSetErrorRate = useCallback((name: string, rate: number) => {
+        engineWs.sendCommand({ type: 'set_error_rate', agent: name, rate })
+    }, [])
+
+    const handleBurst = useCallback((name: string, count: number) => {
+        engineWs.sendCommand({ type: 'burst', agent: name, count })
+    }, [])
+
     const isRunning = snapshot?.state === 'running'
 
     return (
@@ -260,6 +276,7 @@ export default function Lab() {
                                 onStart={handleStart}
                                 onStop={handleStop}
                                 onDestroy={handleDestroy}
+                                onCascade={handleCascade}
                             />
                         </div>
 
@@ -267,7 +284,12 @@ export default function Lab() {
                         {scenarioYaml && <ScenarioPanel yaml={scenarioYaml} engineId={engineId} />}
 
                         {/* Agent grid */}
-                        <AgentGrid agents={snapshot?.agents ?? []} />
+                        <AgentGrid
+                            agents={snapshot?.agents ?? []}
+                            onSetRate={isRunning ? handleSetRate : undefined}
+                            onSetErrorRate={isRunning ? handleSetErrorRate : undefined}
+                            onBurst={isRunning ? handleBurst : undefined}
+                        />
 
                         {/* Sink grid */}
                         <SinkGrid sinks={snapshot?.sinks ?? []} />
