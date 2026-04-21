@@ -1,4 +1,5 @@
 import type { EngineSnapshot } from '@/types/engine'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export type WsMessageHandler = {
     onSnapshot?: (snapshot: EngineSnapshot) => void
@@ -49,6 +50,17 @@ export class EngineWebSocket {
     private doConnect() {
         if (!this.engineId) return
 
+        // Browsers can't add headers to a WebSocket upgrade, so the bearer
+        // token (when present) rides along as a query parameter. The
+        // backend's resolve_ws_principal() honours both Authorization
+        // header and ?token=…
+        const token = useAuthStore.getState().token
+        const params = new URLSearchParams({ id: this.engineId })
+        if (token) {
+            params.set('token', token)
+        }
+        const query = params.toString()
+
         let url: string
         const apiBase = import.meta.env.VITE_API_BASE
 
@@ -56,11 +68,11 @@ export class EngineWebSocket {
             // Production: absolute URL to API server
             const protocol = apiBase.startsWith('https') ? 'wss:' : 'ws:'
             const domain = apiBase.replace(/^https?:\/\//, '')
-            url = `${protocol}//${domain}/ws/engine?id=${encodeURIComponent(this.engineId)}`
+            url = `${protocol}//${domain}/ws/engine?${query}`
         } else {
             // Development: relative path (proxied by Vite)
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-            url = `${protocol}//${window.location.host}/ws/engine?id=${encodeURIComponent(this.engineId)}`
+            url = `${protocol}//${window.location.host}/ws/engine?${query}`
         }
 
         this.ws = new WebSocket(url)
