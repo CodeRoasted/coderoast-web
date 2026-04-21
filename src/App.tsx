@@ -2,7 +2,7 @@ import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from '@/pages/Home'
 import { useAuthStore } from '@/store/useAuthStore'
-import { login } from '@/services/api'
+import { login, whoami } from '@/services/api'
 
 const LogCraftPage = lazy(() => import('@/pages/LogCraft'))
 const Lab = lazy(() => import('@/pages/Playground'))
@@ -27,12 +27,23 @@ export default function App() {
         document.documentElement.classList.add('dark')
 
         // Session bootstrap policy:
-        //   • Existing persisted token → trust it (ping/refresh is out of scope).
+        //   • Persisted token → confirm it with /whoami; if the backend says
+        //     it is no longer valid (server restart, manual revoke), drop
+        //     it silently so the user lands as anonymous instead of getting
+        //     403s on every API call.
         //   • Persisted selection but no token → re-login as that user.
         //   • Nothing persisted → stay anonymous; the backend treats the
         //     absence of an Authorization header as the anonymous principal.
         if (token) {
-            setLoading(false)
+            whoami()
+                .then((info) => {
+                    if (info.token_valid) {
+                        setAuth(token, info.user)
+                    } else {
+                        clearAuth()
+                    }
+                })
+                .catch(() => setLoading(false))
             return
         }
 

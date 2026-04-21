@@ -134,6 +134,23 @@ export async function logout(): Promise<void> {
     await request('/logout', { method: 'POST' })
 }
 
+export interface WhoAmIResponse {
+    authenticated: boolean
+    token_presented: boolean
+    token_valid: boolean
+    user: AuthUser
+    tier: TierInfo | null
+}
+
+/**
+ * Resolve the current bearer token to a session. The endpoint never errors;
+ * an unknown/expired token simply returns `token_valid: false` so the
+ * caller can clear the persisted credentials.
+ */
+export async function whoami(): Promise<WhoAmIResponse> {
+    return request('/whoami')
+}
+
 export async function listUsers(): Promise<{ users: SelectableUser[] }> {
     return request('/users')
 }
@@ -201,6 +218,8 @@ export async function getScenario(id: string): Promise<{ id: string; yaml: strin
 export interface ValidationResult {
     valid: boolean
     errors: string[]
+    warnings?: string[]
+    notices?: string[]
 }
 
 export async function validateScenario(yaml: string): Promise<ValidationResult> {
