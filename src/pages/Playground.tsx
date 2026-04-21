@@ -38,6 +38,9 @@ export default function Lab() {
         statusMessage,
         setEngineId,
         setSnapshot,
+        appendToLiveTail,
+        clearLiveTail,
+        liveTail,
         setConnected,
         setStatusMessage,
         reset,
@@ -54,7 +57,14 @@ export default function Lab() {
     const connectToEngine = useCallback(
         (id: string) => {
             engineWs.connect(id, {
-                onSnapshot: (snap) => setSnapshot(snap),
+                onSnapshot: (snap) => {
+                    setSnapshot(snap)
+                    // Feed the rolling live-tail buffer so the UI keeps
+                    // history rather than flashing only the latest batch.
+                    if (snap.tail && snap.tail.length > 0) {
+                        appendToLiveTail(snap.tail)
+                    }
+                },
                 onConnected: () => setConnected(true),
                 onResult: (success, message) => {
                     setStatusMessage(`${success ? '✓' : '✗'} ${message}`)
@@ -64,7 +74,7 @@ export default function Lab() {
                 onClose: () => setConnected(false),
             })
         },
-        [setSnapshot, setConnected, setStatusMessage]
+        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage]
     )
 
     // Fetch scenario YAML when engine is created or connected
@@ -264,7 +274,7 @@ export default function Lab() {
 
                         {/* Bottom panels */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <LogTail entries={snapshot?.tail ?? []} totalEntries={snapshot?.total_entries ?? 0} />
+                            <LogTail entries={liveTail} totalEntries={snapshot?.total_entries ?? 0} onClear={clearLiveTail} />
                             <IncidentTimeline incidents={snapshot?.incidents ?? []} />
                         </div>
                     </div>

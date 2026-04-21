@@ -1,9 +1,34 @@
 import { create } from 'zustand'
-import type { EngineSnapshot } from '@/types/engine'
+import type { EngineSnapshot, LogTailEntry } from '@/types/engine'
+
+/**
+ * Hard cap on the accumulated live log feed. Each snapshot ships the
+ * last ~20 records; over a long run the buffer would grow without
+ * bound, so we clip it to the most recent N entries. 1000 is comfy on
+ * the DOM even without virtualisation.
+ */
+const kLiveTailCapacity = 1000
+
+/**
+ * Deterministic fingerprint used to suppress the duplicates that
+ * naturally occur when the server resends the same tail across two
+ * consecutive snapshots.
+ */
+function tailKey(entry: LogTailEntry): string {
+    return `${entry.timestamp}|${entry.agent}|${entry.level}|${entry.message}`
+}
 
 interface EngineState {
     engineId: string | null
     snapshot: EngineSnapshot | null
+    /**
+     * Rolling buffer of every log record the engine has streamed since
+     * the dashboard mounted. Built by appending new snapshot tails while
+     * deduping against what we already have — gives the playground a
+     * true output feed instead of just the latest ~20 records.
+     */
+    liveTail: LogTailEntry[]
+    liveTailKeys: Set<string>
     connected: boolean
     selectedScenarioId: string | null
     scenarioYaml: string
@@ -11,6 +36,8 @@ interface EngineState {
 
     setEngineId: (id: string | null) => void
     setSnapshot: (snapshot: EngineSnapshot | null) => void
+    appendToLiveTail: (entries: LogTailEntry[]) => void
+    clearLiveTail: () => void
     setConnected: (connected: boolean) => void
     setSelectedScenarioId: (id: string | null) => void
     setScenarioYaml: (yaml: string) => void
@@ -21,6 +48,8 @@ interface EngineState {
 export const useEngineStore = create<EngineState>((set) => ({
     engineId: null,
     snapshot: null,
+    liveTail: [],
+    liveTailKeys: new Set<string>(),
     connected: false,
     selectedScenarioId: null,
     scenarioYaml: '',
@@ -28,6 +57,31 @@ export const useEngineStore = create<EngineState>((set) => ({
 
     setEngineId: (id) => set({ engineId: id }),
     setSnapshot: (snapshot) => set({ snapshot }),
+    appendToLiveTail: (entries) =>
+        set((state) => {
+            if (entries.length === 0) return {}
+            // Append only records we haven't seen — dedupe on the
+            // (timestamp, agent, level, message) tuple so re-sent tails
+            // don't pollute the feed.
+            const nextKeys = new Set(state.liveTailKeys)
+            const appended: LogTailEntry[] = []
+            for (const entry of entries) {
+                const key = tailKey(entry)
+                if (nextKeys.has(key)) continue
+                nextKeys.add(key)
+                appended.push(entry)
+            }
+            if (appended.length === 0) return {}
+            const combined =
+                state.liveTail.length + appended.length <= kLiveTailCapacity
+                    ? [...state.liveTail, ...appended]
+                    : [...state.liveTail, ...appended].slice(-kLiveTailCapacity)
+            // Rebuild the key set from the (possibly trimmed) buffer so
+            // evicted entries don't keep their slot in the dedupe cache.
+            const trimmedKeys = new Set(combined.map(tailKey))
+            return { liveTail: combined, liveTailKeys: trimmedKeys }
+        }),
+    clearLiveTail: () => set({ liveTail: [], liveTailKeys: new Set<string>() }),
     setConnected: (connected) => set({ connected }),
     setSelectedScenarioId: (id) => set({ selectedScenarioId: id }),
     setScenarioYaml: (yaml) => set({ scenarioYaml: yaml }),
@@ -36,7 +90,10 @@ export const useEngineStore = create<EngineState>((set) => ({
         set({
             engineId: null,
             snapshot: null,
+            liveTail: [],
+            liveTailKeys: new Set<string>(),
             connected: false,
             statusMessage: null,
         }),
 }))
+

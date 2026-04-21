@@ -1,11 +1,12 @@
 import { useRef, useEffect, useState } from 'react'
-import { Pause, Play } from 'lucide-react'
+import { Pause, Play, Trash2 } from 'lucide-react'
 import type { LogTailEntry, LogLevelName } from '@/types/engine'
 import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
     entries: LogTailEntry[]
     totalEntries?: number
+    onClear?: () => void
 }
 
 const levelColors: Record<LogLevelName, string> = {
@@ -17,7 +18,7 @@ const levelColors: Record<LogLevelName, string> = {
     FATAL: 'text-red-500 font-bold',
 }
 
-export default function LogTail({ entries, totalEntries = 0 }: Props) {
+export default function LogTail({ entries, totalEntries = 0, onClear }: Props) {
     const t = useTranslation()
     const containerRef = useRef<HTMLDivElement>(null)
     const [isPaused, setIsPaused] = useState(false)
@@ -63,6 +64,15 @@ export default function LogTail({ entries, totalEntries = 0 }: Props) {
                                 <Pause className="w-4 h-4" />
                             )}
                         </button>
+                        {onClear && (
+                            <button
+                                onClick={onClear}
+                                className="p-1.5 rounded text-gray-500 hover:text-gray-300 hover:bg-gray-800/50 transition-colors"
+                                title="Clear feed"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        )}
                         <span className="text-xs text-gray-500">
                             {entries.length} / {totalEntries} {t.lab.entries}
                             {totalEntries > 0 && (
