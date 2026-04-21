@@ -6,6 +6,7 @@ import { login } from '@/services/api'
 
 const LogCraftPage = lazy(() => import('@/pages/LogCraft'))
 const Lab = lazy(() => import('@/pages/Playground'))
+const TierMatrix = lazy(() => import('@/pages/TierMatrix'))
 
 function SpinnerFallback() {
     return (
@@ -16,16 +17,34 @@ function SpinnerFallback() {
 }
 
 export default function App() {
+    const token = useAuthStore((s) => s.token)
+    const selectedUserId = useAuthStore((s) => s.selectedUserId)
     const setAuth = useAuthStore((s) => s.setAuth)
     const clearAuth = useAuthStore((s) => s.clearAuth)
+    const setLoading = useAuthStore((s) => s.setLoading)
 
     useEffect(() => {
         document.documentElement.classList.add('dark')
 
-        login()
-            .then(({ token, user }) => setAuth(token, user))
-            .catch(() => clearAuth())
-    }, [setAuth, clearAuth])
+        // Session bootstrap policy:
+        //   • Existing persisted token → trust it (ping/refresh is out of scope).
+        //   • Persisted selection but no token → re-login as that user.
+        //   • Nothing persisted → stay anonymous; the backend treats the
+        //     absence of an Authorization header as the anonymous principal.
+        if (token) {
+            setLoading(false)
+            return
+        }
+
+        if (selectedUserId) {
+            login(selectedUserId)
+                .then(({ token: fresh, user }) => setAuth(fresh, user))
+                .catch(() => clearAuth())
+            return
+        }
+
+        clearAuth()
+    }, [token, selectedUserId, setAuth, clearAuth, setLoading])
 
     return (
         <BrowserRouter>
@@ -45,6 +64,14 @@ export default function App() {
                         element={
                             <Suspense fallback={<SpinnerFallback />}>
                                 <Lab />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/tiers"
+                        element={
+                            <Suspense fallback={<SpinnerFallback />}>
+                                <TierMatrix />
                             </Suspense>
                         }
                     />

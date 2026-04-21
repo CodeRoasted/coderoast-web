@@ -9,11 +9,73 @@ export interface ScenarioMeta {
     duration: string
 }
 
+export interface AuthUser {
+    id: string
+    name: string
+}
+
 export interface LoginResponse {
     token: string
-    user: {
-        id: string
-        name: string
+    user: AuthUser
+}
+
+export interface TierInfo {
+    name: string
+    level: number
+}
+
+/** A selectable demo user exposed by `GET /users`. */
+export interface SelectableUser {
+    id: string
+    name: string
+    role: string
+    tier: TierInfo | null
+}
+
+export interface RoleInfo {
+    name: string
+    tier: TierInfo
+}
+
+export interface PermissionInfo {
+    key: string
+    category: string
+    required_tier: TierInfo
+}
+
+export interface FeatureMatrix {
+    tiers: TierInfo[]
+    roles: RoleInfo[]
+    permissions: PermissionInfo[]
+}
+
+/**
+ * Raised when the backend returns HTTP 403 on a feature-gated endpoint.
+ * Carries the rich context (required tier + user tier) emitted by the
+ * server's `access_control_middleware` so UI layers can render a
+ * "This feature requires the Pro tier" message instead of a generic error.
+ */
+export class TierRequiredError extends Error {
+    readonly permission: string
+    readonly userId: string
+    readonly userTier: TierInfo | null
+    readonly requiredTier: TierInfo | null
+    readonly reason: string
+
+    constructor(params: {
+        permission: string
+        userId: string
+        userTier: TierInfo | null
+        requiredTier: TierInfo | null
+        reason: string
+    }) {
+        super(params.reason || 'Access denied')
+        this.name = 'TierRequiredError'
+        this.permission = params.permission
+        this.userId = params.userId
+        this.userTier = params.userTier
+        this.requiredTier = params.requiredTier
+        this.reason = params.reason
     }
 }
 
@@ -30,6 +92,13 @@ function authHeaders(): Record<string, string> {
     return headers
 }
 
+function parseTier(value: unknown): TierInfo | null {
+    if (!value || typeof value !== 'object') return null
+    const record = value as Record<string, unknown>
+    if (typeof record.name !== 'string' || typeof record.level !== 'number') return null
+    return { name: record.name, level: record.level }
+}
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
     const resp = await fetch(`${API_BASE}${url}`, {
         headers: authHeaders(),
@@ -37,17 +106,40 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
     })
     if (!resp.ok) {
         const body = await resp.json().catch(() => ({}))
-        throw new Error(body.error || `HTTP ${resp.status}`)
+        if (resp.status === 403) {
+            throw new TierRequiredError({
+                permission: typeof body.permission === 'string' ? body.permission : '',
+                userId: typeof body.user === 'string' ? body.user : '',
+                userTier: parseTier(body.user_tier),
+                requiredTier: parseTier(body.required_tier),
+                reason: typeof body.reason === 'string' ? body.reason : 'Access denied',
+            })
+        }
+        throw new Error(body.error || body.reason || `HTTP ${resp.status}`)
     }
     return resp.json()
 }
 
-export async function login(): Promise<LoginResponse> {
-    return request('/login', { method: 'POST' })
+/**
+ * Log in as the given user id. Pass `null` (or omit the argument) to obtain
+ * an explicit anonymous session — the backend will mint a token mapped to
+ * the "anonymous" principal (tier 0).
+ */
+export async function login(userId: string | null = null): Promise<LoginResponse> {
+    const body = userId ? JSON.stringify({ user_id: userId }) : undefined
+    return request('/login', { method: 'POST', body })
 }
 
 export async function logout(): Promise<void> {
     await request('/logout', { method: 'POST' })
+}
+
+export async function listUsers(): Promise<{ users: SelectableUser[] }> {
+    return request('/users')
+}
+
+export async function getFeatureMatrix(): Promise<FeatureMatrix> {
+    return request('/tiers')
 }
 
 export async function createEngine(yaml: string): Promise<{ engine_id: string; message: string }> {

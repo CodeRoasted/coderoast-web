@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, FlaskConical, AlertCircle } from 'lucide-react'
 import { useEngineStore } from '@/store/useEngineStore'
 import { engineWs } from '@/services/websocket'
-import { createEngine, deleteEngine, validateScenario, getEngineScenario } from '@/services/api'
+import { createEngine, deleteEngine, validateScenario, getEngineScenario, TierRequiredError } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
 import ScenarioSelector from '@/components/playground/ScenarioSelector'
 import EngineControls from '@/components/playground/EngineControls'
@@ -13,6 +13,19 @@ import SinkGrid from '@/components/playground/SinkGrid'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
 import LogTail from '@/components/playground/LogTail'
 import IncidentTimeline from '@/components/playground/IncidentTimeline'
+import UserSelector from '@/components/UserSelector'
+
+type LabTranslations = ReturnType<typeof useTranslation>
+
+/**
+ * Turn a backend 403 into a user-facing sentence like:
+ *   "This feature requires the Pro tier — you are signed in as free_demo (free)."
+ */
+function formatTierMessage(err: TierRequiredError, t: LabTranslations): string {
+    const required = err.requiredTier?.name ?? '—'
+    const user = err.userTier?.name ?? err.userId ?? 'anonymous'
+    return `${t.auth.requiresTier.replace('{tier}', required)} ${t.auth.youAre.replace('{role}', user)}`
+}
 
 export default function Lab() {
     const t = useTranslation()
@@ -79,6 +92,10 @@ export default function Lab() {
             }
             setValidationErrors([])
         } catch (e) {
+            if (e instanceof TierRequiredError) {
+                setStatusMessage(formatTierMessage(e, t))
+                return
+            }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
             return
         }
@@ -89,6 +106,10 @@ export default function Lab() {
             setStatusMessage(t.lab.created)
             connectToEngine(engine_id)
         } catch (e) {
+            if (e instanceof TierRequiredError) {
+                setStatusMessage(formatTierMessage(e, t))
+                return
+            }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
         }
     }, [scenarioYaml, setEngineId, setStatusMessage, connectToEngine, t])
@@ -149,6 +170,13 @@ export default function Lab() {
                                 {statusMessage}
                             </span>
                         )}
+                        <Link
+                            to="/tiers"
+                            className="text-xs text-gray-400 hover:text-brand-400 transition-colors"
+                        >
+                            {t.auth.tierMatrix}
+                        </Link>
+                        <UserSelector />
                     </div>
                 </div>
             </div>

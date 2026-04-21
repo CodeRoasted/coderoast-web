@@ -215,6 +215,22 @@ const translations = {
             loadingScenarios: 'Loading scenarios...',
             scenarioLoadError: 'Failed to load scenarios',
         },
+        auth: {
+            loadingUsers: 'Loading users…',
+            anonymous: 'Anonymous (no token)',
+            signedInAs: 'Signed in as',
+            requiresTier: 'This feature requires the {tier} tier.',
+            youAre: 'You are signed in as {role}.',
+            tierMatrix: 'Tier Matrix',
+        },
+        tiers: {
+            title: 'Tier & Feature Matrix',
+            description:
+                'This page mirrors the live access-control configuration of the backend. Every permission key is grouped by category; a ✓ means the tier column grants the feature, a ✗ means it does not.',
+            loading: 'Loading feature matrix…',
+            feature: 'Feature',
+            disabled: 'disabled',
+        },
     },
     fr: {
         nav: {
@@ -430,6 +446,22 @@ const translations = {
             yamlPlaceholder: 'Sélectionnez un modèle à gauche, ou collez/écrivez votre propre YAML ici...',
             loadingScenarios: 'Chargement des scénarios...',
             scenarioLoadError: 'Impossible de charger les scénarios',
+        },
+        auth: {
+            loadingUsers: 'Chargement des utilisateurs…',
+            anonymous: 'Anonyme (sans jeton)',
+            signedInAs: 'Connecté en tant que',
+            requiresTier: 'Cette fonctionnalité requiert le palier {tier}.',
+            youAre: 'Vous êtes connecté en tant que {role}.',
+            tierMatrix: 'Matrice des paliers',
+        },
+        tiers: {
+            title: 'Matrice des paliers & fonctionnalités',
+            description:
+                'Cette page reflète la configuration live du contrôle d\'accès du backend. Chaque clé de permission est regroupée par catégorie ; un ✓ indique que le palier de la colonne donne accès à la fonctionnalité, un ✗ indique l\'inverse.',
+            loading: 'Chargement de la matrice…',
+            feature: 'Fonctionnalité',
+            disabled: 'désactivé',
         },
     },
 }
