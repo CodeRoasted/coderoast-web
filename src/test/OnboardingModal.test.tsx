@@ -59,7 +59,6 @@ describe('OnboardingModal', () => {
         mockedGet.mockResolvedValue({
             yaml: 'seed: 42\nagents: []\n',
             id: 'simple/hello_world',
-            name: 'Hello World',
         })
     })
 
