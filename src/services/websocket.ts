@@ -65,14 +65,17 @@ export class EngineWebSocket {
         const apiBase = import.meta.env.VITE_API_BASE
 
         if (apiBase && (apiBase.startsWith('http://') || apiBase.startsWith('https://'))) {
-            // Production: absolute URL to API server
-            const protocol = apiBase.startsWith('https') ? 'wss:' : 'ws:'
-            const domain = apiBase.replace(/^https?:\/\//, '')
-            url = `${protocol}//${domain}/ws/engine?${query}`
+            // Production: absolute URL to API server. apiBase already
+            // includes the /api/v1 prefix (set in .env.production /
+            // netlify.toml), so we just swap the scheme to ws/wss and
+            // append /ws/engine.
+            const wsBase = apiBase.replace(/^http(s?):\/\//, (_m: string, s: string) => `ws${s}://`)
+            url = `${wsBase}/ws/engine?${query}`
         } else {
-            // Development: relative path (proxied by Vite)
+            // Development: relative path (proxied by Vite). Backend
+            // expects /api/v1/ws/engine.
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-            url = `${protocol}//${window.location.host}/ws/engine?${query}`
+            url = `${protocol}//${window.location.host}/api/v1/ws/engine?${query}`
         }
 
         this.ws = new WebSocket(url)

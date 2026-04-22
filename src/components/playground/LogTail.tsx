@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from 'react'
-import { Pause, Play, Trash2 } from 'lucide-react'
+import { useRef, useEffect, useMemo, useState } from 'react'
+import { Pause, Play, Trash2, Filter, X } from 'lucide-react'
 import type { LogTailEntry, LogLevelName } from '@/types/engine'
 import { useTranslation } from '@/hooks/useTranslation'
 
@@ -7,6 +7,7 @@ interface Props {
     entries: LogTailEntry[]
     totalEntries?: number
     onClear?: () => void
+    agentNames?: string[]
 }
 
 const levelColors: Record<LogLevelName, string> = {
@@ -18,51 +19,81 @@ const levelColors: Record<LogLevelName, string> = {
     FATAL: 'text-red-500 font-bold',
 }
 
-export default function LogTail({ entries, totalEntries = 0, onClear }: Props) {
+const ALL_LEVELS: LogLevelName[] = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']
+
+export default function LogTail({ entries, totalEntries = 0, onClear, agentNames = [] }: Props) {
     const t = useTranslation()
     const containerRef = useRef<HTMLDivElement>(null)
     const [isPaused, setIsPaused] = useState(false)
     const [frozenEntries, setFrozenEntries] = useState<LogTailEntry[]>([])
 
+    const [levelFilter, setLevelFilter] = useState<LogLevelName | 'ALL'>('ALL')
+    const [agentFilter, setAgentFilter] = useState<string>('ALL')
+    const [textFilter, setTextFilter] = useState('')
+    const [showFilters, setShowFilters] = useState(false)
+
     const handlePauseToggle = () => {
         if (!isPaused) {
-            // Pause: freeze current entries
             setFrozenEntries(entries)
         } else {
-            // Resume: clear frozen entries
             setFrozenEntries([])
         }
         setIsPaused(!isPaused)
     }
 
+    const sourceEntries = isPaused ? frozenEntries : entries
+
+    const filtered = useMemo(() => {
+        const text = textFilter.trim().toLowerCase()
+        if (levelFilter === 'ALL' && agentFilter === 'ALL' && !text) return sourceEntries
+        return sourceEntries.filter((e) => {
+            if (levelFilter !== 'ALL' && e.level !== levelFilter) return false
+            if (agentFilter !== 'ALL' && e.agent !== agentFilter) return false
+            if (text && !e.message.toLowerCase().includes(text)) return false
+            return true
+        })
+    }, [sourceEntries, levelFilter, agentFilter, textFilter])
+
     useEffect(() => {
         if (!isPaused && containerRef.current) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight
         }
-    }, [entries, isPaused])
+    }, [filtered, isPaused])
 
-    const percentage =
-        totalEntries > 0 ? Math.round((entries.length / totalEntries) * 100) : 0
+    const filtersActive =
+        levelFilter !== 'ALL' || agentFilter !== 'ALL' || textFilter.trim().length > 0
+
+    const clearFilters = () => {
+        setLevelFilter('ALL')
+        setAgentFilter('ALL')
+        setTextFilter('')
+    }
 
     return (
         <div className="bg-gray-900 border border-gray-700/50 rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b border-gray-700/50">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-1 gap-2">
                     <span className="text-sm font-medium text-gray-300">{t.lab.logTail}</span>
                     <div className="flex items-center gap-2">
                         <button
+                            onClick={() => setShowFilters((v) => !v)}
+                            className={`p-1.5 rounded transition-colors ${showFilters || filtersActive
+                                    ? 'bg-brand-900/40 text-brand-400 hover:bg-brand-900/60'
+                                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
+                                }`}
+                            title={t.lab.filters}
+                        >
+                            <Filter className="w-4 h-4" />
+                        </button>
+                        <button
                             onClick={handlePauseToggle}
                             className={`p-1.5 rounded transition-colors ${isPaused
-                                ? 'bg-amber-900/40 text-amber-400 hover:bg-amber-900/60'
-                                : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
+                                    ? 'bg-amber-900/40 text-amber-400 hover:bg-amber-900/60'
+                                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
                                 }`}
                             title={isPaused ? 'Resume' : 'Pause'}
                         >
-                            {isPaused ? (
-                                <Play className="w-4 h-4" />
-                            ) : (
-                                <Pause className="w-4 h-4" />
-                            )}
+                            {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
                         </button>
                         {onClear && (
                             <button
@@ -73,25 +104,75 @@ export default function LogTail({ entries, totalEntries = 0, onClear }: Props) {
                                 <Trash2 className="w-4 h-4" />
                             </button>
                         )}
-                        <span className="text-xs text-gray-500">
-                            {entries.length} / {totalEntries} {t.lab.entries}
-                            {totalEntries > 0 && (
-                                <span className="ml-1 text-gray-600">
-                                    ({percentage}%)
-                                </span>
+                        <span className="text-xs text-gray-500 whitespace-nowrap">
+                            {filtered.length}
+                            {filtersActive && filtered.length !== sourceEntries.length && (
+                                <span className="text-gray-600"> / {sourceEntries.length}</span>
                             )}
+                            <span className="text-gray-600"> · {totalEntries}</span> {t.lab.entries}
                         </span>
                     </div>
                 </div>
                 <p className="text-xs text-gray-600">{t.lab.logTailDesc}</p>
+
+                {showFilters && (
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <select
+                            value={levelFilter}
+                            onChange={(e) => setLevelFilter(e.target.value as LogLevelName | 'ALL')}
+                            className="bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/60 outline-none"
+                        >
+                            <option value="ALL">{t.lab.filterAllLevels}</option>
+                            {ALL_LEVELS.map((lvl) => (
+                                <option key={lvl} value={lvl}>
+                                    {lvl}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            value={agentFilter}
+                            onChange={(e) => setAgentFilter(e.target.value)}
+                            className="bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-gray-200 focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/60 outline-none"
+                        >
+                            <option value="ALL">{t.lab.filterAllAgents}</option>
+                            {agentNames.map((name) => (
+                                <option key={name} value={name}>
+                                    {name}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={textFilter}
+                                onChange={(e) => setTextFilter(e.target.value)}
+                                placeholder={t.lab.filterSearch}
+                                className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 pr-7 text-xs text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/60 outline-none"
+                            />
+                            {filtersActive && (
+                                <button
+                                    onClick={clearFilters}
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded text-gray-500 hover:text-gray-200"
+                                    title={t.lab.filterClear}
+                                >
+                                    <X className="w-3 h-3" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
             <div ref={containerRef} className="h-64 overflow-y-auto p-2 font-mono text-xs">
-                {entries.length === 0 ? (
+                {sourceEntries.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-600">
                         {t.lab.noLogs}
                     </div>
+                ) : filtered.length === 0 ? (
+                    <div className="flex items-center justify-center h-full text-gray-600">
+                        {t.lab.noLogsMatch}
+                    </div>
                 ) : (
-                    (isPaused ? frozenEntries : entries).map((entry, i) => (
+                    filtered.map((entry, i) => (
                         <div key={i} className="flex gap-2 py-0.5 hover:bg-gray-800/50 px-2 rounded">
                             <span className="text-gray-600 shrink-0 w-20 truncate">
                                 {entry.timestamp.slice(11, 23)}

@@ -1,10 +1,18 @@
-import { Activity, Clock, Gauge, AlertTriangle } from 'lucide-react'
+import { useState } from 'react'
+import { Activity, Clock, Gauge, AlertTriangle, Copy, Check } from 'lucide-react'
 import type { EngineSnapshot } from '@/types/engine'
 import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
     snapshot: EngineSnapshot | null
     engineId: string
+}
+
+function shortId(id: string): string {
+    // Show only the leading segment of a UUID — enough to identify the
+    // engine in logs without flashing a 36-char string in the header.
+    if (id.length <= 8) return id
+    return `${id.slice(0, 8)}…`
 }
 
 export default function EngineHeader({ snapshot, engineId }: Props) {
@@ -17,12 +25,21 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
                 ? 'text-red-400'
                 : 'text-gray-400'
 
+    const [copied, setCopied] = useState(false)
+    const handleCopyId = () => {
+        navigator.clipboard.writeText(engineId).catch(() => undefined)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 1500)
+    }
+
+    const friendlyName = snapshot?.scenario_name || t.lab.engineLabel
+
     return (
         <div className="flex flex-wrap items-center gap-6">
             <div>
                 <div className="flex items-center gap-2">
                     <h2 className="font-display text-xl font-bold text-gray-100">
-                        {snapshot?.scenario_name || engineId}
+                        {friendlyName}
                     </h2>
                     <span
                         className={`text-xs font-medium uppercase px-2 py-0.5 rounded-full border ${stateColor} border-current/30`}
@@ -30,7 +47,14 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
                         {state}
                     </span>
                 </div>
-                <span className="text-xs text-gray-500">ID: {engineId}</span>
+                <button
+                    onClick={handleCopyId}
+                    className="mt-0.5 flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-300 transition-colors font-mono"
+                    title={engineId}
+                >
+                    <span>{t.lab.engineLabel} · {shortId(engineId)}</span>
+                    {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                </button>
             </div>
             <div className="flex items-center gap-5 text-sm">
                 <Stat

@@ -16,9 +16,10 @@ export default mergeConfig(
                 '/api': {
                     target: 'http://localhost:8080',
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, ''),
+                    // Backend now exposes versioned routes under /api/v1/*.
+                    // No rewrite — forward the full path including the prefix.
                 },
-                '/ws': {
+                '/api/v1/ws': {
                     target: 'ws://localhost:8080',
                     ws: true,
                 },

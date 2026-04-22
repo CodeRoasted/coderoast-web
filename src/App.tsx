@@ -7,6 +7,7 @@ import { login, whoami } from '@/services/api'
 const LogCraftPage = lazy(() => import('@/pages/LogCraft'))
 const Lab = lazy(() => import('@/pages/Playground'))
 const TierMatrix = lazy(() => import('@/pages/TierMatrix'))
+const UseCases = lazy(() => import('@/pages/UseCases'))
 
 function SpinnerFallback() {
     return (
@@ -17,11 +18,11 @@ function SpinnerFallback() {
 }
 
 export default function App() {
-    const token = useAuthStore((s) => s.token)
-    const selectedUserId = useAuthStore((s) => s.selectedUserId)
-    const setAuth = useAuthStore((s) => s.setAuth)
-    const clearAuth = useAuthStore((s) => s.clearAuth)
-    const setLoading = useAuthStore((s) => s.setLoading)
+    const token = useAuthStore((state) => state.token)
+    const selectedUserId = useAuthStore((state) => state.selectedUserId)
+    const setAuth = useAuthStore((state) => state.setAuth)
+    const clearAuth = useAuthStore((state) => state.clearAuth)
+    const setLoading = useAuthStore((state) => state.setLoading)
 
     useEffect(() => {
         document.documentElement.classList.add('dark')
@@ -83,6 +84,14 @@ export default function App() {
                         element={
                             <Suspense fallback={<SpinnerFallback />}>
                                 <TierMatrix />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/use-cases"
+                        element={
+                            <Suspense fallback={<SpinnerFallback />}>
+                                <UseCases />
                             </Suspense>
                         }
                     />

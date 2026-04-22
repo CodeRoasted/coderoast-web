@@ -32,10 +32,43 @@ export default function UserSelector() {
             .then(({ users: list }) => {
                 // Filter out the "anonymous" seed user — we expose it as a
                 // dedicated top-level option so it doesn't appear twice.
-                setUsers(list.filter((u) => u.id !== 'anonymous'))
+                // Then sort by tier level ascending so the dropdown reads
+                // free → pro → enterprise (mirrors the pricing page order)
+                // and the cheapest demo identity is always the first pick.
+                const filtered = list.filter((u) => u.id !== 'anonymous')
+                const sorted = [...filtered].sort((a, b) => {
+                    const al = a.tier?.level ?? Number.POSITIVE_INFINITY
+                    const bl = b.tier?.level ?? Number.POSITIVE_INFINITY
+                    if (al !== bl) return al - bl
+                    return a.name.localeCompare(b.name)
+                })
+                setUsers(sorted)
+
+                // Auto-pick the lowest-tier demo user on first visit so the
+                // operator can hit "Run" immediately without a login dance.
+                // We only do it when nothing was previously selected and no
+                // bearer token is in flight — returning visitors keep their
+                // explicit choice (including "Anonymous").
+                const { selectedUserId: persisted, token } = useAuthStore.getState()
+                if (persisted === null && !token && sorted.length > 0) {
+                    const free = sorted[0]
+                    if (free) {
+                        login(free.id)
+                            .then(({ token: t2, user: principal }) => {
+                                setAuth(t2, principal)
+                                setSelectedUserId(free.id)
+                            })
+                            .catch(() => {
+                                // Non-fatal: user can still pick manually.
+                            })
+                    }
+                }
             })
             .catch((err) => setError(err instanceof Error ? err.message : String(err)))
             .finally(() => setLoading(false))
+        // setAuth/setSelectedUserId are stable Zustand setters; intentional
+        // empty deps to run the bootstrap exactly once on mount.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const current = selectedUserId ?? user?.id ?? ANON_VALUE

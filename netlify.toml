@@ -4,7 +4,7 @@
 
 # Set production API endpoint (direct to api.coderoast.fr, not through Netlify)
 [build.environment]
-  VITE_API_BASE = "https://api.coderoast.fr"
+  VITE_API_BASE = "https://api.coderoast.fr/api/v1"
 
 [[headers]]
   for = "/assets/*"

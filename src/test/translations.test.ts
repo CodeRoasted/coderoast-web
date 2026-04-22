@@ -36,7 +36,8 @@ describe('translations', () => {
             it(`${lang} has all required nav keys`, () => {
                 const nav = translations[lang].nav
                 expect(nav.home).toBeTruthy()
-                expect(nav.portfolio).toBeTruthy()
+                expect(nav.product).toBeTruthy()
+                expect(nav.pricing).toBeTruthy()
                 expect(nav.logcraft).toBeTruthy()
                 expect(nav.lab).toBeTruthy()
             })

@@ -80,8 +80,9 @@ export class TierRequiredError extends Error {
 }
 
 // API base URL — can be overridden via VITE_API_BASE environment variable
-// Default: relative path for local dev, production should use api.coderoast.fr subdomain
-const API_BASE = import.meta.env.VITE_API_BASE || '/api'
+// Default: relative path for local dev, production should use api.coderoast.fr subdomain.
+// Versioned since V1 so future breaking changes can ship as /api/v2 in parallel.
+const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1'
 
 function authHeaders(): Record<string, string> {
     const { token } = useAuthStore.getState()

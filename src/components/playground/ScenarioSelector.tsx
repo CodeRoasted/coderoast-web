@@ -3,6 +3,7 @@ import { CheckCircle, Clock, Tag, Loader2, AlertCircle } from 'lucide-react'
 import { useEngineStore } from '@/store/useEngineStore'
 import { listScenarios, getScenario, TierRequiredError, type ScenarioMeta } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
+import TierLockModal from './TierLockModal'
 
 const CATEGORY_ORDER = ['Simple', 'Demo', 'Showcase']
 
@@ -12,6 +13,7 @@ export default function ScenarioPicker() {
     const [scenarios, setScenarios] = useState<ScenarioMeta[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [tierError, setTierError] = useState<TierRequiredError | null>(null)
 
     useEffect(() => {
         listScenarios()
@@ -23,34 +25,26 @@ export default function ScenarioPicker() {
     const handleSelectScenario = useCallback(
         async (id: string, isCurrentlySelected: boolean) => {
             if (isCurrentlySelected) {
-                // Deselect
                 setSelectedScenarioId(null)
                 setScenarioYaml('')
             } else {
-                // Select and fetch YAML
                 setSelectedScenarioId(id)
                 try {
                     const { yaml } = await getScenario(id)
                     setScenarioYaml(yaml)
                     setError(null)
                 } catch (fetchError) {
-                    // If YAML fetch fails, clear selection and surface the
-                    // reason so the operator understands why (e.g. the
-                    // scenario category requires a higher tier).
                     setSelectedScenarioId(null)
                     setScenarioYaml('')
                     if (fetchError instanceof TierRequiredError) {
-                        const required = fetchError.requiredTier?.name ?? '—'
-                        setError(
-                            `${t.auth.requiresTier.replace('{tier}', required)} ${t.auth.youAre.replace('{role}', fetchError.userTier?.name ?? fetchError.userId ?? 'anonymous')}`,
-                        )
+                        setTierError(fetchError)
                     } else {
                         setError(fetchError instanceof Error ? fetchError.message : String(fetchError))
                     }
                 }
             }
         },
-        [setSelectedScenarioId, setScenarioYaml, t],
+        [setSelectedScenarioId, setScenarioYaml],
     )
 
     const grouped = useMemo(() => {
@@ -90,6 +84,7 @@ export default function ScenarioPicker() {
     }
 
     return (
+        <>
         <div className="space-y-8">
             {grouped.map(([category, items]) => (
                 <div key={category}>
@@ -143,5 +138,7 @@ export default function ScenarioPicker() {
                 </div>
             ))}
         </div>
+        <TierLockModal error={tierError} onClose={() => setTierError(null)} />
+        </>
     )
 }
