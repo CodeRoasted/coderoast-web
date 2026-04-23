@@ -26,10 +26,8 @@ import EngineControls from '@/components/playground/EngineControls'
 import EngineHeader from '@/components/playground/EngineHeader'
 import AgentGrid from '@/components/playground/AgentGrid'
 import SinkGrid from '@/components/playground/SinkGrid'
-import DrainPanel from '@/components/playground/DrainPanel'
+import ObservationPanel from '@/components/playground/ObservationPanel'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
-import LogTail from '@/components/playground/LogTail'
-import IncidentTimeline from '@/components/playground/IncidentTimeline'
 import UserSelector from '@/components/UserSelector'
 import TierLockModal from '@/components/playground/TierLockModal'
 import YamlEditor from '@/components/playground/YamlEditor'
@@ -474,24 +472,20 @@ export default function Lab() {
                                     runKey={runKey}
                                 />
                                 <SinkGrid sinks={snapshot?.sinks ?? []} />
-                                <DrainPanel engineId={engineId} sinks={snapshot?.sinks ?? []} />
                             </div>
 
-                            {/* Zone C — sticky right column for live observation */}
-                            <div className="xl:col-span-1 xl:sticky xl:top-[10.5rem] xl:max-h-[calc(100vh-12rem)] flex flex-col gap-4 min-w-0">
-                                <div className="flex-1 min-h-0">
-                                    <LogTail
-                                        entries={liveTail}
-                                        totalEntries={snapshot?.total_entries ?? 0}
-                                        onClear={clearLiveTail}
-                                        agentNames={agentNames}
-                                    />
-                                </div>
-                                <div className="flex-1 min-h-0">
-                                    <IncidentTimeline
-                                        incidents={snapshot?.incidents ?? []}
-                                    />
-                                </div>
+                            {/* Zone C — sticky right column for live observation.
+                                Tabbed (Logs / Incidents / Drain) so each stream
+                                gets the full column height instead of fighting
+                                two siblings for 256px each. */}
+                            <div className="xl:col-span-1 xl:sticky xl:top-[10.5rem] xl:h-[calc(100vh-12rem)] flex flex-col min-w-0">
+                                <ObservationPanel
+                                    engineId={engineId}
+                                    snapshot={snapshot}
+                                    liveTail={liveTail}
+                                    clearLiveTail={clearLiveTail}
+                                    agentNames={agentNames}
+                                />
                             </div>
                         </div>
                     </div>

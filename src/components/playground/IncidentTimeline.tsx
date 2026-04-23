@@ -17,14 +17,14 @@ export default function IncidentTimeline({ incidents }: Props) {
     const t = useTranslation()
 
     return (
-        <div className="bg-gray-900 border border-gray-700/50 rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-700/50 flex items-center justify-between">
+        <div className="bg-gray-900 border border-gray-700/50 rounded-xl overflow-hidden flex flex-col h-full min-h-0">
+            <div className="px-4 py-3 border-b border-gray-700/50 flex items-center justify-between shrink-0">
                 <span className="text-sm font-medium text-gray-300">{t.lab.incidents}</span>
                 <span className="text-xs text-gray-500">
                     {incidents.length} {t.lab.events}
                 </span>
             </div>
-            <div className="h-64 overflow-y-auto p-4">
+            <div className="flex-1 min-h-0 overflow-y-auto p-4">
                 {incidents.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-600 text-sm">
                         {t.lab.noIncidents}

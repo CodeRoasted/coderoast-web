@@ -70,8 +70,8 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
     }
 
     return (
-        <div className="bg-gray-900 border border-gray-700/50 rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-700/50">
+        <div className="bg-gray-900 border border-gray-700/50 rounded-xl overflow-hidden flex flex-col h-full min-h-0">
+            <div className="px-4 py-3 border-b border-gray-700/50 shrink-0">
                 <div className="flex items-center justify-between mb-1 gap-2">
                     <span className="text-sm font-medium text-gray-300">{t.lab.logTail}</span>
                     <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                     </div>
                 )}
             </div>
-            <div ref={containerRef} className="h-64 overflow-y-auto overflow-x-auto p-2 font-mono text-xs">
+            <div ref={containerRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-auto p-2 font-mono text-xs">
                 {sourceEntries.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-600">
                         {t.lab.noLogs}
