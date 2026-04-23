@@ -78,8 +78,8 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                         <button
                             onClick={() => setShowFilters((v) => !v)}
                             className={`p-1.5 rounded transition-colors ${showFilters || filtersActive
-                                    ? 'bg-brand-900/40 text-brand-400 hover:bg-brand-900/60'
-                                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
+                                ? 'bg-brand-900/40 text-brand-400 hover:bg-brand-900/60'
+                                : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
                                 }`}
                             title={t.lab.filters}
                         >
@@ -88,8 +88,8 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                         <button
                             onClick={handlePauseToggle}
                             className={`p-1.5 rounded transition-colors ${isPaused
-                                    ? 'bg-amber-900/40 text-amber-400 hover:bg-amber-900/60'
-                                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
+                                ? 'bg-amber-900/40 text-amber-400 hover:bg-amber-900/60'
+                                : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
                                 }`}
                             title={isPaused ? 'Resume' : 'Pause'}
                         >
@@ -105,11 +105,19 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                             </button>
                         )}
                         <span className="text-xs text-gray-500 whitespace-nowrap">
-                            {filtered.length}
-                            {filtersActive && filtered.length !== sourceEntries.length && (
-                                <span className="text-gray-600"> / {sourceEntries.length}</span>
-                            )}
-                            <span className="text-gray-600"> · {totalEntries}</span> {t.lab.entries}
+                            <span title="Entries visible in the rolling buffer (last 1 000 received via WebSocket)">
+                                {filtered.length}
+                                {filtersActive && filtered.length !== sourceEntries.length && (
+                                    <span className="text-gray-600"> / {sourceEntries.length}</span>
+                                )}
+                                {' sampled'}
+                            </span>
+                            <span
+                                className="text-gray-600 cursor-help"
+                                title="Total log entries produced by the engine since start — includes all records never transmitted"
+                            >
+                                {' · '}{totalEntries} total
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -162,7 +170,7 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                     </div>
                 )}
             </div>
-            <div ref={containerRef} className="h-64 overflow-y-auto p-2 font-mono text-xs">
+            <div ref={containerRef} className="h-64 overflow-y-auto overflow-x-auto p-2 font-mono text-xs">
                 {sourceEntries.length === 0 ? (
                     <div className="flex items-center justify-center h-full text-gray-600">
                         {t.lab.noLogs}
@@ -173,19 +181,19 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                     </div>
                 ) : (
                     filtered.map((entry, i) => (
-                        <div key={i} className="flex gap-2 py-0.5 hover:bg-gray-800/50 px-2 rounded">
-                            <span className="text-gray-600 shrink-0 w-20 truncate">
+                        <div key={i} className="flex gap-2 py-0.5 hover:bg-gray-800/50 px-1 rounded whitespace-nowrap">
+                            <span className="text-gray-600 shrink-0 w-[88px]">
                                 {entry.timestamp.slice(11, 23)}
                             </span>
-                            <span className="text-purple-400 shrink-0 w-20 truncate">
+                            <span className="text-purple-400 shrink-0 w-[72px] truncate">
                                 {entry.agent}
                             </span>
                             <span
-                                className={`shrink-0 w-12 text-center ${levelColors[entry.level] ?? 'text-gray-400'}`}
+                                className={`shrink-0 w-10 ${levelColors[entry.level] ?? 'text-gray-400'}`}
                             >
                                 {entry.level}
                             </span>
-                            <span className="text-gray-300 truncate">{entry.message}</span>
+                            <span className="text-gray-300">{entry.message}</span>
                         </div>
                     ))
                 )}

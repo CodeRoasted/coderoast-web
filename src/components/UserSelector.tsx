@@ -55,7 +55,7 @@ export default function UserSelector() {
                     if (free) {
                         login(free.id)
                             .then(({ token: t2, user: principal }) => {
-                                setAuth(t2, principal)
+                                setAuth(t2, principal, free.tier)
                                 setSelectedUserId(free.id)
                             })
                             .catch(() => {
@@ -82,7 +82,8 @@ export default function UserSelector() {
                 setSelectedUserId(null)
             } else {
                 const { token, user: principal } = await login(value)
-                setAuth(token, principal)
+                const picked = users.find((u) => u.id === value)
+                setAuth(token, principal, picked?.tier ?? null)
                 setSelectedUserId(value)
             }
         } catch (err) {
@@ -111,10 +112,6 @@ export default function UserSelector() {
                 title={t.auth.signedInAs}
                 className="bg-gray-900 border border-gray-700 text-gray-200 text-xs rounded-md px-2 py-1 focus:outline-none focus:border-brand-500 disabled:opacity-50"
             >
-                <option value={ANON_VALUE}>
-                    {t.auth.anonymous}
-                    {current === ANON_VALUE ? '' : ''}
-                </option>
                 {users.map((u) => (
                     <option key={u.id} value={u.id}>
                         {u.name} ({u.tier?.name ?? u.role})

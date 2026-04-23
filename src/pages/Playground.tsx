@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { ONBOARDING_COOKIE, getCookie, setCookie } from '@/utils/cookies'
 import {
     ArrowLeft,
     FlaskConical,
@@ -32,7 +34,7 @@ import TierLockModal from '@/components/playground/TierLockModal'
 import YamlEditor from '@/components/playground/YamlEditor'
 import OnboardingModal from '@/components/playground/OnboardingModal'
 
-const FIRST_VISIT_KEY = 'logcraft.lab.firstVisit.dismissed'
+// Cookie key is in @/utils/cookies — exported as ONBOARDING_COOKIE
 const HELLO_WORLD_HINTS = ['hello_world', 'hello-world', 'hello']
 
 export default function Lab() {
@@ -61,25 +63,20 @@ export default function Lab() {
     const autoStartRef = useRef(true)
     const [showFirstVisit, setShowFirstVisit] = useState(false)
     const [helloWorldLoading, setHelloWorldLoading] = useState(false)
+    const [seedBroken, setSeedBroken] = useState(false)
+    const [runKey, setRunKey] = useState(0)
 
-    // Show first-visit help unless dismissed.
+    // Show first-visit help unless the onboarding cookie is present.
+    // Incognito / cleared cookies = fresh first-visit experience.
     useEffect(() => {
-        try {
-            if (!localStorage.getItem(FIRST_VISIT_KEY)) {
-                setShowFirstVisit(true)
-            }
-        } catch {
-            // localStorage may be unavailable (private mode); just skip.
+        if (!getCookie(ONBOARDING_COOKIE)) {
+            setShowFirstVisit(true)
         }
     }, [])
 
     const dismissFirstVisit = useCallback(() => {
         setShowFirstVisit(false)
-        try {
-            localStorage.setItem(FIRST_VISIT_KEY, '1')
-        } catch {
-            // ignore
-        }
+        setCookie(ONBOARDING_COOKIE, '1')
     }, [])
 
     // Pre-load the "Hello World" starter scenario on first visit so the
@@ -165,6 +162,12 @@ export default function Lab() {
             })
     }, [engineId, setScenarioYaml])
 
+    // Reset seed-breach flag whenever the engine changes so the determinism
+    // warning fires again for a fresh scenario run.
+    useEffect(() => {
+        setSeedBroken(false)
+    }, [engineId])
+
     const handleRun = useCallback(async () => {
         const yaml = scenarioYaml.trim()
         if (!yaml) {
@@ -213,6 +216,8 @@ export default function Lab() {
     }, [engineId, reset, setStatusMessage, t])
 
     const handleStart = useCallback(() => {
+        setSeedBroken(false)
+        setRunKey((k) => k + 1)
         engineWs.sendCommand({ type: 'start' })
     }, [])
     const handleStop = useCallback(() => {
@@ -232,6 +237,7 @@ export default function Lab() {
     }, [])
 
     const isRunning = snapshot?.state === 'running'
+    const isSeeded = snapshot?.has_seed ?? false
     const hasYaml = scenarioYaml.trim().length > 0
 
     const agentNames = useMemo(
@@ -270,11 +276,6 @@ export default function Lab() {
                             <span className="flex items-center gap-1.5 text-xs text-emerald-400">
                                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                                 {t.lab.live}
-                            </span>
-                        )}
-                        {statusMessage && (
-                            <span className="text-xs text-gray-400 max-w-xs truncate hidden md:inline">
-                                {statusMessage}
                             </span>
                         )}
                         <button
@@ -412,6 +413,9 @@ export default function Lab() {
                                     onStop={handleStop}
                                     onDestroy={handleDestroy}
                                     onCascade={handleCascade}
+                                    isSeeded={isSeeded}
+                                    seedBroken={seedBroken}
+                                    onSeedBreachConfirm={() => setSeedBroken(true)}
                                 />
                             </div>
                             {!isRunning && (
@@ -434,6 +438,10 @@ export default function Lab() {
                                     onSetRate={isRunning ? handleSetRate : undefined}
                                     onSetErrorRate={isRunning ? handleSetErrorRate : undefined}
                                     onBurst={isRunning ? handleBurst : undefined}
+                                    isSeeded={isSeeded}
+                                    seedBroken={seedBroken}
+                                    onSeedBreachConfirm={() => setSeedBroken(true)}
+                                    runKey={runKey}
                                 />
                                 <SinkGrid sinks={snapshot?.sinks ?? []} />
                             </div>
@@ -460,6 +468,27 @@ export default function Lab() {
             </div>
 
             <TierLockModal error={tierError} onClose={() => setTierError(null)} />
+
+            {/* Action result toast — fixed bottom-right, auto-dismissed after 4 s */}
+            <AnimatePresence>
+                {statusMessage && (
+                    <motion.div
+                        key={statusMessage}
+                        initial={{ opacity: 0, y: 16, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 16, scale: 0.95 }}
+                        transition={{ duration: 0.18 }}
+                        className={`fixed bottom-6 right-6 z-[100] flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium border backdrop-blur-md max-w-sm ${statusMessage.startsWith('✓')
+                            ? 'bg-emerald-900/90 border-emerald-500/40 text-emerald-200'
+                            : statusMessage.startsWith('✗')
+                                ? 'bg-red-900/90 border-red-500/40 text-red-200'
+                                : 'bg-gray-800/95 border-gray-600/50 text-gray-200'
+                            }`}
+                    >
+                        {statusMessage}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

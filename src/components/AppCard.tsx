@@ -34,12 +34,12 @@ export default function AppCard({ name, description, status, icon, gradient, ind
                     <div className="flex flex-col items-end gap-1">
                         <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold ${isActive
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                                    : isBeta
-                                        ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400'
-                                        : isComingSoon
-                                            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
-                                            : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                : isBeta
+                                    ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400'
+                                    : isComingSoon
+                                        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
+                                        : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
                                 }`}
                         >
                             {status}
@@ -74,10 +74,12 @@ export default function AppCard({ name, description, status, icon, gradient, ind
                     </ul>
                 )}
 
-                {/* Hover arrow */}
-                <div className="mt-6 flex items-center text-brand-600 dark:text-brand-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <span>{link ? 'Explore LogCraft →' : isComingSoon ? '✨' : 'Learn more →'}</span>
-                </div>
+                {/* Hover arrow — only shown when there is a real destination */}
+                {link && (
+                    <div className="mt-6 flex items-center text-brand-600 dark:text-brand-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <span>{isComingSoon ? '✨' : 'Explore →'}</span>
+                    </div>
+                )}
             </div>
         </>
     )

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -28,16 +28,6 @@ import {
 import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import { useTranslation } from '@/hooks/useTranslation'
-
-const Pricing = lazy(() => import('@/components/Licensing'))
-
-function LoadingFallback() {
-    return (
-        <div className="flex items-center justify-center py-32">
-            <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-    )
-}
 
 export default function LogCraftPage() {
     const t = useTranslation()
@@ -339,12 +329,26 @@ export default function LogCraftPage() {
                     </div>
                 </section>
 
-                {/* ── Pricing ─────────────────────────────────────────── */}
-                <div id="pricing" className="scroll-mt-20">
-                    <Suspense fallback={<LoadingFallback />}>
-                        <Pricing />
-                    </Suspense>
-                </div>
+                {/* ── Contact ──────────────────────────────────────────── */}
+                <section className="py-12 bg-gray-950">
+                    <div className="max-w-3xl mx-auto px-4 text-center">
+                        <motion.p
+                            initial={{ opacity: 0, y: 16 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5 }}
+                            className="text-gray-500 text-sm"
+                        >
+                            Questions or enterprise inquiries?{' '}
+                            <a
+                                href="mailto:contact@coderoast.fr"
+                                className="text-brand-400 hover:text-brand-300 transition-colors font-medium"
+                            >
+                                contact@coderoast.fr
+                            </a>
+                        </motion.p>
+                    </div>
+                </section>
             </main>
             <Footer />
         </>

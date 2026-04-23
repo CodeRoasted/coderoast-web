@@ -151,16 +151,18 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
         if (scenarios.length === 0) return null
         const lc = (s: ScenarioMeta) => `${s.id} ${s.category} ${s.name}`.toLowerCase()
 
+        // Categories returned by the server are the directory names: 01_starter, 02_daily, 03_real_life
         const categoryFor: Record<Complexity, string> = {
-            simple: 'simple',
-            realistic: 'demo',
-            chaos: 'showcase',
+            simple: '01_starter',
+            realistic: '02_daily',
+            chaos: '03_real_life',
         }
+        // Keywords matched against `{id} {category} {name}` (all lowercased)
         const intentKeywords: Record<Intent, string[]> = {
-            test: ['minimal', 'pipeline', 'starter'],
-            demo: ['incident', 'cascade', 'demo', 'showcase'],
-            train: ['cascade', 'incident', 'failure', 'outage'],
-            explore: ['hello', 'minimal', 'simple'],
+            explore: ['hello', 'starter', 'simple'],
+            test: ['two_agents', 'phases', 'custom_fields', 'outputs', 'http_sinks'],
+            demo: ['ecommerce', 'microservices', 'kafka', 'reallife', 'production'],
+            train: ['incident', 'failure', 'outage', 'cascade', 'training'],
         }
 
         const wantedCategory = categoryFor[c]
@@ -246,9 +248,8 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
                             {[1, 2, 3].map((n) => (
                                 <span
                                     key={n}
-                                    className={`h-1.5 flex-1 rounded-full transition-colors ${
-                                        step >= n ? 'bg-brand-500' : 'bg-gray-800'
-                                    }`}
+                                    className={`h-1.5 flex-1 rounded-full transition-colors ${step >= n ? 'bg-brand-500' : 'bg-gray-800'
+                                        }`}
                                 />
                             ))}
                         </div>
@@ -272,19 +273,17 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
                                             <button
                                                 key={opt.id}
                                                 onClick={() => setIntent(opt.id)}
-                                                className={`text-left p-4 rounded-xl border transition-all ${
-                                                    selected
+                                                className={`text-left p-4 rounded-xl border transition-all ${selected
                                                         ? 'border-brand-500 bg-brand-500/10'
                                                         : 'border-gray-700/60 bg-gray-800/40 hover:border-gray-600 hover:bg-gray-800/70'
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="flex items-start gap-3">
                                                     <div
-                                                        className={`inline-flex p-2 rounded-lg ${
-                                                            selected
+                                                        className={`inline-flex p-2 rounded-lg ${selected
                                                                 ? 'bg-brand-600 text-white'
                                                                 : 'bg-gray-800 text-brand-400'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {opt.icon}
                                                     </div>
@@ -339,11 +338,10 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
                                             <button
                                                 key={opt.id}
                                                 onClick={() => setComplexity(opt.id)}
-                                                className={`w-full text-left p-4 rounded-xl border transition-all ${
-                                                    selected
+                                                className={`w-full text-left p-4 rounded-xl border transition-all ${selected
                                                         ? 'border-brand-500 bg-brand-500/10'
                                                         : 'border-gray-700/60 bg-gray-800/40 hover:border-gray-600 hover:bg-gray-800/70'
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="flex items-center justify-between gap-3">
                                                     <div className="min-w-0">

@@ -12,7 +12,6 @@ const anchorLinks = [
     { key: 'product' as const, hash: '#product' },
     { key: 'how' as const, hash: '#how' },
     { key: 'features' as const, hash: '#features' },
-    { key: 'pricing' as const, hash: '#pricing' },
 ]
 
 export default function Navbar() {
@@ -36,11 +35,10 @@ export default function Navbar() {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ type: 'spring', stiffness: 110, damping: 22 }}
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-                scrolled
-                    ? 'bg-gray-950/85 backdrop-blur-lg border-b border-gray-800/60'
-                    : 'bg-transparent border-b border-transparent'
-            }`}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled
+                ? 'bg-gray-950/85 backdrop-blur-lg border-b border-gray-800/60'
+                : 'bg-transparent border-b border-transparent'
+                }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
@@ -80,7 +78,7 @@ export default function Navbar() {
                     {/* Right side */}
                     <div className="flex items-center gap-2">
                         <a
-                            href="https://github.com/Manu-CodeRoast"
+                            href="https://github.com/coderoast-dev"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="GitHub"

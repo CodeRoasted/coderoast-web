@@ -8,7 +8,6 @@ const ProductShowcase = lazy(() => import('@/components/home/ProductShowcase'))
 const HowItWorks = lazy(() => import('@/components/home/HowItWorks'))
 const FeatureGrid = lazy(() => import('@/components/home/FeatureGrid'))
 const UseCasesHome = lazy(() => import('@/components/home/UseCasesHome'))
-const PricingTeaser = lazy(() => import('@/components/home/PricingTeaser'))
 const Portfolio = lazy(() => import('@/components/Portfolio'))
 const ComingSoon = lazy(() => import('@/components/ComingSoon'))
 const MakerNote = lazy(() => import('@/components/home/MakerNote'))
@@ -41,9 +40,6 @@ export default function Home() {
                 </Suspense>
                 <Suspense fallback={<LoadingFallback />}>
                     <UseCasesHome />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <PricingTeaser />
                 </Suspense>
                 <Suspense fallback={<LoadingFallback />}>
                     <Portfolio />

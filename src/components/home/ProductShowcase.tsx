@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Play, Circle } from 'lucide-react'
@@ -55,6 +55,15 @@ const LEVEL_COLORS: Record<FakeLog['level'], string> = {
 export default function ProductShowcase() {
     const t = useTranslation()
     const [feed, setFeed] = useState<FakeLog[]>([])
+    const scrollRef = useRef<HTMLDivElement>(null)
+
+    // Auto-scroll to bottom on every new log line
+    useEffect(() => {
+        const el = scrollRef.current
+        if (el) {
+            el.scrollTop = el.scrollHeight
+        }
+    }, [feed])
 
     useEffect(() => {
         let i = 0
@@ -63,11 +72,7 @@ export default function ProductShowcase() {
             if (cancelled) return
             const sample = LOG_POOL[i % LOG_POOL.length]
             if (sample) {
-                setFeed((prev) => {
-                    const next = [...prev, sample]
-                    if (next.length > 11) next.shift()
-                    return next
-                })
+                setFeed((prev) => [...prev, sample])
             }
             i++
             // Speed up around the cascade for visual drama.
@@ -144,7 +149,11 @@ export default function ProductShowcase() {
                                 SIMULATED
                             </span>
                         </div>
-                        <div className="px-3 py-3 font-mono text-[11.5px] leading-[1.7] min-h-[420px] flex flex-col justify-end">
+                        <div
+                            ref={scrollRef}
+                            className="px-3 py-3 font-mono text-[11.5px] leading-[1.7] h-[420px] overflow-y-auto scroll-smooth flex flex-col"
+                            style={{ scrollbarWidth: 'none' }}
+                        >
                             {feed.map((l, i) => (
                                 <motion.div
                                     key={`${i}-${l.ts}`}

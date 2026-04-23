@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import type { TierInfo } from '@/services/api'
 
 interface AuthUser {
     id: string
@@ -11,12 +12,15 @@ interface AuthState {
     token: string | null
     /** Current principal. `null` means the app has not yet resolved the session. */
     user: AuthUser | null
+    /** Tier (anonymous=0, free=1, pro=2, enterprise=3) of the current principal. */
+    tier: TierInfo | null
     /** True while the initial session bootstrap is running. */
     loading: boolean
     /** User id the operator explicitly selected in the dropdown (persisted). */
     selectedUserId: string | null
 
-    setAuth: (token: string | null, user: AuthUser) => void
+    setAuth: (token: string | null, user: AuthUser, tier?: TierInfo | null) => void
+    setTier: (tier: TierInfo | null) => void
     clearAuth: () => void
     setLoading: (loading: boolean) => void
     setSelectedUserId: (userId: string | null) => void
@@ -35,12 +39,21 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             token: null,
             user: null,
+            tier: null,
             loading: true,
             selectedUserId: null,
 
-            setAuth: (token, user) => set({ token, user, loading: false }),
+            setAuth: (token, user, tier = null) =>
+                set({ token, user, tier, loading: false }),
+            setTier: (tier) => set({ tier }),
             clearAuth: () =>
-                set({ token: null, user: null, loading: false, selectedUserId: null }),
+                set({
+                    token: null,
+                    user: null,
+                    tier: null,
+                    loading: false,
+                    selectedUserId: null,
+                }),
             setLoading: (loading) => set({ loading }),
             setSelectedUserId: (userId) => set({ selectedUserId: userId }),
         }),
@@ -50,6 +63,7 @@ export const useAuthStore = create<AuthState>()(
             partialize: (state) => ({
                 token: state.token,
                 user: state.user,
+                tier: state.tier,
                 selectedUserId: state.selectedUserId,
             }),
         }

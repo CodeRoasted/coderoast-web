@@ -9,6 +9,7 @@ const translations = {
             logcraft: 'LogCraft',
             lab: 'Open Lab',
             useCases: 'Use cases',
+            contact: 'Contact',
         },
         hero: {
             badge: 'C++20 engine · Browser Lab · Self-hosted ready',
@@ -180,7 +181,7 @@ const translations = {
         roadmap: {
             title: 'On the roadmap',
             subtitle:
-                'Where the next releases are headed. Dates are intentions, not promises.',
+                'What we are building next, and where the product is going.',
             badge: 'Next',
             items: [
                 {
@@ -277,6 +278,7 @@ const translations = {
                 product: 'Product',
                 resources: 'Resources',
                 more: 'More',
+                legal: 'Legal & Security',
             },
             links: {
                 logcraft: 'LogCraft',
@@ -288,7 +290,29 @@ const translations = {
                 github: 'GitHub',
                 contact: 'Contact',
                 support: 'Support the build',
+                terms: 'Terms of Service',
+                privacy: 'Privacy Policy',
+                trademark: 'Trademark Policy',
+                cookiePrefs: 'Your cookie preferences',
             },
+        },
+        cookiePrefs: {
+            title: 'Your Cookie Preferences',
+            subtitle:
+                'CodeRoast uses only one functional cookie — no trackers, no analytics, no ads. Clear cookies or use incognito for a fresh session.',
+            category: 'Functional · Required',
+            categoryDesc:
+                'Strictly necessary for the product to work correctly. These cookies cannot be switched off.',
+            alwaysOn: 'Always on',
+            onboardingName: 'Lab Onboarding State',
+            onboardingDesc:
+                'Remembers that you have completed the Lab onboarding wizard. Without it, the tutorial reappears on every visit to the Lab.',
+            cookieKey: 'logcraft_onboarding_dismissed',
+            cookieDuration: '1 year',
+            resetBtn: 'Reset',
+            resetDone:
+                'Done — the onboarding tutorial will reappear the next time you visit the Lab.',
+            close: 'Close',
         },
         useCases: {
             badge: 'For LogCraft',
@@ -474,7 +498,7 @@ const translations = {
             scenarioDesc:
                 'The YAML running right now. Compare with the live metrics above.',
             logTail: 'Log Tail',
-            logTailDesc: 'A live, scrolling sample of records produced by the engine.',
+            logTailDesc: 'Best-effort sample — snapshots carry the last ~20 records each tick. Agents produce far more; only a fraction reaches this feed. The total counter reflects everything the engine generated.',
             entries: 'entries',
             noLogs: 'No log entries yet.',
             noLogsMatch: 'No log entries match your filter.',
@@ -505,6 +529,24 @@ const translations = {
             liveControls: 'Live Controls',
             liveControlsDesc:
                 'Tweak each agent without touching the YAML. Changes apply instantly and revert when the engine stops.',
+            lock: 'Lock',
+            unlock: 'Unlock',
+            lockedTip:
+                'Agent is following the scenario. Click the lock to take ownership and tweak rate / error.',
+            unlockedTip:
+                'You own this agent — it no longer follows scenario phases. Click again to relock (sliders return to scenario).',
+            lockedTierRequired:
+                'Requires the {tier} tier. Switch user (top right) to a higher tier to use this control.',
+            seededAgentOwned:
+                'Determinism broken: this agent no longer mirrors the seeded scenario.',
+            seedDeterminismWarning:
+                'This scenario is seeded for deterministic replay. {action} will break that determinism — re-runs will no longer produce identical logs.',
+            seedActionUnlock: 'Taking ownership of an agent',
+            seedActionBurst: 'Triggering a burst',
+            seedActionCascade: 'Forcing a cascade evaluation',
+            seedConfirmTitle: 'Seeded scenario — heads up',
+            seedConfirmProceed: 'Proceed anyway',
+            seedConfirmCancel: 'Cancel',
             filters: 'Filters',
             filterAllLevels: 'All levels',
             filterAllAgents: 'All agents',
@@ -607,6 +649,7 @@ const translations = {
             logcraft: 'LogCraft',
             lab: 'Ouvrir le Lab',
             useCases: 'Cas d’usage',
+            contact: 'Contact',
         },
         hero: {
             badge: 'Moteur C++20 · Lab navigateur · Self-hosted',
@@ -778,7 +821,7 @@ const translations = {
         roadmap: {
             title: 'Sur la roadmap',
             subtitle:
-                'Là où vont les prochaines releases. Les dates sont des intentions, pas des promesses.',
+                'Ce que nous construisons ensuite, et la direction que prend le produit.',
             badge: 'Bientôt',
             items: [
                 {
@@ -875,6 +918,7 @@ const translations = {
                 product: 'Produit',
                 resources: 'Ressources',
                 more: 'Plus',
+                legal: 'Mentions légales',
             },
             links: {
                 logcraft: 'LogCraft',
@@ -886,7 +930,29 @@ const translations = {
                 github: 'GitHub',
                 contact: 'Contact',
                 support: 'Soutenir',
+                terms: 'Conditions d’utilisation',
+                privacy: 'Politique de confidentialité',
+                trademark: 'Politique des marques',
+                cookiePrefs: 'Vos préférences cookies',
             },
+        },
+        cookiePrefs: {
+            title: 'Vos Préférences Cookies',
+            subtitle:
+                'CodeRoast n’utilise qu’un seul cookie fonctionnel — aucun traceur, aucune analytics, aucune pub. Effacez vos cookies ou utilisez le mode incognito pour une session vierge.',
+            category: 'Fonctionnel · Requis',
+            categoryDesc:
+                'Strictement nécessaire au bon fonctionnement du produit. Ce cookie ne peut pas être désactivé.',
+            alwaysOn: 'Toujours actif',
+            onboardingName: 'État de l’onboarding Lab',
+            onboardingDesc:
+                'Mémorise que vous avez complété l’assistant d’onboarding du Lab. Sans lui, le tutoriel réapparaît à chaque visite.',
+            cookieKey: 'logcraft_onboarding_dismissed',
+            cookieDuration: '1 an',
+            resetBtn: 'Réinitialiser',
+            resetDone:
+                'Fait — le tutoriel d’onboarding réapparaîtra lors de votre prochaine visite au Lab.',
+            close: 'Fermer',
         },
         useCases: {
             badge: 'Pour LogCraft',
@@ -1071,7 +1137,7 @@ const translations = {
             scenario: 'Scénario chargé',
             scenarioDesc: 'Le YAML qui tourne. À comparer aux métriques live au-dessus.',
             logTail: 'Flux de Logs',
-            logTailDesc: 'Échantillon défilant des records produits par le moteur.',
+            logTailDesc: 'Échantillon partiel — chaque snapshot embarque ~20 lignes par tick. Les agents produisent bien plus ; seule une fraction atteint ce flux. Le compteur total reflète tout ce que le moteur a généré.',
             entries: 'entrées',
             noLogs: 'Aucune entrée pour le moment.',
             noLogsMatch: 'Aucune entrée ne correspond au filtre.',
@@ -1102,6 +1168,24 @@ const translations = {
             liveControls: 'Contrôles en Direct',
             liveControlsDesc:
                 'Ajustez chaque agent sans toucher au YAML. Les changements sont appliqués immédiatement et disparaissent à l\'arrêt.',
+            lock: 'Verrouiller',
+            unlock: 'Déverrouiller',
+            lockedTip:
+                'L\'agent suit le scénario. Cliquez sur le cadenas pour en prendre la main et ajuster cadence / erreurs.',
+            unlockedTip:
+                'Vous contrôlez cet agent — il ne suit plus les phases du scénario. Cliquez de nouveau pour reverrouiller (les sliders reviennent au scénario).',
+            lockedTierRequired:
+                'Nécessite le tier {tier}. Changez d\'utilisateur (en haut à droite) pour un tier supérieur.',
+            seededAgentOwned:
+                'Déterminisme rompu : cet agent ne reflète plus le scénario seedé.',
+            seedDeterminismWarning:
+                'Ce scénario est seedé pour une reproduction déterministe. {action} cassera ce déterminisme — les ré-exécutions ne produiront plus des logs identiques.',
+            seedActionUnlock: 'Prendre la main sur un agent',
+            seedActionBurst: 'Déclencher une rafale',
+            seedActionCascade: 'Forcer une évaluation cascade',
+            seedConfirmTitle: 'Scénario seedé — attention',
+            seedConfirmProceed: 'Procéder quand même',
+            seedConfirmCancel: 'Annuler',
             filters: 'Filtres',
             filterAllLevels: 'Tous niveaux',
             filterAllAgents: 'Tous agents',

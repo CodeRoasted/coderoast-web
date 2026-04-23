@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, type ReactNode } from 'react'
+import { useState, useRef, useEffect, type ReactNode, type CSSProperties } from 'react'
+import { createPortal } from 'react-dom'
 
 interface Props {
     content: ReactNode
@@ -13,44 +14,69 @@ interface Props {
 }
 
 /**
- * Minimal, dependency-free hover tooltip.
- *
- * We deliberately avoid a third-party lib because every control in the
- * playground needs one, and the interaction is extremely simple: show
- * on hover/focus, hide on leave/blur. Keyboard focus is supported so
- * the docs are reachable without a mouse.
+ * Hover tooltip rendered via a React portal so it always sits above
+ * stacking-context boundaries (sticky headers, transformed ancestors, etc.).
+ * Position is computed from getBoundingClientRect and applied as fixed coords.
  */
 export default function Tooltip({ content, children, placement = 'top', className }: Props) {
     const [visible, setVisible] = useState(false)
+    const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
+    const triggerRef = useRef<HTMLSpanElement>(null)
     const timer = useRef<number | null>(null)
 
     useEffect(() => {
         return () => {
-            if (timer.current !== null) {
-                window.clearTimeout(timer.current)
-            }
+            if (timer.current !== null) window.clearTimeout(timer.current)
         }
     }, [])
 
     const show = () => {
         if (timer.current !== null) window.clearTimeout(timer.current)
         // Small delay so quick mouse-overs don't flicker.
-        timer.current = window.setTimeout(() => setVisible(true), 120)
+        timer.current = window.setTimeout(() => {
+            if (!triggerRef.current) return
+            const r = triggerRef.current.getBoundingClientRect()
+            const GAP = 8
+            let top: number, left: number
+            if (placement === 'top') {
+                top = r.top - GAP
+                left = r.left + r.width / 2
+            } else if (placement === 'bottom') {
+                top = r.bottom + GAP
+                left = r.left + r.width / 2
+            } else if (placement === 'left') {
+                top = r.top + r.height / 2
+                left = r.left - GAP
+            } else {
+                top = r.top + r.height / 2
+                left = r.right + GAP
+            }
+            setPos({ top, left })
+            setVisible(true)
+        }, 120)
     }
+
     const hide = () => {
         if (timer.current !== null) window.clearTimeout(timer.current)
         setVisible(false)
     }
 
-    const positionClasses: Record<NonNullable<Props['placement']>, string> = {
-        top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-        bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-        left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-        right: 'left-full top-1/2 -translate-y-1/2 ml-2',
+    // Tailwind transform classes to shift the box so the anchor point is the
+    // tip of the tooltip rather than its top-left corner.
+    const transformClass: Record<NonNullable<Props['placement']>, string> = {
+        top: '-translate-x-1/2 -translate-y-full',
+        bottom: '-translate-x-1/2',
+        left: '-translate-x-full -translate-y-1/2',
+        right: '-translate-y-1/2',
     }
+
+    const tooltipStyle: CSSProperties = pos
+        ? { position: 'fixed', top: pos.top, left: pos.left, zIndex: 9999, width: '16rem' }
+        : {}
 
     return (
         <span
+            ref={triggerRef}
             className={`relative inline-flex ${className ?? ''}`}
             onMouseEnter={show}
             onMouseLeave={hide}
@@ -58,14 +84,17 @@ export default function Tooltip({ content, children, placement = 'top', classNam
             onBlur={hide}
         >
             {children}
-            {visible && (
-                <span
-                    role="tooltip"
-                    className={`pointer-events-none absolute z-50 w-64 whitespace-normal text-left rounded-lg border border-gray-700 bg-gray-950/95 px-3 py-2 text-xs text-gray-200 shadow-lg ${positionClasses[placement]}`}
-                >
-                    {content}
-                </span>
-            )}
+            {visible && pos &&
+                createPortal(
+                    <span
+                        role="tooltip"
+                        style={tooltipStyle}
+                        className={`pointer-events-none ${transformClass[placement]} whitespace-normal text-left rounded-lg border border-gray-700 bg-gray-950/95 px-3 py-2 text-xs text-gray-200 shadow-lg`}
+                    >
+                        {content}
+                    </span>,
+                    document.body,
+                )}
         </span>
     )
 }
