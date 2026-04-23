@@ -58,7 +58,6 @@ export default function Lab() {
         setStatusMessage,
         selectedScenarioId,
         setSelectedScenarioId,
-        reset,
     } = useEngineStore()
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
@@ -223,14 +222,56 @@ export default function Lab() {
 
     const handleDestroy = useCallback(async () => {
         if (!engineId) return
+        // "Stop & reset" means: throw away the current engine's state
+        // (scenario seed, accumulated stats, live tail, drain buffer)
+        // and come back with a fresh engine running the same scenario,
+        // *without* bouncing the operator back to the scenario picker.
+        // The picker is only useful when the operator wants a different
+        // scenario \u2014 the back-arrow at the top still goes there.
+        const yaml = scenarioYaml.trim()
         try {
             engineWs.disconnect()
             await deleteEngine(engineId)
-            reset()
         } catch (e) {
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
+            // Best-effort: even if the DELETE failed (e.g. the server
+            // has already forgotten the engine), still clear our local
+            // state so we don't keep polling a dead id.
         }
-    }, [engineId, reset, setStatusMessage, t])
+        // Clear local state but keep scenarioYaml so we can re-create
+        // immediately. If we have no YAML to re-create with, fall back
+        // to the legacy behaviour of returning to the picker.
+        clearLiveTail()
+        setSnapshot(null)
+        setEngineId(null)
+        if (!yaml) {
+            setStatusMessage(null)
+            return
+        }
+        try {
+            autoStartRef.current = autoStart
+            const { engine_id } = await createEngine(yaml)
+            setEngineId(engine_id)
+            setStatusMessage(autoStart ? t.lab.created : t.lab.emptyEngineHint)
+            connectToEngine(engine_id)
+        } catch (e) {
+            if (e instanceof TierRequiredError) {
+                setTierError(e)
+                return
+            }
+            setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
+        }
+    }, [
+        engineId,
+        scenarioYaml,
+        autoStart,
+        clearLiveTail,
+        setSnapshot,
+        setEngineId,
+        setStatusMessage,
+        connectToEngine,
+        t,
+    ])
 
     const handleStart = useCallback(() => {
         setSeedBroken(false)

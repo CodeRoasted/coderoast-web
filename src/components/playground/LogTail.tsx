@@ -182,8 +182,16 @@ export default function LogTail({ entries, totalEntries = 0, onClear, agentNames
                 ) : (
                     filtered.map((entry, i) => (
                         <div key={i} className="flex gap-2 py-0.5 hover:bg-gray-800/50 px-1 rounded whitespace-nowrap">
-                            <span className="text-gray-600 shrink-0 w-[88px]">
-                                {entry.timestamp.slice(11, 23)}
+                            <span className="text-gray-600 shrink-0 w-[68px]">
+                                {/*
+                                  Server emits HH:MM:SS already (8 chars,
+                                  no date prefix). The legacy slice(11,23)
+                                  assumed an ISO 8601 string and produced
+                                  an empty span \u2014 leaving a visible blank
+                                  column on the left of every row. Render
+                                  as-is and size the column to fit.
+                                */}
+                                {entry.timestamp}
                             </span>
                             <span className="text-purple-400 shrink-0 w-[72px] truncate">
                                 {entry.agent}
