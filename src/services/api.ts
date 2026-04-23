@@ -221,6 +221,7 @@ export interface ValidationResult {
     errors: string[]
     warnings?: string[]
     notices?: string[]
+    unavailable_capabilities?: string[]
 }
 
 export async function validateScenario(yaml: string): Promise<ValidationResult> {
@@ -228,4 +229,38 @@ export async function validateScenario(yaml: string): Promise<ValidationResult> 
         method: 'POST',
         body: JSON.stringify({ yaml }),
     })
+}
+
+// ── Demo HTTP-sink drain ───────────────────────────────────────────────────
+//
+// When a scenario declares an `http` output whose URL targets a host
+// under *.logcraft.demo, the server rewrites it at load time to point
+// at our internal /drain endpoint instead. The DrainPanel polls these
+// endpoints to surface what would have been delivered, so users can
+// see the payloads even though the demo hostnames don't resolve.
+
+export interface DrainRecord {
+    seq: number
+    received_ms: number
+    content_type: string
+    sink_label: string
+    sink_target: string
+    body: string
+    bytes: number
+}
+
+export interface DrainSnapshot {
+    engine_id: string
+    records: DrainRecord[]
+    cursor: number
+    latest_seq: number
+    capacity: number
+    size: number
+    total_pushed: number
+    dropped: number
+    targets: string[]
+}
+
+export async function getDrainSnapshot(engineId: string, since = 0): Promise<DrainSnapshot> {
+    return request(`/engines/${encodeURIComponent(engineId)}/drain?since=${since}`)
 }

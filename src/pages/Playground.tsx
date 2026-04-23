@@ -26,6 +26,7 @@ import EngineControls from '@/components/playground/EngineControls'
 import EngineHeader from '@/components/playground/EngineHeader'
 import AgentGrid from '@/components/playground/AgentGrid'
 import SinkGrid from '@/components/playground/SinkGrid'
+import DrainPanel from '@/components/playground/DrainPanel'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
 import LogTail from '@/components/playground/LogTail'
 import IncidentTimeline from '@/components/playground/IncidentTimeline'
@@ -58,6 +59,7 @@ export default function Lab() {
         reset,
     } = useEngineStore()
     const [validationErrors, setValidationErrors] = useState<string[]>([])
+    const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
     const [tierError, setTierError] = useState<TierRequiredError | null>(null)
     const [autoStart, setAutoStart] = useState(true)
     const autoStartRef = useRef(true)
@@ -65,6 +67,14 @@ export default function Lab() {
     const [helloWorldLoading, setHelloWorldLoading] = useState(false)
     const [seedBroken, setSeedBroken] = useState(false)
     const [runKey, setRunKey] = useState(0)
+
+    // Clear validation state whenever the user picks a different scenario.
+    // Scenario selection writes directly to the store (bypassing the YAML
+    // editor's onChange), so we watch selectedScenarioId here instead.
+    useEffect(() => {
+        setValidationErrors([])
+        setUnavailableCapabilities([])
+    }, [selectedScenarioId])
 
     // Show first-visit help unless the onboarding cookie is present.
     // Incognito / cleared cookies = fresh first-visit experience.
@@ -180,7 +190,12 @@ export default function Lab() {
                 setValidationErrors(result.errors)
                 return
             }
+            if (result.unavailable_capabilities?.length) {
+                setUnavailableCapabilities(result.unavailable_capabilities)
+                return
+            }
             setValidationErrors([])
+            setUnavailableCapabilities([])
         } catch (e) {
             if (e instanceof TierRequiredError) {
                 setTierError(e)
@@ -375,11 +390,26 @@ export default function Lab() {
                                 </div>
                             )}
 
+                            {unavailableCapabilities.length > 0 && (
+                                <div className="mb-3 p-3 rounded-lg bg-amber-900/20 border border-amber-700/50">
+                                    <div className="flex items-start gap-2 text-sm text-amber-400">
+                                        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-xs font-semibold mb-1">{t.auth.scenarioNotAvailable}</p>
+                                            {unavailableCapabilities.map((cap, i) => (
+                                                <p key={i} className="text-xs opacity-80">{cap}</p>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             <YamlEditor
                                 value={scenarioYaml}
                                 onChange={(next) => {
                                     setScenarioYaml(next)
                                     if (validationErrors.length) setValidationErrors([])
+                                    if (unavailableCapabilities.length) setUnavailableCapabilities([])
                                 }}
                                 errors={validationErrors}
                                 placeholder={t.lab.yamlPlaceholder}
@@ -444,6 +474,7 @@ export default function Lab() {
                                     runKey={runKey}
                                 />
                                 <SinkGrid sinks={snapshot?.sinks ?? []} />
+                                <DrainPanel engineId={engineId} sinks={snapshot?.sinks ?? []} />
                             </div>
 
                             {/* Zone C — sticky right column for live observation */}

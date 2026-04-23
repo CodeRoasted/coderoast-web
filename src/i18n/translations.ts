@@ -494,6 +494,22 @@ const translations = {
             sinks: 'Output Sinks',
             sinksDesc:
                 'Delivery metrics for each output — write rate, backlog, errors. Not the destination contents.',
+            drain: {
+                title: 'LogCraft Demo Sink',
+                caption:
+                    'These HTTP outputs target *.logcraft.demo — a hostname we own that resolves to nothing. The server intercepts the requests and shows the raw payloads here so you can see exactly what would have hit a real collector.',
+                empty: 'No requests captured yet. Start the engine and any HTTP output that points at *.logcraft.demo will appear here.',
+                targets: 'Captured for',
+                noTargets: 'No demo HTTP outputs detected in this scenario.',
+                droppedSuffix: ' older record(s) dropped to keep the buffer bounded.',
+                showBody: 'Show body',
+                hideBody: 'Hide body',
+                copy: 'Copy',
+                copied: 'Copied',
+                receivedAt: 'received',
+                bytes: 'bytes',
+                sentTo: 'would be sent to',
+            },
             scenario: 'Loaded scenario',
             scenarioDesc:
                 'The YAML running right now. Compare with the live metrics above.',
@@ -629,6 +645,10 @@ const translations = {
             tierLockSwitch: 'Switch user',
             tierLockClose: 'Close',
             tierLockedBadge: 'Locked',
+            tierDisabledTitle: 'Not available in this deployment',
+            tierDisabledBody:
+                'The "{permission}" capability is not enabled in the current deployment. Contact your administrator.',
+            scenarioNotAvailable: 'This scenario requires capabilities that are not available in this deployment:',
         },
         tiers: {
             title: 'Tier & Feature Matrix',
@@ -1134,6 +1154,22 @@ const translations = {
             sinks: 'Sorties',
             sinksDesc:
                 'Métriques de livraison de chaque sortie — débit d\'écriture, arriéré, erreurs. Pas le contenu de la destination.',
+            drain: {
+                title: 'Sink Démo LogCraft',
+                caption:
+                    'Ces sorties HTTP visent *.logcraft.demo — un domaine que nous possédons et qui ne résout vers rien. Le serveur intercepte les requêtes et affiche ici les payloads bruts, pour que vous voyiez exactement ce qui partirait vers un vrai collecteur.',
+                empty: 'Aucune requête capturée pour le moment. Démarrez le moteur — toute sortie HTTP pointant vers *.logcraft.demo apparaîtra ici.',
+                targets: 'Capturé pour',
+                noTargets: 'Aucune sortie HTTP de démo détectée dans ce scénario.',
+                droppedSuffix: ' enregistrement(s) plus ancien(s) ont été abandonnés pour borner le buffer.',
+                showBody: 'Afficher le corps',
+                hideBody: 'Masquer le corps',
+                copy: 'Copier',
+                copied: 'Copié',
+                receivedAt: 'reçu',
+                bytes: 'octets',
+                sentTo: 'serait envoyé à',
+            },
             scenario: 'Scénario chargé',
             scenarioDesc: 'Le YAML qui tourne. À comparer aux métriques live au-dessus.',
             logTail: 'Flux de Logs',
@@ -1268,6 +1304,10 @@ const translations = {
             tierLockSwitch: 'Changer d\'utilisateur',
             tierLockClose: 'Fermer',
             tierLockedBadge: 'Verrouillé',
+            tierDisabledTitle: 'Non disponible dans ce déploiement',
+            tierDisabledBody:
+                'La capacité « {permission} » n\'est pas activée dans le déploiement actuel. Contactez votre administrateur.',
+            scenarioNotAvailable: 'Ce scénario requiert des capacités non disponibles dans ce déploiement :',
         },
         tiers: {
             title: 'Matrice des paliers & fonctionnalités',
