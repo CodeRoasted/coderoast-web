@@ -4,6 +4,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { getDrainSnapshot } from '@/services/api'
 import type { DrainRecord, DrainSnapshot } from '@/services/api'
 import type { SinkSnapshot } from '@/types/engine'
+import { hasDemoHttpSink } from './drainUtils'
 
 interface Props {
     engineId: string | null
@@ -16,18 +17,6 @@ interface Props {
 
 const POLL_INTERVAL_MS = 2000
 const MAX_VISIBLE_RECORDS = 200
-
-/// Heuristic: any HTTP sink whose target host ends in logcraft.demo (or
-/// has been rewritten to our loopback) is one we will (have)
-/// intercepted. Exported so the parent can decide whether to render the
-/// tab at all without instantiating the component.
-export function hasDemoHttpSink(sinks: SinkSnapshot[]): boolean {
-    return sinks.some(
-        (sink) =>
-            sink.type === 'http' &&
-            (sink.target.includes('logcraft.demo') || sink.target.includes('127.0.0.1')),
-    )
-}
 
 function formatBytes(bytes: number): string {
     if (bytes < 1024) return `${bytes} B`
@@ -188,8 +177,8 @@ export default function DrainPanel({ engineId, sinks, onCountsChange }: Props) {
                         <button
                             onClick={() => setShowSearch((v) => !v)}
                             className={`p-1.5 rounded transition-colors ${showSearch || textFilter
-                                    ? 'bg-amber-900/40 text-amber-300 hover:bg-amber-900/60'
-                                    : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
+                                ? 'bg-amber-900/40 text-amber-300 hover:bg-amber-900/60'
+                                : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/50'
                                 }`}
                             title={t.lab.filters}
                         >
@@ -227,8 +216,8 @@ export default function DrainPanel({ engineId, sinks, onCountsChange }: Props) {
                                     type="button"
                                     onClick={() => toggleTarget(target)}
                                     className={`text-[10px] px-2 py-0.5 rounded font-mono border transition-colors ${active
-                                            ? 'bg-amber-500/20 border-amber-500/60 text-amber-200'
-                                            : 'bg-gray-800 border-amber-800/40 text-amber-300 hover:bg-amber-900/20'
+                                        ? 'bg-amber-500/20 border-amber-500/60 text-amber-200'
+                                        : 'bg-gray-800 border-amber-800/40 text-amber-300 hover:bg-amber-900/20'
                                         }`}
                                     title={active ? t.lab.filterClear : target}
                                 >
