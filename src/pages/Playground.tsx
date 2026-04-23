@@ -150,7 +150,7 @@ export default function Lab() {
                 // server already forgot the engine, or the user is
                 // closing the tab) the server's idle reaper handles
                 // the leftover.
-                deleteEngine(id).catch(() => {})
+                deleteEngine(id).catch(() => { })
             }
             // Reset the store regardless so the next mount starts at
             // the scenario picker with no stale snapshot/tail.
