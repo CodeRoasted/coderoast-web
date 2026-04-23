@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Play, Square, Trash2, Zap, Lock } from 'lucide-react'
+import { Play, Square, Zap, Lock } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
 import Tooltip from '@/components/Tooltip'
 import SeedConfirmModal from './SeedConfirmModal'
@@ -11,7 +11,6 @@ interface Props {
     hasEngine: boolean
     onStart: () => void
     onStop: () => void
-    onDestroy: () => void
     onCascade?: () => void
     isSeeded?: boolean
     seedBroken?: boolean
@@ -23,7 +22,6 @@ export default function EngineControls({
     hasEngine,
     onStart,
     onStop,
-    onDestroy,
     onCascade,
     isSeeded = false,
     seedBroken = false,
@@ -33,7 +31,6 @@ export default function EngineControls({
     const tier = useAuthStore((s) => s.tier)
     const canStart = hasPermission(tier, 'command.start_engine')
     const canStop = hasPermission(tier, 'command.stop_engine')
-    const canDestroy = hasPermission(tier, 'command.destroy_engine')
     const canCascade = hasPermission(tier, 'command.evaluate_cascade')
     const [seedPending, setSeedPending] = useState<(() => void) | null>(null)
 
@@ -101,16 +98,6 @@ export default function EngineControls({
                         </button>
                     </Tooltip>
                 )}
-                <Tooltip content={canDestroy ? t.lab.destroy : tierLockMsg('command.destroy_engine')}>
-                    <button
-                        onClick={onDestroy}
-                        disabled={!canDestroy}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700 disabled:hover:text-gray-300"
-                    >
-                        {canDestroy ? <Trash2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                        {t.lab.destroy}
-                    </button>
-                </Tooltip>
             </div>
         </>
     )

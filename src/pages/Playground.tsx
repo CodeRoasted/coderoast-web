@@ -127,10 +127,34 @@ export default function Lab() {
         setSelectedScenarioId,
     ])
 
-    // Cleanup on unmount
+    // Cleanup on unmount: tear down the engine when the operator
+    // leaves the page (SPA navigation, route change, etc.). Without
+    // this the engineId persists in the Zustand store, so coming back
+    // via "Open the lab" would land on the (now stale) dashboard
+    // instead of the scenario picker, and the server would keep
+    // running the engine until the next stop / restart.
+    //
+    // engineId lives in the store and changes over the page's life,
+    // so we mirror the latest value into a ref to read at teardown
+    // without having to re-register the effect on every change.
+    const engineIdRef = useRef<string | null>(engineId)
+    useEffect(() => {
+        engineIdRef.current = engineId
+    }, [engineId])
     useEffect(() => {
         return () => {
+            const id = engineIdRef.current
             engineWs.disconnect()
+            if (id) {
+                // Best-effort — if the request never lands (e.g. the
+                // server already forgot the engine, or the user is
+                // closing the tab) the server's idle reaper handles
+                // the leftover.
+                deleteEngine(id).catch(() => {})
+            }
+            // Reset the store regardless so the next mount starts at
+            // the scenario picker with no stale snapshot/tail.
+            useEngineStore.getState().reset()
         }
     }, [])
 
@@ -219,59 +243,6 @@ export default function Lab() {
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
         }
     }, [scenarioYaml, autoStart, setEngineId, setStatusMessage, connectToEngine, t])
-
-    const handleDestroy = useCallback(async () => {
-        if (!engineId) return
-        // "Stop & reset" means: throw away the current engine's state
-        // (scenario seed, accumulated stats, live tail, drain buffer)
-        // and come back with a fresh engine running the same scenario,
-        // *without* bouncing the operator back to the scenario picker.
-        // The picker is only useful when the operator wants a different
-        // scenario \u2014 the back-arrow at the top still goes there.
-        const yaml = scenarioYaml.trim()
-        try {
-            engineWs.disconnect()
-            await deleteEngine(engineId)
-        } catch (e) {
-            setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
-            // Best-effort: even if the DELETE failed (e.g. the server
-            // has already forgotten the engine), still clear our local
-            // state so we don't keep polling a dead id.
-        }
-        // Clear local state but keep scenarioYaml so we can re-create
-        // immediately. If we have no YAML to re-create with, fall back
-        // to the legacy behaviour of returning to the picker.
-        clearLiveTail()
-        setSnapshot(null)
-        setEngineId(null)
-        if (!yaml) {
-            setStatusMessage(null)
-            return
-        }
-        try {
-            autoStartRef.current = autoStart
-            const { engine_id } = await createEngine(yaml)
-            setEngineId(engine_id)
-            setStatusMessage(autoStart ? t.lab.created : t.lab.emptyEngineHint)
-            connectToEngine(engine_id)
-        } catch (e) {
-            if (e instanceof TierRequiredError) {
-                setTierError(e)
-                return
-            }
-            setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
-        }
-    }, [
-        engineId,
-        scenarioYaml,
-        autoStart,
-        clearLiveTail,
-        setSnapshot,
-        setEngineId,
-        setStatusMessage,
-        connectToEngine,
-        t,
-    ])
 
     const handleStart = useCallback(() => {
         setSeedBroken(false)
@@ -494,7 +465,6 @@ export default function Lab() {
                                     hasEngine={!!engineId}
                                     onStart={handleStart}
                                     onStop={handleStop}
-                                    onDestroy={handleDestroy}
                                     onCascade={handleCascade}
                                     isSeeded={isSeeded}
                                     seedBroken={seedBroken}
