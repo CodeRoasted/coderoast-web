@@ -129,8 +129,8 @@ function TabButton({ active, onClick, icon, label, badge, badgeAccent }: TabButt
         badgeAccent === 'red'
             ? 'bg-red-500/20 text-red-300 border-red-500/40'
             : badgeAccent === 'amber'
-              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-              : 'bg-gray-800 text-gray-400 border-gray-700'
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                : 'bg-gray-800 text-gray-400 border-gray-700'
     return (
         <button
             type="button"

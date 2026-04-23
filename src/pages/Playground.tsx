@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ONBOARDING_COOKIE, getCookie, setCookie } from '@/utils/cookies'
@@ -30,8 +30,12 @@ import ObservationPanel from '@/components/playground/ObservationPanel'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
 import UserSelector from '@/components/UserSelector'
 import TierLockModal from '@/components/playground/TierLockModal'
-import YamlEditor from '@/components/playground/YamlEditor'
 import OnboardingModal from '@/components/playground/OnboardingModal'
+
+// CodeMirror is ~200kB gzipped — only loaded once the user actually
+// reaches the scenario-edit phase. Keeps the initial Playground chunk
+// under the 500 kB warning threshold.
+const YamlEditor = lazy(() => import('@/components/playground/YamlEditor'))
 
 // Cookie key is in @/utils/cookies — exported as ONBOARDING_COOKIE
 const HELLO_WORLD_HINTS = ['hello_world', 'hello-world', 'hello']
@@ -402,17 +406,27 @@ export default function Lab() {
                                 </div>
                             )}
 
-                            <YamlEditor
-                                value={scenarioYaml}
-                                onChange={(next) => {
-                                    setScenarioYaml(next)
-                                    if (validationErrors.length) setValidationErrors([])
-                                    if (unavailableCapabilities.length) setUnavailableCapabilities([])
-                                }}
-                                errors={validationErrors}
-                                placeholder={t.lab.yamlPlaceholder}
-                                minHeight="360px"
-                            />
+                            <Suspense
+                                fallback={
+                                    <div
+                                        className="bg-gray-900 border border-gray-700/50 rounded-lg animate-pulse"
+                                        style={{ minHeight: '360px' }}
+                                    />
+                                }
+                            >
+                                <YamlEditor
+                                    value={scenarioYaml}
+                                    onChange={(next) => {
+                                        setScenarioYaml(next)
+                                        if (validationErrors.length) setValidationErrors([])
+                                        if (unavailableCapabilities.length)
+                                            setUnavailableCapabilities([])
+                                    }}
+                                    errors={validationErrors}
+                                    placeholder={t.lab.yamlPlaceholder}
+                                    minHeight="360px"
+                                />
+                            </Suspense>
                         </div>
                     </div>
                 ) : (
