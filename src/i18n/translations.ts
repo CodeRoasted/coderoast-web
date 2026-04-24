@@ -202,10 +202,10 @@ const translations = {
             ],
         },
         maker: {
-            title: 'Built by one engineer, in the open.',
+            title: 'Built by one engineer.',
             body:
-                'I\'m Manu. I\'ve spent enough time hand-rolling fake log generators in shell scripts to want a real one. LogCraft is what I wish I had — a deterministic, scenario-driven engine you can point at any pipeline. It\'s free to try in the Lab, the source is on GitHub, and I take feedback seriously.',
-            ctaCode: 'Source on GitHub',
+                'I\'m Manu. I\'ve spent enough time hand-rolling fake log generators in shell scripts to want a real one. LogCraft is what I wish I had — a deterministic, scenario-driven engine you can point at any pipeline. It\'s free to try in the Lab, the scenario library is open on GitHub, and I take feedback seriously.',
+            ctaCode: 'Scenario library on GitHub',
             ctaContact: 'Get in touch',
             ctaSupport: 'Support the build',
             supportNote: 'A small thank-you keeps the late-night commits coming.',
@@ -474,6 +474,7 @@ const translations = {
             title: 'Lab',
             simulatedBadge: 'SIMULATED · 100% synthetic data',
             backToLogCraft: 'Back to LogCraft',
+            backToScenarios: 'Back to scenarios',
             live: 'Live',
             selectScenario: 'Pick a scenario',
             selectScenarioDesc:
@@ -862,10 +863,10 @@ const translations = {
             ],
         },
         maker: {
-            title: 'Construit par un seul ingé, en open source.',
+            title: 'Construit par un seul ingé.',
             body:
-                'Je m\'appelle Manu. J\'ai passé assez de temps à bricoler des générateurs de logs en shell pour avoir envie d\'un vrai. LogCraft, c\'est ce que j\'aurais voulu avoir — un moteur déterministe, scriptable en YAML, à brancher devant n\'importe quel pipeline. Gratuit dans le Lab, source sur GitHub, retours sérieusement écoutés.',
-            ctaCode: 'Source sur GitHub',
+                'Je m\'appelle Manu. J\'ai passé assez de temps à bricoler des générateurs de logs en shell pour avoir envie d\'un vrai. LogCraft, c\'est ce que j\'aurais voulu avoir — un moteur déterministe, scriptable en YAML, à brancher devant n\'importe quel pipeline. Gratuit dans le Lab, la bibliothèque de scénarios est ouverte sur GitHub, retours sérieusement écoutés.',
+            ctaCode: 'Bibliothèque de scénarios (GitHub)',
             ctaContact: 'Me contacter',
             ctaSupport: 'Soutenir le projet',
             supportNote: 'Un petit merci aide à garder les commits du soir.',
@@ -1134,6 +1135,7 @@ const translations = {
             title: 'Lab',
             simulatedBadge: 'SIMULÉ · 100% données synthétiques',
             backToLogCraft: 'Retour à LogCraft',
+            backToScenarios: 'Retour aux scénarios',
             live: 'En direct',
             selectScenario: 'Choisissez un scénario',
             selectScenarioDesc:

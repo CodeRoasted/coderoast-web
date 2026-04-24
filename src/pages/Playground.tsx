@@ -265,6 +265,25 @@ export default function Lab() {
         engineWs.sendCommand({ type: 'burst', agent: name, count })
     }, [])
 
+    // "Back to scenarios" from inside the engine view: tear down the
+    // current engine (mirrors the unmount cleanup in the SPA-leave
+    // effect) and reset store state so the picker phase renders again
+    // without stale snapshot/tail. Stays on the /lab route — no
+    // navigation, just a state reset.
+    const handleBackToScenarios = useCallback(() => {
+        const id = engineId
+        engineWs.disconnect()
+        if (id) {
+            deleteEngine(id).catch(() => {
+                // Best-effort: idle reaper picks up leftovers.
+            })
+        }
+        useEngineStore.getState().reset()
+        setValidationErrors([])
+        setUnavailableCapabilities([])
+        setStatusMessage(null)
+    }, [engineId, setStatusMessage])
+
     const isRunning = snapshot?.state === 'running'
     const isSeeded = snapshot?.has_seed ?? false
     const hasYaml = scenarioYaml.trim().length > 0
@@ -280,13 +299,24 @@ export default function Lab() {
             <div className="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-lg border-b border-gray-700/50">
                 <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0">
-                        <Link
-                            to="/logcraft"
-                            className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            <span className="hidden sm:inline">{t.lab.backToLogCraft}</span>
-                        </Link>
+                        {engineId ? (
+                            <button
+                                type="button"
+                                onClick={handleBackToScenarios}
+                                className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span className="hidden sm:inline">{t.lab.backToScenarios}</span>
+                            </button>
+                        ) : (
+                            <Link
+                                to="/logcraft"
+                                className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span className="hidden sm:inline">{t.lab.backToLogCraft}</span>
+                            </Link>
+                        )}
                         <div className="h-5 w-px bg-gray-700 hidden sm:block" />
                         <h1 className="font-display font-bold text-lg flex items-center gap-2 min-w-0">
                             <FlaskConical className="w-4 h-4 text-brand-500 shrink-0" />
