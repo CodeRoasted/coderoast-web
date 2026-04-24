@@ -44,26 +44,31 @@ export default function UserSelector() {
                 })
                 setUsers(sorted)
 
-                // Auto-pick the admin demo user on first visit so the
-                // operator can hit "Run" immediately without a login dance.
-                // We only do it when nothing was previously selected and no
-                // bearer token is in flight — returning visitors keep their
-                // explicit choice (including "Anonymous").
-                const { selectedUserId: persisted, token } = useAuthStore.getState()
-                if (persisted === null && !token && sorted.length > 0) {
-                    // Prefer the "admin" account; fall back to highest-tier if absent.
-                    const defaultUser =
-                        sorted.find((u) => u.id === 'admin') ?? sorted[sorted.length - 1]
-                    if (defaultUser) {
-                        login(defaultUser.id)
-                            .then(({ token: t2, user: principal }) => {
-                                setAuth(t2, principal, defaultUser.tier)
-                                setSelectedUserId(defaultUser.id)
-                            })
-                            .catch(() => {
-                                // Non-fatal: user can still pick manually.
-                            })
-                    }
+                // Auto-pick the admin demo user so the operator can hit "Run"
+                // immediately. We skip only if the user has explicitly chosen
+                // a non-default identity AND we're already authenticated as
+                // that identity. "free_demo" was the old auto-pick default —
+                // treat it as no explicit selection so this migration is
+                // transparent to existing visitors.
+                const { selectedUserId: persisted, token, user: currentUser } = useAuthStore.getState()
+                const hasExplicitSelection = persisted !== null && persisted !== 'free_demo'
+                const defaultUser =
+                    sorted.find((u) => u.id === 'admin') ?? sorted[sorted.length - 1]
+                if (!hasExplicitSelection && defaultUser && (currentUser?.id !== defaultUser.id || !token)) {
+                    // Clear stale free_demo entry before switching.
+                    if (persisted !== null) setSelectedUserId(null)
+                    login(defaultUser.id)
+                        .then(({ token: t2, user: principal }) => {
+                            // setAuth without setSelectedUserId — the auto-pick
+                            // is not an explicit choice, so we leave
+                            // selectedUserId as null. The dropdown derives the
+                            // displayed value from user?.id as the fallback,
+                            // and explicit handleChange calls persist the choice.
+                            setAuth(t2, principal, defaultUser.tier)
+                        })
+                        .catch(() => {
+                            // Non-fatal: user can still pick manually.
+                        })
                 }
             })
             .catch((err) => setError(err instanceof Error ? err.message : String(err)))
