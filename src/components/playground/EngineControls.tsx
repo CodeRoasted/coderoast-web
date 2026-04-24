@@ -9,6 +9,7 @@ import { hasPermission, requiredTierName } from '@/utils/permissions'
 interface Props {
     isRunning: boolean
     hasEngine: boolean
+    hasCascade?: boolean
     onStart: () => void
     onStop: () => void
     onCascade?: () => void
@@ -20,6 +21,7 @@ interface Props {
 export default function EngineControls({
     isRunning,
     hasEngine,
+    hasCascade = false,
     onStart,
     onStop,
     onCascade,
@@ -84,7 +86,7 @@ export default function EngineControls({
                         </button>
                     </Tooltip>
                 )}
-                {isRunning && onCascade && (
+                {isRunning && onCascade && hasCascade && (
                     <Tooltip
                         content={canCascade ? t.lab.cascadeTip : tierLockMsg('command.evaluate_cascade')}
                     >

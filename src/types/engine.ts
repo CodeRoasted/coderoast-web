@@ -49,6 +49,7 @@ export interface EngineSnapshot {
     seed: number
     has_seed: boolean
     replay_mode: boolean
+    has_cascade: boolean
     elapsed_seconds: number
     remaining_seconds: number
     state: string

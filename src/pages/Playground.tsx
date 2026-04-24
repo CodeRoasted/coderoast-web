@@ -493,6 +493,7 @@ export default function Lab() {
                                 <EngineControls
                                     isRunning={isRunning}
                                     hasEngine={!!engineId}
+                                    hasCascade={snapshot?.has_cascade ?? false}
                                     onStart={handleStart}
                                     onStop={handleStop}
                                     onCascade={handleCascade}
