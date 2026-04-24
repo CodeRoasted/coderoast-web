@@ -44,19 +44,21 @@ export default function UserSelector() {
                 })
                 setUsers(sorted)
 
-                // Auto-pick the lowest-tier demo user on first visit so the
+                // Auto-pick the admin demo user on first visit so the
                 // operator can hit "Run" immediately without a login dance.
                 // We only do it when nothing was previously selected and no
                 // bearer token is in flight — returning visitors keep their
                 // explicit choice (including "Anonymous").
                 const { selectedUserId: persisted, token } = useAuthStore.getState()
                 if (persisted === null && !token && sorted.length > 0) {
-                    const free = sorted[0]
-                    if (free) {
-                        login(free.id)
+                    // Prefer the "admin" account; fall back to highest-tier if absent.
+                    const defaultUser =
+                        sorted.find((u) => u.id === 'admin') ?? sorted[sorted.length - 1]
+                    if (defaultUser) {
+                        login(defaultUser.id)
                             .then(({ token: t2, user: principal }) => {
-                                setAuth(t2, principal, free.tier)
-                                setSelectedUserId(free.id)
+                                setAuth(t2, principal, defaultUser.tier)
+                                setSelectedUserId(defaultUser.id)
                             })
                             .catch(() => {
                                 // Non-fatal: user can still pick manually.

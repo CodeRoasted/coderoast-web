@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Lock, X, ArrowRight, AlertCircle } from 'lucide-react'
+import { Lock, X, ArrowRight, AlertCircle, UserCheck } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
+import { login, listUsers } from '@/services/api'
+import { useAuthStore } from '@/store/useAuthStore'
 import type { TierRequiredError } from '@/services/api'
 
 interface Props {
@@ -21,10 +24,26 @@ interface Props {
  */
 export default function TierLockModal({ error, onClose }: Props) {
     const t = useTranslation()
+    const setAuth = useAuthStore((s) => s.setAuth)
+    const setSelectedUserId = useAuthStore((s) => s.setSelectedUserId)
+    const [switching, setSwitching] = useState(false)
     const isDisabled = error?.requiredTier?.name === 'disabled'
     const required = error?.requiredTier?.name ?? '—'
     const current = error?.userTier?.name ?? error?.userId ?? 'anonymous'
     const permission = error?.permission ?? '—'
+
+    const handleSwitchToAdmin = async () => {
+        setSwitching(true)
+        try {
+            const [{ users }, { token, user }] = await Promise.all([listUsers(), login('admin')])
+            const adminUser = users.find((u) => u.id === 'admin')
+            setAuth(token, user, adminUser?.tier ?? null)
+            setSelectedUserId('admin')
+            onClose()
+        } finally {
+            setSwitching(false)
+        }
+    }
 
     return (
         <AnimatePresence>
@@ -69,10 +88,20 @@ export default function TierLockModal({ error, onClose }: Props) {
 
                         <div className="flex flex-col sm:flex-row gap-2">
                             {!isDisabled && (
+                                <button
+                                    onClick={handleSwitchToAdmin}
+                                    disabled={switching}
+                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-white text-sm font-semibold transition-colors"
+                                >
+                                    <UserCheck className="w-3.5 h-3.5" />
+                                    {t.auth.tierLockSwitch}
+                                </button>
+                            )}
+                            {!isDisabled && (
                                 <Link
                                     to="/tiers"
                                     onClick={onClose}
-                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
+                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-semibold transition-colors"
                                 >
                                     {t.auth.tierLockSeePlans}
                                     <ArrowRight className="w-3.5 h-3.5" />
