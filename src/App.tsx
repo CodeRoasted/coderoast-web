@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Home from '@/pages/Home'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import { useAuthStore } from '@/store/useAuthStore'
 import { login, whoami } from '@/services/api'
 
@@ -157,6 +158,7 @@ export default function App() {
         <BrowserRouter>
             <div className="min-h-screen bg-gray-950 text-gray-100">
                 <HashScrollManager />
+                <ErrorBoundary>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route
@@ -225,6 +227,7 @@ export default function App() {
                         }
                     />
                 </Routes>
+                </ErrorBoundary>
             </div>
         </BrowserRouter>
     )

@@ -10,8 +10,10 @@ function renderWithRouter(ui: React.ReactElement, { route = '/' } = {}) {
 describe('Navbar', () => {
     it('renders the product anchor links', () => {
         renderWithRouter(<Navbar />)
+        // Three same-page anchors are rendered: product / how / features.
         expect(screen.getAllByText('Product').length).toBeGreaterThan(0)
-        expect(screen.getAllByText('Pricing').length).toBeGreaterThan(0)
+        expect(screen.getAllByText('How').length).toBeGreaterThan(0)
+        expect(screen.getAllByText('Features').length).toBeGreaterThan(0)
     })
 
     it('renders LogCraft and Open Lab links', () => {

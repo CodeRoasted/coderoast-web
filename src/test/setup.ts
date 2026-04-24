@@ -6,17 +6,18 @@ import '@testing-library/jest-dom'
 // surfaces don't crash. The mock never reports intersections — that's
 // fine because tests assert on the rendered DOM, not on viewport
 // triggers.
-class MockIntersectionObserver {
-    observe() { }
-    unobserve() { }
-    disconnect() { }
+class MockIntersectionObserver implements IntersectionObserver {
+    readonly root = null
+    readonly rootMargin = ''
+    readonly thresholds: ReadonlyArray<number> = []
+    observe(): void { }
+    unobserve(): void { }
+    disconnect(): void { }
     takeRecords(): IntersectionObserverEntry[] {
         return []
     }
-    root = null
-    rootMargin = ''
-    thresholds: ReadonlyArray<number> = []
 }
-; (globalThis as unknown as { IntersectionObserver: typeof MockIntersectionObserver }).IntersectionObserver =
-    MockIntersectionObserver
+
+globalThis.IntersectionObserver =
+    MockIntersectionObserver as unknown as typeof IntersectionObserver
 

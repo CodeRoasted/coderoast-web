@@ -27,6 +27,7 @@ export default function TierLockModal({ error, onClose }: Props) {
     const setAuth = useAuthStore((s) => s.setAuth)
     const setSelectedUserId = useAuthStore((s) => s.setSelectedUserId)
     const [switching, setSwitching] = useState(false)
+    const [switchError, setSwitchError] = useState<string | null>(null)
     const isDisabled = error?.requiredTier?.name === 'disabled'
     const required = error?.requiredTier?.name ?? '—'
     const current = error?.userTier?.name ?? error?.userId ?? 'anonymous'
@@ -34,12 +35,17 @@ export default function TierLockModal({ error, onClose }: Props) {
 
     const handleSwitchToAdmin = async () => {
         setSwitching(true)
+        setSwitchError(null)
         try {
             const [{ users }, { token, user }] = await Promise.all([listUsers(), login('admin')])
             const adminUser = users.find((u) => u.id === 'admin')
             setAuth(token, user, adminUser?.tier ?? null)
             setSelectedUserId('admin')
             onClose()
+        } catch (err) {
+            // Surface a friendly message instead of leaving the user stuck
+            // with a spinning button when the demo backend is unreachable.
+            setSwitchError(err instanceof Error ? err.message : String(err))
         } finally {
             setSwitching(false)
         }
@@ -86,6 +92,14 @@ export default function TierLockModal({ error, onClose }: Props) {
                                     .replace('{current}', current)}
                         </p>
 
+                        {switchError && (
+                            <p
+                                role="alert"
+                                className="text-xs text-red-400 bg-red-950/40 border border-red-800/40 rounded-md px-2 py-1.5 mb-3"
+                            >
+                                {switchError}
+                            </p>
+                        )}
                         <div className="flex flex-col sm:flex-row gap-2">
                             {!isDisabled && (
                                 <button

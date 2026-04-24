@@ -15,17 +15,27 @@ export class EngineWebSocket {
     private reconnectTimer: ReturnType<typeof setTimeout> | null = null
     private engineId: string | null = null
     private shouldReconnect = false
+    private reconnectAttempt = 0
+
+    /**
+     * Backoff schedule for reconnect (ms). After the last entry we keep
+     * retrying at the cap so a backend that comes back hours later still
+     * recovers without manual reload.
+     */
+    private static readonly kBackoffSchedule = [1000, 2000, 4000, 8000, 15000]
 
     connect(engineId: string, handlers: WsMessageHandler) {
         this.disconnect()
         this.engineId = engineId
         this.handlers = handlers
         this.shouldReconnect = true
+        this.reconnectAttempt = 0
         this.doConnect()
     }
 
     disconnect() {
         this.shouldReconnect = false
+        this.reconnectAttempt = 0
         if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer)
             this.reconnectTimer = null
@@ -45,6 +55,13 @@ export class EngineWebSocket {
 
     get connected(): boolean {
         return this.ws?.readyState === WebSocket.OPEN
+    }
+
+    private nextBackoffMs(): number {
+        const schedule = EngineWebSocket.kBackoffSchedule
+        const idx = Math.min(this.reconnectAttempt, schedule.length - 1)
+        // schedule is non-empty and idx is clamped, so this is always defined.
+        return schedule[idx] ?? schedule[schedule.length - 1] ?? 1000
     }
 
     private doConnect() {
@@ -85,12 +102,17 @@ export class EngineWebSocket {
                 const msg = JSON.parse(event.data)
                 switch (msg.type) {
                     case 'snapshot':
+                        // First snapshot after reconnect = healthy session,
+                        // reset backoff so the next disconnect doesn't keep
+                        // climbing forever.
+                        this.reconnectAttempt = 0
                         this.handlers.onSnapshot?.(msg.data as EngineSnapshot)
                         break
                     case 'result':
                         this.handlers.onResult?.(msg.success, msg.message)
                         break
                     case 'connected':
+                        this.reconnectAttempt = 0
                         this.handlers.onConnected?.(msg.engine_id)
                         break
                     case 'error':
@@ -105,7 +127,9 @@ export class EngineWebSocket {
         this.ws.onclose = () => {
             this.handlers.onClose?.()
             if (this.shouldReconnect) {
-                this.reconnectTimer = setTimeout(() => this.doConnect(), 2000)
+                const delay = this.nextBackoffMs()
+                this.reconnectAttempt += 1
+                this.reconnectTimer = setTimeout(() => this.doConnect(), delay)
             }
         }
 

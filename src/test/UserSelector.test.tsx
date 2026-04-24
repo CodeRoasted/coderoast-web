@@ -31,6 +31,12 @@ const userEnt = {
     role: 'enterprise',
     tier: { name: 'enterprise', level: 3, description: '' },
 }
+const userAdmin = {
+    id: 'admin',
+    name: 'Admin',
+    role: 'admin',
+    tier: { name: 'enterprise', level: 3, description: '' },
+}
 
 describe('UserSelector', () => {
     beforeEach(() => {
@@ -55,7 +61,7 @@ describe('UserSelector', () => {
             users: [userPro, userEnt, userFree],
         })
         // Force an in-flight token so the auto-login does NOT fire and
-        // change the dropdown's `value` away from anonymous.
+        // change the dropdown's `value` away from the default.
         useAuthStore.setState({ token: 'preset', user: { id: 'x', name: 'x' } })
 
         render(<UserSelector />)
@@ -66,26 +72,26 @@ describe('UserSelector', () => {
         const options = Array.from(
             screen.getByRole('combobox').querySelectorAll('option'),
         ) as HTMLOptionElement[]
-        // First option is the anonymous sentinel; demo users start at index 1.
-        const demoOrder = options.slice(1).map((o) => o.value)
-        expect(demoOrder).toEqual(['free_demo', 'pro_demo', 'ent_demo'])
+        const order = options.map((o) => o.value)
+        expect(order).toEqual(['free_demo', 'pro_demo', 'ent_demo'])
     })
 
-    it('auto-logs in the lowest-tier demo user on first visit', async () => {
-        mockedListUsers.mockResolvedValue({ users: [userPro, userFree] })
+    it('auto-logs in as admin demo user on first visit', async () => {
+        mockedListUsers.mockResolvedValue({
+            users: [userPro, userFree, userAdmin],
+        })
         mockedLogin.mockResolvedValue({
-            token: 'free-token',
-            user: { id: 'free_demo', name: 'Free Demo' },
+            token: 'admin-token',
+            user: { id: 'admin', name: 'Admin' },
         })
 
         render(<UserSelector />)
 
         await waitFor(() => {
-            expect(mockedLogin).toHaveBeenCalledWith('free_demo')
+            expect(mockedLogin).toHaveBeenCalledWith('admin')
         })
         await waitFor(() => {
-            expect(useAuthStore.getState().token).toBe('free-token')
-            expect(useAuthStore.getState().selectedUserId).toBe('free_demo')
+            expect(useAuthStore.getState().token).toBe('admin-token')
         })
     })
 

@@ -101,11 +101,42 @@ function parseTier(value: unknown): TierInfo | null {
     return { name: record.name, level: record.level }
 }
 
+/**
+ * Default timeout (ms) applied to every request that does not pass its own
+ * AbortSignal. Picked generously — the slowest endpoint in the wild is
+ * scenario validation, which has been observed at ~3s under load.
+ */
+export const DEFAULT_REQUEST_TIMEOUT_MS = 15000
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
-    const resp = await fetch(`${API_BASE}${url}`, {
-        headers: authHeaders(),
-        ...options,
-    })
+    // Honour a caller-provided signal when present; otherwise install our
+    // own timeout so a hung backend can never freeze the UI indefinitely.
+    let timer: ReturnType<typeof setTimeout> | null = null
+    let signal = options?.signal ?? null
+    if (!signal && typeof AbortController !== 'undefined') {
+        const controller = new AbortController()
+        timer = setTimeout(() => controller.abort(), DEFAULT_REQUEST_TIMEOUT_MS)
+        signal = controller.signal
+    }
+
+    let resp: Response
+    try {
+        resp = await fetch(`${API_BASE}${url}`, {
+            headers: authHeaders(),
+            ...options,
+            signal: signal ?? undefined,
+        })
+    } catch (err) {
+        if (timer !== null) clearTimeout(timer)
+        // Re-shape AbortError so callers see a deterministic message
+        // instead of the cryptic "The operation was aborted" string.
+        if (err instanceof DOMException && err.name === 'AbortError') {
+            throw new Error(`Request to ${url} timed out`)
+        }
+        throw err
+    }
+    if (timer !== null) clearTimeout(timer)
+
     if (!resp.ok) {
         const body = await resp.json().catch(() => ({}))
         if (resp.status === 403) {
