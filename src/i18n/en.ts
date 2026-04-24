@@ -13,7 +13,7 @@ const en = {
         contact: 'Contact',
     },
     hero: {
-        badge: 'C++20 engine · Browser Lab · Self-hosted ready',
+        badge: 'Performant engine · Zero-install Lab · 20+ output formats',
         tagline: 'Realistic synthetic logs. On demand.',
         subtitle:
             'LogCraft generates production-shaped log streams from a YAML scenario — cascading failures, latency tails, scheduled incidents, twenty-plus output formats. Test your pipeline before production does.',

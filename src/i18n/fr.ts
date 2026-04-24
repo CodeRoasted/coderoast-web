@@ -15,7 +15,7 @@ const fr: typeof en = {
         contact: 'Contact',
     },
     hero: {
-        badge: 'Moteur C++20 · Lab navigateur · Self-hosted',
+        badge: 'Moteur performant · Lab sans installation · 20+ formats de sortie',
         tagline: 'Des logs synthétiques réalistes. À la demande.',
         subtitle:
             'LogCraft génère des flux de logs aux formes de production à partir d\'un scénario YAML — cascades de pannes, queues de latence, incidents planifiés, plus de vingt formats de sortie. Stressez votre pipeline avant que la prod ne le fasse.',
