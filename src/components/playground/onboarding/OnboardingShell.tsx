@@ -60,9 +60,8 @@ export default function OnboardingShell({
                             {Array.from({ length: totalSteps }, (_, i) => i + 1).map((n) => (
                                 <span
                                     key={n}
-                                    className={`h-1.5 flex-1 rounded-full transition-colors ${
-                                        step >= n ? 'bg-brand-500' : 'bg-gray-800'
-                                    }`}
+                                    className={`h-1.5 flex-1 rounded-full transition-colors ${step >= n ? 'bg-brand-500' : 'bg-gray-800'
+                                        }`}
                                 />
                             ))}
                         </div>

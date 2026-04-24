@@ -59,11 +59,10 @@ export default function StepComplexity({
                         <button
                             key={opt.id}
                             onClick={() => onSelect(opt.id)}
-                            className={`w-full text-left p-4 rounded-xl border transition-all ${
-                                isSelected
+                            className={`w-full text-left p-4 rounded-xl border transition-all ${isSelected
                                     ? 'border-brand-500 bg-brand-500/10'
                                     : 'border-gray-700/60 bg-gray-800/40 hover:border-gray-600 hover:bg-gray-800/70'
-                            }`}
+                                }`}
                         >
                             <div className="flex items-center justify-between gap-3">
                                 <div className="min-w-0">

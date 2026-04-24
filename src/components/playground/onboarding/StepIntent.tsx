@@ -60,19 +60,17 @@ export default function StepIntent({ titleId, selected, onSelect, onSkip, onNext
                         <button
                             key={opt.id}
                             onClick={() => onSelect(opt.id)}
-                            className={`text-left p-4 rounded-xl border transition-all ${
-                                isSelected
+                            className={`text-left p-4 rounded-xl border transition-all ${isSelected
                                     ? 'border-brand-500 bg-brand-500/10'
                                     : 'border-gray-700/60 bg-gray-800/40 hover:border-gray-600 hover:bg-gray-800/70'
-                            }`}
+                                }`}
                         >
                             <div className="flex items-start gap-3">
                                 <div
-                                    className={`inline-flex p-2 rounded-lg ${
-                                        isSelected
+                                    className={`inline-flex p-2 rounded-lg ${isSelected
                                             ? 'bg-brand-600 text-white'
                                             : 'bg-gray-800 text-brand-400'
-                                    }`}
+                                        }`}
                                 >
                                     {opt.icon}
                                 </div>
