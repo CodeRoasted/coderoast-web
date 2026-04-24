@@ -1,0 +1,121 @@
+import { AlertCircle } from 'lucide-react'
+import EngineControls from '@/components/playground/EngineControls'
+import EngineHeader from '@/components/playground/EngineHeader'
+import AgentGrid from '@/components/playground/AgentGrid'
+import SinkGrid from '@/components/playground/SinkGrid'
+import ObservationPanel from '@/components/playground/ObservationPanel'
+import ScenarioPanel from '@/components/playground/ScenarioPanel'
+import type { EngineSnapshot, LogTailEntry } from '@/types/engine'
+import { useTranslation } from '@/hooks/useTranslation'
+
+interface Props {
+    engineId: string
+    snapshot: EngineSnapshot | null
+    scenarioYaml: string
+    liveTail: LogTailEntry[]
+    clearLiveTail: () => void
+    agentNames: string[]
+    isRunning: boolean
+    isSeeded: boolean
+    seedBroken: boolean
+    runKey: number
+    onSeedBreachConfirm: () => void
+    onStart: () => void
+    onStop: () => void
+    onCascade: () => void
+    onSetRate: (name: string, rps: number) => void
+    onSetErrorRate: (name: string, rate: number) => void
+    onBurst: (name: string, count: number) => void
+}
+
+/**
+ * Phase 2 of the Lab — live dashboard once an engine is attached.
+ *
+ * 3-zone workspace built so the operator can keep an eye on log tail +
+ * incidents while controlling agents/sinks:
+ *   Zone A (sticky top): EngineHeader + EngineControls — controls (incl.
+ *                        Cascade) stay one click away while scrolling.
+ *   Zone B (main, xl:col-span-2): collapsible scenario panel, AgentGrid,
+ *                        SinkGrid.
+ *   Zone C (sticky side, xl:col-span-1): ObservationPanel (Logs /
+ *                        Incidents / Drain). On <xl viewports this
+ *                        collapses below B.
+ */
+export default function LabDashboardView({
+    engineId,
+    snapshot,
+    scenarioYaml,
+    liveTail,
+    clearLiveTail,
+    agentNames,
+    isRunning,
+    isSeeded,
+    seedBroken,
+    runKey,
+    onSeedBreachConfirm,
+    onStart,
+    onStop,
+    onCascade,
+    onSetRate,
+    onSetErrorRate,
+    onBurst,
+}: Props) {
+    const t = useTranslation()
+    return (
+        <div className="space-y-4">
+            {/* Zone A — sticky control bar */}
+            <div className="sticky top-14 z-30 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 bg-gray-950/85 backdrop-blur-md border-b border-gray-800/60">
+                <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center justify-between">
+                    <EngineHeader snapshot={snapshot} engineId={engineId} />
+                    <EngineControls
+                        isRunning={isRunning}
+                        hasEngine
+                        hasCascade={snapshot?.has_cascade ?? false}
+                        onStart={onStart}
+                        onStop={onStop}
+                        onCascade={onCascade}
+                        isSeeded={isSeeded}
+                        seedBroken={seedBroken}
+                        onSeedBreachConfirm={onSeedBreachConfirm}
+                    />
+                </div>
+                {!isRunning && (
+                    <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        {t.lab.emptyEngineHint}
+                    </div>
+                )}
+            </div>
+
+            {/* Main split: Zone B (left) + Zone C (right sticky side panel) */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+                {/* Zone B — agents, sinks, scenario */}
+                <div className="xl:col-span-2 space-y-4 min-w-0">
+                    {scenarioYaml && <ScenarioPanel yaml={scenarioYaml} engineId={engineId} />}
+                    <AgentGrid
+                        agents={snapshot?.agents ?? []}
+                        onSetRate={isRunning ? onSetRate : undefined}
+                        onSetErrorRate={isRunning ? onSetErrorRate : undefined}
+                        onBurst={isRunning ? onBurst : undefined}
+                        isSeeded={isSeeded}
+                        seedBroken={seedBroken}
+                        onSeedBreachConfirm={onSeedBreachConfirm}
+                        runKey={runKey}
+                    />
+                    <SinkGrid sinks={snapshot?.sinks ?? []} />
+                </div>
+
+                {/* Zone C — sticky right column for live observation. */}
+                <div className="xl:col-span-1 xl:sticky xl:top-[10.5rem] xl:h-[calc(100vh-12rem)] flex flex-col min-w-0">
+                    <ObservationPanel
+                        engineId={engineId}
+                        snapshot={snapshot}
+                        liveTail={liveTail}
+                        clearLiveTail={clearLiveTail}
+                        agentNames={agentNames}
+                    />
+                </div>
+            </div>
+        </div>
+    )
+}
