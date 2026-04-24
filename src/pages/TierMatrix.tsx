@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield } from 'lucide-react'
+import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle } from 'lucide-react'
 import { getFeatureMatrix, type FeatureMatrix, type PermissionInfo, type TierInfo } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
+import Tooltip from '@/components/Tooltip'
 
 type GroupedPermissions = Array<{ category: string; items: PermissionInfo[] }>
 
@@ -139,12 +140,28 @@ export default function TierMatrix() {
                                                 className="border-t border-gray-800/70 hover:bg-gray-900/80"
                                             >
                                                 <td className="px-4 py-2 font-mono text-xs text-gray-200">
-                                                    {perm.key}
-                                                    {perm.required_tier.name === 'disabled' && (
-                                                        <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-red-900/30 text-red-400 border border-red-800">
-                                                            {t.tiers.disabled}
-                                                        </span>
-                                                    )}
+                                                    <span className="inline-flex items-center gap-1.5">
+                                                        <span>{perm.key}</span>
+                                                        {perm.description && (
+                                                            <Tooltip
+                                                                content={
+                                                                    <span className="block max-w-xs text-xs leading-snug">
+                                                                        {perm.description}
+                                                                    </span>
+                                                                }
+                                                            >
+                                                                <HelpCircle
+                                                                    className="w-3.5 h-3.5 text-gray-500 hover:text-brand-400 transition-colors cursor-help"
+                                                                    aria-label={perm.description}
+                                                                />
+                                                            </Tooltip>
+                                                        )}
+                                                        {perm.required_tier.name === 'disabled' && (
+                                                            <span className="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-red-900/30 text-red-400 border border-red-800">
+                                                                {t.tiers.disabled}
+                                                            </span>
+                                                        )}
+                                                    </span>
                                                 </td>
                                                 {displayTiers.map((tier) => {
                                                     const allowed =

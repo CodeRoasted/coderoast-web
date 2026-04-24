@@ -41,6 +41,7 @@ export interface PermissionInfo {
     key: string
     category: string
     required_tier: TierInfo
+    description: string
 }
 
 export interface FeatureMatrix {
