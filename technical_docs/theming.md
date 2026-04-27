@@ -1,57 +1,85 @@
-# Theming
+# CodeRoastWeb Theming
 
-## System
+CodeRoastWeb is dark-first in practice. Tailwind still uses `darkMode: 'class'`, but `App` forces the `dark` class on `<html>` and `toggleTheme` is a no-op. Treat light mode as removed unless it is explicitly reintroduced as product work.
 
-Dark/light mode is controlled via the `'class'` strategy in Tailwind (`darkMode: 'class'` in `tailwind.config.ts`).  
-When `theme === 'dark'`, Zustand's `toggleTheme` adds the `dark` class to `<html>`. Tailwind then applies all `dark:` variants.
+## Theme Runtime
 
-Initial theme is detected from `window.matchMedia('(prefers-color-scheme: dark)')` on first load.
+```text
+App mount -> document.documentElement.classList.add('dark')
+Tailwind -> dark: variants active
+useStore.theme -> currently 'dark' placeholder
+```
+
+`src/index.css` still defines body light/dark base classes because Tailwind's class strategy remains enabled. Components should assume the shipped surface is dark.
 
 ## Brand Palette
 
-Defined in `tailwind.config.ts` as a custom `brand` color scale:
+The `brand` scale lives in `tailwind.config.ts`.
 
-| Token | Hex | Usage |
+| Token | Hex | Typical use |
 |---|---|---|
-| `brand-400` | `#fab63c` | Hover accents, dark mode highlights |
-| `brand-500` | `#f9a825` | Primary brand color, buttons, gradients |
-| `brand-600` | `#f57f17` | Text links, active states |
-| `brand-700` | `#ef6c00` | Logo gradient end, dark shadows |
+| `brand-50` | `#fef3e2` | Rare light accents, not common in shipped dark UI. |
+| `brand-100` | `#fde4b9` | Soft light accent. |
+| `brand-200` | `#fcd48c` | Soft highlight. |
+| `brand-300` | `#fbc35e` | Hover text on dark backgrounds. |
+| `brand-400` | `#fab63c` | Accent icons, active states. |
+| `brand-500` | `#f9a825` | Primary brand color and gradients. |
+| `brand-600` | `#f57f17` | Primary buttons. |
+| `brand-700` | `#ef6c00` | Darker gradient stop. |
+| `brand-800` | `#e65100` | Deep accent. |
+| `brand-900` | `#bf360c` | Dark accent panels. |
 
-Use these via Tailwind classes: `bg-brand-500`, `text-brand-600`, `border-brand-400`, etc.
+Use brand sparingly against the gray shell. Most surfaces use `gray-950`, `gray-900`, `gray-800`, and `gray-700` with brand accents for calls to action and important state.
 
-## Adding a New Color
+## Typography
 
-```ts
-// tailwind.config.ts → theme.extend.colors
-myColor: {
-  500: '#your-hex',
-  ...
-}
-```
+| Token | Stack | Use |
+|---|---|---|
+| `font-sans` | Inter, system-ui, sans-serif | Body text and dense UI. |
+| `font-display` | Space Grotesk, system-ui, sans-serif | Headings, product names, major labels. |
 
-## Dark Mode in Components
+Keep dashboard and Lab text compact. Reserve large display type for marketing sections and product pages.
 
-Always pair light and dark variants:
+## Motion
 
-```tsx
-// Good
-className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-
-// Bad — light mode only
-className="bg-white text-gray-900"
-```
-
-The `transition-colors duration-300` class on the root `<div>` in `App.tsx` smooths all theme switches without needing per-component transitions.
-
-## Custom Animations
-
-Three custom keyframe animations are registered in `tailwind.config.ts`:
+Tailwind custom animations:
 
 | Class | Effect |
 |---|---|
-| `animate-float` | Gentle vertical bob (6 s loop) |
-| `animate-glow` | Pulsing box-shadow in brand color |
-| `animate-slide-up` | One-shot slide-up entrance |
+| `animate-float` | Slow vertical float. |
+| `animate-glow` | Brand-colored shadow pulse. |
+| `animate-slide-up` | One-shot entrance. |
 
-Framer Motion is preferred for complex/scroll-triggered animations; Tailwind animations for simple, always-on effects.
+Framer Motion handles scroll and panel transitions. Use it for route sections, modals, accordions, and animated presence. Avoid motion that shifts Lab data layout while the engine is running.
+
+## Component Surface Rules
+
+- Marketing sections can use larger spacing, gradients, and entrance motion.
+- Lab/dashboard sections should be dense, predictable, and stable under frequent snapshot updates.
+- Do not use cards inside cards for major page layout. Repeated items, modals, and framed tools are acceptable card surfaces.
+- Use lucide icons for commands and feature labels.
+- Keep buttons stable in size; snapshot updates must not move controls.
+- Prefer neutral gray surfaces with brand accents over a one-note orange palette.
+
+## Current Theme-Sensitive Components
+
+| Component | Notes |
+|---|---|
+| `Navbar` / `ProductNavbar` | Fixed/sticky navigation, dark glass surfaces. |
+| `Hero` / `ParticleBackground` | Marketing motion and canvas background. |
+| `Playground` Lab components | Data-heavy dark UI; prioritize legibility and fixed dimensions. |
+| `CookiePreferences` | Modal panel with required functional cookie state. |
+| `TierLockModal` | Tier upsell/error surface; should keep required tier clear. |
+| `YamlEditor` | CodeMirror editor; must stay readable on dark background. |
+
+## Reintroducing Light Mode
+
+Light mode is not currently supported despite `Theme = 'light' | 'dark'` existing in the store. To reintroduce it safely:
+
+1. Implement `toggleTheme` in `useStore`.
+2. Remove the unconditional `document.documentElement.classList.add('dark')` or make it conditional.
+3. Audit every `bg-gray-*`, `text-gray-*`, border, CodeMirror, and modal class for light variants.
+4. Add visual regression checks for `/`, `/logcraft`, `/lab`, `/tiers`, and legal pages.
+5. Update this document and [architecture.md](architecture.md#state-model).
+
+Until then, new components should be designed for the dark product surface.

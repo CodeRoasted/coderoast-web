@@ -1,80 +1,135 @@
-# Deployment
+# CodeRoastWeb Deployment
 
 ## Local Development
 
-```bash
-npm run dev
-# → http://localhost:5173
+Install dependencies once:
+
+```sh
+npm install
 ```
 
-Hot Module Replacement (HMR) is handled by Vite — changes are reflected instantly in the browser.
+Start the Vite dev server:
+
+```sh
+npm run dev
+```
+
+Default URL: `http://localhost:5173`.
+
+When developing the Lab, run the LogCraft server on `localhost:8080`. Vite proxies API and WebSocket traffic to it.
+
+## Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Vite dev server with HMR. |
+| `npm run build` | TypeScript project build plus Vite production bundle. |
+| `npm run preview` | Serve `dist/` locally for production preview. |
+| `npm run lint` | ESLint over the repo. |
+| `npm test` | Vitest test suite once. |
+| `npm run test:watch` | Vitest watch mode. |
+
+## API Configuration
+
+The REST base is resolved in `src/services/api.ts`:
+
+```ts
+const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1'
+```
+
+### Development
+
+`vite.config.ts` proxies:
+
+```text
+/api         -> http://localhost:8080
+/api/v1/ws  -> ws://localhost:8080
+```
+
+The front end keeps the full `/api/v1/*` prefix. The backend should expose versioned routes directly.
+
+### Production
+
+`netlify.toml` sets:
+
+```toml
+VITE_API_BASE = "https://api.coderoast.fr/api/v1"
+```
+
+The WebSocket client converts that to `wss://api.coderoast.fr/api/v1/ws/engine?...`.
+
+If production moves to a different API host, update `VITE_API_BASE` in the hosting environment and keep the `/api/v1` suffix unless the backend version changes.
 
 ## Production Build
 
-```bash
+```sh
 npm run build
 ```
 
-Output lands in `dist/`. TypeScript is compiled first (`tsc -b`), then Vite bundles and tree-shakes.
+Build output lands in `dist/`. The build command runs `tsc -b` before Vite bundling, so type errors fail deployment.
 
-**Typical output sizes (gzipped):**
+## Preview
 
-| Chunk | Size |
-|---|---|
-| `index.js` (React + core) | ~97 KB |
-| `Portfolio.js` | ~1.6 KB |
-| `Donation.js` | ~1.0 KB |
-| `ComingSoon.js` | ~1.4 KB |
-| `Licensing.js` | ~1.3 KB |
-| `index.css` | ~5 KB |
-
-## Preview Production Build Locally
-
-```bash
+```sh
 npm run preview
-# → http://localhost:4173
 ```
 
-## Hosting Options
+Default preview URL: `http://localhost:4173`.
 
-### Netlify / Vercel (recommended)
+Use preview to catch React Router, asset, and environment-variable issues before pushing hosting changes.
 
-Both can deploy directly from the Git repository.
+## Netlify
 
-- **Build command:** `npm run build`
-- **Publish directory:** `dist`
-- No server-side config needed — this is a static SPA.
+The checked-in `netlify.toml` is the canonical static hosting config:
 
-> **Important:** Configure a catch-all redirect so React Router handles unknown paths.  
-> Netlify: add `public/_redirects` with `/* /index.html 200`.  
-> Vercel: add `vercel.json` with rewrites.
+```toml
+[build]
+	command = "npm run build"
+	publish = "dist"
 
-### Netlify `_redirects`
-
-Create `public/_redirects`:
-
-```
-/*  /index.html  200
+[[redirects]]
+	from = "/*"
+	to = "/index.html"
+	status = 200
 ```
 
-### Vercel `vercel.json`
+The redirect is required because React Router owns client-side routes such as `/lab`, `/logcraft`, and `/legal/privacy`.
 
-```json
-{
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
-```
+Static asset headers:
 
-### GitHub Pages
+- `/assets/*` receives long immutable caching;
+- `*.js` is forced to JavaScript content type;
+- `*.wasm` is forced to WebAssembly content type for future assets.
 
-GitHub Pages does not natively support SPA routing. Use the `gh-pages` package with a custom 404.html redirect workaround, or prefer Netlify/Vercel.
+## Backend Expectations
 
-## MSYS2 / MinGW64
+The hosted Lab needs a reachable LogCraft server with:
 
-Use `setup.sh` from the repository root to install Node.js (if missing) and start the dev server in one command:
+- `/api/v1/login`, `/whoami`, `/users`, `/tiers`;
+- scenario listing and validation routes;
+- engine lifecycle routes;
+- WebSocket snapshots at `/api/v1/ws/engine`;
+- CORS allowing the deployed web origin;
+- scenario data path configured through LogCraft's `LOGCRAFT_DATA_PATH`.
 
-```bash
-bash setup.sh
-```
+See LogCraft's [server_api_contract.md](../../LogCraft/technical_docs/server_api_contract.md) and [README.md](../../LogCraft/README.md#configuration--environment-variables).
 
-The script uses `pacman -S mingw-w64-x86_64-nodejs` to install Node.js into the MinGW64 environment if it is not already present.
+## Deployment Checklist
+
+1. Run `npm test`.
+2. Run `npm run lint`.
+3. Run `npm run build`.
+4. Confirm `VITE_API_BASE` points to the intended API host.
+5. Confirm the API host accepts the web origin through CORS.
+6. Confirm WebSocket upgrades work from the deployed origin.
+7. Open `/lab`, create an engine from a starter scenario, and verify snapshots arrive.
+
+## Common Failures
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `/lab` returns 404 after refresh | Missing SPA redirect | Keep Netlify `/* -> /index.html 200`. |
+| API works locally but not in production | Missing or wrong `VITE_API_BASE` | Set full `https://host/api/v1`. |
+| WebSocket connects locally but not hosted | API host rejects upgrade or uses wrong scheme | Ensure `wss://` is reachable and routed to `/api/v1/ws/engine`. |
+| Tier buttons enabled but server denies | Front-end permission mirror drifted | Update `src/utils/permissions.ts` and LogCraft permission keys together. |
+| Scenario list empty | LogCraft server lacks scenario data path | Set `LOGCRAFT_DATA_PATH` on the server. |

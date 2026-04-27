@@ -1,89 +1,97 @@
 # CodeRoast Website
 
-Portfolio website showcasing CodeRoast developer tools — **Insight**, **LogCraft**, and **Insight Playground**.
+CodeRoastWeb is the public website and browser Lab for the CodeRoast stack. It presents LogCraft and InSight, and it lets users run live LogCraft scenarios from the browser without installing the C++ backend locally.
+
+## What It Contains
+
+- Marketing and product pages for LogCraft, InSight, pricing, use cases, and legal content.
+- LogCraft Lab (`/lab`): scenario picker, YAML editor, engine lifecycle controls, live agent/sink metrics, log tail, drain inspection, onboarding, and tier-aware controls.
+- Typed EN/FR translations.
+- Dark-first Tailwind UI with Framer Motion and lucide icons.
+- REST and WebSocket clients for the LogCraft server API.
 
 ## Quick Start
 
-```bash
-# MSYS2 / MinGW64 (automated)
-bash setup.sh
-
-# Manual
+```sh
 npm install
-npm run dev       # http://localhost:5173
-npm run build     # production build → dist/
-npm run preview   # preview production build locally
+npm run dev
 ```
+
+Open `http://localhost:5173`.
+
+For the Lab, also run the LogCraft server on `localhost:8080`; Vite proxies `/api/v1/*` and `/api/v1/ws/*` to it.
+
+## Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start Vite dev server. |
+| `npm run build` | Type-check and build production assets into `dist/`. |
+| `npm run preview` | Serve the production build locally. |
+| `npm run lint` | Run ESLint. |
+| `npm test` | Run Vitest once. |
+| `npm run test:watch` | Run Vitest in watch mode. |
 
 ## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Framework | React 18, TypeScript 5 (strict) |
+| Framework | React 18, TypeScript 5 strict mode |
 | Build | Vite 6 |
-| Styling | TailwindCSS 3, custom `brand` palette |
-| Animations | Framer Motion 11 |
-| State | Zustand 5 |
+| Styling | Tailwind CSS 3, custom brand palette |
+| Motion | Framer Motion 11 |
 | Routing | React Router v6 |
-| Icons | lucide-react |
-| Fonts | Inter, Space Grotesk (Google Fonts) |
+| State | Zustand 5 |
+| Editor | CodeMirror YAML editor |
+| Tests | Vitest, Testing Library, jsdom |
 
-## Project Structure
+## Project Layout
 
-```
-src/
-├── components/          # Reusable UI components
-│   ├── Navbar.tsx       # Fixed nav with mobile menu
-│   ├── Hero.tsx         # Full-screen hero + particle background
-│   ├── ParticleBackground.tsx  # Interactive canvas particle system
-│   ├── Portfolio.tsx    # App grid section
-│   ├── AppCard.tsx      # Single app card (reusable)
-│   ├── ComingSoon.tsx   # Placeholder section for future tools
-│   ├── Donation.tsx     # BuyMeACoffee integration
-│   ├── Licensing.tsx    # Pricing/plans section (placeholder)
-│   ├── Footer.tsx       # Footer with social links
-│   ├── ThemeToggle.tsx  # Dark / light mode button
-│   └── LanguageToggle.tsx   # EN / FR language switch
-├── pages/
-│   └── Home.tsx         # Main page — composes all sections
-├── store/
-│   └── useStore.ts      # Global state (theme, language)
-├── i18n/
-│   └── translations.ts  # All EN + FR copy in one file
-├── hooks/
-│   └── useTranslation.ts  # Returns typed translation object for current language
-├── App.tsx              # Router root + theme initialisation
-├── main.tsx             # React DOM entry point
-└── index.css            # Tailwind directives + global styles
+```text
+CodeRoastWeb/
+├── src/
+│   ├── App.tsx                 # Router, auth bootstrap, dark-mode bootstrap
+│   ├── pages/                  # Home, LogCraft, Lab, tiers, use cases, legal pages
+│   ├── components/             # Shared UI plus Lab/dashboard components
+│   ├── hooks/                  # Translation, engine lifecycle, onboarding
+│   ├── i18n/                   # en/fr translation bundles
+│   ├── services/               # REST and WebSocket clients
+│   ├── store/                  # Zustand stores
+│   ├── test/                   # Vitest suites
+│   ├── types/                  # DTOs shared by services and UI
+│   └── utils/                  # permissions and cookie helpers
+├── technical_docs/             # Canonical technical documentation
+├── public/                     # Static assets
+├── netlify.toml                # Static hosting config
+├── vite.config.ts              # Vite aliases, proxy, Vitest config
+└── package.json
 ```
 
-## Features
+## Documentation Map
 
-- **Bilingual** — full EN/FR support, instant toggle, no page reload
-- **Dark / light mode** — respects system preference, toggled via Zustand
-- **Particle hero** — mouse-reactive canvas animation
-- **Lazy-loaded sections** — Portfolio, ComingSoon, Donation, Licensing are code-split
-- **Responsive** — mobile-first, hamburger menu on small screens
-- **Accessible** — semantic HTML, ARIA labels, `prefers-color-scheme` support
+| Document | Contents |
+|---|---|
+| [technical_docs/README.md](technical_docs/README.md) | Read order and cross-project links. |
+| [technical_docs/architecture.md](technical_docs/architecture.md) | Routes, state, REST/WebSocket flow, Lab lifecycle. |
+| [technical_docs/deployment.md](technical_docs/deployment.md) | Local dev, build, Netlify, `VITE_API_BASE`. |
+| [technical_docs/i18n.md](technical_docs/i18n.md) | Typed EN/FR translation workflow. |
+| [technical_docs/theming.md](technical_docs/theming.md) | Dark-first Tailwind and brand system. |
 
-## Adding a New App Card
+## Cross-Project Links
 
-1. Add translations in `src/i18n/translations.ts` (both `en` and `fr` blocks).
-2. Import an icon from `lucide-react` and add an entry to the `apps` array in `src/components/Portfolio.tsx`.
-3. Done — the `AppCard` component handles layout, status badge, and animations automatically.
+- LogCraft docs: [../LogCraft/technical_docs/README.md](../LogCraft/technical_docs/README.md)
+- LogCraft server API contract: [../LogCraft/technical_docs/server_api_contract.md](../LogCraft/technical_docs/server_api_contract.md)
+- InSight docs: [../InSight/technical_docs/README.md](../InSight/technical_docs/README.md)
+- Scenario library: [../logcraft-scenario-library/README.md](../logcraft-scenario-library/README.md)
 
-## Adding a New Page / Route
+## Deployment
 
-1. Create `src/pages/MyPage.tsx`.
-2. Add a `<Route>` in `src/App.tsx`.
-3. Add a nav link entry in `src/components/Navbar.tsx` and the corresponding translation keys.
+The app is a static SPA. Netlify uses `npm run build` and publishes `dist/`. Production API routing is configured with `VITE_API_BASE`, currently `https://api.coderoast.fr/api/v1` in `netlify.toml`.
 
-## Environment
+Before deploying:
 
-Node.js ≥ 18 required (installed via `pacman -S mingw-w64-x86_64-nodejs` in MSYS2).  
-All paths use forward slashes — POSIX-compatible with MSYS2 / MinGW64.
-
-## Links
-
-- Donations: https://buymeacoffee.com/coderoast
-- Technical docs: [`technical_docs/`](technical_docs/)
+```sh
+npm test
+npm run lint
+npm run build
+```
