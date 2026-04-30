@@ -12,10 +12,10 @@ Browser route
 	-> React page/component tree
 	-> Zustand stores
 	-> REST client / WebSocket client
-	-> LogCraft server /api/v1
+	-> CodeRoastServer /api/v1
 ```
 
-LogCraft owns engine truth. CodeRoastWeb owns presentation state, optimistic UI hints, and a bounded client-side live tail.
+LogCraft owns engine truth. CodeRoastServer owns API/session truth. CodeRoastWeb owns presentation state, optimistic UI hints, and a bounded client-side live tail.
 
 ## Stack
 
@@ -125,7 +125,7 @@ Once attached, the WebSocket streams snapshots. The server snapshot tail is only
 - `TierRequiredError` for HTTP 403 payloads;
 - typed response helpers for scenarios, engines, auth, tiers, and drain snapshots.
 
-The authoritative endpoint contract lives in LogCraft's [server_api_contract.md](../../LogCraft/technical_docs/server_api_contract.md).
+The authoritative endpoint contract lives in CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md).
 
 ## WebSocket Client
 
@@ -180,7 +180,7 @@ npm run build
 
 | Dependency | Direction | Contract |
 |---|---|---|
-| LogCraft server | CodeRoastWeb -> LogCraft | REST/WebSocket API and engine snapshot shape. |
+| CodeRoastServer | CodeRoastWeb -> CodeRoastServer | REST/WebSocket API and engine snapshot shape. |
 | LogCraft scenario library | CodeRoastWeb -> LogCraft data path | Scenario ids, metadata, and YAML examples served by backend. |
 | InSight | future CodeRoastWeb -> InSight/LogCraft bridge | MetaLog/anomaly views will consume InSight outputs once the bridge exists. |
 

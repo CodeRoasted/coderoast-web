@@ -15,25 +15,26 @@ For a fast pass, read:
 
 1. [architecture.md](architecture.md#system-overview)
 2. [deployment.md](deployment.md#api-configuration)
-3. [../../LogCraft/technical_docs/server_api_contract.md](../../LogCraft/technical_docs/server_api_contract.md)
-4. [../../LogCraft/technical_docs/scenario_reference.md](../../LogCraft/technical_docs/scenario_reference.md)
-5. [../../InSight/technical_docs/strategy.md](../../InSight/technical_docs/strategy.md)
+3. [../../coderoast-server/technical_docs/api/server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md)
+4. [../../logcraft/technical_docs/reference/scenario_reference.md](../../logcraft/technical_docs/reference/scenario_reference.md)
+5. [../../insight/technical_docs/strategy.md](../../insight/technical_docs/strategy.md)
 
-That path explains what the site renders, how the Lab talks to LogCraft, what scenario YAML means, and where InSight fits next.
+That path explains what the site renders, how the Lab talks to CodeRoastServer, what scenario YAML means, and where InSight fits next.
 
 ## Cross-Project Map
 
 | Project | Role | Start here |
 |---|---|---|
 | CodeRoastWeb | Public website plus browser LogCraft Lab | This folder |
-| LogCraft | Backend engine, scenario DSL, RBAC, WebSocket snapshots | [../../LogCraft/technical_docs/README.md](../../LogCraft/technical_docs/README.md) |
-| InSight | Future consumer of LogCraft streams and MetaLog producer | [../../InSight/technical_docs/README.md](../../InSight/technical_docs/README.md) |
+| LogCraft | Engine package and scenario DSL | [../../logcraft/technical_docs/README.md](../../logcraft/technical_docs/README.md) |
+| CodeRoastServer | Backend API, RBAC, auth, persistence, and WebSocket snapshots | [../../coderoast-server/technical_docs/README.md](../../coderoast-server/technical_docs/README.md) |
+| InSight | Future consumer of LogCraft streams and MetaLog producer | [../../insight/technical_docs/README.md](../../insight/technical_docs/README.md) |
 | logcraft-scenario-library | Scenario YAML catalog consumed by the backend | [../../logcraft-scenario-library/README.md](../../logcraft-scenario-library/README.md) |
 
 ## Maintenance Rules
 
 - When adding or changing a route, update [architecture.md](architecture.md#route-map).
-- When changing LogCraft API routes or WebSocket payloads, update LogCraft's [server_api_contract.md](../../LogCraft/technical_docs/server_api_contract.md) and this folder's [architecture.md](architecture.md#logcraft-lab-data-flow).
+- When changing API routes or WebSocket payloads, update CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md) and this folder's [architecture.md](architecture.md#logcraft-lab-data-flow).
 - When changing `VITE_API_BASE`, proxy behavior, or hosting, update [deployment.md](deployment.md).
 - When adding visible copy, update both `src/i18n/en.ts` and `src/i18n/fr.ts`, then update [i18n.md](i18n.md) if the structure changes.
 - When changing global colors, motion, or dark-mode assumptions, update [theming.md](theming.md).

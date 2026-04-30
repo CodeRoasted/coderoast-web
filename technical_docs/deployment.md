@@ -16,7 +16,7 @@ npm run dev
 
 Default URL: `http://localhost:5173`.
 
-When developing the Lab, run the LogCraft server on `localhost:8080`. Vite proxies API and WebSocket traffic to it.
+When developing the Lab, run CodeRoastServer on `localhost:8080`. Vite proxies API and WebSocket traffic to it.
 
 ## Scripts
 
@@ -103,7 +103,7 @@ Static asset headers:
 
 ## Backend Expectations
 
-The hosted Lab needs a reachable LogCraft server with:
+The hosted Lab needs a reachable CodeRoastServer instance with:
 
 - `/api/v1/login`, `/whoami`, `/users`, `/tiers`;
 - scenario listing and validation routes;
@@ -112,7 +112,7 @@ The hosted Lab needs a reachable LogCraft server with:
 - CORS allowing the deployed web origin;
 - scenario data path configured through LogCraft's `LOGCRAFT_DATA_PATH`.
 
-See LogCraft's [server_api_contract.md](../../LogCraft/technical_docs/server_api_contract.md) and [README.md](../../LogCraft/README.md#configuration--environment-variables).
+See CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md) and [README.md](../../coderoast-server/README.md#running-the-server).
 
 ## Deployment Checklist
 
@@ -131,5 +131,5 @@ See LogCraft's [server_api_contract.md](../../LogCraft/technical_docs/server_api
 | `/lab` returns 404 after refresh | Missing SPA redirect | Keep Netlify `/* -> /index.html 200`. |
 | API works locally but not in production | Missing or wrong `VITE_API_BASE` | Set full `https://host/api/v1`. |
 | WebSocket connects locally but not hosted | API host rejects upgrade or uses wrong scheme | Ensure `wss://` is reachable and routed to `/api/v1/ws/engine`. |
-| Tier buttons enabled but server denies | Front-end permission mirror drifted | Update `src/utils/permissions.ts` and LogCraft permission keys together. |
-| Scenario list empty | LogCraft server lacks scenario data path | Set `LOGCRAFT_DATA_PATH` on the server. |
+| Tier buttons enabled but server denies | Front-end permission mirror drifted | Update `src/utils/permissions.ts` and CodeRoastServer permission keys together. |
+| Scenario list empty | CodeRoastServer lacks scenario data path | Set `LOGCRAFT_DATA_PATH` on the server. |

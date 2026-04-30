@@ -1,5 +1,5 @@
 /**
- * Front-end mirror of LogCraft's `access_control/permission_keys.hpp` tier
+ * Front-end mirror of CodeRoastServer's `access_control/permission_keys.hpp` tier
  * gates. Used to lock/grey out UI controls *before* the user clicks them, so
  * tier walls feel intentional instead of "I clicked and got an error toast".
  *

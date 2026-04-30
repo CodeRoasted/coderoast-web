@@ -8,7 +8,7 @@ CodeRoastWeb is the public website and browser Lab for the CodeRoast stack. It p
 - LogCraft Lab (`/lab`): scenario picker, YAML editor, engine lifecycle controls, live agent/sink metrics, log tail, drain inspection, onboarding, and tier-aware controls.
 - Typed EN/FR translations.
 - Dark-first Tailwind UI with Framer Motion and lucide icons.
-- REST and WebSocket clients for the LogCraft server API.
+- REST and WebSocket clients for the CodeRoastServer API.
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-For the Lab, also run the LogCraft server on `localhost:8080`; Vite proxies `/api/v1/*` and `/api/v1/ws/*` to it.
+For the Lab, also run CodeRoastServer on `localhost:8080`; Vite proxies `/api/v1/*` and `/api/v1/ws/*` to it.
 
 ## Scripts
 
@@ -79,9 +79,9 @@ CodeRoastWeb/
 
 ## Cross-Project Links
 
-- LogCraft docs: [../LogCraft/technical_docs/README.md](../LogCraft/technical_docs/README.md)
-- LogCraft server API contract: [../LogCraft/technical_docs/server_api_contract.md](../LogCraft/technical_docs/server_api_contract.md)
-- InSight docs: [../InSight/technical_docs/README.md](../InSight/technical_docs/README.md)
+- LogCraft docs: [../logcraft/technical_docs/README.md](../logcraft/technical_docs/README.md)
+- CodeRoastServer API contract: [../coderoast-server/technical_docs/api/server_api_contract.md](../coderoast-server/technical_docs/api/server_api_contract.md)
+- InSight docs: [../insight/technical_docs/README.md](../insight/technical_docs/README.md)
 - Scenario library: [../logcraft-scenario-library/README.md](../logcraft-scenario-library/README.md)
 
 ## Deployment
