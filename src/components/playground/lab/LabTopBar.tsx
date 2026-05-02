@@ -51,7 +51,7 @@ export default function LabTopBar({
                         <span className="text-gray-300">{t.lab.title}</span>
                     </h1>
                     <span
-                        className="ml-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/40"
+                        className="ml-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/40 hidden sm:inline"
                         title={t.lab.simulatedBadge}
                     >
                         {t.lab.simulatedBadge}
