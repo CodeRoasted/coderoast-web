@@ -110,7 +110,7 @@ The hosted Lab needs a reachable CodeRoastServer instance with:
 - engine lifecycle routes;
 - WebSocket snapshots at `/api/v1/ws/engine`;
 - CORS allowing the deployed web origin;
-- scenario data path configured through LogCraft's `LOGCRAFT_DATA_PATH`.
+- scenario data path configured through LogCraft's `CODEROAST_DATA_PATH`.
 
 See CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md) and [README.md](../../coderoast-server/README.md#running-the-server).
 
@@ -132,4 +132,4 @@ See CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_
 | API works locally but not in production | Missing or wrong `VITE_API_BASE` | Set full `https://host/api/v1`. |
 | WebSocket connects locally but not hosted | API host rejects upgrade or uses wrong scheme | Ensure `wss://` is reachable and routed to `/api/v1/ws/engine`. |
 | Tier buttons enabled but server denies | Front-end permission mirror drifted | Update `src/utils/permissions.ts` and CodeRoastServer permission keys together. |
-| Scenario list empty | CodeRoastServer lacks scenario data path | Set `LOGCRAFT_DATA_PATH` on the server. |
+| Scenario list empty | CodeRoastServer lacks scenario data path | Set `CODEROAST_DATA_PATH` on the server. |

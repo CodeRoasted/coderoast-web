@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone Preview — CodeRoast</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 24px 16px;
+            font-family: system-ui, sans-serif;
+            color: #94a3b8;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 460px;
+        }
+
+        header h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        header p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .device-selector {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .device-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+        .device-btn:hover,
+        .device-btn.active {
+            border-color: #6366f1;
+            color: #e2e8f0;
+        }
+
+        /* Phone shell */
+        .phone-shell {
+            background: #0f0f0f;
+            border-radius: 40px;
+            padding: 14px 6px;
+            box-shadow:
+                0 0 0 1px #2d2d2d,
+                0 0 0 4px #1a1a1a,
+                0 30px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Dynamic island notch */
+        .notch {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 32px;
+            background: #0f0f0f;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .screen {
+            border-radius: 30px;
+            overflow: hidden;
+            background: #030712;
+            position: relative;
+        }
+
+        iframe {
+            display: block;
+            border: none;
+            background: #030712;
+        }
+
+        footer {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #475569;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1>Phone Preview</h1>
+            <p>Simulates a mobile viewport of the running dev server.</p>
+        </div>
+    </header>
+
+    <div class="device-selector" id="device-selector" style="margin-bottom:16px"></div>
+
+    <div class="phone-shell" id="phone-shell">
+        <div class="notch"></div>
+        <div class="screen" id="screen">
+            <iframe id="app-frame" src="/"></iframe>
+        </div>
+    </div>
+
+    <footer>
+        Resize your browser window to adjust the zoom level.
+        This page is only served in dev mode — not included in production builds.
+    </footer>
+
+    <script>
+        const DEVICES = [
+            { label: 'iPhone 14 Pro', w: 393, h: 852 },
+            { label: 'iPhone SE', w: 375, h: 667 },
+            { label: 'Galaxy S23', w: 360, h: 780 },
+            { label: 'Pixel 7', w: 412, h: 915 },
+        ]
+
+        let currentDevice = DEVICES[0]
+
+        function applyDevice(device) {
+            currentDevice = device
+
+            const frame = document.getElementById('app-frame')
+            const screen = document.getElementById('screen')
+
+            frame.style.width = device.w + 'px'
+            frame.style.height = device.h + 'px'
+            screen.style.width = device.w + 'px'
+            screen.style.height = device.h + 'px'
+
+            document.querySelectorAll('.device-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.label === device.label)
+            })
+        }
+
+        // Build selector buttons
+        const selector = document.getElementById('device-selector')
+        DEVICES.forEach(device => {
+            const btn = document.createElement('button')
+            btn.className = 'device-btn'
+            btn.dataset.label = device.label
+            btn.textContent = device.label + ' (' + device.w + '×' + device.h + ')'
+            btn.addEventListener('click', () => applyDevice(device))
+            selector.appendChild(btn)
+        })
+
+        applyDevice(DEVICES[0])
+
+        // Scale the phone shell to fit the browser viewport vertically
+        // so you never need to scroll to see the full device screen.
+        function autoScale() {
+            const shell = document.getElementById('phone-shell')
+            if (!shell) return
+            const availH = window.innerHeight - 120 // reserve space for header + footer
+            const availW = window.innerWidth - 32
+            const shellH = shell.offsetHeight
+            const shellW = shell.offsetWidth
+            const scale = Math.min(1, availH / shellH, availW / shellW)
+            shell.style.transformOrigin = 'top center'
+            shell.style.transform = scale < 1 ? `scale(${scale.toFixed(3)})` : ''
+            // Shrink the layout footprint so the page doesn't scroll
+            shell.style.marginBottom = scale < 1
+                ? `${(shellH * scale - shellH).toFixed(0)}px`
+                : ''
+        }
+
+        window.addEventListener('resize', autoScale)
+        // Re-scale whenever a new device preset is applied
+        const _origApply = applyDevice
+        applyDevice = function (device) {
+            _origApply(device)
+            requestAnimationFrame(autoScale)
+        }
+        requestAnimationFrame(autoScale)
+    </script>
+</body>
+
+</html>
