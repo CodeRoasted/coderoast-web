@@ -5,6 +5,16 @@ import LogTailHeader from './logtail/LogTailHeader'
 import LogTailFilters from './logtail/LogTailFilters'
 import LogTailViewport from './logtail/LogTailViewport'
 
+// Severity order — higher index = higher severity.
+const LEVEL_ORDER: Record<LogLevelName, number> = {
+    TRACE: 0,
+    DEBUG: 1,
+    INFO: 2,
+    WARN: 3,
+    ERROR: 4,
+    FATAL: 5,
+}
+
 interface Props {
     entries: LogTailEntry[]
     totalEntries?: number
@@ -40,13 +50,20 @@ export default function LogTail({
         setIsPaused(!isPaused)
     }
 
+    const handleClear = () => {
+        setFrozenEntries([])
+        setIsPaused(false)
+        onClear?.()
+    }
+
     const sourceEntries = isPaused ? frozenEntries : entries
 
     const filtered = useMemo(() => {
         const text = textFilter.trim().toLowerCase()
         if (levelFilter === 'ALL' && agentFilter === 'ALL' && !text) return sourceEntries
         return sourceEntries.filter((e) => {
-            if (levelFilter !== 'ALL' && e.level !== levelFilter) return false
+            if (levelFilter !== 'ALL' && LEVEL_ORDER[e.level] < LEVEL_ORDER[levelFilter])
+                return false
             if (agentFilter !== 'ALL' && e.agent !== agentFilter) return false
             if (text && !e.message.toLowerCase().includes(text)) return false
             return true
@@ -82,7 +99,7 @@ export default function LogTail({
                     onToggleFilters={() => setShowFilters((v) => !v)}
                     isPaused={isPaused}
                     onTogglePause={handlePauseToggle}
-                    onClear={onClear}
+                    onClear={handleClear}
                 />
                 {showFilters && (
                     <LogTailFilters

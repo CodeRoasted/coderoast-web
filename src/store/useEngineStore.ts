@@ -72,16 +72,26 @@ export const useEngineStore = create<EngineState>((set) => ({
                 appended.push(entry)
             }
             if (appended.length === 0) return {}
-            const combined =
-                state.liveTail.length + appended.length <= kLiveTailCapacity
-                    ? [...state.liveTail, ...appended]
-                    : [...state.liveTail, ...appended].slice(-kLiveTailCapacity)
-            // Rebuild the key set from the (possibly trimmed) buffer so
-            // evicted entries don't keep their slot in the dedupe cache.
-            const trimmedKeys = new Set(combined.map(tailKey))
-            return { liveTail: combined, liveTailKeys: trimmedKeys }
+            const needsTrim =
+                state.liveTail.length + appended.length > kLiveTailCapacity
+            const combined = needsTrim
+                ? [...state.liveTail, ...appended].slice(-kLiveTailCapacity)
+                : [...state.liveTail, ...appended]
+            // Only rebuild the key set when entries were evicted from the
+            // buffer — those evicted entries may legitimately reappear and
+            // should be re-shown. When no trim occurred, keep the full
+            // nextKeys so pre-clear suppressions survive across snapshots.
+            const finalKeys = needsTrim ? new Set(combined.map(tailKey)) : nextKeys
+            return { liveTail: combined, liveTailKeys: finalKeys }
         }),
-    clearLiveTail: () => set({ liveTail: [], liveTailKeys: new Set<string>() }),
+    clearLiveTail: () =>
+        set((state) => ({
+            liveTail: [],
+            // Keep the seen-keys set intact so entries already displayed
+            // are not re-admitted when the next snapshot arrives with the
+            // same tail slice. Only genuinely new entries will appear.
+            liveTailKeys: state.liveTailKeys,
+        })),
     setConnected: (connected) => set({ connected }),
     setSelectedScenarioId: (id) => set({ selectedScenarioId: id }),
     setScenarioYaml: (yaml) => set({ scenarioYaml: yaml }),

@@ -60,4 +60,22 @@ describe('LogTail', () => {
         expect(screen.queryByText('slow query')).not.toBeInTheDocument()
         expect(screen.queryByText('connection pooled')).not.toBeInTheDocument()
     })
+
+    it('clear while paused empties the view and resumes live mode', () => {
+        const onClear = vi.fn()
+        const { rerender } = render(
+            <LogTail entries={entries} totalEntries={entries.length} onClear={onClear} />,
+        )
+        // Pause first
+        fireEvent.click(screen.getByTitle('Pause'))
+        // Entries should still be visible (frozen)
+        expect(screen.getByText('login ok')).toBeInTheDocument()
+        // Clear while paused — simulates the store's clearLiveTail() emptying entries
+        fireEvent.click(screen.getByTitle('Clear feed'))
+        expect(onClear).toHaveBeenCalledTimes(1)
+        // Parent re-renders with the now-empty store buffer
+        rerender(<LogTail entries={[]} totalEntries={0} onClear={onClear} />)
+        // Frozen entries must be gone — component is no longer paused
+        expect(screen.queryByText('login ok')).not.toBeInTheDocument()
+    })
 })

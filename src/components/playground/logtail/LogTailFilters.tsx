@@ -42,7 +42,7 @@ export default function LogTailFilters({
                 <option value="ALL">{t.lab.filterAllLevels}</option>
                 {ALL_LEVELS.map((lvl) => (
                     <option key={lvl} value={lvl}>
-                        {lvl}
+                        {`\u2265 ${lvl}`}
                     </option>
                 ))}
             </select>

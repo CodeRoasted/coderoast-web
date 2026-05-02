@@ -49,4 +49,37 @@ describe('useEngineStore', () => {
         useEngineStore.getState().setEngineId('eng-42')
         expect(useEngineStore.getState().engineId).toBe('eng-42')
     })
+
+    it('appendToLiveTail deduplicates entries by key', () => {
+        const entry = { timestamp: '12:00:00', agent: 'auth', level: 'INFO' as const, message: 'login ok' }
+        useEngineStore.getState().appendToLiveTail([entry])
+        useEngineStore.getState().appendToLiveTail([entry])
+        expect(useEngineStore.getState().liveTail).toHaveLength(1)
+    })
+
+    it('clearLiveTail empties the display buffer', () => {
+        const entry = { timestamp: '12:00:00', agent: 'auth', level: 'INFO' as const, message: 'login ok' }
+        useEngineStore.getState().appendToLiveTail([entry])
+        useEngineStore.getState().clearLiveTail()
+        expect(useEngineStore.getState().liveTail).toHaveLength(0)
+    })
+
+    it('clearLiveTail suppresses re-admission of already-seen entries', () => {
+        const entry = { timestamp: '12:00:00', agent: 'auth', level: 'INFO' as const, message: 'login ok' }
+        useEngineStore.getState().appendToLiveTail([entry])
+        useEngineStore.getState().clearLiveTail()
+        // Same entry arrives again (server re-sends its rolling tail)
+        useEngineStore.getState().appendToLiveTail([entry])
+        expect(useEngineStore.getState().liveTail).toHaveLength(0)
+    })
+
+    it('clearLiveTail allows genuinely new entries after a clear', () => {
+        const old = { timestamp: '12:00:00', agent: 'auth', level: 'INFO' as const, message: 'old' }
+        const fresh = { timestamp: '12:00:01', agent: 'auth', level: 'INFO' as const, message: 'fresh' }
+        useEngineStore.getState().appendToLiveTail([old])
+        useEngineStore.getState().clearLiveTail()
+        useEngineStore.getState().appendToLiveTail([fresh])
+        expect(useEngineStore.getState().liveTail).toHaveLength(1)
+        expect(useEngineStore.getState().liveTail[0]!.message).toBe('fresh')
+    })
 })

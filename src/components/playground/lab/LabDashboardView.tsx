@@ -105,8 +105,12 @@ export default function LabDashboardView({
                     <SinkGrid sinks={snapshot?.sinks ?? []} />
                 </div>
 
-                {/* Zone C — sticky right column for live observation. */}
-                <div className="xl:col-span-1 xl:sticky xl:top-[10.5rem] xl:h-[calc(100vh-12rem)] flex flex-col min-w-0">
+                {/* Zone C — sticky right column for live observation.
+                    On <xl viewports it stacks below Zone B; give it a
+                    fixed 520 px height so the flex-1 chain inside
+                    ObservationPanel / LogTail has something to fill.
+                    On xl+ the sticky viewport-height column takes over. */}
+                <div className="xl:col-span-1 xl:sticky xl:top-[10.5rem] h-[520px] xl:h-[calc(100vh-12rem)] flex flex-col min-w-0">
                     <ObservationPanel
                         engineId={engineId}
                         snapshot={snapshot}
