@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { EngineSnapshot, LogTailEntry } from '@/types/engine'
+import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
 
 /**
  * Hard cap on the accumulated live log feed. Each snapshot ships the
@@ -8,6 +8,7 @@ import type { EngineSnapshot, LogTailEntry } from '@/types/engine'
  * the DOM even without virtualisation.
  */
 const kLiveTailCapacity = 1000
+const kInsightReportCapacity = 200
 
 /**
  * Deterministic fingerprint used to suppress the duplicates that
@@ -16,6 +17,16 @@ const kLiveTailCapacity = 1000
  */
 function tailKey(entry: LogTailEntry): string {
     return `${entry.timestamp}|${entry.agent}|${entry.level}|${entry.message}`
+}
+
+function insightKey(report: InsightReport): string {
+    return [
+        report.severity,
+        report.headline,
+        report.body,
+        report.action_hint,
+        report.affected_templates.join(','),
+    ].join('|')
 }
 
 interface EngineState {
@@ -29,6 +40,12 @@ interface EngineState {
      */
     liveTail: LogTailEntry[]
     liveTailKeys: Set<string>
+    insightStatus: InsightStatus | null
+    insightReports: InsightReport[]
+    insightReportKeys: Set<string>
+    insightLoading: boolean
+    insightError: string | null
+    insightLastLinesIngested: number
     connected: boolean
     selectedScenarioId: string | null
     scenarioYaml: string
@@ -38,6 +55,11 @@ interface EngineState {
     setSnapshot: (snapshot: EngineSnapshot | null) => void
     appendToLiveTail: (entries: LogTailEntry[]) => void
     clearLiveTail: () => void
+    setInsightStatus: (status: InsightStatus | null) => void
+    appendInsightReports: (reports: InsightReport[], linesIngested: number) => void
+    setInsightLoading: (loading: boolean) => void
+    setInsightError: (error: string | null) => void
+    clearInsightData: () => void
     setConnected: (connected: boolean) => void
     setSelectedScenarioId: (id: string | null) => void
     setScenarioYaml: (yaml: string) => void
@@ -50,6 +72,12 @@ export const useEngineStore = create<EngineState>((set) => ({
     snapshot: null,
     liveTail: [],
     liveTailKeys: new Set<string>(),
+    insightStatus: null,
+    insightReports: [],
+    insightReportKeys: new Set<string>(),
+    insightLoading: false,
+    insightError: null,
+    insightLastLinesIngested: 0,
     connected: false,
     selectedScenarioId: null,
     scenarioYaml: '',
@@ -92,6 +120,39 @@ export const useEngineStore = create<EngineState>((set) => ({
             // same tail slice. Only genuinely new entries will appear.
             liveTailKeys: state.liveTailKeys,
         })),
+    setInsightStatus: (status) => set({ insightStatus: status }),
+    appendInsightReports: (reports, linesIngested) =>
+        set((state) => {
+            if (reports.length === 0) {
+                return { insightLastLinesIngested: linesIngested }
+            }
+            const nextReports = [...state.insightReports]
+            const nextKeys = new Set(state.insightReportKeys)
+            for (const report of reports) {
+                const key = insightKey(report)
+                if (nextKeys.has(key)) continue
+                nextKeys.add(key)
+                nextReports.push(report)
+            }
+            const trimmed = nextReports.slice(-kInsightReportCapacity)
+            return {
+                insightReports: trimmed,
+                insightReportKeys: new Set(trimmed.map(insightKey)),
+                insightError: null,
+                insightLastLinesIngested: linesIngested,
+            }
+        }),
+    setInsightLoading: (loading) => set({ insightLoading: loading }),
+    setInsightError: (error) => set({ insightError: error }),
+    clearInsightData: () =>
+        set({
+            insightStatus: null,
+            insightReports: [],
+            insightReportKeys: new Set<string>(),
+            insightLoading: false,
+            insightError: null,
+            insightLastLinesIngested: 0,
+        }),
     setConnected: (connected) => set({ connected }),
     setSelectedScenarioId: (id) => set({ selectedScenarioId: id }),
     setScenarioYaml: (yaml) => set({ scenarioYaml: yaml }),
@@ -102,6 +163,12 @@ export const useEngineStore = create<EngineState>((set) => ({
             snapshot: null,
             liveTail: [],
             liveTailKeys: new Set<string>(),
+            insightStatus: null,
+            insightReports: [],
+            insightReportKeys: new Set<string>(),
+            insightLoading: false,
+            insightError: null,
+            insightLastLinesIngested: 0,
             connected: false,
             statusMessage: null,
         }),

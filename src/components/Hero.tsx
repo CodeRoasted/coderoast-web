@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, FlaskConical } from 'lucide-react'
+import { ArrowRight, Brain } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ParticleBackground from './ParticleBackground'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -69,7 +69,7 @@ export default function Hero() {
                             to="/lab"
                             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white font-semibold shadow-lg shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
-                            <FlaskConical className="w-5 h-5" />
+                            <Brain className="w-5 h-5" />
                             {t.hero.cta}
                             <ArrowRight className="w-4 h-4" />
                         </Link>

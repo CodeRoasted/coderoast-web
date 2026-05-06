@@ -67,3 +67,34 @@ export interface EngineInfo {
     id: string
     running: boolean
 }
+
+export type InsightSeverity =
+    | 'Info'
+    | 'Low'
+    | 'Medium'
+    | 'Warning'
+    | 'High'
+    | 'Critical'
+    | (string & {})
+
+export interface InsightReport {
+    headline: string
+    body: string
+    severity: InsightSeverity
+    confidence: number
+    action_hint: string
+    affected_templates: string[]
+    supporting_evidence: string[]
+}
+
+export interface InsightStatus {
+    engine_id: string
+    running: boolean
+    lines_ingested: number
+}
+
+export interface InsightReportsResponse {
+    engine_id: string
+    lines_ingested: number
+    insights: InsightReport[]
+}

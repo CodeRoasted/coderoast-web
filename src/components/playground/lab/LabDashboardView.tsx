@@ -5,7 +5,7 @@ import AgentGrid from '@/components/playground/AgentGrid'
 import SinkGrid from '@/components/playground/SinkGrid'
 import ObservationPanel from '@/components/playground/ObservationPanel'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
-import type { EngineSnapshot, LogTailEntry } from '@/types/engine'
+import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
 import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
@@ -15,6 +15,10 @@ interface Props {
     liveTail: LogTailEntry[]
     clearLiveTail: () => void
     agentNames: string[]
+    insightStatus: InsightStatus | null
+    insightReports: InsightReport[]
+    insightLoading: boolean
+    insightError: string | null
     isRunning: boolean
     isSeeded: boolean
     seedBroken: boolean
@@ -48,6 +52,10 @@ export default function LabDashboardView({
     liveTail,
     clearLiveTail,
     agentNames,
+    insightStatus,
+    insightReports,
+    insightLoading,
+    insightError,
     isRunning,
     isSeeded,
     seedBroken,
@@ -117,6 +125,10 @@ export default function LabDashboardView({
                         liveTail={liveTail}
                         clearLiveTail={clearLiveTail}
                         agentNames={agentNames}
+                        insightStatus={insightStatus}
+                        insightReports={insightReports}
+                        insightLoading={insightLoading}
+                        insightError={insightError}
                     />
                 </div>
             </div>

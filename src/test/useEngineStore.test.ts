@@ -1,5 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useEngineStore } from '@/store/useEngineStore'
+import type { InsightReport } from '@/types/engine'
+
+const report: InsightReport = {
+    headline: 'Checkout cascade detected',
+    body: 'postgres latency led checkout retries',
+    severity: 'High',
+    confidence: 0.91,
+    action_hint: 'Throttle retries',
+    affected_templates: ['T42'],
+    supporting_evidence: ['checkout retry'],
+}
 
 describe('useEngineStore', () => {
     beforeEach(() => {
@@ -7,6 +18,14 @@ describe('useEngineStore', () => {
         useEngineStore.setState({
             engineId: null,
             snapshot: null,
+            liveTail: [],
+            liveTailKeys: new Set(),
+            insightStatus: null,
+            insightReports: [],
+            insightReportKeys: new Set(),
+            insightLoading: false,
+            insightError: null,
+            insightLastLinesIngested: 0,
             connected: false,
             selectedScenarioId: null,
             scenarioYaml: '',
@@ -81,5 +100,41 @@ describe('useEngineStore', () => {
         useEngineStore.getState().appendToLiveTail([fresh])
         expect(useEngineStore.getState().liveTail).toHaveLength(1)
         expect(useEngineStore.getState().liveTail[0]!.message).toBe('fresh')
+    })
+
+    it('appendInsightReports deduplicates repeated explanations', () => {
+        useEngineStore.getState().appendInsightReports([report], 42)
+        useEngineStore.getState().appendInsightReports([report], 84)
+
+        const state = useEngineStore.getState()
+        expect(state.insightReports).toHaveLength(1)
+        expect(state.insightLastLinesIngested).toBe(84)
+    })
+
+    it('clearInsightData removes reports and status', () => {
+        useEngineStore.getState().setInsightStatus({
+            engine_id: 'eng-1',
+            running: true,
+            lines_ingested: 42,
+        })
+        useEngineStore.getState().appendInsightReports([report], 42)
+        useEngineStore.getState().setInsightError('boom')
+
+        useEngineStore.getState().clearInsightData()
+
+        const state = useEngineStore.getState()
+        expect(state.insightStatus).toBeNull()
+        expect(state.insightReports).toHaveLength(0)
+        expect(state.insightError).toBeNull()
+    })
+
+    it('reset clears insight data with engine state', () => {
+        useEngineStore.getState().setEngineId('eng-1')
+        useEngineStore.getState().appendInsightReports([report], 42)
+
+        useEngineStore.getState().reset()
+
+        expect(useEngineStore.getState().insightReports).toHaveLength(0)
+        expect(useEngineStore.getState().insightLastLinesIngested).toBe(0)
     })
 })

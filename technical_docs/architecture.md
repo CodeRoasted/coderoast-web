@@ -5,7 +5,7 @@
 CodeRoastWeb is a React 18 + Vite single-page application. It has two responsibilities:
 
 1. Public product website for LogCraft, InSight, use cases, pricing, legal pages, and contact paths.
-2. Browser LogCraft Lab that creates live LogCraft engines, streams snapshots over WebSocket, displays logs and metrics, and sends runtime commands.
+2. Browser InSight Playground that creates live LogCraft engines, streams snapshots over WebSocket, polls InSight status/reports, displays explanations, logs, metrics, and sends runtime commands.
 
 ```text
 Browser route
@@ -15,7 +15,7 @@ Browser route
 	-> CodeRoastServer /api/v1
 ```
 
-LogCraft owns engine truth. CodeRoastServer owns API/session truth. CodeRoastWeb owns presentation state, optimistic UI hints, and a bounded client-side live tail.
+LogCraft owns engine truth. InSight owns analysis truth. CodeRoastServer owns API/session truth and hosts the per-engine InSight pipeline. CodeRoastWeb owns presentation state, optimistic UI hints, bounded client-side live tail, and retained explanation cards.
 
 ## Stack
 
@@ -37,7 +37,7 @@ LogCraft owns engine truth. CodeRoastServer owns API/session truth. CodeRoastWeb
 |---|---|---|
 | `/` | `Home` | Marketing homepage, product story, use cases, portfolio, maker note. |
 | `/logcraft` | `LogCraft` | Product deep dive and conceptual model for LogCraft. |
-| `/lab` | `Playground` | Live LogCraft Lab. |
+| `/lab` | `Playground` | Live InSight Playground backed by a LogCraft engine. |
 | `/playground` | `Playground` | Legacy alias for `/lab`. |
 | `/tiers` | `TierMatrix` | RBAC tier/permission matrix. |
 | `/use-cases` | `UseCases` | Detailed use-case narratives. |
@@ -79,9 +79,9 @@ The Lab page is a thin orchestrator. State and commands live in hooks/stores:
 
 | Module | Responsibility |
 |---|---|
-| `useEngineLifecycle` | validation, engine create/delete, WebSocket wiring, live commands, tier errors. |
+| `useEngineLifecycle` | validation, engine create/delete, WebSocket wiring, InSight polling, live commands, tier errors. |
 | `useFirstVisitOnboarding` | cookie-gated onboarding and Hello World pre-load. |
-| `useEngineStore` | engine id, snapshot, YAML, selected scenario, live tail. |
+| `useEngineStore` | engine id, snapshot, YAML, selected scenario, live tail, InSight status/reports. |
 | `useAuthStore` | persisted token, selected demo user, current tier. |
 
 ## State Model
@@ -90,7 +90,7 @@ The Lab page is a thin orchestrator. State and commands live in hooks/stores:
 |---|---|---|
 | `useStore` | memory only | `language`, dark-only `theme` placeholder. |
 | `useAuthStore` | `localStorage` key `coderoast.auth` | bearer token, current user, tier, selected demo user. |
-| `useEngineStore` | memory only | engine id, latest snapshot, scenario YAML, status toast, bounded live tail. |
+| `useEngineStore` | memory only | engine id, latest snapshot, scenario YAML, status toast, bounded live tail, InSight status/reports. |
 
 The app forces `document.documentElement.classList.add('dark')` on mount. `toggleTheme` is a no-op because light mode has been removed from the product surface even though Tailwind still uses class-based dark mode.
 
@@ -102,6 +102,8 @@ Scenario picker / YAML editor
 	-> createEngine(yaml)
 	-> WebSocket /ws/engine?id=...
 	-> snapshot stream
+	-> poll /engines/{id}/insight/status
+	-> poll /engines/{id}/insight/reports when lines advance
 	-> LabDashboardView
 	-> runtime commands over WebSocket
 ```
@@ -115,6 +117,8 @@ The Lab validates YAML before creating an engine. Validation can return:
 
 Once attached, the WebSocket streams snapshots. The server snapshot tail is only the latest slice; `useEngineStore.appendToLiveTail()` deduplicates records by `(timestamp, agent, level, message)` and caps the browser buffer at 1000 records.
 
+In parallel, `useEngineLifecycle` polls InSight status every few seconds. When the reported ingested line count changes, it fetches the current report snapshot and appends deduplicated explanation cards. The observation column defaults to `InsightPanel`, with logs, incidents, and demo sink payloads kept as supporting views.
+
 ## REST Client
 
 `src/services/api.ts` wraps `fetch` with:
@@ -123,7 +127,7 @@ Once attached, the WebSocket streams snapshots. The server snapshot tail is only
 - bearer token injection from `useAuthStore`;
 - default request timeout of 15 seconds;
 - `TierRequiredError` for HTTP 403 payloads;
-- typed response helpers for scenarios, engines, auth, tiers, and drain snapshots.
+- typed response helpers for scenarios, engines, auth, tiers, drain snapshots, and InSight status/reports.
 
 The authoritative endpoint contract lives in CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md).
 
@@ -182,6 +186,6 @@ npm run build
 |---|---|---|
 | CodeRoastServer | CodeRoastWeb -> CodeRoastServer | REST/WebSocket API and engine snapshot shape. |
 | LogCraft scenario library | CodeRoastWeb -> LogCraft data path | Scenario ids, metadata, and YAML examples served by backend. |
-| InSight | future CodeRoastWeb -> InSight/LogCraft bridge | MetaLog/anomaly views will consume InSight outputs once the bridge exists. |
+| InSight | CodeRoastWeb -> CodeRoastServer -> InSight engine | Lab explanation views consume `status` and `reports` DTOs; deeper MetaLog traces remain future work. |
 
 CodeRoastWeb should not parse LogCraft internals beyond public YAML and API DTOs.

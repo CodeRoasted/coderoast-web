@@ -16,10 +16,10 @@ describe('Navbar', () => {
         expect(screen.getAllByText('Features').length).toBeGreaterThan(0)
     })
 
-    it('renders LogCraft and Open Lab links', () => {
+    it('renders LogCraft and InSight Playground links', () => {
         renderWithRouter(<Navbar />)
         expect(screen.getAllByText('LogCraft').length).toBeGreaterThan(0)
-        expect(screen.getAllByText('Open Lab').length).toBeGreaterThan(0)
+        expect(screen.getAllByText('InSight Playground').length).toBeGreaterThan(0)
     })
 
     describe('anchor link resolution', () => {

@@ -1,6 +1,6 @@
 # CodeRoastWeb Technical Documentation
 
-This folder documents the CodeRoast website and LogCraft Lab client. The app is no longer only a portfolio page: it is also the browser control surface for live LogCraft engines.
+This folder documents the CodeRoast website and InSight Playground client. The app is no longer only a portfolio page: it is also the browser control surface for live LogCraft engines and server-side InSight explanations.
 
 ## Read Order
 
@@ -20,17 +20,17 @@ For a fast pass, read:
 5. [../../insight-eidos/technical_docs/product/strategy.md](../../insight-eidos/technical_docs/product/strategy.md)
 6. Parent [ROADMAP.md](../../technical_docs/ROADMAP.md#next-step)
 
-That path explains what the site renders, how the Lab talks to CodeRoastServer, what scenario YAML means, and where InSight fits next.
+That path explains what the site renders, how the Lab talks to CodeRoastServer, what scenario YAML means, and how InSight reports are surfaced.
 
 ## Cross-Project Map
 
 | Project | Role | Start here |
 |---|---|---|
 | CodeRoast parent docs | Cross-repo status, compatibility, and roadmap. | [../../technical_docs/README.md](../../technical_docs/README.md) |
-| CodeRoastWeb | Public website plus browser LogCraft Lab | This folder |
+| CodeRoastWeb | Public website plus browser InSight Playground | This folder |
 | LogCraft | Engine package and scenario DSL | [../../logcraft/technical_docs/README.md](../../logcraft/technical_docs/README.md) |
 | CodeRoastServer | Backend API, RBAC, auth, persistence, and WebSocket snapshots | [../../coderoast-server/technical_docs/README.md](../../coderoast-server/technical_docs/README.md) |
-| InSight split repos | Future consumer views for MetaLog, detection, and explanation | [../../insight-eidos/technical_docs/README.md](../../insight-eidos/technical_docs/README.md) |
+| InSight split repos | Analysis packages behind the server reports consumed by the Lab | [../../insight-eidos/technical_docs/README.md](../../insight-eidos/technical_docs/README.md) |
 | logcraft-scenario-library | Scenario YAML catalog consumed by the backend | [../../logcraft-scenario-library/README.md](../../logcraft-scenario-library/README.md) |
 
 ## Maintenance Rules

@@ -7,6 +7,8 @@ import {
     whoami,
     listUsers,
     createEngine,
+    getInsightReports,
+    getInsightStatus,
     listScenarios,
     validateScenario,
 } from '@/services/api'
@@ -216,6 +218,46 @@ describe('services/api', () => {
             expect(init.method).toBe('POST')
             expect(JSON.parse(init.body as string)).toEqual({ yaml: 'name: ok' })
             expect(result.valid).toBe(true)
+        })
+
+        it('getInsightStatus GETs the encoded status route', async () => {
+            fetchMock.mockResolvedValue(
+                jsonResponse({ engine_id: 'eng/1', running: true, lines_ingested: 42 }),
+            )
+
+            const result = await getInsightStatus('eng/1')
+
+            const call = fetchMock.mock.calls[0]!
+            expect(call[0]).toContain('/engines/eng%2F1/insight/status')
+            expect((call[1] as RequestInit).method).toBeUndefined()
+            expect(result.running).toBe(true)
+        })
+
+        it('getInsightReports GETs the encoded reports route', async () => {
+            fetchMock.mockResolvedValue(
+                jsonResponse({
+                    engine_id: 'eng-1',
+                    lines_ingested: 4200,
+                    insights: [
+                        {
+                            headline: 'Checkout cascade detected',
+                            body: 'postgres latency led checkout retries',
+                            severity: 'High',
+                            confidence: 0.91,
+                            action_hint: 'Throttle retries',
+                            affected_templates: ['T42'],
+                            supporting_evidence: ['checkout retry'],
+                        },
+                    ],
+                }),
+            )
+
+            const result = await getInsightReports('eng-1')
+
+            const call = fetchMock.mock.calls[0]!
+            expect(call[0]).toContain('/engines/eng-1/insight/reports')
+            expect((call[1] as RequestInit).method).toBeUndefined()
+            expect(result.insights[0]?.headline).toBe('Checkout cascade detected')
         })
     })
 })

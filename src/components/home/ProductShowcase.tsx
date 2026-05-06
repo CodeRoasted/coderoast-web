@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Play, Circle } from 'lucide-react'
+import { Activity, AlertTriangle, Brain, CheckCircle, FileText, Layers, Play, Search } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
 
 // Static, hand-tuned YAML kept short for the visual; not parsed at runtime.
@@ -52,6 +52,16 @@ const LEVEL_COLORS: Record<FakeLog['level'], string> = {
     ERROR: 'text-rose-400',
 }
 
+const PIPELINE = [
+    { label: 'Ingest', icon: <Activity className="w-3.5 h-3.5" /> },
+    { label: 'Templates', icon: <Search className="w-3.5 h-3.5" /> },
+    { label: 'MetaLog', icon: <Layers className="w-3.5 h-3.5" /> },
+    { label: 'Detect', icon: <AlertTriangle className="w-3.5 h-3.5" /> },
+    { label: 'Explain', icon: <Brain className="w-3.5 h-3.5" /> },
+]
+
+const EVIDENCE = ['T17 postgres slow query', 'T42 checkout db retry', 'T51 nginx upstream 5xx']
+
 export default function ProductShowcase() {
     const t = useTranslation()
     const [feed, setFeed] = useState<FakeLog[]>([])
@@ -66,17 +76,16 @@ export default function ProductShowcase() {
     }, [feed])
 
     useEffect(() => {
-        let i = 0
+        let index = 0
         let cancelled = false
         const tick = () => {
             if (cancelled) return
-            const sample = LOG_POOL[i % LOG_POOL.length]
+            const sample = LOG_POOL[index % LOG_POOL.length]
             if (sample) {
-                setFeed((prev) => [...prev, sample])
+                setFeed((prev) => [...prev, sample].slice(-16))
             }
-            i++
-            // Speed up around the cascade for visual drama.
-            const delay = i > 5 && i < 14 ? 320 : 700
+            index += 1
+            const delay = index > 3 && index < 11 ? 300 : 650
             window.setTimeout(tick, delay)
         }
         const handle = window.setTimeout(tick, 400)
@@ -104,8 +113,7 @@ export default function ProductShowcase() {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {/* YAML pane */}
+                <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-4">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -113,15 +121,8 @@ export default function ProductShowcase() {
                         transition={{ duration: 0.5 }}
                         className="rounded-2xl bg-gray-900/80 border border-gray-800 overflow-hidden shadow-2xl shadow-black/40"
                     >
-                        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-800 bg-gray-900/60">
-                            <Circle className="w-2.5 h-2.5 fill-rose-500 text-rose-500" />
-                            <Circle className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                            <Circle className="w-2.5 h-2.5 fill-emerald-500 text-emerald-500" />
-                            <span className="ml-3 font-mono text-[11px] text-gray-500">
-                                {t.showcase.yamlLabel}
-                            </span>
-                        </div>
-                        <pre className="px-4 py-4 font-mono text-[12px] leading-[1.55] text-gray-300 overflow-x-auto min-h-[420px]">
+                        <PanelHeader label={t.showcase.yamlLabel} />
+                        <pre className="px-4 py-4 font-mono text-[12px] leading-[1.55] text-gray-300 overflow-x-auto min-h-[430px]">
                             {YAML_LINES.map((line, i) => (
                                 <div key={i} className={line.cls}>
                                     {line.text || '\u00A0'}
@@ -130,48 +131,114 @@ export default function ProductShowcase() {
                         </pre>
                     </motion.div>
 
-                    {/* Live tail pane */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="rounded-2xl bg-gray-900/80 border border-gray-800 overflow-hidden shadow-2xl shadow-black/40"
+                        className="space-y-4"
                     >
-                        <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-800 bg-gray-900/60">
-                            <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                <span className="font-mono text-[11px] text-gray-500">
-                                    {t.showcase.logsLabel}
+                        <div className="rounded-2xl bg-gray-900/80 border border-gray-800 overflow-hidden shadow-2xl shadow-black/40">
+                            <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-gray-800 bg-gray-900/60">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <Brain className="w-4 h-4 text-brand-400 shrink-0" />
+                                    <span className="font-mono text-[11px] text-gray-500 truncate">
+                                        insight_explain.json
+                                    </span>
+                                </div>
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/40">
+                                    LIVE API
                                 </span>
                             </div>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/40">
-                                SIMULATED
-                            </span>
+
+                            <div className="p-4 space-y-4">
+                                <div className="flex flex-wrap gap-2">
+                                    {PIPELINE.map((stage) => (
+                                        <span
+                                            key={stage.label}
+                                            className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 px-2.5 py-1 text-[11px] font-semibold text-brand-200"
+                                        >
+                                            {stage.icon}
+                                            {stage.label}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-red-200">
+                                                <AlertTriangle className="w-3 h-3" />
+                                                High severity
+                                            </span>
+                                            <h3 className="mt-3 text-lg font-display font-semibold leading-tight text-white">
+                                                Checkout failures are cascading from postgres latency.
+                                            </h3>
+                                        </div>
+                                        <div className="shrink-0 text-right">
+                                            <div className="font-mono text-2xl font-bold text-white">91%</div>
+                                            <div className="text-[10px] uppercase tracking-wide text-gray-500">
+                                                confidence
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="mt-3 text-sm leading-relaxed text-gray-300">
+                                        InSight matched a new postgres slow-query template, then saw checkout retries and nginx 5xx responses mature in the same MetaLog window.
+                                    </p>
+                                    <div className="mt-4 rounded-lg border border-emerald-500/25 bg-emerald-500/10 p-3">
+                                        <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-300">
+                                            Action hint
+                                        </div>
+                                        <p className="mt-1 text-xs leading-relaxed text-emerald-100">
+                                            Isolate the postgres write path and throttle checkout retry pressure before the web tier amplifies the failure.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <EvidenceBlock title="Affected templates" values={EVIDENCE} />
+                                    <EvidenceBlock
+                                        title="Explain packet"
+                                        values={['MetaLog window: 5m', 'detectors: ADWIN + CUSUM', 'lines ingested: 4.2k']}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            ref={scrollRef}
-                            className="px-3 py-3 font-mono text-[11.5px] leading-[1.7] h-[420px] overflow-y-auto scroll-smooth flex flex-col"
-                            style={{ scrollbarWidth: 'none' }}
-                        >
-                            {feed.map((l, i) => (
-                                <motion.div
-                                    key={`${i}-${l.ts}`}
-                                    initial={{ opacity: 0, x: 8 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.18 }}
-                                    className="flex gap-3 px-1 py-0.5"
-                                >
-                                    <span className="text-gray-600 shrink-0">{l.ts}</span>
-                                    <span className="text-purple-400 shrink-0 w-16 truncate">
-                                        {l.agent}
+
+                        <div className="rounded-2xl bg-gray-900/80 border border-gray-800 overflow-hidden shadow-2xl shadow-black/40">
+                            <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-800 bg-gray-900/60">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                                    <span className="font-mono text-[11px] text-gray-500 truncate">
+                                        {t.showcase.logsLabel}
                                     </span>
-                                    <span className={`shrink-0 w-10 ${LEVEL_COLORS[l.level]}`}>
-                                        {l.level}
-                                    </span>
-                                    <span className="text-gray-300 truncate">{l.msg}</span>
-                                </motion.div>
-                            ))}
+                                </div>
+                                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                            </div>
+                            <div
+                                ref={scrollRef}
+                                className="px-3 py-3 font-mono text-[11.5px] leading-[1.7] h-[190px] overflow-y-auto scroll-smooth flex flex-col"
+                                style={{ scrollbarWidth: 'none' }}
+                            >
+                                {feed.map((line, i) => (
+                                    <motion.div
+                                        key={`${i}-${line.ts}`}
+                                        initial={{ opacity: 0, x: 8 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.18 }}
+                                        className="flex gap-3 px-1 py-0.5 min-w-0"
+                                    >
+                                        <span className="text-gray-600 shrink-0">{line.ts}</span>
+                                        <span className="text-purple-400 shrink-0 w-16 truncate">
+                                            {line.agent}
+                                        </span>
+                                        <span className={`shrink-0 w-10 ${LEVEL_COLORS[line.level]}`}>
+                                            {line.level}
+                                        </span>
+                                        <span className="text-gray-300 truncate">{line.msg}</span>
+                                    </motion.div>
+                                ))}
+                            </div>
                         </div>
                     </motion.div>
                 </div>
@@ -187,5 +254,34 @@ export default function ProductShowcase() {
                 </div>
             </div>
         </section>
+    )
+}
+
+function PanelHeader({ label }: { label: string }) {
+    return (
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-800 bg-gray-900/60">
+            <FileText className="w-4 h-4 text-gray-500" />
+            <span className="font-mono text-[11px] text-gray-500">{label}</span>
+        </div>
+    )
+}
+
+function EvidenceBlock({ title, values }: { title: string; values: string[] }) {
+    return (
+        <div className="rounded-lg border border-gray-800 bg-gray-950/60 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">
+                {title}
+            </div>
+            <div className="mt-2 space-y-1.5">
+                {values.map((value) => (
+                    <div
+                        key={value}
+                        className="rounded border border-gray-800 bg-gray-900/70 px-2 py-1 font-mono text-[11px] text-gray-300 truncate"
+                    >
+                        {value}
+                    </div>
+                ))}
+            </div>
+        </div>
     )
 }

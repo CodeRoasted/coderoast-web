@@ -1,4 +1,9 @@
-import type { EngineInfo, EngineSnapshot } from '@/types/engine'
+import type {
+    EngineInfo,
+    EngineSnapshot,
+    InsightReportsResponse,
+    InsightStatus,
+} from '@/types/engine'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export interface ScenarioMeta {
@@ -228,6 +233,14 @@ export async function loadScenario(engineId: string, yaml: string): Promise<{ me
 
 export async function getEngineScenario(engineId: string): Promise<{ yaml: string }> {
     return request(`/engines/${encodeURIComponent(engineId)}/scenario`)
+}
+
+export async function getInsightStatus(engineId: string): Promise<InsightStatus> {
+    return request(`/engines/${encodeURIComponent(engineId)}/insight/status`)
+}
+
+export async function getInsightReports(engineId: string): Promise<InsightReportsResponse> {
+    return request(`/engines/${encodeURIComponent(engineId)}/insight/reports`)
 }
 
 export async function sendCommand(

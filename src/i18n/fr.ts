@@ -10,18 +10,18 @@ const fr: typeof en = {
         features: 'Fonctionnalités',
         pricing: 'Tarifs',
         logcraft: 'LogCraft',
-        lab: 'Ouvrir le Lab',
+        lab: 'Playground InSight',
         useCases: 'Cas d’usage',
         contact: 'Contact',
     },
     hero: {
-        badge: 'Moteur performant · Lab sans installation · 20+ formats de sortie',
-        tagline: 'Des logs synthétiques réalistes. À la demande.',
+        badge: 'Démo explain InSight · flux LogCraft déterministe · backend /api/v1 live',
+        tagline: 'Du chaos de logs à l’explication claire.',
         subtitle:
-            'LogCraft génère des flux de logs aux formes de production à partir d\'un scénario YAML — cascades de pannes, queues de latence, incidents planifiés, plus de vingt formats de sortie. Stressez votre pipeline avant que la prod ne le fasse.',
-        cta: 'Essayer LogCraft en direct',
-        ctaSecondary: 'Voir comment ça marche',
-        trust: 'Déterministe · ECS · OTLP · Prometheus · StatsD · Syslog · CLF · HTTP · fichier',
+            'InSight transforme des incidents synthétiques live en preuves MetaLog, détections, puis explications prêtes pour l’opérateur. LogCraft fournit le signal reproductible ; InSight montre ce qui s’est passé et pourquoi.',
+        cta: 'Ouvrir le Playground InSight',
+        ctaSecondary: 'Voir le pipeline',
+        trust: 'MetaLog · templates Drain · détection de dérive · paquets explain · replay déterministe',
     },
     problem: {
         title: 'On ne livre pas une observabilité qu\'on n\'a jamais testée.',
@@ -46,12 +46,12 @@ const fr: typeof en = {
         ],
     },
     showcase: {
-        title: 'YAML en entrée. Logs aux formes de production en sortie.',
+        title: 'Incident en entrée. Explication en sortie.',
         subtitle:
-            'Décrivez une flotte de services en quelques lignes. Le moteur les lance sur de vrais threads, émet des records structurés, et les expédie vers le sink que vous voulez.',
+            'Lancez un scénario LogCraft déterministe et regardez InSight condenser le flux en templates, MetaLogs, preuves de détection et explication exploitable.',
         yamlLabel: 'scenario.yaml',
-        logsLabel: 'sortie moteur live',
-        cta: 'Ouvrir le Lab',
+        logsLabel: 'flux de preuve live',
+        cta: 'Ouvrir le Playground InSight',
     },
     features: {
         title: 'Tous les boutons que la vraie vie a.',
@@ -107,7 +107,7 @@ const fr: typeof en = {
             {
                 title: 'Brancher',
                 description:
-                    'Streamez vers votre stack : Datadog, Loki, Splunk, Elastic, OpenTelemetry — ou directement vers InSight quand il sortira.',
+                    'Streamez vers votre stack : Datadog, Loki, Splunk, Elastic, OpenTelemetry — ou directement vers InSight pour une détection explicable.',
             },
         ],
     },
@@ -144,17 +144,17 @@ const fr: typeof en = {
     portfolio: {
         title: 'L\'autre moitié du tableau.',
         subtitle:
-            'LogCraft est une moitié d\'un plan à deux moteurs. InSight est l\'autre — et le Lab, c\'est là où ils se rejoignent.',
+            'InSight est le produit CodeRoast promu. LogCraft est la source de signal déterministe qui rend la démo live reproductible.',
         insight: {
             name: 'InSight',
             description:
-                'Un pipeline streaming en 5 phases (tokenisation → séquencement → metalog → détection de dérive → insight LLM optionnel) qui auto-détecte les formats, mine les templates avec Drain, construit des modèles comportementaux et capte les anomalies via un ensemble ADWIN / Page-Hinkley / EWMA / CUSUM. POC en cours ; LogCraft sert de terrain d\'entraînement.',
-            status: 'R&D · POC',
+                'Un pipeline d’analyse streaming qui transforme des logs bruyants en templates, MetaLogs, preuves de détection et paquets d’explication. Il tourne maintenant derrière le Lab pour produire des résultats visibles, pas seulement une sortie brute.',
+            status: 'Promu · API live',
             highlights: [
-                'Pipeline streaming 5 phases',
+                'Cartes explain en premier plan',
                 'Mining de templates type Drain',
-                'Ensemble de détecteurs de dérive',
-                'Indices LLM en option',
+                'Couche de compression MetaLog',
+                'Preuves de détection pour l’IA explain',
             ],
         },
         logcraft: {
@@ -170,14 +170,14 @@ const fr: typeof en = {
             ],
         },
         playground: {
-            name: 'LogCraft Lab',
+            name: 'Playground InSight',
             description:
-                'Le playground navigateur autour de LogCraft. Choisissez un scénario, lancez un moteur en direct, observez les métriques et le flux de logs en temps réel — sans installation. La passerelle vers InSight arrive dès qu\'InSight sort de POC.',
+                'La démo navigateur où LogCraft nourrit InSight. Choisissez un scénario, lancez le moteur, observez le flux brut, puis inspectez la vue explain avec sévérité, confiance, action, templates et preuves.',
             status: 'Disponible',
             highlights: [
                 'Zéro installation',
-                'Métriques agents & sinks en direct',
-                'Flux de logs filtrable',
+                'Rapports InSight live',
+                'Logs, incidents, templates, preuves',
             ],
         },
     },
@@ -188,19 +188,19 @@ const fr: typeof en = {
         badge: 'Bientôt',
         items: [
             {
-                title: 'InSight v0.1',
+                title: 'Démo explain IA',
                 description:
-                    'Première tranche end-to-end de détection d\'anomalies sur les flux LogCraft : auto-détection de format, mining de templates, baseline + score de dérive par template.',
+                    'Brancher un agent sur le payload explain pour narrer les preuves MetaLog et recommander l’étape d’investigation suivante.',
             },
             {
-                title: 'Pont Lab → InSight',
+                title: 'Fixtures de compatibilité',
                 description:
-                    'Brancher un scénario LogCraft directement dans le pipeline InSight et visualiser la dérive dans la même session navigateur. Pas de collecteur, pas de config d\'ingestion.',
+                    'Promouvoir des scénarios de la bibliothèque en gates de release prouvant que LogCraft, IPC, InSight, serveur et web restent alignés.',
             },
             {
-                title: 'Sorties REST + Kafka',
+                title: 'Vues traces MetaLog',
                 description:
-                    'Piloter les moteurs LogCraft depuis la CI et streamer les logs vers Kafka et webhooks pour les tests de pipeline aval.',
+                    'Exposer les fenêtres MetaLog et traces de détecteurs après stabilisation de la démo explain-first.',
             },
         ],
     },
@@ -285,7 +285,7 @@ const fr: typeof en = {
         },
         links: {
             logcraft: 'LogCraft',
-            lab: 'Ouvrir le Lab',
+            lab: 'Playground InSight',
             useCases: 'Cas d’usage',
             pricing: 'Tarifs',
             tierMatrix: 'Matrice des paliers',
@@ -474,14 +474,14 @@ const fr: typeof en = {
         },
     },
     lab: {
-        title: 'Lab',
-        simulatedBadge: 'SIMULÉ · 100% données synthétiques',
-        backToLogCraft: 'Retour à LogCraft',
+        title: 'Playground',
+        simulatedBadge: 'INSIGHT LIVE · flux synthétique',
+        backToLogCraft: 'Retour au produit',
         backToScenarios: 'Retour aux scénarios',
         live: 'En direct',
         selectScenario: 'Choisissez un scénario',
         selectScenarioDesc:
-            'Chaque scénario est un fichier YAML décrivant une fausse topologie de services. Choisissez, éditez si besoin, puis "Run".',
+            'Chaque scénario est une topologie synthétique qui nourrit InSight. Choisissez, éditez si besoin, puis lancez le pipeline.',
         launchEngine: 'Lancer le Moteur',
         runDemo: 'Lancer la démo',
         launchAndStart: 'Lancer le scénario',
@@ -524,6 +524,58 @@ const fr: typeof en = {
         incidents: 'Incidents',
         events: 'événements',
         noIncidents: 'Aucun incident pour le moment.',
+        insight: {
+            tab: 'Insights',
+            title: 'InSight Explain',
+            subtitle: 'Preuves MetaLog transformées en explications opérateur.',
+            running: 'Actif',
+            idle: 'Inactif',
+            syncing: 'Sync',
+            errorShort: 'Erreur',
+            errorTitle: 'InSight indisponible',
+            linesIngested: 'lignes ingérées',
+            capabilityLabel: 'Vues de capacités InSight',
+            latest: 'Dernière explication',
+            previous: 'Explications précédentes',
+            actionHint: 'Action proposée',
+            evidence: 'Preuves de support',
+            templates: 'Templates affectés',
+            confidence: 'confiance',
+            noEvidence: 'Aucune preuve attachée à ce rapport.',
+            noTemplates: 'Aucun template affecté attaché à ce rapport.',
+            noReportsTitle: 'En attente de la première explication',
+            noReportsBody:
+                'InSight ingère le flux et construit les preuves. Quand un détecteur se déclenche, le paquet explain apparaît ici.',
+            detectTitle: 'Sortie détecteur',
+            detectEmptyTitle: 'Aucun finding détecteur pour le moment',
+            detectEmptyBody: 'Les compteurs de sévérité apparaissent quand InSight promeut des preuves en rapports.',
+            metalogTitle: 'Preuves MetaLog',
+            metalogBody:
+                'Les MetaLogs compressent les comportements répétés en paquets de preuve compacts avant la détection et l’explain.',
+            templatesTitle: 'Focus templates',
+            templatesEmptyTitle: 'Aucun focus template',
+            templatesEmptyBody: 'Les templates affectés apparaissent quand une explication nomme les motifs de logs impliqués.',
+            ingestTitle: 'Ingestion live',
+            ingestRunning: 'Le pipeline serveur consomme le flux shared-memory du moteur.',
+            ingestIdle: 'Le moteur est inactif ; InSight attend un flux.',
+            metrics: {
+                lines: 'Lignes',
+                reports: 'Rapports',
+                evidence: 'Preuves',
+                templates: 'Templates',
+            },
+            tabs: {
+                explain: 'Explain',
+                detect: 'Detect',
+                metalog: 'MetaLog',
+                templates: 'Templates',
+                ingest: 'Ingest',
+            },
+            states: {
+                ready: 'Prêt',
+                waiting: 'Attente',
+            },
+        },
         created: 'Moteur prêt.',
         error: 'Erreur',
         noScenarioSelected: 'Choisissez ou collez un scénario YAML pour lancer.',
@@ -571,9 +623,9 @@ const fr: typeof en = {
         filterAllAgents: 'Tous agents',
         filterSearch: 'Rechercher dans les messages…',
         filterClear: 'Effacer les filtres',
-        firstVisitTitle: 'Bienvenue dans le LogCraft Lab',
+        firstVisitTitle: 'Bienvenue dans le Playground InSight',
         firstVisitBody:
-            'C\'est un bac à sable de logs synthétiques. Choisissez un scénario à gauche (on a pré-chargé "Hello World"), cliquez "Lancer le scénario", et regardez une flotte de faux services émettre des logs aux formes de production. Rien n\'est ingéré pour de vrai — les données vivent uniquement dans cet onglet.',
+            'C\'est une démo InSight live alimentée par des logs synthétiques. Choisissez un scénario à gauche, lancez-le, et regardez InSight transformer le flux en explications. Rien de réel n\'est ingéré — les données restent dans cette session navigateur.',
         firstVisitDismiss: 'OK, c\'est parti',
         firstVisitLearn: 'Lire la présentation de LogCraft d\'abord',
         emptyEngineHint:

@@ -27,6 +27,10 @@ export default function Lab() {
     const liveTail = useEngineStore((s) => s.liveTail)
     const clearLiveTail = useEngineStore((s) => s.clearLiveTail)
     const selectedScenarioId = useEngineStore((s) => s.selectedScenarioId)
+    const insightStatus = useEngineStore((s) => s.insightStatus)
+    const insightReports = useEngineStore((s) => s.insightReports)
+    const insightLoading = useEngineStore((s) => s.insightLoading)
+    const insightError = useEngineStore((s) => s.insightError)
 
     const lifecycle = useEngineLifecycle()
     const onboarding = useFirstVisitOnboarding()
@@ -99,6 +103,10 @@ export default function Lab() {
                         liveTail={liveTail}
                         clearLiveTail={clearLiveTail}
                         agentNames={agentNames}
+                        insightStatus={insightStatus}
+                        insightReports={insightReports}
+                        insightLoading={insightLoading}
+                        insightError={insightError}
                         isRunning={isRunning}
                         isSeeded={isSeeded}
                         seedBroken={lifecycle.seedBroken}

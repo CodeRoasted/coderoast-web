@@ -3,6 +3,8 @@ import {
     createEngine,
     deleteEngine,
     getEngineScenario,
+    getInsightReports,
+    getInsightStatus,
     TierRequiredError,
     validateScenario,
 } from '@/services/api'
@@ -31,6 +33,11 @@ export function useEngineLifecycle() {
     const setStatusMessage = useEngineStore((s) => s.setStatusMessage)
     const setScenarioYaml = useEngineStore((s) => s.setScenarioYaml)
     const appendToLiveTail = useEngineStore((s) => s.appendToLiveTail)
+    const setInsightStatus = useEngineStore((s) => s.setInsightStatus)
+    const appendInsightReports = useEngineStore((s) => s.appendInsightReports)
+    const setInsightLoading = useEngineStore((s) => s.setInsightLoading)
+    const setInsightError = useEngineStore((s) => s.setInsightError)
+    const clearInsightData = useEngineStore((s) => s.clearInsightData)
 
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
@@ -73,6 +80,80 @@ export function useEngineLifecycle() {
     useEffect(() => {
         setSeedBroken(false)
     }, [engineId])
+
+    useEffect(() => {
+        if (!engineId) {
+            clearInsightData()
+            return
+        }
+
+        let cancelled = false
+        let inFlight = false
+        let lastReportLines = -1
+        let hasInitialData = false
+
+        clearInsightData()
+
+        const pollInsight = async () => {
+            if (inFlight) return
+            inFlight = true
+            // Only show the loading badge on the very first fetch.
+            // Subsequent polls are silent to avoid a layout shift every 3 s.
+            if (!hasInitialData) setInsightLoading(true)
+            try {
+                const status = await getInsightStatus(engineId)
+                if (cancelled) return
+                setInsightStatus(status)
+                hasInitialData = true
+
+                if (status.running && status.lines_ingested !== lastReportLines) {
+                    try {
+                        const reportSnapshot = await getInsightReports(engineId)
+                        if (cancelled) return
+                        lastReportLines = reportSnapshot.lines_ingested
+                        appendInsightReports(
+                            reportSnapshot.insights,
+                            reportSnapshot.lines_ingested,
+                        )
+                    } catch (reportsError) {
+                        const message = reportsError instanceof Error ? reportsError.message : String(reportsError)
+                        if (!/409|not yet started|not initialised/i.test(message)) {
+                            throw reportsError
+                        }
+                    }
+                }
+
+                setInsightError(null)
+            } catch (e) {
+                if (cancelled) return
+                if (e instanceof TierRequiredError) {
+                    setTierError(e)
+                } else {
+                    setInsightError(e instanceof Error ? e.message : String(e))
+                }
+            } finally {
+                inFlight = false
+                if (!cancelled) setInsightLoading(false)
+            }
+        }
+
+        void pollInsight()
+        const intervalId = window.setInterval(() => {
+            void pollInsight()
+        }, 3000)
+
+        return () => {
+            cancelled = true
+            window.clearInterval(intervalId)
+        }
+    }, [
+        engineId,
+        clearInsightData,
+        setInsightStatus,
+        appendInsightReports,
+        setInsightLoading,
+        setInsightError,
+    ])
 
     const connectToEngine = useCallback(
         (id: string) => {

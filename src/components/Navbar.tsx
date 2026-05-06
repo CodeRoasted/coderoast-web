@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, FlaskConical, Github } from 'lucide-react'
+import { Menu, X, Brain, Github } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import LanguageToggle from './LanguageToggle'
 import Logo from './Logo'
@@ -91,7 +91,7 @@ export default function Navbar() {
                             to="/lab"
                             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white text-sm font-semibold shadow-md shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
-                            <FlaskConical className="w-3.5 h-3.5" />
+                            <Brain className="w-3.5 h-3.5" />
                             {t.nav.lab}
                         </Link>
                         <button
@@ -136,7 +136,7 @@ export default function Navbar() {
                                 onClick={() => setIsOpen(false)}
                                 className="flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
                             >
-                                <FlaskConical className="w-3.5 h-3.5" />
+                                <Brain className="w-3.5 h-3.5" />
                                 {t.nav.lab}
                             </Link>
                         </div>

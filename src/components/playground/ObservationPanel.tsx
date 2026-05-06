@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ScrollText, AlertTriangle, Radio } from 'lucide-react'
+import { ScrollText, AlertTriangle, Brain, Radio } from 'lucide-react'
 import LogTail from './LogTail'
 import IncidentTimeline from './IncidentTimeline'
 import DrainPanel from './DrainPanel'
+import InsightPanel from './InsightPanel'
 import { hasDemoHttpSink } from './drainUtils'
 import { useTranslation } from '@/hooks/useTranslation'
-import type { EngineSnapshot, LogTailEntry } from '@/types/engine'
+import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
 
 interface Props {
     engineId: string | null
@@ -13,9 +14,13 @@ interface Props {
     liveTail: LogTailEntry[]
     clearLiveTail: () => void
     agentNames: string[]
+    insightStatus: InsightStatus | null
+    insightReports: InsightReport[]
+    insightLoading: boolean
+    insightError: string | null
 }
 
-type TabKey = 'logs' | 'incidents' | 'drain'
+type TabKey = 'insight' | 'logs' | 'incidents' | 'drain'
 
 /// Tabbed observation column.
 ///
@@ -32,12 +37,16 @@ export default function ObservationPanel({
     liveTail,
     clearLiveTail,
     agentNames,
+    insightStatus,
+    insightReports,
+    insightLoading,
+    insightError,
 }: Props) {
     const t = useTranslation()
     const sinks = useMemo(() => snapshot?.sinks ?? [], [snapshot?.sinks])
     const showDrain = useMemo(() => hasDemoHttpSink(sinks), [sinks])
 
-    const [active, setActive] = useState<TabKey>('logs')
+    const [active, setActive] = useState<TabKey>('insight')
     const [drainCounts, setDrainCounts] = useState({ total: 0, filtered: 0, dropped: 0 })
 
     // If the demo sink disappears (engine destroyed / scenario swap),
@@ -54,6 +63,14 @@ export default function ObservationPanel({
         <div className="bg-gray-900/40 border border-gray-700/50 rounded-xl overflow-hidden flex flex-col h-full min-h-0">
             {/* Tab strip */}
             <div role="tablist" className="flex items-stretch border-b border-gray-700/50 shrink-0">
+                <TabButton
+                    active={active === 'insight'}
+                    onClick={() => setActive('insight')}
+                    icon={<Brain className="w-3.5 h-3.5" />}
+                    label={t.lab.insight.tab}
+                    badge={insightReports.length > 0 ? String(insightReports.length) : undefined}
+                    badgeAccent={insightReports.length > 0 ? 'brand' : undefined}
+                />
                 <TabButton
                     active={active === 'logs'}
                     onClick={() => setActive('logs')}
@@ -86,6 +103,14 @@ export default function ObservationPanel({
                 a tab switch — that's what operators expect from a
                 multi-stream console. */}
             <div className="flex-1 min-h-0 relative">
+                <TabPane active={active === 'insight'}>
+                    <InsightPanel
+                        status={insightStatus}
+                        reports={insightReports}
+                        loading={insightLoading}
+                        error={insightError}
+                    />
+                </TabPane>
                 <TabPane active={active === 'logs'}>
                     <LogTail
                         entries={liveTail}
@@ -117,7 +142,7 @@ interface TabButtonProps {
     icon: React.ReactNode
     label: string
     badge?: string
-    badgeAccent?: 'amber' | 'red'
+    badgeAccent?: 'amber' | 'red' | 'brand'
 }
 
 function TabButton({ active, onClick, icon, label, badge, badgeAccent }: TabButtonProps) {
@@ -131,7 +156,9 @@ function TabButton({ active, onClick, icon, label, badge, badgeAccent }: TabButt
             ? 'bg-red-500/20 text-red-300 border-red-500/40'
             : badgeAccent === 'amber'
                 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                : 'bg-gray-800 text-gray-400 border-gray-700'
+                : badgeAccent === 'brand'
+                    ? 'bg-brand-500/20 text-brand-300 border-brand-500/40'
+                    : 'bg-gray-800 text-gray-400 border-gray-700'
     return (
         <button
             type="button"

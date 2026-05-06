@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, FlaskConical, HelpCircle } from 'lucide-react'
+import { ArrowLeft, Brain, HelpCircle } from 'lucide-react'
 import UserSelector from '@/components/UserSelector'
 import { useTranslation } from '@/hooks/useTranslation'
 
@@ -37,7 +37,7 @@ export default function LabTopBar({
                         </button>
                     ) : (
                         <Link
-                            to="/logcraft"
+                            to="/#product"
                             className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
@@ -46,8 +46,8 @@ export default function LabTopBar({
                     )}
                     <div className="h-5 w-px bg-gray-700 hidden sm:block" />
                     <h1 className="font-display font-bold text-lg flex items-center gap-2 min-w-0">
-                        <FlaskConical className="w-4 h-4 text-brand-500 shrink-0" />
-                        <span className="text-brand-500">LogCraft</span>{' '}
+                        <Brain className="w-4 h-4 text-brand-500 shrink-0" />
+                        <span className="text-brand-500">InSight</span>{' '}
                         <span className="text-gray-300">{t.lab.title}</span>
                     </h1>
                     <span
