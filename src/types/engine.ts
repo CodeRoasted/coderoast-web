@@ -1,5 +1,8 @@
 export type HealthState = 'Healthy' | 'Degraded' | 'Failing' | 'Recovering'
 export type LogLevelName = 'TRACE' | 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'FATAL'
+export type EngineMode = 'real' | 'deterministic' | (string & {})
+export type ClockMode = 'real' | 'virtual' | (string & {})
+export type PlaybackState = 'playing' | 'paused' | 'stopped' | (string & {})
 
 export interface AgentSnapshot {
     name: string
@@ -48,10 +51,17 @@ export interface EngineSnapshot {
     scenario_name: string
     seed: number
     has_seed: boolean
+    engine_mode: EngineMode
     replay_mode: boolean
     has_cascade: boolean
+    clock_mode: ClockMode
+    playback_state: PlaybackState
+    speed_multiplier: number
     elapsed_seconds: number
+    wall_elapsed_seconds: number
+    simulation_elapsed_seconds: number
     remaining_seconds: number
+    simulation_now_unix_ns: number
     state: string
     queue_backlog: number
     throughput_rps: number

@@ -583,6 +583,13 @@ const en = {
         loadingScenarios: 'Loading scenarios…',
         scenarioLoadError: 'Could not load scenarios',
         scenarioYaml: 'Scenario YAML',
+        play: 'Play',
+        pause: 'Pause',
+        advance: 'Advance',
+        mode: 'Mode',
+        clock: 'Clock',
+        playback: 'Playback',
+        speed: 'Speed',
         cascade: 'Cascade now',
         cascadeTip:
             'Force one round of cascade evaluation. Failing agents propagate degradation to their callers using your scenario\'s blast radius / dampening. Great to demo "one DB takes the rest down".',
@@ -629,6 +636,8 @@ const en = {
         firstVisitLearn: 'Read the LogCraft overview first',
         emptyEngineHint:
             'Engine created — press "Start" to begin emitting logs.',
+        simulationElapsed: 'Sim elapsed',
+        wallElapsed: 'Wall elapsed',
         engineLabel: 'Engine',
         scenarioName: 'Scenario',
         recommendedBadge: 'Recommended start',

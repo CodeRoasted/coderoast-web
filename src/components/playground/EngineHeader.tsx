@@ -18,6 +18,13 @@ function shortId(id: string): string {
 export default function EngineHeader({ snapshot, engineId }: Props) {
     const t = useTranslation()
     const state = snapshot?.state ?? 'idle'
+    const engineMode = snapshot?.engine_mode ?? 'real'
+    const clockMode = snapshot?.clock_mode ?? 'real'
+    const playbackState = snapshot?.playback_state ?? 'stopped'
+    const isDeterministic = engineMode === 'deterministic'
+    const elapsedSeconds = isDeterministic
+        ? snapshot?.simulation_elapsed_seconds ?? snapshot?.elapsed_seconds ?? 0
+        : snapshot?.wall_elapsed_seconds ?? snapshot?.elapsed_seconds ?? 0
     const stateColor =
         state === 'running'
             ? 'text-emerald-400'
@@ -37,7 +44,7 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
     return (
         <div className="flex flex-wrap items-center gap-6">
             <div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <h2 className="font-display text-xl font-bold text-gray-100">
                         {friendlyName}
                     </h2>
@@ -46,6 +53,17 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
                     >
                         {state}
                     </span>
+                    <MetaBadge label={t.lab.mode} value={humanize(engineMode)} />
+                    <MetaBadge label={t.lab.clock} value={humanize(clockMode)} />
+                    {isDeterministic && (
+                        <>
+                            <MetaBadge label={t.lab.playback} value={humanize(playbackState)} />
+                            <MetaBadge
+                                label={t.lab.speed}
+                                value={`${(snapshot?.speed_multiplier ?? 1).toFixed(1)}x`}
+                            />
+                        </>
+                    )}
                 </div>
                 <button
                     onClick={handleCopyId}
@@ -69,8 +87,8 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
                 />
                 <Stat
                     icon={<Clock className="w-4 h-4 text-blue-400" />}
-                    label={t.lab.elapsed}
-                    value={formatDuration(snapshot?.elapsed_seconds ?? 0)}
+                    label={isDeterministic ? t.lab.simulationElapsed : t.lab.wallElapsed}
+                    value={formatDuration(elapsedSeconds)}
                 />
                 <Stat
                     icon={<Activity className="w-4 h-4 text-purple-400" />}
@@ -79,6 +97,14 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
                 />
             </div>
         </div>
+    )
+}
+
+function MetaBadge({ label, value }: { label: string; value: string }) {
+    return (
+        <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full border border-gray-700 bg-gray-900 text-gray-300">
+            {label}: {value}
+        </span>
     )
 }
 
@@ -98,4 +124,9 @@ function formatDuration(seconds: number): string {
     const m = Math.floor(seconds / 60)
     const s = Math.floor(seconds % 60)
     return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+function humanize(value: string): string {
+    if (!value) return 'Unknown'
+    return value.replace(/_/g, ' ')
 }

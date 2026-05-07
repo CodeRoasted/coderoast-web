@@ -45,7 +45,8 @@ export default function Lab() {
     }, [selectedScenarioId])
 
     const isRunning = snapshot?.state === 'running'
-    const isSeeded = snapshot?.has_seed ?? false
+    const isDeterministic = snapshot?.engine_mode === 'deterministic'
+    const hasRealModeMutations = isRunning && !isDeterministic
 
     const agentNames = useMemo(
         () => snapshot?.agents?.map((a) => a.name) ?? [],
@@ -108,16 +109,16 @@ export default function Lab() {
                         insightLoading={insightLoading}
                         insightError={insightError}
                         isRunning={isRunning}
-                        isSeeded={isSeeded}
-                        seedBroken={lifecycle.seedBroken}
-                        runKey={lifecycle.runKey}
-                        onSeedBreachConfirm={() => lifecycle.setSeedBroken(true)}
                         onStart={lifecycle.handleStart}
                         onStop={lifecycle.handleStop}
-                        onCascade={lifecycle.handleCascade}
-                        onSetRate={lifecycle.handleSetRate}
-                        onSetErrorRate={lifecycle.handleSetErrorRate}
-                        onBurst={lifecycle.handleBurst}
+                        onPlay={lifecycle.handlePlay}
+                        onPause={lifecycle.handlePause}
+                        onSetPlaybackSpeed={lifecycle.handleSetPlaybackSpeed}
+                        onAdvance={lifecycle.handleAdvance}
+                        onCascade={hasRealModeMutations ? lifecycle.handleCascade : undefined}
+                        onSetRate={hasRealModeMutations ? lifecycle.handleSetRate : undefined}
+                        onSetErrorRate={hasRealModeMutations ? lifecycle.handleSetErrorRate : undefined}
+                        onBurst={hasRealModeMutations ? lifecycle.handleBurst : undefined}
                     />
                 )}
             </div>

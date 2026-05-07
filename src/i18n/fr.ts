@@ -584,6 +584,13 @@ const fr: typeof en = {
         loadingScenarios: 'Chargement des scénarios…',
         scenarioLoadError: 'Impossible de charger les scénarios',
         scenarioYaml: 'Scénario YAML',
+        play: 'Lecture',
+        pause: 'Pause',
+        advance: 'Avancer',
+        mode: 'Mode',
+        clock: 'Horloge',
+        playback: 'Lecture',
+        speed: 'Vitesse',
         cascade: 'Cascade',
         cascadeTip:
             'Force un round d\'évaluation cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne le reste".',
@@ -630,6 +637,8 @@ const fr: typeof en = {
         firstVisitLearn: 'Lire la présentation de LogCraft d\'abord',
         emptyEngineHint:
             'Moteur créé — cliquez "Démarrer" pour commencer à émettre des logs.',
+        simulationElapsed: 'Temps simulé',
+        wallElapsed: 'Temps réel',
         engineLabel: 'Moteur',
         scenarioName: 'Scénario',
         recommendedBadge: 'Démarrage recommandé',

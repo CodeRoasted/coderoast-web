@@ -8,13 +8,9 @@ interface Props {
     onSetRate?: (name: string, rps: number) => void
     onSetErrorRate?: (name: string, rate: number) => void
     onBurst?: (name: string, count: number) => void
-    isSeeded?: boolean
-    seedBroken?: boolean
-    onSeedBreachConfirm?: () => void
-    runKey?: number
 }
 
-export default function AgentGrid({ agents, onSetRate, onSetErrorRate, onBurst, isSeeded, seedBroken, onSeedBreachConfirm, runKey }: Props) {
+export default function AgentGrid({ agents, onSetRate, onSetErrorRate, onBurst }: Props) {
     const t = useTranslation()
 
     // Alphabetical by name — stable across the whole run because names never change.
@@ -35,14 +31,11 @@ export default function AgentGrid({ agents, onSetRate, onSetErrorRate, onBurst, 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {sorted.map((agent) => (
                 <AgentCard
-                    key={`${agent.name}-${runKey ?? 0}`}
+                    key={agent.name}
                     agent={agent}
                     onSetRate={onSetRate}
                     onSetErrorRate={onSetErrorRate}
                     onBurst={onBurst}
-                    isSeeded={isSeeded}
-                    seedBroken={seedBroken}
-                    onSeedBreachConfirm={onSeedBreachConfirm}
                 />
             ))}
         </div>

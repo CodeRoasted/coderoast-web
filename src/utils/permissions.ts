@@ -20,6 +20,10 @@ export const REQUIRED_TIER: Record<string, number> = {
     'command.create_engine': TIER_FREE,
     'command.start_engine': TIER_FREE,
     'command.stop_engine': TIER_FREE,
+    'command.play_engine': TIER_FREE,
+    'command.pause_engine': TIER_FREE,
+    'command.set_playback_speed': TIER_FREE,
+    'command.advance_engine': TIER_FREE,
     'command.destroy_engine': TIER_FREE,
     'command.websocket': TIER_FREE,
     // Pro tier — live agent tweaks

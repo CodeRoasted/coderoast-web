@@ -20,16 +20,16 @@ interface Props {
     insightLoading: boolean
     insightError: string | null
     isRunning: boolean
-    isSeeded: boolean
-    seedBroken: boolean
-    runKey: number
-    onSeedBreachConfirm: () => void
     onStart: () => void
     onStop: () => void
-    onCascade: () => void
-    onSetRate: (name: string, rps: number) => void
-    onSetErrorRate: (name: string, rate: number) => void
-    onBurst: (name: string, count: number) => void
+    onPlay: () => void
+    onPause: () => void
+    onSetPlaybackSpeed: (multiplier: number) => void
+    onAdvance: (durationNs: number) => void
+    onCascade?: () => void
+    onSetRate?: (name: string, rps: number) => void
+    onSetErrorRate?: (name: string, rate: number) => void
+    onBurst?: (name: string, count: number) => void
 }
 
 /**
@@ -57,12 +57,12 @@ export default function LabDashboardView({
     insightLoading,
     insightError,
     isRunning,
-    isSeeded,
-    seedBroken,
-    runKey,
-    onSeedBreachConfirm,
     onStart,
     onStop,
+    onPlay,
+    onPause,
+    onSetPlaybackSpeed,
+    onAdvance,
     onCascade,
     onSetRate,
     onSetErrorRate,
@@ -76,15 +76,15 @@ export default function LabDashboardView({
                 <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center justify-between">
                     <EngineHeader snapshot={snapshot} engineId={engineId} />
                     <EngineControls
-                        isRunning={isRunning}
+                        snapshot={snapshot}
                         hasEngine
-                        hasCascade={snapshot?.has_cascade ?? false}
                         onStart={onStart}
                         onStop={onStop}
+                        onPlay={onPlay}
+                        onPause={onPause}
+                        onSetPlaybackSpeed={onSetPlaybackSpeed}
+                        onAdvance={onAdvance}
                         onCascade={onCascade}
-                        isSeeded={isSeeded}
-                        seedBroken={seedBroken}
-                        onSeedBreachConfirm={onSeedBreachConfirm}
                     />
                 </div>
                 {!isRunning && (
@@ -102,13 +102,9 @@ export default function LabDashboardView({
                     {scenarioYaml && <ScenarioPanel yaml={scenarioYaml} engineId={engineId} />}
                     <AgentGrid
                         agents={snapshot?.agents ?? []}
-                        onSetRate={isRunning ? onSetRate : undefined}
-                        onSetErrorRate={isRunning ? onSetErrorRate : undefined}
-                        onBurst={isRunning ? onBurst : undefined}
-                        isSeeded={isSeeded}
-                        seedBroken={seedBroken}
-                        onSeedBreachConfirm={onSeedBreachConfirm}
-                        runKey={runKey}
+                        onSetRate={onSetRate}
+                        onSetErrorRate={onSetErrorRate}
+                        onBurst={onBurst}
                     />
                     <SinkGrid sinks={snapshot?.sinks ?? []} />
                 </div>

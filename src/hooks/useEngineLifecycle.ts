@@ -16,9 +16,9 @@ import { useTranslation } from '@/hooks/useTranslation'
  * Owns the entire engine lifecycle for the Lab page:
  *   – validation + creation (handleRun)
  *   – WebSocket wiring + auto-start handshake
- *   – live commands (start / stop / cascade / set_rate / set_error_rate / burst)
+ *   – live commands (start / stop / play / pause / set_speed / advance / cascade / set_rate / set_error_rate / burst)
  *   – tear-down on unmount + on "back to scenarios"
- *   – validation/capability/tier errors and the seed-breach flag
+ *   – validation/capability/tier errors
  *
  * Pulling this out of the page lets the view layers be pure markup, and
  * makes the lifecycle testable in isolation.
@@ -44,8 +44,6 @@ export function useEngineLifecycle() {
     const [tierError, setTierError] = useState<TierRequiredError | null>(null)
     const [autoStart, setAutoStart] = useState(true)
     const autoStartRef = useRef(true)
-    const [seedBroken, setSeedBroken] = useState(false)
-    const [runKey, setRunKey] = useState(0)
 
     // Mirror engineId into a ref so the unmount effect can read the latest
     // value without re-binding (the cleanup is registered exactly once).
@@ -74,12 +72,6 @@ export function useEngineLifecycle() {
             .then((data) => setScenarioYaml(data.yaml))
             .catch(() => undefined)
     }, [engineId, setScenarioYaml])
-
-    // Reset seed-breach flag whenever the engine changes so the
-    // determinism warning fires again for a fresh scenario run.
-    useEffect(() => {
-        setSeedBroken(false)
-    }, [engineId])
 
     useEffect(() => {
         if (!engineId) {
@@ -220,13 +212,19 @@ export function useEngineLifecycle() {
         }
     }, [scenarioYaml, autoStart, setEngineId, setStatusMessage, connectToEngine, t])
 
-    const handleStart = useCallback(() => {
-        setSeedBroken(false)
-        setRunKey((k) => k + 1)
-        engineWs.sendCommand({ type: 'start' })
-    }, [])
+    const handleStart = useCallback(() => engineWs.sendCommand({ type: 'start' }), [])
 
     const handleStop = useCallback(() => engineWs.sendCommand({ type: 'stop' }), [])
+    const handlePlay = useCallback(() => engineWs.sendCommand({ type: 'play' }), [])
+    const handlePause = useCallback(() => engineWs.sendCommand({ type: 'pause' }), [])
+    const handleSetPlaybackSpeed = useCallback(
+        (multiplier: number) => engineWs.sendCommand({ type: 'set_speed', multiplier }),
+        [],
+    )
+    const handleAdvance = useCallback(
+        (durationNs: number) => engineWs.sendCommand({ type: 'advance', duration_ns: durationNs }),
+        [],
+    )
     const handleCascade = useCallback(() => engineWs.sendCommand({ type: 'cascade' }), [])
     const handleSetRate = useCallback(
         (name: string, rps: number) => engineWs.sendCommand({ type: 'set_rate', agent: name, rps }),
@@ -263,13 +261,14 @@ export function useEngineLifecycle() {
         setTierError,
         autoStart,
         setAutoStart,
-        seedBroken,
-        setSeedBroken,
-        runKey,
         // commands
         handleRun,
         handleStart,
         handleStop,
+        handlePlay,
+        handlePause,
+        handleSetPlaybackSpeed,
+        handleAdvance,
         handleCascade,
         handleSetRate,
         handleSetErrorRate,
