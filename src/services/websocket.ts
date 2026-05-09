@@ -6,6 +6,13 @@ export type WsMessageHandler = {
     onResult?: (success: boolean, message: string) => void
     onConnected?: (engineId: string) => void
     onError?: (error: string) => void
+    /**
+     * Called when the server sends a fatal error message (e.g. "engine not
+     * found") before closing the socket. Unlike `onError` (network faults),
+     * this will NOT trigger a reconnect attempt — the server has explicitly
+     * rejected the connection.
+     */
+    onFatalError?: (error: string) => void
     onClose?: () => void
 }
 
@@ -116,7 +123,12 @@ export class EngineWebSocket {
                         this.handlers.onConnected?.(msg.engine_id)
                         break
                     case 'error':
-                        this.handlers.onError?.(msg.message)
+                        // The server always calls ws_conn->shutdown() after
+                        // sending this, so reconnecting would just get the same
+                        // rejection. Stop the loop and let the caller decide
+                        // what to show / navigate to.
+                        this.shouldReconnect = false
+                        this.handlers.onFatalError?.(msg.message as string)
                         break
                 }
             } catch {

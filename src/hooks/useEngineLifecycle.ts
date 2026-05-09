@@ -165,10 +165,21 @@ export function useEngineLifecycle() {
                     setTimeout(() => setStatusMessage(null), 4000)
                 },
                 onError: (err) => setStatusMessage(err),
+                onFatalError: (err) => {
+                    // Server explicitly rejected our engine ID (e.g. after a
+                    // restart). Reset local state so the user lands back on the
+                    // scenario picker instead of looping reconnect attempts.
+                    setStatusMessage(`✗ ${err}`)
+                    setTimeout(() => setStatusMessage(null), 6000)
+                    engineWs.disconnect()
+                    useEngineStore.getState().reset()
+                    setValidationErrors([])
+                    setUnavailableCapabilities([])
+                },
                 onClose: () => setConnected(false),
             })
         },
-        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage],
+        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities],
     )
 
     const handleRun = useCallback(async () => {
