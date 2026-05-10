@@ -16,7 +16,7 @@ import { useTranslation } from '@/hooks/useTranslation'
  * Owns the entire engine lifecycle for the Lab page:
  *   – validation + creation (handleRun)
  *   – WebSocket wiring + auto-start handshake
- *   – live commands (start / stop / play / pause / set_speed / advance / cascade / set_rate / set_error_rate / burst)
+ *   – live commands (start / stop / play / pause / set_speed / advance / replay_to_target / cascade / set_rate / set_error_rate / burst)
  *   – tear-down on unmount + on "back to scenarios"
  *   – validation/capability/tier errors
  *
@@ -42,8 +42,15 @@ export function useEngineLifecycle() {
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
     const [tierError, setTierError] = useState<TierRequiredError | null>(null)
+    const [replayToTargetPending, setReplayToTargetPending] = useState(false)
     const [autoStart, setAutoStart] = useState(true)
     const autoStartRef = useRef(true)
+    const replayToTargetPendingRef = useRef(false)
+
+    const setReplayPending = useCallback((pending: boolean) => {
+        replayToTargetPendingRef.current = pending
+        setReplayToTargetPending(pending)
+    }, [])
 
     // Mirror engineId into a ref so the unmount effect can read the latest
     // value without re-binding (the cleanup is registered exactly once).
@@ -161,6 +168,7 @@ export function useEngineLifecycle() {
                     if (autoStartRef.current) engineWs.sendCommand({ type: 'start' })
                 },
                 onResult: (success, message) => {
+                    if (replayToTargetPendingRef.current) setReplayPending(false)
                     setStatusMessage(`${success ? '✓' : '✗'} ${message}`)
                     setTimeout(() => setStatusMessage(null), 4000)
                 },
@@ -172,14 +180,18 @@ export function useEngineLifecycle() {
                     setStatusMessage(`✗ ${err}`)
                     setTimeout(() => setStatusMessage(null), 6000)
                     engineWs.disconnect()
+                    setReplayPending(false)
                     useEngineStore.getState().reset()
                     setValidationErrors([])
                     setUnavailableCapabilities([])
                 },
-                onClose: () => setConnected(false),
+                onClose: () => {
+                    setConnected(false)
+                    setReplayPending(false)
+                },
             })
         },
-        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities],
+        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities, setReplayPending],
     )
 
     const handleRun = useCallback(async () => {
@@ -236,6 +248,18 @@ export function useEngineLifecycle() {
         (durationNs: number) => engineWs.sendCommand({ type: 'advance', duration_ns: durationNs }),
         [],
     )
+    const handleReplayToTarget = useCallback(
+        (targetElapsedNs: number) => {
+            if (!engineWs.connected) {
+                setStatusMessage(t.lab.websocketNotConnected)
+                return
+            }
+            setReplayPending(true)
+            setStatusMessage(t.lab.replayingToTarget)
+            engineWs.sendCommand({ type: 'replay_to_target', target_elapsed_ns: targetElapsedNs })
+        },
+        [setReplayPending, setStatusMessage, t],
+    )
     const handleCascade = useCallback(() => engineWs.sendCommand({ type: 'cascade' }), [])
     const handleSetRate = useCallback(
         (name: string, rps: number) => engineWs.sendCommand({ type: 'set_rate', agent: name, rps }),
@@ -272,6 +296,7 @@ export function useEngineLifecycle() {
         setTierError,
         autoStart,
         setAutoStart,
+        replayToTargetPending,
         // commands
         handleRun,
         handleStart,
@@ -280,6 +305,7 @@ export function useEngineLifecycle() {
         handlePause,
         handleSetPlaybackSpeed,
         handleAdvance,
+        handleReplayToTarget,
         handleCascade,
         handleSetRate,
         handleSetErrorRate,

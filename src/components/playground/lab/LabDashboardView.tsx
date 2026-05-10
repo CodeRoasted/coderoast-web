@@ -19,6 +19,7 @@ interface Props {
     insightReports: InsightReport[]
     insightLoading: boolean
     insightError: string | null
+    replayToTargetPending: boolean
     isRunning: boolean
     onStart: () => void
     onStop: () => void
@@ -26,6 +27,7 @@ interface Props {
     onPause: () => void
     onSetPlaybackSpeed: (multiplier: number) => void
     onAdvance: (durationNs: number) => void
+    onReplayToTarget: (targetElapsedNs: number) => void
     onCascade?: () => void
     onSetRate?: (name: string, rps: number) => void
     onSetErrorRate?: (name: string, rate: number) => void
@@ -56,6 +58,7 @@ export default function LabDashboardView({
     insightReports,
     insightLoading,
     insightError,
+    replayToTargetPending,
     isRunning,
     onStart,
     onStop,
@@ -63,6 +66,7 @@ export default function LabDashboardView({
     onPause,
     onSetPlaybackSpeed,
     onAdvance,
+    onReplayToTarget,
     onCascade,
     onSetRate,
     onSetErrorRate,
@@ -84,6 +88,8 @@ export default function LabDashboardView({
                         onPause={onPause}
                         onSetPlaybackSpeed={onSetPlaybackSpeed}
                         onAdvance={onAdvance}
+                        onReplayToTarget={onReplayToTarget}
+                        replayToTargetPending={replayToTargetPending}
                         onCascade={onCascade}
                     />
                 </div>

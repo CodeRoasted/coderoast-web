@@ -108,6 +108,7 @@ export default function Lab() {
                         insightReports={insightReports}
                         insightLoading={insightLoading}
                         insightError={insightError}
+                        replayToTargetPending={lifecycle.replayToTargetPending}
                         isRunning={isRunning}
                         onStart={lifecycle.handleStart}
                         onStop={lifecycle.handleStop}
@@ -115,6 +116,7 @@ export default function Lab() {
                         onPause={lifecycle.handlePause}
                         onSetPlaybackSpeed={lifecycle.handleSetPlaybackSpeed}
                         onAdvance={lifecycle.handleAdvance}
+                        onReplayToTarget={lifecycle.handleReplayToTarget}
                         onCascade={hasRealModeMutations ? lifecycle.handleCascade : undefined}
                         onSetRate={hasRealModeMutations ? lifecycle.handleSetRate : undefined}
                         onSetErrorRate={hasRealModeMutations ? lifecycle.handleSetErrorRate : undefined}
