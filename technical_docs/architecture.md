@@ -117,7 +117,7 @@ The Lab validates YAML before creating an engine. Validation can return:
 
 Once attached, the WebSocket streams snapshots. The server snapshot tail is only the latest slice; `useEngineStore.appendToLiveTail()` deduplicates records by `(timestamp, agent, level, message)` and caps the browser buffer at 1000 records.
 
-In parallel, `useEngineLifecycle` polls InSight status every few seconds. When the reported ingested line count changes, it fetches the current report snapshot and appends deduplicated explanation cards. The observation column defaults to `InsightPanel`, with logs, incidents, and demo sink payloads kept as supporting views.
+In parallel, `useEngineLifecycle` polls InSight status every few seconds. When the reported ingested line count or InSight revision changes, it fetches `/engines/{id}/insight/reports` and replaces the local explanation list with the bounded history owned by the server. The observation column defaults to `InsightPanel`, with logs, incidents, and demo sink payloads kept as supporting views.
 
 ## REST Client
 

@@ -108,7 +108,14 @@ export default function InsightPanel({ status, reports, loading, error }: Props)
                             {copy.subtitle}
                         </p>
                     </div>
-                    <StatusBadge running={running} loading={loading} error={error} />
+                    <div className="shrink-0 flex flex-col items-end gap-1">
+                        <StatusBadge running={running} loading={loading} error={error} />
+                        <ExplainModeBadge
+                            mode={status?.explain_mode}
+                            enabled={status?.llm_enabled}
+                            model={status?.llm_model}
+                        />
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
@@ -324,9 +331,17 @@ function InsightCard({ report, featured = false }: { report: InsightReport; feat
         <article className={`rounded-lg border p-3 ${style.card} ${featured ? 'shadow-lg shadow-black/20' : ''}`}>
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                    <div className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}>
-                        {style.icon}
-                        <span>{report.severity || 'Info'}</span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        <div className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}>
+                            {style.icon}
+                            <span>{report.severity || 'Info'}</span>
+                        </div>
+                        <ExplainModeBadge
+                            mode={report.explain_mode}
+                            enabled={report.llm_enabled}
+                            model={report.llm_model}
+                            compact
+                        />
                     </div>
                     <h3 className="mt-2 text-sm font-semibold leading-snug text-gray-100 break-words">
                         {report.headline}
@@ -409,6 +424,47 @@ function DetailList({
             </div>
         </details>
     )
+}
+
+function ExplainModeBadge({
+    mode,
+    enabled,
+    model,
+    compact = false,
+}: {
+    mode?: string
+    enabled?: boolean
+    model?: string
+    compact?: boolean
+}) {
+    const t = useTranslation()
+    const copy = t.lab.insight
+    if (!mode) return null
+
+    const llmActive = enabled ?? (mode === 'llm_augmented' || mode === 'llm_full')
+    const label = explainModeLabel(mode, copy)
+    const showModel = llmActive && model && !compact
+    const tone = llmActive
+        ? 'border-violet-500/40 bg-violet-500/10 text-violet-200'
+        : 'border-gray-700 bg-gray-950 text-gray-500'
+
+    return (
+        <span className={`inline-flex max-w-full items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${tone}`}>
+            <Brain className="w-3 h-3 shrink-0" />
+            <span className="truncate">{label}</span>
+            {showModel && <span className="max-w-[8rem] truncate font-mono normal-case text-violet-100">{model}</span>}
+        </span>
+    )
+}
+
+function explainModeLabel(
+    mode: string,
+    copy: ReturnType<typeof useTranslation>['lab']['insight'],
+): string {
+    if (mode === 'llm_augmented') return copy.sourceAugmented
+    if (mode === 'llm_full') return copy.sourceFull
+    if (mode === 'rules') return copy.sourceRules
+    return copy.sourceUnknown
 }
 
 function StatusBadge({ running, loading, error }: { running: boolean; loading: boolean; error: string | null }) {

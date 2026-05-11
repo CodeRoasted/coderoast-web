@@ -102,13 +102,31 @@ describe('useEngineStore', () => {
         expect(useEngineStore.getState().liveTail[0]!.message).toBe('fresh')
     })
 
-    it('appendInsightReports deduplicates repeated explanations', () => {
-        useEngineStore.getState().appendInsightReports([report], 42)
-        useEngineStore.getState().appendInsightReports([report], 84)
+    it('setInsightReports replaces the local list with server history', () => {
+        useEngineStore.getState().setInsightReports([report], 42)
+        useEngineStore.getState().setInsightReports([], 84)
+
+        const state = useEngineStore.getState()
+        expect(state.insightReports).toHaveLength(0)
+        expect(state.insightLastLinesIngested).toBe(84)
+    })
+
+    it('setInsightReports accepts revised prose from server history', () => {
+        useEngineStore.getState().setInsightReports([report], 42)
+        useEngineStore.getState().setInsightReports(
+            [
+                {
+                    ...report,
+                    body: 'AI-enriched checkout retry explanation',
+                    action_hint: 'Check retry fan-out and PostgreSQL pool saturation',
+                },
+            ],
+            42,
+        )
 
         const state = useEngineStore.getState()
         expect(state.insightReports).toHaveLength(1)
-        expect(state.insightLastLinesIngested).toBe(84)
+        expect(state.insightReports[0]!.body).toBe('AI-enriched checkout retry explanation')
     })
 
     it('clearInsightData removes reports and status', () => {
@@ -117,7 +135,7 @@ describe('useEngineStore', () => {
             running: true,
             lines_ingested: 42,
         })
-        useEngineStore.getState().appendInsightReports([report], 42)
+        useEngineStore.getState().setInsightReports([report], 42)
         useEngineStore.getState().setInsightError('boom')
 
         useEngineStore.getState().clearInsightData()
@@ -130,7 +148,7 @@ describe('useEngineStore', () => {
 
     it('reset clears insight data with engine state', () => {
         useEngineStore.getState().setEngineId('eng-1')
-        useEngineStore.getState().appendInsightReports([report], 42)
+        useEngineStore.getState().setInsightReports([report], 42)
 
         useEngineStore.getState().reset()
 

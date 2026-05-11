@@ -11,6 +11,7 @@ import {
 import { engineWs } from '@/services/websocket'
 import { useEngineStore } from '@/store/useEngineStore'
 import { useTranslation } from '@/hooks/useTranslation'
+import type { InsightReport, InsightReportsResponse } from '@/types/engine'
 
 /**
  * Owns the entire engine lifecycle for the Lab page:
@@ -34,7 +35,7 @@ export function useEngineLifecycle() {
     const setScenarioYaml = useEngineStore((s) => s.setScenarioYaml)
     const appendToLiveTail = useEngineStore((s) => s.appendToLiveTail)
     const setInsightStatus = useEngineStore((s) => s.setInsightStatus)
-    const appendInsightReports = useEngineStore((s) => s.appendInsightReports)
+    const setInsightReports = useEngineStore((s) => s.setInsightReports)
     const setInsightLoading = useEngineStore((s) => s.setInsightLoading)
     const setInsightError = useEngineStore((s) => s.setInsightError)
     const clearInsightData = useEngineStore((s) => s.clearInsightData)
@@ -89,6 +90,7 @@ export function useEngineLifecycle() {
         let cancelled = false
         let inFlight = false
         let lastReportLines = -1
+        let lastReportRevision = -1
         let hasInitialData = false
 
         clearInsightData()
@@ -105,13 +107,18 @@ export function useEngineLifecycle() {
                 setInsightStatus(status)
                 hasInitialData = true
 
-                if (status.running && status.lines_ingested !== lastReportLines) {
+                const statusRevision = status.insight_revision ?? status.lines_ingested
+                if (
+                    status.running &&
+                    (status.lines_ingested !== lastReportLines || statusRevision !== lastReportRevision)
+                ) {
                     try {
                         const reportSnapshot = await getInsightReports(engineId)
                         if (cancelled) return
                         lastReportLines = reportSnapshot.lines_ingested
-                        appendInsightReports(
-                            reportSnapshot.insights,
+                        lastReportRevision = reportSnapshot.insight_revision ?? statusRevision
+                        setInsightReports(
+                            annotateInsightReports(reportSnapshot),
                             reportSnapshot.lines_ingested,
                         )
                     } catch (reportsError) {
@@ -149,7 +156,7 @@ export function useEngineLifecycle() {
         engineId,
         clearInsightData,
         setInsightStatus,
-        appendInsightReports,
+        setInsightReports,
         setInsightLoading,
         setInsightError,
     ])
@@ -312,4 +319,13 @@ export function useEngineLifecycle() {
         handleBurst,
         handleBackToScenarios,
     } as const
+}
+
+function annotateInsightReports(snapshot: InsightReportsResponse): InsightReport[] {
+    return snapshot.insights.map((report) => ({
+        ...report,
+        explain_mode: report.explain_mode ?? snapshot.explain_mode,
+        llm_enabled: report.llm_enabled ?? snapshot.llm_enabled,
+        llm_model: report.llm_model ?? snapshot.llm_model,
+    }))
 }

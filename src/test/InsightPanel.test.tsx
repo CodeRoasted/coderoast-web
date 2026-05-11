@@ -19,6 +19,13 @@ const report: InsightReport = {
     supporting_evidence: ['postgres slow query 412ms', 'checkout retry 1/3'],
 }
 
+const llmReport: InsightReport = {
+    ...report,
+    explain_mode: 'llm_augmented',
+    llm_enabled: true,
+    llm_model: 'gpt-4o-mini',
+}
+
 describe('InsightPanel', () => {
     it('renders the explain-first report view', () => {
         render(<InsightPanel status={status} reports={[report]} loading={false} error={null} />)
@@ -43,5 +50,19 @@ describe('InsightPanel', () => {
         render(<InsightPanel status={{ ...status, lines_ingested: 0 }} reports={[]} loading={false} error={null} />)
 
         expect(screen.getByText('Waiting for first explanation')).toBeInTheDocument()
+    })
+
+    it('shows LLM mode metadata when reports are AI augmented', () => {
+        render(
+            <InsightPanel
+                status={{ ...status, explain_mode: 'llm_augmented', llm_enabled: true, llm_model: 'gpt-4o-mini' }}
+                reports={[llmReport]}
+                loading={false}
+                error={null}
+            />,
+        )
+
+        expect(screen.getAllByText('AI augmented').length).toBeGreaterThan(0)
+        expect(screen.getByText('gpt-4o-mini')).toBeInTheDocument()
     })
 })

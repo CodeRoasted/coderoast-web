@@ -87,6 +87,8 @@ export type InsightSeverity =
     | 'Critical'
     | (string & {})
 
+export type InsightExplainMode = 'rules' | 'llm_augmented' | 'llm_full' | (string & {})
+
 export interface InsightReport {
     headline: string
     body: string
@@ -95,16 +97,37 @@ export interface InsightReport {
     action_hint: string
     affected_templates: string[]
     supporting_evidence: string[]
+    explain_mode?: InsightExplainMode
+    llm_enabled?: boolean
+    llm_model?: string
+    window_count?: number
+    lines_ingested?: number
+    insight_revision?: number
+    updated_unix_ms?: number
 }
 
 export interface InsightStatus {
     engine_id: string
     running: boolean
     lines_ingested: number
+    insight_revision?: number
+    llm_running?: boolean
+    explain_mode?: InsightExplainMode
+    llm_enabled?: boolean
+    llm_model?: string
 }
 
 export interface InsightReportsResponse {
     engine_id: string
     lines_ingested: number
     insights: InsightReport[]
+    latest_insights?: InsightReport[]
+    insight_revision?: number
+    window_count?: number
+    history_depth?: number
+    history_limit?: number
+    llm_running?: boolean
+    explain_mode?: InsightExplainMode
+    llm_enabled?: boolean
+    llm_model?: string
 }

@@ -97,14 +97,15 @@ describe('EngineWebSocket', () => {
         ws.disconnect()
     })
 
-    it('routes snapshot / result / connected / error frames to handlers', () => {
+    it('routes snapshot / result / connected / fatal error frames to handlers', () => {
         const onSnapshot = vi.fn()
         const onResult = vi.fn()
         const onConnected = vi.fn()
         const onError = vi.fn()
+        const onFatalError = vi.fn()
 
         const ws = new EngineWebSocket()
-        ws.connect('eng-1', { onSnapshot, onResult, onConnected, onError })
+        ws.connect('eng-1', { onSnapshot, onResult, onConnected, onError, onFatalError })
         const sock = lastSocket()
 
         sock.receive({ type: 'connected', engine_id: 'eng-1' })
@@ -115,7 +116,8 @@ describe('EngineWebSocket', () => {
         expect(onConnected).toHaveBeenCalledWith('eng-1')
         expect(onSnapshot).toHaveBeenCalledWith({ engine_id: 'eng-1' })
         expect(onResult).toHaveBeenCalledWith(true, 'ok')
-        expect(onError).toHaveBeenCalledWith('bad input')
+        expect(onFatalError).toHaveBeenCalledWith('bad input')
+        expect(onError).not.toHaveBeenCalled()
 
         ws.disconnect()
     })

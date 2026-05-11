@@ -56,7 +56,7 @@ interface EngineState {
     appendToLiveTail: (entries: LogTailEntry[]) => void
     clearLiveTail: () => void
     setInsightStatus: (status: InsightStatus | null) => void
-    appendInsightReports: (reports: InsightReport[], linesIngested: number) => void
+    setInsightReports: (reports: InsightReport[], linesIngested: number) => void
     setInsightLoading: (loading: boolean) => void
     setInsightError: (error: string | null) => void
     clearInsightData: () => void
@@ -121,20 +121,9 @@ export const useEngineStore = create<EngineState>((set) => ({
             liveTailKeys: state.liveTailKeys,
         })),
     setInsightStatus: (status) => set({ insightStatus: status }),
-    appendInsightReports: (reports, linesIngested) =>
-        set((state) => {
-            if (reports.length === 0) {
-                return { insightLastLinesIngested: linesIngested }
-            }
-            const nextReports = [...state.insightReports]
-            const nextKeys = new Set(state.insightReportKeys)
-            for (const report of reports) {
-                const key = insightKey(report)
-                if (nextKeys.has(key)) continue
-                nextKeys.add(key)
-                nextReports.push(report)
-            }
-            const trimmed = nextReports.slice(-kInsightReportCapacity)
+    setInsightReports: (reports, linesIngested) =>
+        set(() => {
+            const trimmed = reports.slice(-kInsightReportCapacity)
             return {
                 insightReports: trimmed,
                 insightReportKeys: new Set(trimmed.map(insightKey)),
