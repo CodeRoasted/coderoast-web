@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { ONBOARDING_COOKIE, getCookie, setCookie } from '@/utils/cookies'
 import { getScenario, listScenarios } from '@/services/api'
 import { useEngineStore } from '@/store/useEngineStore'
+import type { PlaygroundMode } from '@/types/playground'
 
 const HELLO_WORLD_HINTS = ['hello_world', 'hello-world', 'hello']
 
@@ -14,7 +15,7 @@ const HELLO_WORLD_HINTS = ['hello_world', 'hello-world', 'hello']
  *     pre-load the "Hello World" starter so the user lands on a runnable
  *     YAML, not an empty textarea.
  */
-export function useFirstVisitOnboarding() {
+export function useFirstVisitOnboarding(mode: PlaygroundMode) {
     const engineId = useEngineStore((s) => s.engineId)
     const scenarioYaml = useEngineStore((s) => s.scenarioYaml)
     const selectedScenarioId = useEngineStore((s) => s.selectedScenarioId)
@@ -42,14 +43,14 @@ export function useFirstVisitOnboarding() {
         if (engineId || scenarioYaml || selectedScenarioId || helloWorldLoading) return
         let cancelled = false
         setHelloWorldLoading(true)
-        listScenarios()
+        listScenarios(mode)
             .then(({ scenarios }) => {
                 if (cancelled) return
                 const hello = scenarios.find((s) =>
                     HELLO_WORLD_HINTS.some((h) => s.id.toLowerCase().includes(h)),
                 )
                 if (!hello) return
-                return getScenario(hello.id).then(({ yaml }) => {
+                return getScenario(hello.id, mode).then(({ yaml }) => {
                     if (cancelled) return
                     setSelectedScenarioId(hello.id)
                     setScenarioYaml(yaml)
@@ -67,6 +68,7 @@ export function useFirstVisitOnboarding() {
         scenarioYaml,
         selectedScenarioId,
         helloWorldLoading,
+        mode,
         setScenarioYaml,
         setSelectedScenarioId,
     ])

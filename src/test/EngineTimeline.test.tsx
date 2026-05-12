@@ -13,6 +13,7 @@ const snapshot: EngineSnapshot = {
     clock_mode: 'virtual',
     playback_state: 'paused',
     speed_multiplier: 1,
+    duration_seconds: 60,
     elapsed_seconds: 25,
     wall_elapsed_seconds: 10,
     simulation_elapsed_seconds: 25,
@@ -42,5 +43,11 @@ describe('EngineTimeline', () => {
         expect(screen.getByText('Remaining')).toBeInTheDocument()
         expect(screen.getByText('0:35')).toBeInTheDocument()
         expect(container.querySelector('[title="db-latency @ 0:30"]')).not.toBeNull()
+    })
+
+    it('uses backend duration instead of deriving total from remaining time', () => {
+        render(<EngineTimeline snapshot={{ ...snapshot, duration_seconds: 120, remaining_seconds: 59.9 }} />)
+
+        expect(screen.getByText('2:00')).toBeInTheDocument()
     })
 })

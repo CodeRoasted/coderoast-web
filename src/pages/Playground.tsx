@@ -30,6 +30,7 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
     const connected = useEngineStore((s) => s.connected)
     const scenarioYaml = useEngineStore((s) => s.scenarioYaml)
     const setScenarioYaml = useEngineStore((s) => s.setScenarioYaml)
+    const setSelectedScenarioId = useEngineStore((s) => s.setSelectedScenarioId)
     const statusMessage = useEngineStore((s) => s.statusMessage)
     const liveTail = useEngineStore((s) => s.liveTail)
     const clearLiveTail = useEngineStore((s) => s.clearLiveTail)
@@ -41,7 +42,7 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
 
     const [mode, setMode] = useState<PlaygroundMode>(defaultMode)
     const lifecycle = useEngineLifecycle({ insightEnabled: mode === 'insight' })
-    const onboarding = useFirstVisitOnboarding()
+    const onboarding = useFirstVisitOnboarding(mode)
 
     useEffect(() => {
         if (!engineId) setMode(defaultMode)
@@ -51,9 +52,11 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
         (nextMode: PlaygroundMode) => {
             if (engineId) return
             setMode(nextMode)
+            setSelectedScenarioId(null)
+            setScenarioYaml('')
             navigate(`/lab/${nextMode}`)
         },
-        [engineId, navigate],
+        [engineId, navigate, setScenarioYaml, setSelectedScenarioId],
     )
 
     // Clear validation state whenever the user picks a different scenario.
@@ -90,6 +93,7 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
                     Time-to-first-running-engine collapses to ~10 seconds. */}
                 <OnboardingModal
                     open={onboarding.showFirstVisit && !engineId}
+                    mode={mode}
                     onClose={onboarding.dismissFirstVisit}
                     onReady={() => {
                         // Wizard pre-loaded a scenario into the store — nothing

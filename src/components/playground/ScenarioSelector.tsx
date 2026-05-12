@@ -3,11 +3,16 @@ import { CheckCircle, Clock, Tag, Loader2, AlertCircle } from 'lucide-react'
 import { useEngineStore } from '@/store/useEngineStore'
 import { listScenarios, getScenario, TierRequiredError, type ScenarioMeta } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
+import type { PlaygroundMode } from '@/types/playground'
 import TierLockModal from './TierLockModal'
 
 const CATEGORY_ORDER = ['Simple', 'Demo', 'Showcase']
 
-export default function ScenarioPicker() {
+interface Props {
+    mode: PlaygroundMode
+}
+
+export default function ScenarioPicker({ mode }: Props) {
     const { selectedScenarioId, setSelectedScenarioId, setScenarioYaml } = useEngineStore()
     const t = useTranslation()
     const [scenarios, setScenarios] = useState<ScenarioMeta[]>([])
@@ -16,11 +21,13 @@ export default function ScenarioPicker() {
     const [tierError, setTierError] = useState<TierRequiredError | null>(null)
 
     useEffect(() => {
-        listScenarios()
+        setLoading(true)
+        setError(null)
+        listScenarios(mode)
             .then(({ scenarios: list }) => setScenarios(list))
             .catch((e) => setError(e instanceof Error ? e.message : String(e)))
             .finally(() => setLoading(false))
-    }, [])
+    }, [mode])
 
     const handleSelectScenario = useCallback(
         async (id: string, isCurrentlySelected: boolean) => {
@@ -30,7 +37,7 @@ export default function ScenarioPicker() {
             } else {
                 setSelectedScenarioId(id)
                 try {
-                    const { yaml } = await getScenario(id)
+                    const { yaml } = await getScenario(id, mode)
                     setScenarioYaml(yaml)
                     setError(null)
                 } catch (fetchError) {
@@ -44,7 +51,7 @@ export default function ScenarioPicker() {
                 }
             }
         },
-        [setSelectedScenarioId, setScenarioYaml],
+        [mode, setSelectedScenarioId, setScenarioYaml],
     )
 
     const grouped = useMemo(() => {

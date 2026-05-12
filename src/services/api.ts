@@ -4,6 +4,7 @@ import type {
     InsightReportsResponse,
     InsightStatus,
 } from '@/types/engine'
+import type { PlaygroundMode } from '@/types/playground'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export interface ScenarioMeta {
@@ -12,6 +13,7 @@ export interface ScenarioMeta {
     description: string
     category: string
     duration: string
+    playground?: PlaygroundMode
 }
 
 export interface AuthUser {
@@ -253,12 +255,20 @@ export async function sendCommand(
     })
 }
 
-export async function listScenarios(): Promise<{ scenarios: ScenarioMeta[] }> {
-    return request('/scenarios')
+export async function listScenarios(
+    playground?: PlaygroundMode,
+): Promise<{ playground?: PlaygroundMode; scenarios: ScenarioMeta[] }> {
+    const query = playground ? `?playground=${encodeURIComponent(playground)}` : ''
+    return request(`/scenarios${query}`)
 }
 
-export async function getScenario(id: string): Promise<{ id: string; yaml: string }> {
-    return request(`/scenarios?id=${encodeURIComponent(id)}`)
+export async function getScenario(
+    id: string,
+    playground?: PlaygroundMode,
+): Promise<{ id: string; playground?: PlaygroundMode; yaml: string }> {
+    const params = new URLSearchParams({ id })
+    if (playground) params.set('playground', playground)
+    return request(`/scenarios?${params.toString()}`)
 }
 
 export interface ValidationResult {

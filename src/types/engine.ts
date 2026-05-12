@@ -57,6 +57,7 @@ export interface EngineSnapshot {
     clock_mode: ClockMode
     playback_state: PlaybackState
     speed_multiplier: number
+    duration_seconds: number
     elapsed_seconds: number
     wall_elapsed_seconds: number
     simulation_elapsed_seconds: number

@@ -67,6 +67,7 @@ describe('OnboardingModal', () => {
         render(
             <OnboardingModal
                 open
+                mode="logcraft"
                 onClose={() => undefined}
                 onReady={() => undefined}
                 onLaunch={onLaunch}
@@ -89,6 +90,8 @@ describe('OnboardingModal', () => {
             expect(useEngineStore.getState().selectedScenarioId).toBeTruthy()
         })
         expect(useEngineStore.getState().scenarioYaml).toContain('seed: 42')
+        expect(mockedList).toHaveBeenCalledWith('logcraft')
+        expect(mockedGet).toHaveBeenCalledWith('simple/hello_world', 'logcraft')
 
         const launchBtn = await screen.findByRole('button', { name: /launch the engine/i })
         fireEvent.click(launchBtn)
@@ -99,6 +102,7 @@ describe('OnboardingModal', () => {
         render(
             <OnboardingModal
                 open
+                mode="logcraft"
                 onClose={() => undefined}
                 onReady={() => undefined}
                 onLaunch={() => undefined}
@@ -112,6 +116,7 @@ describe('OnboardingModal', () => {
         const { queryByRole } = render(
             <OnboardingModal
                 open={false}
+                mode="logcraft"
                 onClose={() => undefined}
                 onReady={() => undefined}
                 onLaunch={() => undefined}

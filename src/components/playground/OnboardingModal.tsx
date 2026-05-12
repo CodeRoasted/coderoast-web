@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from '@/hooks/useTranslation'
 import { listScenarios, getScenario, TierRequiredError, type ScenarioMeta } from '@/services/api'
 import { useEngineStore } from '@/store/useEngineStore'
+import type { PlaygroundMode } from '@/types/playground'
 import OnboardingShell from './onboarding/OnboardingShell'
 import StepIntent from './onboarding/StepIntent'
 import StepComplexity from './onboarding/StepComplexity'
@@ -10,6 +11,7 @@ import { pickScenario, type Complexity, type Intent } from './onboarding/scenari
 
 interface Props {
     open: boolean
+    mode: PlaygroundMode
     onClose: () => void
     /** Called once a scenario is loaded into the store. */
     onReady: () => void
@@ -29,7 +31,7 @@ const TITLE_ID = 'onboarding-title'
  *
  * The (intent, complexity) → scenario mapping lives in `./onboarding/scenarioPicker`.
  */
-export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Props) {
+export default function OnboardingModal({ open, mode, onClose, onReady, onLaunch }: Props) {
     const t = useTranslation()
     const setSelectedScenarioId = useEngineStore((s) => s.setSelectedScenarioId)
     const setScenarioYaml = useEngineStore((s) => s.setScenarioYaml)
@@ -49,16 +51,17 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
             setIntent(null)
             setComplexity(null)
             setPicked(null)
+            setScenarios([])
             setError(null)
         }
-    }, [open])
+    }, [mode, open])
 
     // Lazy-load the scenario catalog the first time we render the modal so
     // we can map intent + complexity to an actual scenario id.
     useEffect(() => {
         if (!open || scenarios.length > 0) return
         let cancelled = false
-        listScenarios()
+        listScenarios(mode)
             .then(({ scenarios: list }) => {
                 if (!cancelled) setScenarios(list)
             })
@@ -68,7 +71,7 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
         return () => {
             cancelled = true
         }
-    }, [open, scenarios.length])
+    }, [mode, open, scenarios.length])
 
     async function handleConfirm() {
         if (!intent || !complexity) return
@@ -81,7 +84,7 @@ export default function OnboardingModal({ open, onClose, onReady, onLaunch }: Pr
         setLoading(true)
         setError(null)
         try {
-            const { yaml } = await getScenario(pick.id)
+            const { yaml } = await getScenario(pick.id, mode)
             setSelectedScenarioId(pick.id)
             setScenarioYaml(yaml)
             setStep(3)

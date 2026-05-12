@@ -9,6 +9,7 @@ import {
     createEngine,
     getInsightReports,
     getInsightStatus,
+    getScenario,
     listScenarios,
     validateScenario,
 } from '@/services/api'
@@ -218,6 +219,24 @@ describe('services/api', () => {
             expect(init.method).toBe('POST')
             expect(JSON.parse(init.body as string)).toEqual({ yaml: 'name: ok' })
             expect(result.valid).toBe(true)
+        })
+
+        it('listScenarios selects the requested playground catalog', async () => {
+            fetchMock.mockResolvedValue(jsonResponse({ scenarios: [] }))
+
+            await listScenarios('insight')
+
+            const call = fetchMock.mock.calls[0]!
+            expect(call[0]).toContain('/scenarios?playground=insight')
+        })
+
+        it('getScenario sends id and playground query params', async () => {
+            fetchMock.mockResolvedValue(jsonResponse({ id: 'cases/latency', yaml: 'scenario: {}' }))
+
+            await getScenario('cases/latency', 'insight')
+
+            const call = fetchMock.mock.calls[0]!
+            expect(call[0]).toContain('/scenarios?id=cases%2Flatency&playground=insight')
         })
 
         it('getInsightStatus GETs the encoded status route', async () => {

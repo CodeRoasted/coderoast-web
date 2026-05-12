@@ -49,7 +49,7 @@ describe('ScenarioSelector', () => {
         })
         render(
             <MemoryRouter>
-                <ScenarioSelector />
+                <ScenarioSelector mode="logcraft" />
             </MemoryRouter>,
         )
 
@@ -68,7 +68,7 @@ describe('ScenarioSelector', () => {
         mockedGet.mockResolvedValue({ id: 'hello', yaml: 'agents:\n  - name: x' })
         render(
             <MemoryRouter>
-                <ScenarioSelector />
+                <ScenarioSelector mode="logcraft" />
             </MemoryRouter>,
         )
 
@@ -76,6 +76,7 @@ describe('ScenarioSelector', () => {
         fireEvent.click(card)
 
         await waitFor(() => {
+            expect(mockedGet).toHaveBeenCalledWith('hello', 'logcraft')
             expect(useEngineStore.getState().scenarioYaml).toContain('agents:')
             expect(useEngineStore.getState().selectedScenarioId).toBe('hello')
         })
@@ -106,7 +107,7 @@ describe('ScenarioSelector', () => {
 
         render(
             <MemoryRouter>
-                <ScenarioSelector />
+                <ScenarioSelector mode="insight" />
             </MemoryRouter>,
         )
         const card = await screen.findByText('Pro Only')
@@ -123,5 +124,6 @@ describe('ScenarioSelector', () => {
         // Selection is rolled back so the user isn't stuck with a fake-checked card.
         expect(useEngineStore.getState().selectedScenarioId).toBeNull()
         expect(useEngineStore.getState().scenarioYaml).toBe('')
+        expect(mockedList).toHaveBeenCalledWith('insight')
     })
 })

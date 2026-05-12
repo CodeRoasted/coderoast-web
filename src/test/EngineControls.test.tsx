@@ -14,6 +14,7 @@ const snapshot: EngineSnapshot = {
     clock_mode: 'virtual',
     playback_state: 'paused',
     speed_multiplier: 1,
+    duration_seconds: 60,
     elapsed_seconds: 12.5,
     wall_elapsed_seconds: 12.5,
     simulation_elapsed_seconds: 12.5,

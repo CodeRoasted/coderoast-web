@@ -59,7 +59,7 @@ export default function LabPickerView({
                         </h2>
                         <p className="text-gray-400 text-xs">{modeCopy.selectScenarioDesc}</p>
                     </div>
-                    <ScenarioSelector />
+                    <ScenarioSelector mode={mode} />
                 </div>
 
                 {/* Right: YAML Editor + Run */}

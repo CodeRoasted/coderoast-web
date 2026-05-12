@@ -12,9 +12,9 @@ export default function EngineTimeline({ snapshot }: Props) {
     const elapsedSeconds = isDeterministic
         ? snapshot?.simulation_elapsed_seconds ?? snapshot?.elapsed_seconds ?? 0
         : snapshot?.wall_elapsed_seconds ?? snapshot?.elapsed_seconds ?? 0
+    const durationSeconds = Math.max(snapshot?.duration_seconds ?? 0, 0)
     const remainingSeconds = Math.max(snapshot?.remaining_seconds ?? 0, 0)
-    const totalSeconds = remainingSeconds > 0 ? elapsedSeconds + remainingSeconds : 0
-    const progress = totalSeconds > 0 ? clamp(elapsedSeconds / totalSeconds, 0, 1) : 0
+    const progress = durationSeconds > 0 ? clamp(elapsedSeconds / durationSeconds, 0, 1) : 0
     const incidents = snapshot?.incidents ?? []
 
     return (
@@ -29,9 +29,11 @@ export default function EngineTimeline({ snapshot }: Props) {
                     <TimelineMetric
                         icon={<TimerReset className="w-3.5 h-3.5 text-brand-400" />}
                         label={t.lab.duration}
-                        value={totalSeconds > 0 ? formatDuration(totalSeconds) : t.lab.openEnded}
+                        value={
+                            durationSeconds > 0 ? formatDuration(durationSeconds) : t.lab.openEnded
+                        }
                     />
-                    {totalSeconds > 0 && (
+                    {durationSeconds > 0 && (
                         <TimelineMetric
                             icon={<Flag className="w-3.5 h-3.5 text-amber-400" />}
                             label={t.lab.remaining}
@@ -45,7 +47,7 @@ export default function EngineTimeline({ snapshot }: Props) {
             </div>
 
             <div className="relative mt-2 h-2 rounded-full bg-gray-950 overflow-hidden border border-gray-800">
-                {totalSeconds > 0 ? (
+                {durationSeconds > 0 ? (
                     <div
                         className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-brand-500 to-orange-400"
                         style={{ width: `${progress * 100}%` }}
@@ -53,13 +55,14 @@ export default function EngineTimeline({ snapshot }: Props) {
                 ) : (
                     <div className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-gray-700/80" />
                 )}
-                {totalSeconds > 0 && incidents.map((incident, index) => (
-                    <IncidentMarker
-                        key={`${incident.offset_seconds}-${incident.name}-${index}`}
-                        incident={incident}
-                        totalSeconds={totalSeconds}
-                    />
-                ))}
+                {durationSeconds > 0 &&
+                    incidents.map((incident, index) => (
+                        <IncidentMarker
+                            key={`${incident.offset_seconds}-${incident.name}-${index}`}
+                            incident={incident}
+                            totalSeconds={durationSeconds}
+                        />
+                    ))}
             </div>
         </div>
     )
@@ -88,10 +91,10 @@ function IncidentMarker({ incident, totalSeconds }: { incident: IncidentSnapshot
 }
 
 function formatDuration(seconds: number): string {
-    const safeSeconds = Math.max(seconds, 0)
+    const safeSeconds = Math.max(Math.round(seconds), 0)
     const hours = Math.floor(safeSeconds / 3600)
     const minutes = Math.floor((safeSeconds % 3600) / 60)
-    const secs = Math.floor(safeSeconds % 60)
+    const secs = safeSeconds % 60
     if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
     }
