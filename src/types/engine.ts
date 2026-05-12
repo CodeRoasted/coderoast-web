@@ -102,9 +102,23 @@ export interface InsightReport {
     llm_enabled?: boolean
     llm_model?: string
     window_count?: number
+    configured_window_duration_seconds?: number
     lines_ingested?: number
     insight_revision?: number
     updated_unix_ms?: number
+}
+
+export interface InsightReconfigureRequest {
+    explain_mode?: InsightExplainMode
+    min_confidence?: number
+    max_insights?: number
+    llm_model?: string
+    window_duration_seconds?: number
+}
+
+export interface InsightReconfigureResponse {
+    engine_id: string
+    applied: Partial<InsightReconfigureRequest & { pyramid_reset: boolean }>
 }
 
 export interface InsightStatus {
@@ -116,6 +130,12 @@ export interface InsightStatus {
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
     llm_model?: string
+    configured_window_duration_seconds?: number
+    window_count?: number
+    pyramid_maturity?: string
+    windows_seen?: number
+    updated_unix_ms?: number
+    pyramid_warmup_windows?: number
 }
 
 export interface InsightReportsResponse {
@@ -131,4 +151,120 @@ export interface InsightReportsResponse {
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
     llm_model?: string
+    latest_metalog?: MetaLogSummary | null
+    latest_acute_diff?: AcuteDiffSummary | null
+    latest_detection_reports?: DetectionReport[]
+    latest_context_packets?: ContextPacket[]
+    pyramid_maturity?: string
+    windows_seen?: number
+    pyramid_warmup_windows?: number
+}
+
+export interface DetectionReport {
+    type: string
+    template_id: string
+    template: string
+    observed_count: number
+    score: number
+    confidence: number
+    scale: number
+    evidence: string[]
+}
+
+export interface MetaLogWindowInfo {
+    start: string
+    end: string
+    duration_seconds: number
+    lines_observed: number
+}
+
+export interface MetaLogTopKEntry {
+    template_id: string
+    template: string
+    count: number
+    frequency: number
+}
+
+export interface MetaLogStats {
+    unique_templates: number
+    tail_count: number
+    tail_unique: number
+    entropy_bits?: number
+    top_k: MetaLogTopKEntry[]
+}
+
+export interface MetaLogStability {
+    js_divergence: number
+    kl_divergence: number
+    new_templates: number
+    vanished_templates: number
+    stability_score: number
+}
+
+export interface MetaLogSummary {
+    version: string
+    window: MetaLogWindowInfo
+    stats: MetaLogStats
+    stability?: MetaLogStability
+}
+
+export interface AcuteDiffSummary {
+    version: string
+    new_templates_count: number
+    vanished_templates_count: number
+    template_delta_count: number
+    branching_delta_count: number
+    field_histogram_delta_count: number
+    js_divergence?: number
+    kl_divergence?: number
+    stability_score?: number
+}
+
+export interface ContextPacketAnnotation {
+    pattern: string
+    service_hint: string
+    action_hint: string
+    severity_override?: string
+}
+
+export interface ContextPacketTemplate {
+    id: string
+    template: string
+    current_frequency: number
+    previous_frequency: number
+    current_count: number
+    count_delta: number
+    branching_entropy_delta_bits?: number
+    annotation?: ContextPacketAnnotation
+}
+
+export interface ContextPacketWindow {
+    lines_observed: number
+    new_ngrams: string[]
+    vanished_ngrams: string[]
+    js_divergence?: number
+    stability_score?: number
+    new_templates?: number
+    vanished_templates?: number
+}
+
+export interface ContextPacketIncident {
+    class: string
+    primary_template_id: string
+    affected_templates: string[]
+    confidence: number
+    reports: DetectionReport[]
+}
+
+export interface ContextPacket {
+    incident: ContextPacketIncident
+    templates: ContextPacketTemplate[]
+    window: ContextPacketWindow
+}
+
+export interface InsightLatestWindow {
+    metalog: MetaLogSummary | null
+    acuteDiff: AcuteDiffSummary | null
+    detectionReports: DetectionReport[]
+    contextPackets: ContextPacket[]
 }

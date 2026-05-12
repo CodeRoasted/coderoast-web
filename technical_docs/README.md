@@ -31,7 +31,7 @@ That path explains what the site renders, how the Lab talks to CodeRoastServer, 
 | LogCraft | Engine package and scenario DSL | [../../logcraft/technical_docs/README.md](../../logcraft/technical_docs/README.md) |
 | CodeRoastServer | Backend API, RBAC, auth, persistence, and WebSocket snapshots | [../../coderoast-server/technical_docs/README.md](../../coderoast-server/technical_docs/README.md) |
 | InSight split repos | Analysis packages behind the server reports consumed by the Lab | [../../insight-eidos/technical_docs/README.md](../../insight-eidos/technical_docs/README.md) |
-| logcraft-scenario-library | Scenario YAML catalog consumed by the backend | [../../logcraft-scenario-library/README.md](../../logcraft-scenario-library/README.md) |
+| logcraft-playground | LogCraft Playground CLI and scenario catalog consumed by the backend | [../../logcraft-playground/README.md](../../logcraft-playground/README.md) |
 
 ## Maintenance Rules
 

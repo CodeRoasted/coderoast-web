@@ -37,6 +37,7 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
     const selectedScenarioId = useEngineStore((s) => s.selectedScenarioId)
     const insightStatus = useEngineStore((s) => s.insightStatus)
     const insightReports = useEngineStore((s) => s.insightReports)
+    const insightLatestWindow = useEngineStore((s) => s.insightLatestWindow)
     const insightLoading = useEngineStore((s) => s.insightLoading)
     const insightError = useEngineStore((s) => s.insightError)
 
@@ -116,8 +117,6 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
                         onModeChange={handleModeChange}
                         scenarioYaml={scenarioYaml}
                         setScenarioYaml={setScenarioYaml}
-                        autoStart={lifecycle.autoStart}
-                        setAutoStart={lifecycle.setAutoStart}
                         validationErrors={lifecycle.validationErrors}
                         setValidationErrors={lifecycle.setValidationErrors}
                         unavailableCapabilities={lifecycle.unavailableCapabilities}
@@ -135,9 +134,11 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
                         agentNames={agentNames}
                         insightStatus={insightStatus}
                         insightReports={insightReports}
+                        insightLatestWindow={insightLatestWindow}
                         insightLoading={insightLoading}
                         insightError={insightError}
                         replayToTargetPending={lifecycle.replayToTargetPending}
+                        insightCatchingUp={lifecycle.insightCatchingUp}
                         isRunning={isRunning}
                         onStart={lifecycle.handleStart}
                         onStop={lifecycle.handleStop}

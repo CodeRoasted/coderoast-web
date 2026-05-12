@@ -82,58 +82,61 @@ export default function EngineControls({
     if (!hasEngine) return null
 
     return (
-        <div className="flex items-center gap-3 flex-wrap justify-end">
-            {!isRunning ? (
-                <Tooltip content={canStart ? t.lab.start : tierLockMsg('command.start_engine')}>
-                    <button
-                        onClick={onStart}
-                        disabled={!canStart}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-emerald-600"
-                    >
-                        {canStart ? <Play className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                        {t.lab.start}
-                    </button>
-                </Tooltip>
-            ) : (
-                <Tooltip content={canStop ? t.lab.stop : tierLockMsg('command.stop_engine')}>
-                    <button
-                        onClick={onStop}
-                        disabled={!canStop}
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-amber-600"
-                    >
-                        {canStop ? <Square className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                        {t.lab.stop}
-                    </button>
-                </Tooltip>
-            )}
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+            {/* ── Transport pill: Stop/Start + Play/Pause + Speed ─────────── */}
+            <div className="flex items-center gap-0 rounded-lg border border-gray-700 bg-gray-900/80 overflow-hidden">
+                {!isRunning ? (
+                    <Tooltip content={canStart ? t.lab.start : tierLockMsg('command.start_engine')}>
+                        <button
+                            onClick={onStart}
+                            disabled={!canStart}
+                            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-700/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            {canStart ? <Play className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                            {t.lab.start}
+                        </button>
+                    </Tooltip>
+                ) : (
+                    <Tooltip content={canStop ? t.lab.stop : tierLockMsg('command.stop_engine')}>
+                        <button
+                            onClick={onStop}
+                            disabled={!canStop}
+                            className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-amber-300 hover:bg-amber-700/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                        >
+                            {canStop ? <Square className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                            {t.lab.stop}
+                        </button>
+                    </Tooltip>
+                )}
 
-            {isRunning && isDeterministic && (
-                <>
-                    {playbackState === 'paused' ? (
-                        <Tooltip content={canPlay ? t.lab.play : tierLockMsg('command.play_engine')}>
-                            <button
-                                onClick={onPlay}
-                                disabled={!canPlay || !onPlay}
-                                className="flex items-center gap-2 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-sky-600"
-                            >
-                                {canPlay ? <Play className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                                {t.lab.play}
-                            </button>
-                        </Tooltip>
-                    ) : (
-                        <Tooltip content={canPause ? t.lab.pause : tierLockMsg('command.pause_engine')}>
-                            <button
-                                onClick={onPause}
-                                disabled={!canPause || !onPause}
-                                className="flex items-center gap-2 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-sky-700"
-                            >
-                                {canPause ? <Pause className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-                                {t.lab.pause}
-                            </button>
-                        </Tooltip>
-                    )}
+                {isRunning && isDeterministic && (
+                    <>
+                        <div className="w-px h-6 bg-gray-700 shrink-0" />
+                        {playbackState === 'paused' ? (
+                            <Tooltip content={canPlay ? t.lab.play : tierLockMsg('command.play_engine')}>
+                                <button
+                                    onClick={onPlay}
+                                    disabled={!canPlay || !onPlay}
+                                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-sky-300 hover:bg-sky-700/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    {canPlay ? <Play className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                                    {t.lab.play}
+                                </button>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip content={canPause ? t.lab.pause : tierLockMsg('command.pause_engine')}>
+                                <button
+                                    onClick={onPause}
+                                    disabled={!canPause || !onPause}
+                                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-sky-300 hover:bg-sky-700/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    {canPause ? <Pause className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                                    {t.lab.pause}
+                                </button>
+                            </Tooltip>
+                        )}
 
-                    <div className="flex items-center gap-1 rounded-lg border border-gray-700 bg-gray-900/80 p-1">
+                        <div className="w-px h-6 bg-gray-700 shrink-0" />
                         {kSpeedPresets.map((preset) => {
                             const active = Math.abs(currentSpeed - preset) < 0.001
                             return (
@@ -148,107 +151,85 @@ export default function EngineControls({
                                     <button
                                         onClick={() => onSetPlaybackSpeed?.(preset)}
                                         disabled={!canSetPlaybackSpeed || !onSetPlaybackSpeed}
-                                        className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${active
-                                            ? 'bg-brand-500 text-white'
-                                            : 'text-gray-300 hover:bg-gray-800'
+                                        className={`flex items-center gap-0.5 px-2 py-2 text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${active
+                                                ? 'bg-brand-600/80 text-white'
+                                                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
                                             }`}
                                     >
-                                        <span className="inline-flex items-center gap-1">
-                                            <FastForward className="w-3 h-3" />
-                                            {preset}x
-                                        </span>
+                                        <FastForward className="w-2.5 h-2.5" />
+                                        {preset}x
                                     </button>
                                 </Tooltip>
                             )
                         })}
+                    </>
+                )}
+            </div>
+
+            {/* ── Seek pill: visible only when running + paused ───────────── */}
+            {isRunning && isDeterministic && playbackState === 'paused' && (
+                <div className="flex items-center gap-0 rounded-lg border border-gray-700 bg-gray-900/80 overflow-hidden">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5">
+                        <RotateCcw className="w-3 h-3 text-gray-500 shrink-0" />
+                        <input
+                            type="text"
+                            inputMode="decimal"
+                            value={targetSeconds}
+                            onChange={(event) => {
+                                setTargetDirty(true)
+                                setTargetSeconds(event.target.value)
+                            }}
+                            aria-label={t.lab.targetSeconds}
+                            className="w-16 bg-gray-950/80 border border-gray-700 rounded px-1.5 py-0.5 text-xs text-gray-100 text-right font-mono outline-none focus:border-brand-500/70 focus:ring-1 focus:ring-brand-500/30 disabled:opacity-40 disabled:cursor-not-allowed"
+                            disabled={!canAdvance || !onReplayToTarget || replayToTargetPending}
+                        />
+                        <span className="text-[10px] text-gray-500">s</span>
                     </div>
 
-                    {playbackState === 'paused' && (
-                        <>
-                            <div className="flex items-center gap-1 rounded-lg border border-gray-700 bg-gray-900/80 p-1">
-                                <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs text-gray-300">
-                                    <RotateCcw className="w-3 h-3 text-gray-400" />
-                                    <input
-                                        type="text"
-                                        inputMode="decimal"
-                                        value={targetSeconds}
-                                        onChange={(event) => {
-                                            setTargetDirty(true)
-                                            setTargetSeconds(event.target.value)
-                                        }}
-                                        aria-label={t.lab.targetSeconds}
-                                        className="w-16 bg-gray-950/80 border border-gray-700 rounded px-1.5 py-0.5 text-xs text-gray-100 text-right font-mono outline-none focus:border-brand-500/70 focus:ring-1 focus:ring-brand-500/30 disabled:opacity-40 disabled:cursor-not-allowed"
-                                        disabled={!canAdvance || !onReplayToTarget || replayToTargetPending}
-                                    />
-                                    <span className="text-[10px] text-gray-500">s</span>
-                                </div>
-                                <Tooltip
-                                    content={
-                                        canAdvance
-                                            ? t.lab.replayToTarget
-                                            : tierLockMsg('command.advance_engine')
-                                    }
-                                >
-                                    <button
-                                        onClick={handleReplayToTarget}
-                                        disabled={!canAdvance || !onReplayToTarget || !hasValidReplayTarget || replayToTargetPending}
-                                        aria-label={t.lab.replayToTarget}
-                                        className="px-2.5 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                    >
-                                        <span className="inline-flex items-center gap-1">
-                                            {replayToTargetPending ? (
-                                                <Loader2 className="w-3 h-3 animate-spin" />
-                                            ) : (
-                                                <RotateCcw className="w-3 h-3" />
-                                            )}
-                                            {replayToTargetPending ? t.lab.replaying : t.lab.replay}
-                                        </span>
-                                    </button>
-                                </Tooltip>
-                            </div>
+                    <div className="w-px h-6 bg-gray-700 shrink-0" />
 
-                            {replayToTargetPending && (
-                                <div className="inline-flex items-center gap-1.5 rounded-lg border border-brand-500/30 bg-brand-500/10 px-2.5 py-1.5 text-xs font-medium text-brand-200">
-                                    <Loader2 className="w-3 h-3 animate-spin" />
-                                    {t.lab.replayingToTarget}
-                                </div>
+                    <Tooltip content={canAdvance ? t.lab.replayToTarget : tierLockMsg('command.advance_engine')}>
+                        <button
+                            onClick={handleReplayToTarget}
+                            disabled={!canAdvance || !onReplayToTarget || !hasValidReplayTarget || replayToTargetPending}
+                            aria-label={t.lab.replayToTarget}
+                            className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            {replayToTargetPending ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                                <RotateCcw className="w-3 h-3" />
                             )}
+                            {replayToTargetPending ? t.lab.replaying : t.lab.replay}
+                        </button>
+                    </Tooltip>
 
-                            <div className="flex items-center gap-1 rounded-lg border border-gray-700 bg-gray-900/80 p-1">
-                                <Tooltip
-                                    content={canAdvance ? `${t.lab.advance} +1s` : tierLockMsg('command.advance_engine')}
-                                >
-                                    <button
-                                        onClick={() => onAdvance?.(kAdvanceOneSecondNs)}
-                                        disabled={!canAdvance || !onAdvance}
-                                        className="px-2.5 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                    >
-                                        <span className="inline-flex items-center gap-1">
-                                            <SkipForward className="w-3 h-3" />
-                                            +1s
-                                        </span>
-                                    </button>
-                                </Tooltip>
-                                <Tooltip
-                                    content={canAdvance ? `${t.lab.advance} +10s` : tierLockMsg('command.advance_engine')}
-                                >
-                                    <button
-                                        onClick={() => onAdvance?.(kAdvanceTenSecondsNs)}
-                                        disabled={!canAdvance || !onAdvance}
-                                        className="px-2.5 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                                    >
-                                        <span className="inline-flex items-center gap-1">
-                                            <SkipForward className="w-3 h-3" />
-                                            +10s
-                                        </span>
-                                    </button>
-                                </Tooltip>
-                            </div>
-                        </>
-                    )}
-                </>
+                    <div className="w-px h-6 bg-gray-700 shrink-0" />
+
+                    <Tooltip content={canAdvance ? `${t.lab.advance} +1s` : tierLockMsg('command.advance_engine')}>
+                        <button
+                            onClick={() => onAdvance?.(kAdvanceOneSecondNs)}
+                            disabled={!canAdvance || !onAdvance}
+                            className="flex items-center gap-1 px-2.5 py-2 text-xs font-medium text-gray-400 hover:bg-gray-800 hover:text-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            <SkipForward className="w-3 h-3" />
+                            +1s
+                        </button>
+                    </Tooltip>
+                    <Tooltip content={canAdvance ? `${t.lab.advance} +10s` : tierLockMsg('command.advance_engine')}>
+                        <button
+                            onClick={() => onAdvance?.(kAdvanceTenSecondsNs)}
+                            disabled={!canAdvance || !onAdvance}
+                            className="flex items-center gap-1 px-2.5 py-2 text-xs font-medium text-gray-400 hover:bg-gray-800 hover:text-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            <SkipForward className="w-3 h-3" />
+                            +10s
+                        </button>
+                    </Tooltip>
+                </div>
             )}
 
+            {/* ── Non-deterministic: Cascade ──────────────────────────────── */}
             {isRunning && !isDeterministic && onCascade && hasCascade && (
                 <Tooltip
                     content={canCascade ? t.lab.cascadeTip : tierLockMsg('command.evaluate_cascade')}

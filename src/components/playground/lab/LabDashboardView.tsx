@@ -6,7 +6,7 @@ import AgentGrid from '@/components/playground/AgentGrid'
 import SinkGrid from '@/components/playground/SinkGrid'
 import ObservationPanel from '@/components/playground/ObservationPanel'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
-import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
+import type { EngineSnapshot, InsightLatestWindow, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
 import type { PlaygroundMode } from '@/types/playground'
 import { useTranslation } from '@/hooks/useTranslation'
 
@@ -20,9 +20,11 @@ interface Props {
     agentNames: string[]
     insightStatus: InsightStatus | null
     insightReports: InsightReport[]
+    insightLatestWindow: InsightLatestWindow | null
     insightLoading: boolean
     insightError: string | null
     replayToTargetPending: boolean
+    insightCatchingUp?: boolean
     isRunning: boolean
     onStart: () => void
     onStop: () => void
@@ -60,9 +62,11 @@ export default function LabDashboardView({
     agentNames,
     insightStatus,
     insightReports,
+    insightLatestWindow,
     insightLoading,
     insightError,
     replayToTargetPending,
+    insightCatchingUp = false,
     isRunning,
     onStart,
     onStop,
@@ -98,7 +102,7 @@ export default function LabDashboardView({
                         onCascade={onCascade}
                     />
                 </div>
-                <EngineTimeline snapshot={snapshot} />
+                <EngineTimeline snapshot={snapshot} onSeek={onReplayToTarget} />
                 {!isRunning && (
                     <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
                         <AlertCircle className="w-3.5 h-3.5" />
@@ -135,8 +139,10 @@ export default function LabDashboardView({
                         agentNames={agentNames}
                         insightStatus={insightStatus}
                         insightReports={insightReports}
+                        insightLatestWindow={insightLatestWindow}
                         insightLoading={insightLoading}
                         insightError={insightError}
+                        insightCatchingUp={insightCatchingUp}
                         showInsight={showInsight}
                     />
                 </div>

@@ -1,6 +1,8 @@
 import type {
     EngineInfo,
     EngineSnapshot,
+    InsightReconfigureRequest,
+    InsightReconfigureResponse,
     InsightReportsResponse,
     InsightStatus,
 } from '@/types/engine'
@@ -243,6 +245,16 @@ export async function getInsightStatus(engineId: string): Promise<InsightStatus>
 
 export async function getInsightReports(engineId: string): Promise<InsightReportsResponse> {
     return request(`/engines/${encodeURIComponent(engineId)}/insight/reports`)
+}
+
+export async function reconfigureInsight(
+    engineId: string,
+    params: InsightReconfigureRequest
+): Promise<InsightReconfigureResponse> {
+    return request(`/engines/${encodeURIComponent(engineId)}/insight/reconfigure`, {
+        method: 'POST',
+        body: JSON.stringify(params),
+    })
 }
 
 export async function sendCommand(

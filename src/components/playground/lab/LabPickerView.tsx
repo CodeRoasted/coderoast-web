@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { AlertCircle, FlaskConical, Play } from 'lucide-react'
+import { AlertCircle, Play } from 'lucide-react'
 import ScenarioSelector from '@/components/playground/ScenarioSelector'
 import PlaygroundModeSwitch from '@/components/playground/lab/PlaygroundModeSwitch'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -15,8 +15,6 @@ interface Props {
     onModeChange: (mode: PlaygroundMode) => void
     scenarioYaml: string
     setScenarioYaml: (next: string) => void
-    autoStart: boolean
-    setAutoStart: (next: boolean) => void
     validationErrors: string[]
     setValidationErrors: (next: string[]) => void
     unavailableCapabilities: string[]
@@ -34,8 +32,6 @@ export default function LabPickerView({
     onModeChange,
     scenarioYaml,
     setScenarioYaml,
-    autoStart,
-    setAutoStart,
     validationErrors,
     setValidationErrors,
     unavailableCapabilities,
@@ -66,15 +62,6 @@ export default function LabPickerView({
                 <div className="lg:w-[500px] flex-shrink-0 flex flex-col">
                     <div className="flex items-center justify-between mb-3 gap-2">
                         <h3 className="text-sm font-semibold text-gray-300">{t.lab.scenarioYaml}</h3>
-                        <label className="flex items-center gap-1.5 text-[11px] text-gray-400 cursor-pointer select-none">
-                            <input
-                                type="checkbox"
-                                checked={autoStart}
-                                onChange={(e) => setAutoStart(e.target.checked)}
-                                className="w-3.5 h-3.5 accent-brand-500"
-                            />
-                            <span>{t.lab.autoStartHint}</span>
-                        </label>
                     </div>
 
                     <button
@@ -82,8 +69,8 @@ export default function LabPickerView({
                         disabled={!hasYaml}
                         className="w-full mb-3 inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors shadow-lg shadow-brand-600/20"
                     >
-                        {autoStart ? <Play className="w-4 h-4" /> : <FlaskConical className="w-4 h-4" />}
-                        {autoStart ? modeCopy.launchAndStart : modeCopy.launchPaused}
+                        <Play className="w-4 h-4" />
+                        {modeCopy.launchAndStart}
                     </button>
 
                     {validationErrors.length > 0 && (

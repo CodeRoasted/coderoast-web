@@ -40,6 +40,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
     const appendToLiveTail = useEngineStore((s) => s.appendToLiveTail)
     const setInsightStatus = useEngineStore((s) => s.setInsightStatus)
     const setInsightReports = useEngineStore((s) => s.setInsightReports)
+    const setInsightLatestWindow = useEngineStore((s) => s.setInsightLatestWindow)
     const setInsightLoading = useEngineStore((s) => s.setInsightLoading)
     const setInsightError = useEngineStore((s) => s.setInsightError)
     const clearInsightData = useEngineStore((s) => s.clearInsightData)
@@ -48,9 +49,10 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
     const [tierError, setTierError] = useState<TierRequiredError | null>(null)
     const [replayToTargetPending, setReplayToTargetPending] = useState(false)
-    const [autoStart, setAutoStart] = useState(true)
-    const autoStartRef = useRef(true)
+    const [insightCatchingUp, setInsightCatchingUp] = useState(false)
     const replayToTargetPendingRef = useRef(false)
+    const lastStatusLinesRef = useRef<number>(0)
+    const linesAtSeekRef = useRef<number | null>(null)
 
     const setReplayPending = useCallback((pending: boolean) => {
         replayToTargetPendingRef.current = pending
@@ -110,6 +112,12 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 if (cancelled) return
                 setInsightStatus(status)
                 hasInitialData = true
+                const currentLines = status.lines_ingested ?? 0
+                lastStatusLinesRef.current = currentLines
+                if (linesAtSeekRef.current !== null && currentLines > linesAtSeekRef.current) {
+                    linesAtSeekRef.current = null
+                    setInsightCatchingUp(false)
+                }
 
                 const statusRevision = status.insight_revision ?? status.lines_ingested
                 if (
@@ -125,6 +133,12 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                             annotateInsightReports(reportSnapshot),
                             reportSnapshot.lines_ingested,
                         )
+                        setInsightLatestWindow({
+                            metalog: reportSnapshot.latest_metalog ?? null,
+                            acuteDiff: reportSnapshot.latest_acute_diff ?? null,
+                            detectionReports: reportSnapshot.latest_detection_reports ?? [],
+                            contextPackets: reportSnapshot.latest_context_packets ?? [],
+                        })
                     } catch (reportsError) {
                         const message = reportsError instanceof Error ? reportsError.message : String(reportsError)
                         if (!/409|not yet started|not initialised/i.test(message)) {
@@ -161,6 +175,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
         insightEnabled,
         clearInsightData,
         setInsightStatus,
+        setInsightLatestWindow,
         setInsightReports,
         setInsightLoading,
         setInsightError,
@@ -175,12 +190,26 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 },
                 onConnected: () => {
                     setConnected(true)
-                    // Auto-start right after the WS handshake so "Run scenario"
-                    // is one click instead of "create then remember to start".
-                    if (autoStartRef.current) engineWs.sendCommand({ type: 'start' })
+                    // Always start on connect so the engine lands in running+paused
+                    // (deterministic) or running+playing (stochastic) immediately.
+                    engineWs.sendCommand({ type: 'start' })
                 },
                 onResult: (success, message) => {
-                    if (replayToTargetPendingRef.current) setReplayPending(false)
+                    if (replayToTargetPendingRef.current) {
+                        setReplayPending(false)
+                        if (success) {
+                            linesAtSeekRef.current = lastStatusLinesRef.current
+                            setInsightCatchingUp(true)
+                            // Fallback: clear badge after 15 s if lines_ingested never advances
+                            const capturedBaseline = lastStatusLinesRef.current
+                            setTimeout(() => {
+                                if (linesAtSeekRef.current === capturedBaseline) {
+                                    linesAtSeekRef.current = null
+                                    setInsightCatchingUp(false)
+                                }
+                            }, 15_000)
+                        }
+                    }
                     setStatusMessage(`${success ? '✓' : '✗'} ${message}`)
                     setTimeout(() => setStatusMessage(null), 4000)
                 },
@@ -193,6 +222,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                     setTimeout(() => setStatusMessage(null), 6000)
                     engineWs.disconnect()
                     setReplayPending(false)
+                    setInsightCatchingUp(false)
+                    linesAtSeekRef.current = null
                     useEngineStore.getState().reset()
                     setValidationErrors([])
                     setUnavailableCapabilities([])
@@ -200,6 +231,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 onClose: () => {
                     setConnected(false)
                     setReplayPending(false)
+                    setInsightCatchingUp(false)
+                    linesAtSeekRef.current = null
                 },
             })
         },
@@ -233,10 +266,9 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             return
         }
         try {
-            autoStartRef.current = autoStart
             const { engine_id } = await createEngine(yaml)
             setEngineId(engine_id)
-            setStatusMessage(autoStart ? t.lab.created : t.lab.emptyEngineHint)
+            setStatusMessage(t.lab.created)
             connectToEngine(engine_id)
         } catch (e) {
             if (e instanceof TierRequiredError) {
@@ -245,7 +277,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
         }
-    }, [scenarioYaml, autoStart, setEngineId, setStatusMessage, connectToEngine, t])
+    }, [scenarioYaml, setEngineId, setStatusMessage, connectToEngine, t])
 
     const handleStart = useCallback(() => engineWs.sendCommand({ type: 'start' }), [])
 
@@ -306,9 +338,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
         setUnavailableCapabilities,
         tierError,
         setTierError,
-        autoStart,
-        setAutoStart,
         replayToTargetPending,
+        insightCatchingUp,
         // commands
         handleRun,
         handleStart,

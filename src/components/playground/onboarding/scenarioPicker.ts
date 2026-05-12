@@ -5,7 +5,7 @@ export type Complexity = 'simple' | 'realistic' | 'chaos'
 
 /**
  * Backend categories are the directory names under
- * `logcraft-scenario-library/scenario/` — keep this mapping aligned with
+ * `logcraft-playground/scenario/` — keep this mapping aligned with
  * the directory layout, not with display strings.
  */
 const CATEGORY_FOR_COMPLEXITY: Record<Complexity, string> = {

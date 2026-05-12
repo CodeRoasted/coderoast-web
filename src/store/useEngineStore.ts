@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
+import type { EngineSnapshot, InsightLatestWindow, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
 
 /**
  * Hard cap on the accumulated live log feed. Each snapshot ships the
@@ -46,6 +46,7 @@ interface EngineState {
     insightLoading: boolean
     insightError: string | null
     insightLastLinesIngested: number
+    insightLatestWindow: InsightLatestWindow | null
     connected: boolean
     selectedScenarioId: string | null
     scenarioYaml: string
@@ -57,6 +58,7 @@ interface EngineState {
     clearLiveTail: () => void
     setInsightStatus: (status: InsightStatus | null) => void
     setInsightReports: (reports: InsightReport[], linesIngested: number) => void
+    setInsightLatestWindow: (window: InsightLatestWindow | null) => void
     setInsightLoading: (loading: boolean) => void
     setInsightError: (error: string | null) => void
     clearInsightData: () => void
@@ -78,6 +80,7 @@ export const useEngineStore = create<EngineState>((set) => ({
     insightLoading: false,
     insightError: null,
     insightLastLinesIngested: 0,
+    insightLatestWindow: null,
     connected: false,
     selectedScenarioId: null,
     scenarioYaml: '',
@@ -133,6 +136,7 @@ export const useEngineStore = create<EngineState>((set) => ({
         }),
     setInsightLoading: (loading) => set({ insightLoading: loading }),
     setInsightError: (error) => set({ insightError: error }),
+    setInsightLatestWindow: (window) => set({ insightLatestWindow: window }),
     clearInsightData: () =>
         set({
             insightStatus: null,
@@ -141,6 +145,7 @@ export const useEngineStore = create<EngineState>((set) => ({
             insightLoading: false,
             insightError: null,
             insightLastLinesIngested: 0,
+            insightLatestWindow: null,
         }),
     setConnected: (connected) => set({ connected }),
     setSelectedScenarioId: (id) => set({ selectedScenarioId: id }),
@@ -158,6 +163,7 @@ export const useEngineStore = create<EngineState>((set) => ({
             insightLoading: false,
             insightError: null,
             insightLastLinesIngested: 0,
+            insightLatestWindow: null,
             connected: false,
             statusMessage: null,
         }),

@@ -28,7 +28,7 @@ const llmReport: InsightReport = {
 
 describe('InsightPanel', () => {
     it('renders the explain-first report view', () => {
-        render(<InsightPanel status={status} reports={[report]} loading={false} error={null} />)
+        render(<InsightPanel engineId={null} status={status} reports={[report]} loading={false} error={null} />)
 
         expect(screen.getByText('InSight Explain')).toBeInTheDocument()
         expect(screen.getByText('Checkout failures are cascading from postgres latency.')).toBeInTheDocument()
@@ -37,7 +37,7 @@ describe('InsightPanel', () => {
     })
 
     it('switches to the template capability view', () => {
-        render(<InsightPanel status={status} reports={[report]} loading={false} error={null} />)
+        render(<InsightPanel engineId={null} status={status} reports={[report]} loading={false} error={null} />)
 
         fireEvent.click(screen.getByRole('tab', { name: /Templates/i }))
 
@@ -47,7 +47,7 @@ describe('InsightPanel', () => {
     })
 
     it('renders the empty explanation state while waiting for reports', () => {
-        render(<InsightPanel status={{ ...status, lines_ingested: 0 }} reports={[]} loading={false} error={null} />)
+        render(<InsightPanel engineId={null} status={{ ...status, lines_ingested: 0 }} reports={[]} loading={false} error={null} />)
 
         expect(screen.getByText('Waiting for first explanation')).toBeInTheDocument()
     })

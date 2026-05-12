@@ -6,7 +6,7 @@ import DrainPanel from './DrainPanel'
 import InsightPanel from './InsightPanel'
 import { hasDemoHttpSink } from './drainUtils'
 import { useTranslation } from '@/hooks/useTranslation'
-import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
+import type { EngineSnapshot, InsightLatestWindow, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
 
 interface Props {
     engineId: string | null
@@ -16,8 +16,10 @@ interface Props {
     agentNames: string[]
     insightStatus: InsightStatus | null
     insightReports: InsightReport[]
+    insightLatestWindow?: InsightLatestWindow | null
     insightLoading: boolean
     insightError: string | null
+    insightCatchingUp?: boolean
     showInsight?: boolean
 }
 
@@ -40,8 +42,10 @@ export default function ObservationPanel({
     agentNames,
     insightStatus,
     insightReports,
+    insightLatestWindow = null,
     insightLoading,
     insightError,
+    insightCatchingUp = false,
     showInsight = true,
 }: Props) {
     const t = useTranslation()
@@ -114,10 +118,13 @@ export default function ObservationPanel({
                 {showInsight && (
                     <TabPane active={active === 'insight'}>
                         <InsightPanel
+                            engineId={engineId}
                             status={insightStatus}
                             reports={insightReports}
+                            latestWindow={insightLatestWindow}
                             loading={insightLoading}
                             error={insightError}
+                            catchingUp={insightCatchingUp}
                         />
                     </TabPane>
                 )}
