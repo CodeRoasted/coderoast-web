@@ -47,7 +47,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/lab"
+                                        to="/lab/insight"
                                         className="text-gray-400 hover:text-brand-400 transition-colors"
                                     >
                                         {t.footer.links.lab}

@@ -18,6 +18,7 @@ interface Props {
     insightReports: InsightReport[]
     insightLoading: boolean
     insightError: string | null
+    showInsight?: boolean
 }
 
 type TabKey = 'insight' | 'logs' | 'incidents' | 'drain'
@@ -41,12 +42,13 @@ export default function ObservationPanel({
     insightReports,
     insightLoading,
     insightError,
+    showInsight = true,
 }: Props) {
     const t = useTranslation()
     const sinks = useMemo(() => snapshot?.sinks ?? [], [snapshot?.sinks])
     const showDrain = useMemo(() => hasDemoHttpSink(sinks), [sinks])
 
-    const [active, setActive] = useState<TabKey>('insight')
+    const [active, setActive] = useState<TabKey>(showInsight ? 'insight' : 'logs')
     const [drainCounts, setDrainCounts] = useState({ total: 0, filtered: 0, dropped: 0 })
 
     // If the demo sink disappears (engine destroyed / scenario swap),
@@ -56,6 +58,10 @@ export default function ObservationPanel({
         if (!showDrain && active === 'drain') setActive('logs')
     }, [showDrain, active])
 
+    useEffect(() => {
+        if (!showInsight && active === 'insight') setActive('logs')
+    }, [showInsight, active])
+
     const incidents = snapshot?.incidents ?? []
     const totalEntries = snapshot?.total_entries ?? 0
 
@@ -63,14 +69,16 @@ export default function ObservationPanel({
         <div className="bg-gray-900/40 border border-gray-700/50 rounded-xl overflow-hidden flex flex-col h-full min-h-0">
             {/* Tab strip */}
             <div role="tablist" className="flex items-stretch border-b border-gray-700/50 shrink-0">
-                <TabButton
-                    active={active === 'insight'}
-                    onClick={() => setActive('insight')}
-                    icon={<Brain className="w-3.5 h-3.5" />}
-                    label={t.lab.insight.tab}
-                    badge={insightReports.length > 0 ? String(insightReports.length) : undefined}
-                    badgeAccent={insightReports.length > 0 ? 'brand' : undefined}
-                />
+                {showInsight && (
+                    <TabButton
+                        active={active === 'insight'}
+                        onClick={() => setActive('insight')}
+                        icon={<Brain className="w-3.5 h-3.5" />}
+                        label={t.lab.insight.tab}
+                        badge={insightReports.length > 0 ? String(insightReports.length) : undefined}
+                        badgeAccent={insightReports.length > 0 ? 'brand' : undefined}
+                    />
+                )}
                 <TabButton
                     active={active === 'logs'}
                     onClick={() => setActive('logs')}
@@ -103,14 +111,16 @@ export default function ObservationPanel({
                 a tab switch — that's what operators expect from a
                 multi-stream console. */}
             <div className="flex-1 min-h-0 relative">
-                <TabPane active={active === 'insight'}>
-                    <InsightPanel
-                        status={insightStatus}
-                        reports={insightReports}
-                        loading={insightLoading}
-                        error={insightError}
-                    />
-                </TabPane>
+                {showInsight && (
+                    <TabPane active={active === 'insight'}>
+                        <InsightPanel
+                            status={insightStatus}
+                            reports={insightReports}
+                            loading={insightLoading}
+                            error={insightError}
+                        />
+                    </TabPane>
+                )}
                 <TabPane active={active === 'logs'}>
                     <LogTail
                         entries={liveTail}

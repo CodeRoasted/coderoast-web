@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useEngineStore } from '@/store/useEngineStore'
 import OnboardingModal from '@/components/playground/OnboardingModal'
 import TierLockModal from '@/components/playground/TierLockModal'
@@ -8,6 +9,11 @@ import LabDashboardView from '@/components/playground/lab/LabDashboardView'
 import LabStatusToast from '@/components/playground/lab/LabStatusToast'
 import { useEngineLifecycle } from '@/hooks/useEngineLifecycle'
 import { useFirstVisitOnboarding } from '@/hooks/useFirstVisitOnboarding'
+import type { PlaygroundMode } from '@/types/playground'
+
+interface LabProps {
+    defaultMode?: PlaygroundMode
+}
 
 /**
  * The Lab page — thin orchestrator that wires:
@@ -17,7 +23,8 @@ import { useFirstVisitOnboarding } from '@/hooks/useFirstVisitOnboarding'
  *   – `LabPickerView` (no engine yet) OR `LabDashboardView` (engine attached)
  *   – `OnboardingModal`, `TierLockModal`, `LabStatusToast` (overlays)
  */
-export default function Lab() {
+export default function Lab({ defaultMode = 'insight' }: LabProps) {
+    const navigate = useNavigate()
     const engineId = useEngineStore((s) => s.engineId)
     const snapshot = useEngineStore((s) => s.snapshot)
     const connected = useEngineStore((s) => s.connected)
@@ -32,8 +39,22 @@ export default function Lab() {
     const insightLoading = useEngineStore((s) => s.insightLoading)
     const insightError = useEngineStore((s) => s.insightError)
 
-    const lifecycle = useEngineLifecycle()
+    const [mode, setMode] = useState<PlaygroundMode>(defaultMode)
+    const lifecycle = useEngineLifecycle({ insightEnabled: mode === 'insight' })
     const onboarding = useFirstVisitOnboarding()
+
+    useEffect(() => {
+        if (!engineId) setMode(defaultMode)
+    }, [defaultMode, engineId])
+
+    const handleModeChange = useCallback(
+        (nextMode: PlaygroundMode) => {
+            if (engineId) return
+            setMode(nextMode)
+            navigate(`/lab/${nextMode}`)
+        },
+        [engineId, navigate],
+    )
 
     // Clear validation state whenever the user picks a different scenario.
     // (Lives here rather than the hook because it's purely a UI concern.)
@@ -56,6 +77,7 @@ export default function Lab() {
     return (
         <div className="min-h-screen bg-gray-950 text-gray-100">
             <LabTopBar
+                mode={mode}
                 engineId={engineId}
                 connected={connected}
                 onBackToScenarios={lifecycle.handleBackToScenarios}
@@ -86,6 +108,8 @@ export default function Lab() {
 
                 {!engineId ? (
                     <LabPickerView
+                        mode={mode}
+                        onModeChange={handleModeChange}
                         scenarioYaml={scenarioYaml}
                         setScenarioYaml={setScenarioYaml}
                         autoStart={lifecycle.autoStart}
@@ -98,6 +122,7 @@ export default function Lab() {
                     />
                 ) : (
                     <LabDashboardView
+                        mode={mode}
                         engineId={engineId}
                         snapshot={snapshot}
                         scenarioYaml={scenarioYaml}

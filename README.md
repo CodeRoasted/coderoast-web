@@ -5,7 +5,8 @@ CodeRoastWeb is the public website and browser Lab for the CodeRoast stack. It p
 ## What It Contains
 
 - Marketing and product pages for LogCraft, InSight, pricing, use cases, and legal content.
-- LogCraft Lab (`/lab`): scenario picker, YAML editor, engine lifecycle controls, live agent/sink metrics, log tail, drain inspection, onboarding, and tier-aware controls.
+- LogCraft Playground (`/lab/logcraft`): scenario picker, YAML editor, engine lifecycle controls, live agent/sink metrics, log tail, drain inspection, onboarding, and tier-aware controls without InSight panels.
+- Insight Playground (`/lab/insight`, also `/lab`): deterministic LogCraft scenarios with InSight status, reports, and explain views for regression/tuning work.
 - Typed EN/FR translations.
 - Dark-first Tailwind UI with Framer Motion and lucide icons.
 - REST and WebSocket clients for the CodeRoastServer API.

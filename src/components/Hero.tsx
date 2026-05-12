@@ -66,7 +66,7 @@ export default function Hero() {
                         className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-10"
                     >
                         <Link
-                            to="/lab"
+                            to="/lab/insight"
                             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white font-semibold shadow-lg shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
                             <Brain className="w-5 h-5" />

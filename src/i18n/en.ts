@@ -9,6 +9,7 @@ const en = {
         pricing: 'Pricing',
         logcraft: 'LogCraft',
         lab: 'InSight Playground',
+        logcraftPlayground: 'LogCraft Playground',
         useCases: 'Use cases',
         contact: 'Contact',
     },
@@ -474,6 +475,29 @@ const en = {
     lab: {
         title: 'Playground',
         simulatedBadge: 'INSIGHT LIVE · synthetic stream',
+        playgrounds: {
+            label: 'Playground mode',
+            logcraft: {
+                title: 'LogCraft Playground',
+                badge: 'Real time',
+                short: 'Scenario lab for LogCraft output, DSL practice, and benchmarks. No InSight analysis in this view.',
+                selectScenario: 'Pick a LogCraft scenario',
+                selectScenarioDesc:
+                    'Run real-time synthetic services, inspect generated logs, and exercise the scenario DSL before wiring any analysis layer.',
+                launchAndStart: 'Run LogCraft scenario',
+                launchPaused: 'Create LogCraft engine',
+            },
+            insight: {
+                title: 'InSight Playground',
+                badge: 'Regression',
+                short: 'Deterministic InSight lab for replay, detector evidence, and no-fatigue tuning.',
+                selectScenario: 'Pick a deterministic scenario',
+                selectScenarioDesc:
+                    'Choose a seeded LogCraft scenario, run the pipeline, and use repeatable evidence to tune InSight behavior.',
+                launchAndStart: 'Run InSight scenario',
+                launchPaused: 'Create paused pipeline',
+            },
+        },
         backToLogCraft: 'Back to product',
         backToScenarios: 'Back to scenarios',
         live: 'Live',

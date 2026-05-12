@@ -73,7 +73,7 @@ export default function TierMatrix() {
                 <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link
-                            to="/lab"
+                            to="/lab/logcraft"
                             className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />

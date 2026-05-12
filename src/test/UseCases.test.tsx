@@ -42,7 +42,7 @@ describe('UseCases page', () => {
         renderPage()
         const labLinks = screen
             .getAllByRole('link')
-            .filter((a) => (a as HTMLAnchorElement).getAttribute('href') === '/lab')
+            .filter((a) => (a as HTMLAnchorElement).getAttribute('href') === '/lab/logcraft')
         // 3 narrative CTAs + the navbar's "Open Lab" CTA = at least 4.
         expect(labLinks.length).toBeGreaterThanOrEqual(3)
     })

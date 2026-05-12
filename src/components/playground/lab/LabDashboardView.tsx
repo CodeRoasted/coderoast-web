@@ -6,9 +6,11 @@ import SinkGrid from '@/components/playground/SinkGrid'
 import ObservationPanel from '@/components/playground/ObservationPanel'
 import ScenarioPanel from '@/components/playground/ScenarioPanel'
 import type { EngineSnapshot, InsightReport, InsightStatus, LogTailEntry } from '@/types/engine'
+import type { PlaygroundMode } from '@/types/playground'
 import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
+    mode: PlaygroundMode
     engineId: string
     snapshot: EngineSnapshot | null
     scenarioYaml: string
@@ -48,6 +50,7 @@ interface Props {
  *                        collapses below B.
  */
 export default function LabDashboardView({
+    mode,
     engineId,
     snapshot,
     scenarioYaml,
@@ -73,6 +76,7 @@ export default function LabDashboardView({
     onBurst,
 }: Props) {
     const t = useTranslation()
+    const showInsight = mode === 'insight'
     return (
         <div className="space-y-4">
             {/* Zone A — sticky control bar */}
@@ -131,6 +135,7 @@ export default function LabDashboardView({
                         insightReports={insightReports}
                         insightLoading={insightLoading}
                         insightError={insightError}
+                        showInsight={showInsight}
                     />
                 </div>
             </div>

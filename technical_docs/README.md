@@ -1,6 +1,6 @@
 # CodeRoastWeb Technical Documentation
 
-This folder documents the CodeRoast website and InSight Playground client. The app is no longer only a portfolio page: it is also the browser control surface for live LogCraft engines and server-side InSight explanations.
+This folder documents the CodeRoast website, LogCraft Playground, and Insight Playground clients. The app is no longer only a portfolio page: it is also the browser control surface for live LogCraft engines and server-side InSight explanations.
 
 ## Read Order
 
@@ -27,7 +27,7 @@ That path explains what the site renders, how the Lab talks to CodeRoastServer, 
 | Project | Role | Start here |
 |---|---|---|
 | CodeRoast parent docs | Cross-repo status, compatibility, and roadmap. | [../../technical_docs/README.md](../../technical_docs/README.md) |
-| CodeRoastWeb | Public website plus browser InSight Playground | This folder |
+| CodeRoastWeb | Public website plus browser LogCraft and Insight playgrounds | This folder |
 | LogCraft | Engine package and scenario DSL | [../../logcraft/technical_docs/README.md](../../logcraft/technical_docs/README.md) |
 | CodeRoastServer | Backend API, RBAC, auth, persistence, and WebSocket snapshots | [../../coderoast-server/technical_docs/README.md](../../coderoast-server/technical_docs/README.md) |
 | InSight split repos | Analysis packages behind the server reports consumed by the Lab | [../../insight-eidos/technical_docs/README.md](../../insight-eidos/technical_docs/README.md) |

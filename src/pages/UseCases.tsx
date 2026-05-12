@@ -98,7 +98,7 @@ export default function UseCasesPage() {
                                         ))}
                                     </ul>
                                     <Link
-                                        to="/lab"
+                                        to="/lab/logcraft"
                                         className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
                                     >
                                         {t.useCases.tryIt}

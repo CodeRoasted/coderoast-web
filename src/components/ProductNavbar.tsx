@@ -113,11 +113,11 @@ export default function ProductNavbar() {
                         </a>
                         <LanguageToggle />
                         <Link
-                            to="/lab"
+                            to="/lab/logcraft"
                             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white text-sm font-semibold shadow-md shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
                             <FlaskConical className="w-3.5 h-3.5" />
-                            {t.nav.lab}
+                            {t.nav.logcraftPlayground}
                         </Link>
                         <button
                             className="lg:hidden p-2 text-gray-300"
@@ -175,12 +175,12 @@ export default function ProductNavbar() {
                                 {t.footer.links.tierMatrix}
                             </NavLink>
                             <Link
-                                to="/lab"
+                                to="/lab/logcraft"
                                 onClick={() => setIsOpen(false)}
                                 className="flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
                             >
                                 <FlaskConical className="w-3.5 h-3.5" />
-                                {t.nav.lab}
+                                {t.nav.logcraftPlayground}
                             </Link>
                             <Link
                                 to="/"

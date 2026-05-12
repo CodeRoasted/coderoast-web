@@ -11,6 +11,7 @@ const fr: typeof en = {
         pricing: 'Tarifs',
         logcraft: 'LogCraft',
         lab: 'Playground InSight',
+        logcraftPlayground: 'Playground LogCraft',
         useCases: 'Cas d’usage',
         contact: 'Contact',
     },
@@ -476,6 +477,29 @@ const fr: typeof en = {
     lab: {
         title: 'Playground',
         simulatedBadge: 'INSIGHT LIVE · flux synthétique',
+        playgrounds: {
+            label: 'Mode de playground',
+            logcraft: {
+                title: 'Playground LogCraft',
+                badge: 'Temps réel',
+                short: 'Lab de scénarios pour sorties LogCraft, DSL et benchmarks. Pas d’analyse InSight dans cette vue.',
+                selectScenario: 'Choisissez un scénario LogCraft',
+                selectScenarioDesc:
+                    'Lancez des services synthétiques temps réel, inspectez les logs générés et exercez le DSL avant toute couche d’analyse.',
+                launchAndStart: 'Lancer le scénario LogCraft',
+                launchPaused: 'Créer le moteur LogCraft',
+            },
+            insight: {
+                title: 'Playground InSight',
+                badge: 'Non-régression',
+                short: 'Lab InSight déterministe pour replay, preuves détecteur et réglage sans fatigue.',
+                selectScenario: 'Choisissez un scénario déterministe',
+                selectScenarioDesc:
+                    'Choisissez un scénario LogCraft seedé, lancez le pipeline et utilisez des preuves reproductibles pour régler InSight.',
+                launchAndStart: 'Lancer le scénario InSight',
+                launchPaused: 'Créer le pipeline en pause',
+            },
+        },
         backToLogCraft: 'Retour au produit',
         backToScenarios: 'Retour aux scénarios',
         live: 'En direct',

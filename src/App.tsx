@@ -173,7 +173,23 @@ export default function App() {
                         path="/lab"
                         element={
                             <Suspense fallback={<SpinnerFallback />}>
-                                <Lab />
+                                <Lab defaultMode="insight" />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/lab/logcraft"
+                        element={
+                            <Suspense fallback={<SpinnerFallback />}>
+                                <Lab defaultMode="logcraft" />
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/lab/insight"
+                        element={
+                            <Suspense fallback={<SpinnerFallback />}>
+                                <Lab defaultMode="insight" />
                             </Suspense>
                         }
                     />
@@ -198,7 +214,7 @@ export default function App() {
                         path="/playground"
                         element={
                             <Suspense fallback={<SpinnerFallback />}>
-                                <Lab />
+                                <Lab defaultMode="insight" />
                             </Suspense>
                         }
                     />

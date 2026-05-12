@@ -103,7 +103,7 @@ export default function LogCraftPage() {
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link
-                                    to="/lab"
+                                    to="/lab/logcraft"
                                     className="inline-flex items-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-brand-600/25 hover:shadow-brand-500/30 text-base"
                                 >
                                     <FlaskConical className="w-5 h-5" />
@@ -318,7 +318,7 @@ export default function LogCraftPage() {
                             </h3>
                             <p className="text-gray-400 mb-8">{t.logcraft.ctaSubtitle}</p>
                             <Link
-                                to="/lab"
+                                to="/lab/logcraft"
                                 className="inline-flex items-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-brand-600/25"
                             >
                                 <FlaskConical className="w-5 h-5" />

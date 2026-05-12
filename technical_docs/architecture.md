@@ -5,7 +5,7 @@
 CodeRoastWeb is a React 18 + Vite single-page application. It has two responsibilities:
 
 1. Public product website for LogCraft, InSight, use cases, pricing, legal pages, and contact paths.
-2. Browser InSight Playground that creates live LogCraft engines, streams snapshots over WebSocket, polls InSight status/reports, displays explanations, logs, metrics, and sends runtime commands.
+2. Browser Lab split into LogCraft Playground and Insight Playground. Both create live LogCraft engines, stream snapshots over WebSocket, and send runtime commands; Insight Playground additionally polls InSight status/reports and displays detector evidence/explanations.
 
 ```text
 Browser route
@@ -37,7 +37,9 @@ LogCraft owns engine truth. InSight owns analysis truth. CodeRoastServer owns AP
 |---|---|---|
 | `/` | `Home` | Marketing homepage, product story, use cases, portfolio, maker note. |
 | `/logcraft` | `LogCraft` | Product deep dive and conceptual model for LogCraft. |
-| `/lab` | `Playground` | Live InSight Playground backed by a LogCraft engine. |
+| `/lab` | `Playground` | Default Insight Playground entry backed by a LogCraft engine. |
+| `/lab/logcraft` | `Playground` | LogCraft Playground mode: real-time scenario lab, logs, incidents, sinks, and Drain/demo views without InSight panels. |
+| `/lab/insight` | `Playground` | Insight Playground mode: deterministic LogCraft feed plus InSight status/reports and explain views. |
 | `/playground` | `Playground` | Legacy alias for `/lab`. |
 | `/tiers` | `TierMatrix` | RBAC tier/permission matrix. |
 | `/use-cases` | `UseCases` | Detailed use-case narratives. |
@@ -68,6 +70,7 @@ App
 		Playground
 			LabTopBar
 			OnboardingModal
+			PlaygroundModeSwitch
 			LabPickerView OR LabDashboardView
 			TierLockModal
 			LabStatusToast
@@ -79,7 +82,7 @@ The Lab page is a thin orchestrator. State and commands live in hooks/stores:
 
 | Module | Responsibility |
 |---|---|
-| `useEngineLifecycle` | validation, engine create/delete, WebSocket wiring, InSight polling, live commands, tier errors. |
+| `useEngineLifecycle` | validation, engine create/delete, WebSocket wiring, optional InSight polling, live commands, tier errors. |
 | `useFirstVisitOnboarding` | cookie-gated onboarding and Hello World pre-load. |
 | `useEngineStore` | engine id, snapshot, YAML, selected scenario, live tail, InSight status/reports. |
 | `useAuthStore` | persisted token, selected demo user, current tier. |
@@ -94,7 +97,24 @@ The Lab page is a thin orchestrator. State and commands live in hooks/stores:
 
 The app forces `document.documentElement.classList.add('dark')` on mount. `toggleTheme` is a no-op because light mode has been removed from the product surface even though Tailwind still uses class-based dark mode.
 
-## LogCraft Lab Data Flow
+## Lab Data Flow
+
+```text
+
+LogCraft Playground:
+
+```text
+Scenario picker / YAML editor
+	-> validateScenario(yaml)
+	-> createEngine(yaml)
+	-> WebSocket /ws/engine?id=...
+	-> snapshot stream
+	-> LabDashboardView
+	-> logs / incidents / sinks / demo Drain views
+	-> runtime commands over WebSocket
+```
+
+Insight Playground:
 
 ```text
 Scenario picker / YAML editor
@@ -117,7 +137,9 @@ The Lab validates YAML before creating an engine. Validation can return:
 
 Once attached, the WebSocket streams snapshots. The server snapshot tail is only the latest slice; `useEngineStore.appendToLiveTail()` deduplicates records by `(timestamp, agent, level, message)` and caps the browser buffer at 1000 records.
 
-In parallel, `useEngineLifecycle` polls InSight status every few seconds. When the reported ingested line count or InSight revision changes, it fetches `/engines/{id}/insight/reports` and replaces the local explanation list with the bounded history owned by the server. The observation column defaults to `InsightPanel`, with logs, incidents, and demo sink payloads kept as supporting views.
+In Insight Playground mode, `useEngineLifecycle` polls InSight status every few seconds. When the reported ingested line count or InSight revision changes, it fetches `/engines/{id}/insight/reports` and replaces the local explanation list with the bounded history owned by the server. The observation column defaults to `InsightPanel`, with logs, incidents, and demo sink payloads kept as supporting views.
+
+In LogCraft Playground mode, InSight polling is disabled and the observation column starts on the log tail. The same engine snapshot, sink, incident, and demo Drain views remain available, but InSight configuration, reports, and AI explain controls are not rendered.
 
 ## REST Client
 

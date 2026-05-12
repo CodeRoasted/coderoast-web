@@ -22,7 +22,7 @@ export default function Portfolio() {
             ...t.portfolio.playground,
             icon: <FlaskConical className="w-6 h-6" />,
             gradient: 'from-purple-500 to-pink-500',
-            link: '/lab',
+            link: '/lab/insight',
         },
     ]
 

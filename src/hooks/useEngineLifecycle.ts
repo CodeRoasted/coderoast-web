@@ -13,6 +13,10 @@ import { useEngineStore } from '@/store/useEngineStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { InsightReport, InsightReportsResponse } from '@/types/engine'
 
+interface EngineLifecycleOptions {
+    insightEnabled?: boolean
+}
+
 /**
  * Owns the entire engine lifecycle for the Lab page:
  *   – validation + creation (handleRun)
@@ -24,7 +28,7 @@ import type { InsightReport, InsightReportsResponse } from '@/types/engine'
  * Pulling this out of the page lets the view layers be pure markup, and
  * makes the lifecycle testable in isolation.
  */
-export function useEngineLifecycle() {
+export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOptions = {}) {
     const t = useTranslation()
     const engineId = useEngineStore((s) => s.engineId)
     const scenarioYaml = useEngineStore((s) => s.scenarioYaml)
@@ -82,7 +86,7 @@ export function useEngineLifecycle() {
     }, [engineId, setScenarioYaml])
 
     useEffect(() => {
-        if (!engineId) {
+        if (!engineId || !insightEnabled) {
             clearInsightData()
             return
         }
@@ -154,6 +158,7 @@ export function useEngineLifecycle() {
         }
     }, [
         engineId,
+        insightEnabled,
         clearInsightData,
         setInsightStatus,
         setInsightReports,

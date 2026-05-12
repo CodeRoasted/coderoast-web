@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Brain, HelpCircle } from 'lucide-react'
+import { ArrowLeft, Brain, HelpCircle, ScrollText } from 'lucide-react'
 import UserSelector from '@/components/UserSelector'
 import { useTranslation } from '@/hooks/useTranslation'
+import type { PlaygroundMode } from '@/types/playground'
 
 interface Props {
+    mode: PlaygroundMode
     engineId: string | null
     connected: boolean
     onBackToScenarios: () => void
@@ -16,12 +18,15 @@ interface Props {
  * is running, so the operator never has to dig in a menu to leave.
  */
 export default function LabTopBar({
+    mode,
     engineId,
     connected,
     onBackToScenarios,
     onRequestHelp,
 }: Props) {
     const t = useTranslation()
+    const modeCopy = t.lab.playgrounds[mode]
+    const ModeIcon = mode === 'logcraft' ? ScrollText : Brain
     return (
         <div className="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-lg border-b border-gray-700/50">
             <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
@@ -46,15 +51,14 @@ export default function LabTopBar({
                     )}
                     <div className="h-5 w-px bg-gray-700 hidden sm:block" />
                     <h1 className="font-display font-bold text-lg flex items-center gap-2 min-w-0">
-                        <Brain className="w-4 h-4 text-brand-500 shrink-0" />
-                        <span className="text-brand-500">InSight</span>{' '}
-                        <span className="text-gray-300">{t.lab.title}</span>
+                        <ModeIcon className="w-4 h-4 text-brand-500 shrink-0" />
+                        <span className="text-brand-500">{modeCopy.title}</span>
                     </h1>
                     <span
                         className="ml-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/40 hidden sm:inline"
-                        title={t.lab.simulatedBadge}
+                        title={modeCopy.short}
                     >
-                        {t.lab.simulatedBadge}
+                        {modeCopy.badge}
                     </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -68,7 +72,7 @@ export default function LabTopBar({
                         onClick={onRequestHelp}
                         className="p-1.5 rounded text-gray-400 hover:text-brand-400 hover:bg-gray-800/60 transition-colors"
                         aria-label="Help"
-                        title={t.lab.firstVisitTitle}
+                        title={modeCopy.title}
                     >
                         <HelpCircle className="w-4 h-4" />
                     </button>
