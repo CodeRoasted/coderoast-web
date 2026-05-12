@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Activity, Clock, Gauge, AlertTriangle, Copy, Check } from 'lucide-react'
+import { Activity, Gauge, AlertTriangle, Copy, Check } from 'lucide-react'
 import type { EngineSnapshot } from '@/types/engine'
 import { useTranslation } from '@/hooks/useTranslation'
 
@@ -22,9 +22,6 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
     const clockMode = snapshot?.clock_mode ?? 'real'
     const playbackState = snapshot?.playback_state ?? 'stopped'
     const isDeterministic = engineMode === 'deterministic'
-    const elapsedSeconds = isDeterministic
-        ? snapshot?.simulation_elapsed_seconds ?? snapshot?.elapsed_seconds ?? 0
-        : snapshot?.wall_elapsed_seconds ?? snapshot?.elapsed_seconds ?? 0
     const stateColor =
         state === 'running'
             ? 'text-emerald-400'
@@ -86,11 +83,6 @@ export default function EngineHeader({ snapshot, engineId }: Props) {
                     value={`${((snapshot?.error_ratio ?? 0) * 100).toFixed(2)}%`}
                 />
                 <Stat
-                    icon={<Clock className="w-4 h-4 text-blue-400" />}
-                    label={isDeterministic ? t.lab.simulationElapsed : t.lab.wallElapsed}
-                    value={formatDuration(elapsedSeconds)}
-                />
-                <Stat
                     icon={<Activity className="w-4 h-4 text-purple-400" />}
                     label={t.lab.agents}
                     value={String(snapshot?.agents?.length ?? 0)}
@@ -118,12 +110,6 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
             </div>
         </div>
     )
-}
-
-function formatDuration(seconds: number): string {
-    const m = Math.floor(seconds / 60)
-    const s = Math.floor(seconds % 60)
-    return `${m}:${s.toString().padStart(2, '0')}`
 }
 
 function humanize(value: string): string {

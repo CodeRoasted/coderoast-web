@@ -1,6 +1,7 @@
 import { AlertCircle } from 'lucide-react'
 import EngineControls from '@/components/playground/EngineControls'
 import EngineHeader from '@/components/playground/EngineHeader'
+import EngineTimeline from '@/components/playground/EngineTimeline'
 import AgentGrid from '@/components/playground/AgentGrid'
 import SinkGrid from '@/components/playground/SinkGrid'
 import ObservationPanel from '@/components/playground/ObservationPanel'
@@ -97,6 +98,7 @@ export default function LabDashboardView({
                         onCascade={onCascade}
                     />
                 </div>
+                <EngineTimeline snapshot={snapshot} />
                 {!isRunning && (
                     <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
                         <AlertCircle className="w-3.5 h-3.5" />

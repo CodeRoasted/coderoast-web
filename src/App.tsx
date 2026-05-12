@@ -159,90 +159,90 @@ export default function App() {
             <div className="min-h-screen bg-gray-950 text-gray-100">
                 <HashScrollManager />
                 <ErrorBoundary>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route
-                        path="/logcraft"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <LogCraftPage />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/lab"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Lab defaultMode="insight" />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/lab/logcraft"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Lab defaultMode="logcraft" />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/lab/insight"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Lab defaultMode="insight" />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/tiers"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <TierMatrix />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/use-cases"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <UseCases />
-                            </Suspense>
-                        }
-                    />
-                    {/* Legacy redirect */}
-                    <Route
-                        path="/playground"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Lab defaultMode="insight" />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/legal/terms"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Terms />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/legal/privacy"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Privacy />
-                            </Suspense>
-                        }
-                    />
-                    <Route
-                        path="/legal/trademark"
-                        element={
-                            <Suspense fallback={<SpinnerFallback />}>
-                                <Trademark />
-                            </Suspense>
-                        }
-                    />
-                </Routes>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/logcraft"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <LogCraftPage />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/lab"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Lab defaultMode="insight" />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/lab/logcraft"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Lab defaultMode="logcraft" />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/lab/insight"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Lab defaultMode="insight" />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/tiers"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <TierMatrix />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/use-cases"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <UseCases />
+                                </Suspense>
+                            }
+                        />
+                        {/* Legacy redirect */}
+                        <Route
+                            path="/playground"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Lab defaultMode="insight" />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/legal/terms"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Terms />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/legal/privacy"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Privacy />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="/legal/trademark"
+                            element={
+                                <Suspense fallback={<SpinnerFallback />}>
+                                    <Trademark />
+                                </Suspense>
+                            }
+                        />
+                    </Routes>
                 </ErrorBoundary>
             </div>
         </BrowserRouter>

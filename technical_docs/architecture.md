@@ -72,6 +72,7 @@ App
 			OnboardingModal
 			PlaygroundModeSwitch
 			LabPickerView OR LabDashboardView
+			EngineTimeline
 			TierLockModal
 			LabStatusToast
 ```
@@ -110,6 +111,7 @@ Scenario picker / YAML editor
 	-> WebSocket /ws/engine?id=...
 	-> snapshot stream
 	-> LabDashboardView
+	-> EngineTimeline progress + incident markers
 	-> logs / incidents / sinks / demo Drain views
 	-> runtime commands over WebSocket
 ```
@@ -125,6 +127,7 @@ Scenario picker / YAML editor
 	-> poll /engines/{id}/insight/status
 	-> poll /engines/{id}/insight/reports when lines advance
 	-> LabDashboardView
+	-> EngineTimeline progress + incident markers
 	-> runtime commands over WebSocket
 ```
 
