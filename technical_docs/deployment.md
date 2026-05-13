@@ -1,5 +1,7 @@
 # CodeRoastWeb Deployment
 
+Cross-product deployment topology and release order live in the parent [deployment_strategy.md](../../technical_docs/operations/deployment_strategy.md). This file is the CodeRoastWeb-specific runbook for local development, Vite/Netlify, API base configuration, and browser deployment checks.
+
 ## Local Development
 
 Install dependencies once:
