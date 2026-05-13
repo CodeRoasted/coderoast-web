@@ -32,11 +32,16 @@ export default function AgentControls({
     const [rateInput, setRateInput] = useState(agent.rate_rps)
     const [errorInput, setErrorInput] = useState(Math.round(agent.error_ratio * 100))
     const [burstInput, setBurstInput] = useState(100)
+    const [draggingRate, setDraggingRate] = useState(false)
+    const [draggingError, setDraggingError] = useState(false)
 
     useEffect(() => {
-        setRateInput(agent.rate_rps)
-        setErrorInput(Math.round(agent.error_ratio * 100))
-    }, [agent.rate_rps, agent.error_ratio])
+        if (!draggingRate) setRateInput(agent.rate_rps)
+    }, [agent.rate_rps, draggingRate])
+
+    useEffect(() => {
+        if (!draggingError) setErrorInput(Math.round(agent.error_ratio * 100))
+    }, [agent.error_ratio, draggingError])
 
     const tierLockMsg = (key: string) =>
         t.lab.lockedTierRequired.replace('{tier}', requiredTierName(key))
@@ -68,9 +73,10 @@ export default function AgentControls({
                             step={1}
                             value={rateInput}
                             disabled={!canSetRate}
+                            onPointerDown={() => setDraggingRate(true)}
                             onChange={(e) => setRateInput(Number(e.target.value))}
-                            onMouseUp={() => onSetRate(agent.name, rateInput)}
-                            onTouchEnd={() => onSetRate(agent.name, rateInput)}
+                            onMouseUp={() => { setDraggingRate(false); onSetRate(agent.name, rateInput) }}
+                            onTouchEnd={() => { setDraggingRate(false); onSetRate(agent.name, rateInput) }}
                             className="flex-1 accent-brand-500 disabled:opacity-40 disabled:cursor-not-allowed"
                         />
                         <span className="text-[10px] font-mono text-gray-300 w-16 text-right shrink-0">
@@ -99,9 +105,10 @@ export default function AgentControls({
                             step={1}
                             value={errorInput}
                             disabled={!canSetErrorRate}
+                            onPointerDown={() => setDraggingError(true)}
                             onChange={(e) => setErrorInput(Number(e.target.value))}
-                            onMouseUp={() => onSetErrorRate(agent.name, errorInput / 100)}
-                            onTouchEnd={() => onSetErrorRate(agent.name, errorInput / 100)}
+                            onMouseUp={() => { setDraggingError(false); onSetErrorRate(agent.name, errorInput / 100) }}
+                            onTouchEnd={() => { setDraggingError(false); onSetErrorRate(agent.name, errorInput / 100) }}
                             className="flex-1 accent-amber-500 disabled:opacity-40 disabled:cursor-not-allowed"
                         />
                         <span className="text-[10px] font-mono text-gray-300 w-16 text-right shrink-0">

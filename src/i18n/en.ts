@@ -523,8 +523,8 @@ const en = {
         drain: {
             title: 'LogCraft Demo Sink',
             caption:
-                'These HTTP outputs target *.logcraft.demo — a hostname we own that resolves to nothing. The server intercepts the requests and shows the raw payloads here so you can see exactly what would have hit a real collector.',
-            empty: 'No requests captured yet. Start the engine and any HTTP output that points at *.logcraft.demo will appear here.',
+                'Any output with a name: field is intercepted by the server and captured here — file, console, and HTTP sinks alike. The server rewrites them to an internal drain so you can see the raw payloads exactly as they would have reached a real collector.',
+            empty: 'No records captured yet. Start the engine — any named output (name: in the scenario YAML) will appear here.',
             targets: 'Captured for',
             noTargets: 'No demo HTTP outputs detected in this scenario.',
             droppedSuffix: ' older record(s) dropped to keep the buffer bounded.',

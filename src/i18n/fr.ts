@@ -525,8 +525,8 @@ const fr: typeof en = {
         drain: {
             title: 'Sink Démo LogCraft',
             caption:
-                'Ces sorties HTTP visent *.logcraft.demo — un domaine que nous possédons et qui ne résout vers rien. Le serveur intercepte les requêtes et affiche ici les payloads bruts, pour que vous voyiez exactement ce qui partirait vers un vrai collecteur.',
-            empty: 'Aucune requête capturée pour le moment. Démarrez le moteur — toute sortie HTTP pointant vers *.logcraft.demo apparaîtra ici.',
+                'Toute sortie avec un champ name: est interceptée par le serveur et capturée ici — qu\'il s\'agisse d\'une sortie fichier, console ou HTTP. Le serveur les redirige vers un drain interne pour que vous voyiez les payloads bruts exactement comme ils seraient arrivés à un vrai collecteur.',
+            empty: 'Aucun enregistrement capturé pour le moment. Démarrez le moteur — toute sortie nommée (name: dans le YAML du scénario) apparaîtra ici.',
             targets: 'Capturé pour',
             noTargets: 'Aucune sortie HTTP de démo détectée dans ce scénario.',
             droppedSuffix: ' enregistrement(s) plus ancien(s) ont été abandonnés pour borner le buffer.',

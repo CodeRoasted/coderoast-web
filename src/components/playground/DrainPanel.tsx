@@ -170,7 +170,7 @@ export default function DrainPanel({ engineId, sinks, onCountsChange }: Props) {
                             {t.lab.drain.title}
                         </span>
                         <span className="text-[10px] text-amber-400/80 bg-amber-900/30 border border-amber-700/40 px-2 py-0.5 rounded-full font-mono shrink-0">
-                            *.logcraft.demo
+                            named outputs
                         </span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
