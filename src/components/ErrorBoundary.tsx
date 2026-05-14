@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { logError } from '../utils/logger'
 
 interface Props {
     children: ReactNode
@@ -34,10 +35,10 @@ export default class ErrorBoundary extends Component<Props, State> {
     }
 
     componentDidCatch(error: Error, info: ErrorInfo): void {
-        // Surface in dev so the stack is not hidden behind the fallback UI.
-        if (import.meta.env.DEV) {
-            console.error('[ErrorBoundary]', error, info)
-        }
+        // Route errors through structured logger for observability.
+        logError('[ErrorBoundary] Caught render error', error, {
+            componentStack: info.componentStack,
+        })
         try {
             this.props.onError?.(error, info)
         } catch {
