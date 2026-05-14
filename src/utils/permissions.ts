@@ -30,24 +30,4 @@ export function getQuotaFromList(
     return q?.limit ?? null
 }
 
-// ---------------------------------------------------------------------------
-// Legacy compat shims — kept so any file not yet migrated still compiles.
-// Remove once every caller uses hasOperation().
-// ---------------------------------------------------------------------------
 
-/** @deprecated Use hasOperation(operations, key) instead. */
-export function hasPermission(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _tier: any,
-    _key: string,
-): boolean {
-    // Cannot evaluate without the server-provided operations list.
-    // Callers that still use this shim will see all controls as unlocked;
-    // the server will enforce the real check.
-    return true
-}
-
-/** @deprecated Use operation keys from the server. */
-export function requiredTierName(_key: string): string {
-    return ''
-}
