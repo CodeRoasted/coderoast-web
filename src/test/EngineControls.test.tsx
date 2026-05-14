@@ -34,7 +34,7 @@ const snapshot: EngineSnapshot = {
 describe('EngineControls', () => {
     it('sends replay-to-target in elapsed nanoseconds', () => {
         useAuthStore.setState({
-            tier: { name: 'Free', level: 1 },
+            operations: ['engine.start', 'engine.stop', 'engine.playback.play', 'engine.playback.pause', 'engine.speed.set', 'engine.advance', 'engine.cascade.trigger'],
             loading: false,
         })
         const onReplayToTarget = vi.fn()
@@ -61,7 +61,7 @@ describe('EngineControls', () => {
 
     it('hides replay-to-target editing until playback is paused', () => {
         useAuthStore.setState({
-            tier: { name: 'Free', level: 1 },
+            operations: ['engine.start', 'engine.stop', 'engine.playback.play', 'engine.playback.pause', 'engine.speed.set', 'engine.advance', 'engine.cascade.trigger'],
             loading: false,
         })
 
@@ -81,7 +81,7 @@ describe('EngineControls', () => {
 
     it('shows replay-to-target progress while the command is pending', () => {
         useAuthStore.setState({
-            tier: { name: 'Free', level: 1 },
+            operations: ['engine.start', 'engine.stop', 'engine.playback.play', 'engine.playback.pause', 'engine.speed.set', 'engine.advance', 'engine.cascade.trigger'],
             loading: false,
         })
 
@@ -96,7 +96,7 @@ describe('EngineControls', () => {
             />,
         )
 
-        expect(screen.getByText('Replaying to target…')).toBeInTheDocument()
+        expect(screen.getByText('Replaying')).toBeInTheDocument()
         expect(screen.getByRole('button', { name: 'Replay to target' })).toBeDisabled()
         expect(screen.getByLabelText('Target seconds')).toBeDisabled()
     })

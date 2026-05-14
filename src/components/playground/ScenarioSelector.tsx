@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { CheckCircle, Clock, Tag, Loader2, AlertCircle } from 'lucide-react'
 import { useEngineStore } from '@/store/useEngineStore'
-import { listScenarios, getScenario, TierRequiredError, type ScenarioMeta } from '@/services/api'
+import { listScenarios, getScenario, PolicyDenialError, type ScenarioMeta } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { PlaygroundMode } from '@/types/playground'
 import TierLockModal from './TierLockModal'
@@ -18,7 +18,7 @@ export default function ScenarioPicker({ mode }: Props) {
     const [scenarios, setScenarios] = useState<ScenarioMeta[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [tierError, setTierError] = useState<TierRequiredError | null>(null)
+    const [accessError, setAccessError] = useState<PolicyDenialError | null>(null)
 
     useEffect(() => {
         setLoading(true)
@@ -43,8 +43,8 @@ export default function ScenarioPicker({ mode }: Props) {
                 } catch (fetchError) {
                     setSelectedScenarioId(null)
                     setScenarioYaml('')
-                    if (fetchError instanceof TierRequiredError) {
-                        setTierError(fetchError)
+                    if (fetchError instanceof PolicyDenialError) {
+                        setAccessError(fetchError)
                     } else {
                         setError(fetchError instanceof Error ? fetchError.message : String(fetchError))
                     }
@@ -145,7 +145,7 @@ export default function ScenarioPicker({ mode }: Props) {
                 </div>
             ))}
         </div>
-        <TierLockModal error={tierError} onClose={() => setTierError(null)} />
+        <TierLockModal error={accessError} onClose={() => setAccessError(null)} />
         </>
     )
 }

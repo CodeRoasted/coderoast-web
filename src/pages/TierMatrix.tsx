@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle } from 'lucide-react'
-import { getFeatureMatrix, type FeatureMatrix, type PermissionInfo, type TierInfo } from '@/services/api'
+import { getCapabilityMatrix, type CapabilityMatrix, type OperationInfo } from '@/services/api'
+import { useAuthStore } from '@/store/useAuthStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import Tooltip from '@/components/Tooltip'
 
-type GroupedPermissions = Array<{ category: string; items: PermissionInfo[] }>
+type GroupedOps = Array<{ category: string; items: OperationInfo[] }>
 
-function groupPermissions(perms: PermissionInfo[]): GroupedPermissions {
-    const map = new Map<string, PermissionInfo[]>()
-    for (const perm of perms) {
-        const bucket = map.get(perm.category) ?? []
-        bucket.push(perm)
-        map.set(perm.category, bucket)
+function groupOperations(ops: OperationInfo[]): GroupedOps {
+    const map = new Map<string, OperationInfo[]>()
+    for (const op of ops) {
+        const bucket = map.get(op.category) ?? []
+        bucket.push(op)
+        map.set(op.category, bucket)
     }
     return [...map.entries()]
         .sort(([a], [b]) => a.localeCompare(b))
@@ -22,48 +23,35 @@ function groupPermissions(perms: PermissionInfo[]): GroupedPermissions {
         }))
 }
 
-function tierAccent(level: number): string {
-    switch (level) {
-        case 0:
-            return 'text-gray-400 border-gray-700'
-        case 1:
-            return 'text-emerald-400 border-emerald-800'
-        case 2:
-            return 'text-blue-400 border-blue-800'
-        case 3:
-            return 'text-purple-400 border-purple-800'
-        default:
-            return 'text-red-400 border-red-900'
-    }
+function entitlementAccent(entitlement: string): string {
+    if (entitlement.startsWith('public.')) return 'text-gray-400 border-gray-700'
+    if (entitlement.startsWith('system.')) return 'text-amber-400 border-amber-800'
+    if (entitlement.startsWith('logcraft.')) return 'text-emerald-400 border-emerald-800'
+    if (entitlement.startsWith('insight.')) return 'text-blue-400 border-blue-800'
+    if (entitlement.startsWith('tenant.')) return 'text-purple-400 border-purple-800'
+    return 'text-gray-300 border-gray-600'
 }
 
 /**
- * Tier / Feature matrix — renders the live access-control configuration
- * exposed by `GET /tiers`. Reading this page guarantees the reference
- * stays in sync with the backend; nothing is hard-coded on the client.
+ * Capability matrix — renders the live access-control configuration
+ * exposed by GET /tiers. Everything is server-driven; nothing is hard-coded.
  */
 export default function TierMatrix() {
     const t = useTranslation()
-    const [matrix, setMatrix] = useState<FeatureMatrix | null>(null)
+    const operations = useAuthStore((s) => s.operations)
+    const [matrix, setMatrix] = useState<CapabilityMatrix | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        getFeatureMatrix()
+        getCapabilityMatrix()
             .then(setMatrix)
             .catch((err) => setError(err instanceof Error ? err.message : String(err)))
             .finally(() => setLoading(false))
     }, [])
 
-    const displayTiers: TierInfo[] = useMemo(() => {
-        if (!matrix) return []
-        // Drop the "Disabled" sentinel tier from the column header row —
-        // it's a marker meaning "never available", not a purchasable level.
-        return matrix.tiers.filter((tier) => tier.name !== 'disabled')
-    }, [matrix])
-
-    const groups: GroupedPermissions = useMemo(
-        () => (matrix ? groupPermissions(matrix.permissions) : []),
+    const groups: GroupedOps = useMemo(
+        () => (matrix ? groupOperations(matrix.operations) : []),
         [matrix],
     )
 
@@ -113,14 +101,12 @@ export default function TierMatrix() {
                                     <th className="text-left font-semibold text-gray-300 px-4 py-3">
                                         {t.tiers.feature}
                                     </th>
-                                    {displayTiers.map((tier) => (
-                                        <th
-                                            key={tier.name}
-                                            className={`text-center font-semibold px-4 py-3 uppercase tracking-wider text-xs border-l border-gray-800 ${tierAccent(tier.level)}`}
-                                        >
-                                            {tier.name}
-                                        </th>
-                                    ))}
+                                    <th className="text-left font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
+                                        Required entitlement
+                                    </th>
+                                    <th className="text-center font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
+                                        You
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -128,60 +114,55 @@ export default function TierMatrix() {
                                     <>
                                         <tr key={`group-${group.category}`} className="bg-gray-950/70">
                                             <td
-                                                colSpan={displayTiers.length + 1}
+                                                colSpan={3}
                                                 className="px-4 py-2 text-[11px] uppercase tracking-widest text-gray-500 font-semibold"
                                             >
                                                 {group.category}
                                             </td>
                                         </tr>
-                                        {group.items.map((perm) => (
-                                            <tr
-                                                key={perm.key}
-                                                className="border-t border-gray-800/70 hover:bg-gray-900/80"
-                                            >
-                                                <td className="px-4 py-2 font-mono text-xs text-gray-200">
-                                                    <span className="inline-flex items-center gap-1.5">
-                                                        <span>{perm.key}</span>
-                                                        {perm.description && (
-                                                            <Tooltip
-                                                                content={
-                                                                    <span className="block max-w-xs text-xs leading-snug">
-                                                                        {perm.description}
-                                                                    </span>
-                                                                }
-                                                            >
-                                                                <HelpCircle
-                                                                    className="w-3.5 h-3.5 text-gray-500 hover:text-brand-400 transition-colors cursor-help"
-                                                                    aria-label={perm.description}
-                                                                />
-                                                            </Tooltip>
-                                                        )}
-                                                        {perm.required_tier.name === 'disabled' && (
-                                                            <span className="ml-1 px-1.5 py-0.5 rounded text-[10px] bg-red-900/30 text-red-400 border border-red-800">
-                                                                {t.tiers.disabled}
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                                </td>
-                                                {displayTiers.map((tier) => {
-                                                    const allowed =
-                                                        perm.required_tier.name !== 'disabled' &&
-                                                        tier.level >= perm.required_tier.level
-                                                    return (
-                                                        <td
-                                                            key={tier.name}
-                                                            className="px-4 py-2 text-center border-l border-gray-800/70"
-                                                        >
-                                                            {allowed ? (
-                                                                <Check className="w-4 h-4 text-emerald-400 inline" />
-                                                            ) : (
-                                                                <X className="w-4 h-4 text-gray-700 inline" />
+                                        {group.items.map((op) => {
+                                            const hasIt = operations.includes(op.key)
+                                            return (
+                                                <tr
+                                                    key={op.key}
+                                                    className="border-t border-gray-800/70 hover:bg-gray-900/80"
+                                                >
+                                                    <td className="px-4 py-2 font-mono text-xs text-gray-200">
+                                                        <span className="inline-flex items-center gap-1.5">
+                                                            <span>{op.key}</span>
+                                                            {op.description && (
+                                                                <Tooltip
+                                                                    content={
+                                                                        <span className="block max-w-xs text-xs leading-snug">
+                                                                            {op.description}
+                                                                        </span>
+                                                                    }
+                                                                >
+                                                                    <HelpCircle
+                                                                        className="w-3.5 h-3.5 text-gray-500 hover:text-brand-400 transition-colors cursor-help"
+                                                                        aria-label={op.description}
+                                                                    />
+                                                                </Tooltip>
                                                             )}
-                                                        </td>
-                                                    )
-                                                })}
-                                            </tr>
-                                        ))}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-2 border-l border-gray-800">
+                                                        <span
+                                                            className={`text-xs font-mono px-1.5 py-0.5 rounded border ${entitlementAccent(op.required_entitlement)}`}
+                                                        >
+                                                            {op.required_entitlement}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-2 text-center border-l border-gray-800">
+                                                        {hasIt ? (
+                                                            <Check className="w-4 h-4 text-emerald-400 mx-auto" />
+                                                        ) : (
+                                                            <X className="w-4 h-4 text-gray-600 mx-auto" />
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
                                     </>
                                 ))}
                             </tbody>

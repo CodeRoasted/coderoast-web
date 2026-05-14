@@ -63,7 +63,7 @@ describe('EngineWebSocket', () => {
         useAuthStore.setState({
             token: null,
             user: null,
-            tier: null,
+            operations: [],
             loading: false,
             selectedUserId: null,
         })

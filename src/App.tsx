@@ -91,31 +91,21 @@ export default function App() {
         const { token: persistedToken, selectedUserId: persistedUserId } =
             useAuthStore.getState()
 
-        // After a successful login we don't get a tier back from /login;
-        // a follow-up /whoami fetches it so the UI can disable buttons the
-        // freshly authenticated user is not allowed to use.
-        const refreshTier = () =>
-            whoami()
-                .then((info) => {
-                    if (cancelled) return
-                    useAuthStore.getState().setTier(info.tier)
-                })
-                .catch(() => {
-                    /* tier stays at last known value */
-                })
+        // After a successful login we get the access profile back from /login
+        // and /whoami; use it to populate the operations list so controls
+        // can gate themselves without an extra round-trip.
 
         if (persistedToken) {
             whoami()
                 .then((info) => {
                     if (cancelled) return
                     if (info.token_valid) {
-                        setAuth(persistedToken, info.user, info.tier)
+                        setAuth(persistedToken, info.user, info.access?.operations ?? [])
                     } else if (persistedUserId) {
                         return login(persistedUserId)
-                            .then(({ token: fresh, user }) => {
+                            .then(({ token: fresh, user, access }) => {
                                 if (cancelled) return
-                                setAuth(fresh, user)
-                                void refreshTier()
+                                setAuth(fresh, user, access?.operations ?? [])
                             })
                             .catch(() => {
                                 if (!cancelled) clearAuth()
@@ -134,10 +124,9 @@ export default function App() {
 
         if (persistedUserId) {
             login(persistedUserId)
-                .then(({ token: fresh, user }) => {
+                .then(({ token: fresh, user, access }) => {
                     if (cancelled) return
-                    setAuth(fresh, user)
-                    void refreshTier()
+                    setAuth(fresh, user, access?.operations ?? [])
                 })
                 .catch(() => {
                     if (!cancelled) clearAuth()

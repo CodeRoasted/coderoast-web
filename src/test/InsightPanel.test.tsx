@@ -55,6 +55,7 @@ describe('InsightPanel', () => {
     it('shows LLM mode metadata when reports are AI augmented', () => {
         render(
             <InsightPanel
+                engineId={null}
                 status={{ ...status, explain_mode: 'llm_augmented', llm_enabled: true, llm_model: 'gpt-4o-mini' }}
                 reports={[llmReport]}
                 loading={false}

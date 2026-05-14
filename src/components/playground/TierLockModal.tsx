@@ -5,10 +5,10 @@ import { Lock, X, ArrowRight, AlertCircle, UserCheck } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
 import { login, listUsers } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
-import type { TierRequiredError } from '@/services/api'
+import type { PolicyDenialError } from '@/services/api'
 
 interface Props {
-    error: TierRequiredError | null
+    error: PolicyDenialError | null
     onClose: () => void
 }
 
@@ -16,11 +16,9 @@ interface Props {
  * Friendly modal shown when the backend rejects an action with 403.
  *
  * Two modes:
- * - **tier-locked**: the feature exists but the user's current tier is too
- *   low — shows an upsell with a "See plans" link.
- * - **disabled**: the feature is intentionally disabled in this deployment
- *   (required_tier === "disabled") — shows a "not available" notice with no
- *   upgrade path.
+ * - **entitlement-locked**: the user lacks the required entitlement — shows
+ *   the operation key and entitlement name with a switch-user upgrade path.
+ * - **quota**: a quota limit was hit — shows the quota key and limit.
  */
 export default function TierLockModal({ error, onClose }: Props) {
     const t = useTranslation()
@@ -28,23 +26,34 @@ export default function TierLockModal({ error, onClose }: Props) {
     const setSelectedUserId = useAuthStore((s) => s.setSelectedUserId)
     const [switching, setSwitching] = useState(false)
     const [switchError, setSwitchError] = useState<string | null>(null)
-    const isDisabled = error?.requiredTier?.name === 'disabled'
-    const required = error?.requiredTier?.name ?? '—'
-    const current = error?.userTier?.name ?? error?.userId ?? 'anonymous'
-    const permission = error?.permission ?? '—'
+    const isQuotaError = Boolean(error?.quotaKey)
+    const operation = error?.operation ?? "—"
+    const requiredEntitlement = error?.requiredEntitlement ?? "—"
+    const quotaDetail = error?.quotaKey
+        ? `${error.quotaKey} (limit: ${error.quotaLimit ?? "?"})`
+        : ""
 
-    const handleSwitchToAdmin = async () => {
+    const canUpgrade = Boolean(!isQuotaError && error?.identityKind !== 'account')
+
+    const upgradeUserId =
+        !error?.role || error.role === 'anonymous' || error.identityKind === 'anonymous'
+            ? 'logcraft_demo'
+            : 'insight_demo'
+
+    const handleSwitchUser = async () => {
         setSwitching(true)
         setSwitchError(null)
         try {
-            const [{ users }, { token, user }] = await Promise.all([listUsers(), login('admin')])
-            const adminUser = users.find((u) => u.id === 'admin')
-            setAuth(token, user, adminUser?.tier ?? null)
-            setSelectedUserId('admin')
+            const [{ users }, { token, user, access }] = await Promise.all([
+                listUsers(),
+                login(upgradeUserId),
+            ])
+            const found = users.find((u) => u.id === upgradeUserId)
+            const ops = access?.operations ?? found?.access?.operations ?? []
+            setAuth(token, user, ops)
+            setSelectedUserId(upgradeUserId)
             onClose()
         } catch (err) {
-            // Surface a friendly message instead of leaving the user stuck
-            // with a spinning button when the demo backend is unreachable.
             setSwitchError(err instanceof Error ? err.message : String(err))
         } finally {
             setSwitching(false)
@@ -76,21 +85,39 @@ export default function TierLockModal({ error, onClose }: Props) {
                             <X className="w-4 h-4" />
                         </button>
 
-                        <div className={`inline-flex p-2.5 rounded-xl text-white mb-4 ${isDisabled ? 'bg-amber-600/80' : 'bg-gradient-to-br from-brand-600 to-orange-500'}`}>
-                            {isDisabled ? <AlertCircle className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                        <div
+                            className={`inline-flex p-2.5 rounded-xl text-white mb-4 ${
+                                isQuotaError
+                                    ? "bg-amber-600/80"
+                                    : "bg-gradient-to-br from-brand-600 to-orange-500"
+                            }`}
+                        >
+                            {isQuotaError ? (
+                                <AlertCircle className="w-5 h-5" />
+                            ) : (
+                                <Lock className="w-5 h-5" />
+                            )}
                         </div>
 
                         <h2 className="font-display text-xl font-bold text-white mb-2">
-                            {isDisabled ? t.auth.tierDisabledTitle : t.auth.tierLockTitle}
+                            {isQuotaError ? t.auth.tierDisabledTitle : t.auth.tierLockTitle}
                         </h2>
-                        <p className="text-sm text-gray-400 leading-relaxed mb-5">
-                            {isDisabled
-                                ? t.auth.tierDisabledBody.replace('{permission}', permission)
+                        <p className="text-sm text-gray-400 leading-relaxed mb-1">
+                            {isQuotaError
+                                ? t.auth.tierDisabledBody.replace("{permission}", operation)
                                 : t.auth.tierLockBody
-                                    .replace('{permission}', permission)
-                                    .replace('{tier}', required)
-                                    .replace('{current}', current)}
+                                      .replace("{permission}", operation)
+                                      .replace("{tier}", requiredEntitlement)
+                                      .replace("{current}", error?.role ?? "anonymous")}
                         </p>
+                        {isQuotaError && quotaDetail && (
+                            <p className="text-xs text-amber-400/80 mb-4">{quotaDetail}</p>
+                        )}
+                        {canUpgrade && (
+                            <p className="text-xs text-gray-600 mb-4 font-mono">
+                                {operation} · {requiredEntitlement}
+                            </p>
+                        )}
 
                         {switchError && (
                             <p
@@ -101,9 +128,9 @@ export default function TierLockModal({ error, onClose }: Props) {
                             </p>
                         )}
                         <div className="flex flex-col sm:flex-row gap-2">
-                            {!isDisabled && (
+                            {canUpgrade && (
                                 <button
-                                    onClick={handleSwitchToAdmin}
+                                    onClick={handleSwitchUser}
                                     disabled={switching}
                                     className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-white text-sm font-semibold transition-colors"
                                 >
@@ -111,7 +138,7 @@ export default function TierLockModal({ error, onClose }: Props) {
                                     {t.auth.tierLockSwitch}
                                 </button>
                             )}
-                            {!isDisabled && (
+                            {canUpgrade && (
                                 <Link
                                     to="/tiers"
                                     onClick={onClose}

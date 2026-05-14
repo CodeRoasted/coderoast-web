@@ -711,6 +711,8 @@ const en = {
             'You own this agent — it no longer follows scenario phases. Click again to relock (sliders return to scenario).',
         lockedTierRequired:
             'Requires the {tier} tier. Switch user (top right) to a higher tier to use this control.',
+        lockedOperationRequired:
+            'Requires the {operation} capability. Switch user (top right) to access this control.',
         seededAgentOwned:
             'Determinism broken: this agent no longer mirrors the seeded scenario.',
         seedDeterminismWarning:

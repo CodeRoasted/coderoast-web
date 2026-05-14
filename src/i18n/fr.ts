@@ -712,6 +712,8 @@ const fr: typeof en = {
             'Vous contrôlez cet agent — il ne suit plus les phases du scénario. Cliquez de nouveau pour reverrouiller (les sliders reviennent au scénario).',
         lockedTierRequired:
             'Nécessite le tier {tier}. Changez d\'utilisateur (en haut à droite) pour un tier supérieur.',
+        lockedOperationRequired:
+            'Nécessite la capacité {operation}. Changez d\'utilisateur (en haut à droite) pour accéder à ce contrôle.',
         seededAgentOwned:
             'Déterminisme rompu : cet agent ne reflète plus le scénario seedé.',
         seedDeterminismWarning:

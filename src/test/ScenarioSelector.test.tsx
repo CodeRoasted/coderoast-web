@@ -6,19 +6,28 @@ import { useEngineStore } from '@/store/useEngineStore'
 vi.mock('@/services/api', () => ({
     listScenarios: vi.fn(),
     getScenario: vi.fn(),
-    TierRequiredError: class TierRequiredError extends Error {
-        permission: string
+    PolicyDenialError: class PolicyDenialError extends Error {
+        operation: string
+        requiredEntitlement: string
+        quotaKey: string
+        quotaLimit: number | null
         userId: string
-        userTier: unknown
-        requiredTier: unknown
-        reason: string
-        constructor(p: { permission: string; userId: string; reason: string }) {
-            super(p.reason)
-            this.permission = p.permission
+        subject: string
+        role: string
+        identityKind: string
+        deploymentContext: string
+        constructor(p: { operation: string; requiredEntitlement: string; quotaKey: string; quotaLimit: number | null; userId: string; subject: string; role: string; identityKind: string; deploymentContext: string; reason: string }) {
+            super(p.reason || 'Access denied')
+            this.name = 'PolicyDenialError'
+            this.operation = p.operation
+            this.requiredEntitlement = p.requiredEntitlement
+            this.quotaKey = p.quotaKey
+            this.quotaLimit = p.quotaLimit
             this.userId = p.userId
-            this.userTier = null
-            this.requiredTier = null
-            this.reason = p.reason
+            this.subject = p.subject
+            this.role = p.role
+            this.identityKind = p.identityKind
+            this.deploymentContext = p.deploymentContext
         }
     },
 }))
@@ -82,13 +91,13 @@ describe('ScenarioSelector', () => {
         })
     })
 
-    it('shows the tier-lock modal when scenario fetch is tier-gated', async () => {
-        const { TierRequiredError } = await import('@/services/api')
+    it('shows the access-denial modal when scenario fetch is policy-gated', async () => {
+        const { PolicyDenialError } = await import('@/services/api')
         mockedList.mockResolvedValue({
             scenarios: [
                 {
-                    id: 'pro_only',
-                    name: 'Pro Only',
+                    id: 'insight_only',
+                    name: 'InSight Only',
                     description: 'd',
                     category: 'Showcase',
                     duration: '1m',
@@ -96,12 +105,17 @@ describe('ScenarioSelector', () => {
             ],
         })
         mockedGet.mockRejectedValue(
-            new TierRequiredError({
-                permission: 'scenario.showcase',
-                userId: 'free',
-                userTier: null,
-                requiredTier: null,
-                reason: 'Showcase scenarios require Pro.',
+            new PolicyDenialError({
+                operation: 'scenario.showcase.load',
+                requiredEntitlement: 'insight.showcase',
+                quotaKey: '',
+                quotaLimit: null,
+                userId: 'logcraft_demo',
+                subject: 'session-abc',
+                role: 'demo_logcraft',
+                identityKind: 'demo',
+                deploymentContext: 'public_demo',
+                reason: 'entitlement insight.showcase required',
             }),
         )
 
@@ -110,18 +124,12 @@ describe('ScenarioSelector', () => {
                 <ScenarioSelector mode="insight" />
             </MemoryRouter>,
         )
-        const card = await screen.findByText('Pro Only')
+        const card = await screen.findByText('InSight Only')
         fireEvent.click(card)
 
         await waitFor(() => {
-            // Modal title is sourced from translations; surfacing it is
-            // enough to prove the lock flow fired without coupling the
-            // assertion to the exact body template.
-            expect(
-                screen.getByText(/higher tier|Palier sup/i),
-            ).toBeInTheDocument()
+            expect(screen.getByRole('button', { name: /switch/i })).toBeInTheDocument()
         })
-        // Selection is rolled back so the user isn't stuck with a fake-checked card.
         expect(useEngineStore.getState().selectedScenarioId).toBeNull()
         expect(useEngineStore.getState().scenarioYaml).toBe('')
         expect(mockedList).toHaveBeenCalledWith('insight')

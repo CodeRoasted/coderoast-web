@@ -156,8 +156,8 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
             </div>
 
             <TierLockModal
-                error={lifecycle.tierError}
-                onClose={() => lifecycle.setTierError(null)}
+                error={lifecycle.accessError}
+                onClose={() => lifecycle.setAccessError(null)}
             />
             <LabStatusToast message={statusMessage} />
         </div>

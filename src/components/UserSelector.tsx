@@ -32,39 +32,30 @@ export default function UserSelector() {
             .then(({ users: list }) => {
                 // Filter out the "anonymous" seed user — we expose it as a
                 // dedicated top-level option so it doesn't appear twice.
-                // Then sort by tier level ascending so the dropdown reads
-                // free → pro → enterprise (mirrors the pricing page order)
-                // and the cheapest demo identity is always the first pick.
+                // Sort demo users first (identity_kind === 'demo'), then by name.
                 const filtered = list.filter((u) => u.id !== 'anonymous')
                 const sorted = [...filtered].sort((a, b) => {
-                    const al = a.tier?.level ?? Number.POSITIVE_INFINITY
-                    const bl = b.tier?.level ?? Number.POSITIVE_INFINITY
-                    if (al !== bl) return al - bl
+                    const aDemo = a.is_demo ? 0 : 1
+                    const bDemo = b.is_demo ? 0 : 1
+                    if (aDemo !== bDemo) return aDemo - bDemo
                     return a.name.localeCompare(b.name)
                 })
                 setUsers(sorted)
 
-                // Auto-pick the admin demo user so the operator can hit "Run"
-                // immediately. We skip only if the user has explicitly chosen
-                // a non-default identity AND we're already authenticated as
-                // that identity. "free_demo" was the old auto-pick default —
-                // treat it as no explicit selection so this migration is
-                // transparent to existing visitors.
+                // Auto-pick logcraft_demo on first visit so the operator can
+                // hit "Run" immediately without having to choose a user.
                 const { selectedUserId: persisted, token, user: currentUser } = useAuthStore.getState()
-                const hasExplicitSelection = persisted !== null && persisted !== 'free_demo'
+                // Treat legacy tier-era stale picks as "no explicit selection".
+                const stalePicks = new Set(['free_demo', 'pro_demo', 'ent_demo'])
+                const hasExplicitSelection = persisted !== null && !stalePicks.has(persisted)
                 const defaultUser =
-                    sorted.find((u) => u.id === 'admin') ?? sorted[sorted.length - 1]
+                    sorted.find((u) => u.id === 'logcraft_demo') ?? sorted[0]
                 if (!hasExplicitSelection && defaultUser && (currentUser?.id !== defaultUser.id || !token)) {
-                    // Clear stale free_demo entry before switching.
                     if (persisted !== null) setSelectedUserId(null)
                     login(defaultUser.id)
-                        .then(({ token: t2, user: principal }) => {
-                            // setAuth without setSelectedUserId — the auto-pick
-                            // is not an explicit choice, so we leave
-                            // selectedUserId as null. The dropdown derives the
-                            // displayed value from user?.id as the fallback,
-                            // and explicit handleChange calls persist the choice.
-                            setAuth(t2, principal, defaultUser.tier)
+                        .then(({ token: t2, user: principal, access }) => {
+                            const ops = access?.operations ?? defaultUser.access?.operations ?? []
+                            setAuth(t2, principal, ops)
                         })
                         .catch(() => {
                             // Non-fatal: user can still pick manually.
@@ -73,8 +64,6 @@ export default function UserSelector() {
             })
             .catch((err) => setError(err instanceof Error ? err.message : String(err)))
             .finally(() => setLoading(false))
-        // setAuth/setSelectedUserId are stable Zustand setters; intentional
-        // empty deps to run the bootstrap exactly once on mount.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -88,9 +77,10 @@ export default function UserSelector() {
                 clearAuth()
                 setSelectedUserId(null)
             } else {
-                const { token, user: principal } = await login(value)
+                const { token, user: principal, access } = await login(value)
                 const picked = users.find((u) => u.id === value)
-                setAuth(token, principal, picked?.tier ?? null)
+                const ops = access?.operations ?? picked?.access?.operations ?? []
+                setAuth(token, principal, ops)
                 setSelectedUserId(value)
             }
         } catch (err) {
@@ -121,7 +111,7 @@ export default function UserSelector() {
             >
                 {users.map((u) => (
                     <option key={u.id} value={u.id}>
-                        {u.name} ({u.tier?.name ?? u.role})
+                        {u.name}
                     </option>
                 ))}
             </select>

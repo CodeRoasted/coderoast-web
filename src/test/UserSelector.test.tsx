@@ -13,37 +13,31 @@ import { listUsers, login } from '@/services/api'
 const mockedListUsers = vi.mocked(listUsers)
 const mockedLogin = vi.mocked(login)
 
-const userPro = {
-    id: 'pro_demo',
-    name: 'Pro Demo',
-    role: 'pro',
-    tier: { name: 'pro', level: 2, description: '' },
+const userLogcraft = {
+    id: 'logcraft_demo',
+    name: 'LogCraft Demo',
+    role: 'demo_logcraft',
+    is_demo: true,
 }
-const userFree = {
-    id: 'free_demo',
-    name: 'Free Demo',
-    role: 'free',
-    tier: { name: 'free', level: 1, description: '' },
-}
-const userEnt = {
-    id: 'ent_demo',
-    name: 'Enterprise Demo',
-    role: 'enterprise',
-    tier: { name: 'enterprise', level: 3, description: '' },
+const userInsight = {
+    id: 'insight_demo',
+    name: 'InSight Demo',
+    role: 'demo_insight',
+    is_demo: true,
 }
 const userAdmin = {
     id: 'admin',
     name: 'Admin',
     role: 'admin',
-    tier: { name: 'enterprise', level: 3, description: '' },
+    is_demo: false,
 }
 
 describe('UserSelector', () => {
     beforeEach(() => {
-        // Reset Zustand auth store to a fresh anonymous state.
         useAuthStore.setState({
             token: null,
             user: null,
+            operations: [],
             loading: false,
             selectedUserId: null,
         })
@@ -55,13 +49,10 @@ describe('UserSelector', () => {
         vi.clearAllMocks()
     })
 
-    it('orders users by tier level ascending (free → pro → enterprise)', async () => {
+    it('orders demo users first then alphabetically', async () => {
         mockedListUsers.mockResolvedValue({
-            // Backend returns in arbitrary order; UI must normalise.
-            users: [userPro, userEnt, userFree],
+            users: [userAdmin, userInsight, userLogcraft],
         })
-        // Force an in-flight token so the auto-login does NOT fire and
-        // change the dropdown's `value` away from the default.
         useAuthStore.setState({ token: 'preset', user: { id: 'x', name: 'x' } })
 
         render(<UserSelector />)
@@ -73,35 +64,38 @@ describe('UserSelector', () => {
             screen.getByRole('combobox').querySelectorAll('option'),
         ) as HTMLOptionElement[]
         const order = options.map((o) => o.value)
-        expect(order).toEqual(['free_demo', 'pro_demo', 'ent_demo'])
+        // Demo users come before non-demo users
+        expect(order.indexOf('logcraft_demo')).toBeLessThan(order.indexOf('admin'))
+        expect(order.indexOf('insight_demo')).toBeLessThan(order.indexOf('admin'))
     })
 
-    it('auto-logs in as admin demo user on first visit', async () => {
+    it('auto-logs in as logcraft_demo on first visit', async () => {
         mockedListUsers.mockResolvedValue({
-            users: [userPro, userFree, userAdmin],
+            users: [userInsight, userLogcraft, userAdmin],
         })
         mockedLogin.mockResolvedValue({
-            token: 'admin-token',
-            user: { id: 'admin', name: 'Admin' },
+            token: 'logcraft-token',
+            user: { id: 'logcraft_demo', name: 'LogCraft Demo' },
+            access: null,
         })
 
         render(<UserSelector />)
 
         await waitFor(() => {
-            expect(mockedLogin).toHaveBeenCalledWith('admin')
+            expect(mockedLogin).toHaveBeenCalledWith('logcraft_demo')
         })
         await waitFor(() => {
-            expect(useAuthStore.getState().token).toBe('admin-token')
+            expect(useAuthStore.getState().token).toBe('logcraft-token')
         })
     })
 
     it('does not auto-login when a user is already selected', async () => {
         useAuthStore.setState({
             token: 'existing',
-            user: { id: 'pro_demo', name: 'Pro Demo' },
-            selectedUserId: 'pro_demo',
+            user: { id: 'logcraft_demo', name: 'LogCraft Demo' },
+            selectedUserId: 'logcraft_demo',
         })
-        mockedListUsers.mockResolvedValue({ users: [userPro, userFree] })
+        mockedListUsers.mockResolvedValue({ users: [userLogcraft, userInsight] })
 
         render(<UserSelector />)
 

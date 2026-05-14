@@ -23,14 +23,33 @@ export interface AuthUser {
     name: string
 }
 
+/** Quota value from an AccessProfile. */
+export interface QuotaInfo {
+    key: string
+    limit: number
+    unit: string
+    description: string
+}
+
+/** Subject's current access profile as returned by login / whoami / /users. */
+export interface AccessProfile {
+    tenant_id: string
+    user_id: string
+    subject_id: string
+    name: string
+    role: string
+    identity_kind: string
+    deployment_context: string
+    entitlements: string[]
+    /** Permitted operation keys for this subject (same as capabilities). */
+    operations: string[]
+    quotas: QuotaInfo[]
+}
+
 export interface LoginResponse {
     token: string
     user: AuthUser
-}
-
-export interface TierInfo {
-    name: string
-    level: number
+    access: AccessProfile | null
 }
 
 /** A selectable demo user exposed by `GET /users`. */
@@ -38,56 +57,93 @@ export interface SelectableUser {
     id: string
     name: string
     role: string
-    tier: TierInfo | null
+    is_demo: boolean
+    access?: AccessProfile
+}
+
+export interface EntitlementInfo {
+    key: string
+    label: string
+    description: string
 }
 
 export interface RoleInfo {
     name: string
-    tier: TierInfo
+    display_name: string
+    identity_kind: string
+    entitlements: string[]
 }
 
-export interface PermissionInfo {
+export interface OperationInfo {
     key: string
+    required_entitlement: string
     category: string
-    required_tier: TierInfo
     description: string
 }
 
-export interface FeatureMatrix {
-    tiers: TierInfo[]
+export interface ScenarioCapabilityInfo {
+    key: string
+    required_entitlement: string
+    description: string
+}
+
+export interface CapabilityMatrix {
+    entitlements: EntitlementInfo[]
     roles: RoleInfo[]
-    permissions: PermissionInfo[]
+    operations: OperationInfo[]
+    scenario_capabilities: ScenarioCapabilityInfo[]
+    current_access?: AccessProfile
 }
 
 /**
- * Raised when the backend returns HTTP 403 on a feature-gated endpoint.
- * Carries the rich context (required tier + user tier) emitted by the
- * server's `access_control_middleware` so UI layers can render a
- * "This feature requires the Pro tier" message instead of a generic error.
+ * Raised when the backend returns HTTP 403 on a policy-gated endpoint.
+ * Carries the rich context emitted by the server's access-control middleware
+ * so UI layers can show a meaningful "requires X entitlement" message.
  */
-export class TierRequiredError extends Error {
-    readonly permission: string
+export class PolicyDenialError extends Error {
+    readonly operation: string
+    readonly requiredEntitlement: string
+    readonly quotaKey: string
+    readonly quotaLimit: number | null
     readonly userId: string
-    readonly userTier: TierInfo | null
-    readonly requiredTier: TierInfo | null
+    readonly subject: string
+    readonly role: string
+    readonly identityKind: string
+    readonly deploymentContext: string
     readonly reason: string
 
     constructor(params: {
-        permission: string
+        operation: string
+        requiredEntitlement: string
+        quotaKey: string
+        quotaLimit: number | null
         userId: string
-        userTier: TierInfo | null
-        requiredTier: TierInfo | null
+        subject: string
+        role: string
+        identityKind: string
+        deploymentContext: string
         reason: string
     }) {
         super(params.reason || 'Access denied')
-        this.name = 'TierRequiredError'
-        this.permission = params.permission
+        this.name = 'PolicyDenialError'
+        this.operation = params.operation
+        this.requiredEntitlement = params.requiredEntitlement
+        this.quotaKey = params.quotaKey
+        this.quotaLimit = params.quotaLimit
         this.userId = params.userId
-        this.userTier = params.userTier
-        this.requiredTier = params.requiredTier
+        this.subject = params.subject
+        this.role = params.role
+        this.identityKind = params.identityKind
+        this.deploymentContext = params.deploymentContext
         this.reason = params.reason
     }
 }
+
+/**
+ * @deprecated Use PolicyDenialError. Alias kept so any stale import compiles
+ * during the transition before tests are updated.
+ */
+export { PolicyDenialError as TierRequiredError }
 
 // API base URL — can be overridden via VITE_API_BASE environment variable
 // Default: relative path for local dev, production should use api.coderoast.fr subdomain.
@@ -101,13 +157,6 @@ function authHeaders(): Record<string, string> {
         headers['Authorization'] = `Bearer ${token}`
     }
     return headers
-}
-
-function parseTier(value: unknown): TierInfo | null {
-    if (!value || typeof value !== 'object') return null
-    const record = value as Record<string, unknown>
-    if (typeof record.name !== 'string' || typeof record.level !== 'number') return null
-    return { name: record.name, level: record.level }
 }
 
 /**
@@ -149,11 +198,16 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
     if (!resp.ok) {
         const body = await resp.json().catch(() => ({}))
         if (resp.status === 403) {
-            throw new TierRequiredError({
-                permission: typeof body.permission === 'string' ? body.permission : '',
+            throw new PolicyDenialError({
+                operation: typeof body.operation === 'string' ? body.operation : '',
+                requiredEntitlement: typeof body.required_entitlement === 'string' ? body.required_entitlement : '',
+                quotaKey: body.quota && typeof body.quota.key === 'string' ? body.quota.key : '',
+                quotaLimit: body.quota && typeof body.quota.limit === 'number' ? body.quota.limit : null,
                 userId: typeof body.user === 'string' ? body.user : '',
-                userTier: parseTier(body.user_tier),
-                requiredTier: parseTier(body.required_tier),
+                subject: typeof body.subject === 'string' ? body.subject : '',
+                role: typeof body.role === 'string' ? body.role : '',
+                identityKind: typeof body.identity_kind === 'string' ? body.identity_kind : '',
+                deploymentContext: typeof body.deployment_context === 'string' ? body.deployment_context : '',
                 reason: typeof body.reason === 'string' ? body.reason : 'Access denied',
             })
         }
@@ -181,7 +235,7 @@ export interface WhoAmIResponse {
     token_presented: boolean
     token_valid: boolean
     user: AuthUser
-    tier: TierInfo | null
+    access: AccessProfile | null
 }
 
 /**
@@ -197,9 +251,12 @@ export async function listUsers(): Promise<{ users: SelectableUser[] }> {
     return request('/users')
 }
 
-export async function getFeatureMatrix(): Promise<FeatureMatrix> {
+export async function getCapabilityMatrix(): Promise<CapabilityMatrix> {
     return request('/tiers')
 }
+
+/** @deprecated Use getCapabilityMatrix */
+export const getFeatureMatrix = getCapabilityMatrix
 
 export async function createEngine(yaml: string): Promise<{ engine_id: string; message: string }> {
     return request('/engines', {

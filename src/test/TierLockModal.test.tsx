@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import TierLockModal from '@/components/playground/TierLockModal'
-import { TierRequiredError } from '@/services/api'
+import { PolicyDenialError } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 
 vi.mock('@/services/api', async () => {
@@ -21,23 +21,33 @@ import { listUsers, login } from '@/services/api'
 const mockedListUsers = vi.mocked(listUsers)
 const mockedLogin = vi.mocked(login)
 
-const tierError = new TierRequiredError({
-    permission: 'command.evaluate_cascade',
-    userId: 'free_demo',
-    userTier: { name: 'free', level: 1 },
-    requiredTier: { name: 'enterprise', level: 3 },
-    reason: 'enterprise tier required',
+const accessError = new PolicyDenialError({
+    operation: 'engine.cascade.trigger',
+    requiredEntitlement: 'logcraft.advanced_dsl',
+    quotaKey: '',
+    quotaLimit: null,
+    userId: 'logcraft_demo',
+    subject: 'session-abc',
+    role: 'demo_logcraft',
+    identityKind: 'demo',
+    deploymentContext: 'public_demo',
+    reason: 'entitlement logcraft.advanced_dsl required',
 })
 
-const disabledError = new TierRequiredError({
-    permission: 'command.shutdown_world',
-    userId: 'free_demo',
-    userTier: { name: 'free', level: 1 },
-    requiredTier: { name: 'disabled', level: 99 },
-    reason: 'feature disabled in this deployment',
+const quotaError = new PolicyDenialError({
+    operation: 'engine.create',
+    requiredEntitlement: '',
+    quotaKey: 'engines.concurrent',
+    quotaLimit: 1,
+    userId: 'logcraft_demo',
+    subject: 'session-abc',
+    role: 'demo_logcraft',
+    identityKind: 'demo',
+    deploymentContext: 'public_demo',
+    reason: 'quota exceeded: engines.concurrent',
 })
 
-function renderModal(error: TierRequiredError | null, onClose = vi.fn()) {
+function renderModal(error: PolicyDenialError | null, onClose = vi.fn()) {
     return {
         onClose,
         ...render(
@@ -53,7 +63,7 @@ describe('TierLockModal', () => {
         useAuthStore.setState({
             token: null,
             user: null,
-            tier: null,
+            operations: [],
             loading: false,
             selectedUserId: null,
         })
@@ -67,52 +77,60 @@ describe('TierLockModal', () => {
 
     it('renders nothing when no error is provided', () => {
         renderModal(null)
-        // Modal contents are wrapped in a heading; absence proves it didn't mount.
         expect(screen.queryByRole('heading')).not.toBeInTheDocument()
     })
 
-    it('renders tier-locked content with required + current tier', () => {
-        renderModal(tierError)
-        // Required tier name appears in the body
-        expect(screen.getByText(/enterprise/i)).toBeInTheDocument()
-        // Current tier (free) appears too
-        expect(screen.getByText(/free/i)).toBeInTheDocument()
-        // Switch button is present in tier-locked mode
+    it('renders entitlement-locked content with operation and entitlement', () => {
+        renderModal(accessError)
+        expect(screen.getAllByText(/engine[.]cascade[.]trigger/).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/logcraft[.]advanced_dsl/).length).toBeGreaterThan(0)
         expect(
             screen.getByRole('button', { name: /switch/i }),
         ).toBeInTheDocument()
     })
 
-    it('renders disabled-mode content (no Switch button)', () => {
-        renderModal(disabledError)
+    it('renders quota-error content without Switch button', () => {
+        renderModal(quotaError)
         expect(
             screen.queryByRole('button', { name: /switch/i }),
         ).not.toBeInTheDocument()
     })
 
-    it('switches to admin on click and updates the auth store', async () => {
+    it('switches to insight_demo on click and updates the auth store', async () => {
         mockedListUsers.mockResolvedValue({
             users: [
                 {
-                    id: 'admin',
-                    name: 'Admin',
-                    role: 'admin',
-                    tier: { name: 'enterprise', level: 3 },
+                    id: 'insight_demo',
+                    name: 'InSight Demo',
+                    role: 'demo_insight',
+                    is_demo: true,
                 },
             ],
         })
         mockedLogin.mockResolvedValue({
-            token: 'admin-token',
-            user: { id: 'admin', name: 'Admin' },
+            token: 'insight-token',
+            user: { id: 'insight_demo', name: 'InSight Demo' },
+            access: {
+                tenant_id: 'default',
+                user_id: 'insight_demo',
+                subject_id: 'session-xyz',
+                name: 'InSight Demo',
+                role: 'demo_insight',
+                identity_kind: 'demo',
+                deployment_context: 'public_demo',
+                entitlements: ['logcraft.advanced_dsl'],
+                operations: ['engine.cascade.trigger'],
+                quotas: [],
+            },
         })
 
-        const { onClose } = renderModal(tierError)
+        const { onClose } = renderModal(accessError)
         fireEvent.click(screen.getByRole('button', { name: /switch/i }))
 
         await waitFor(() => {
-            expect(useAuthStore.getState().token).toBe('admin-token')
+            expect(useAuthStore.getState().token).toBe('insight-token')
         })
-        expect(useAuthStore.getState().selectedUserId).toBe('admin')
+        expect(useAuthStore.getState().selectedUserId).toBe('insight_demo')
         expect(onClose).toHaveBeenCalled()
     })
 
@@ -120,20 +138,17 @@ describe('TierLockModal', () => {
         mockedListUsers.mockRejectedValue(new Error('users endpoint down'))
         mockedLogin.mockRejectedValue(new Error('login endpoint down'))
 
-        const { onClose } = renderModal(tierError)
+        const { onClose } = renderModal(accessError)
         fireEvent.click(screen.getByRole('button', { name: /switch/i }))
 
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeInTheDocument()
         })
-        // Modal must NOT auto-close on failure
         expect(onClose).not.toHaveBeenCalled()
     })
 
     it('invokes onClose when the close button is clicked', () => {
-        const { onClose } = renderModal(tierError)
-        // The close button has aria-label set from i18n; pick by aria-label "Close"
-        // — the FR label is "Fermer" so match either via the X icon button.
+        const { onClose } = renderModal(accessError)
         const closeButtons = screen.getAllByRole('button')
         const lastButton = closeButtons[closeButtons.length - 1]
         expect(lastButton).toBeDefined()

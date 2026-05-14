@@ -4,7 +4,7 @@ import type { EngineSnapshot } from '@/types/engine'
 import { useTranslation } from '@/hooks/useTranslation'
 import Tooltip from '@/components/Tooltip'
 import { useAuthStore } from '@/store/useAuthStore'
-import { hasPermission, requiredTierName } from '@/utils/permissions'
+import { hasOperation } from '@/utils/permissions'
 
 const kAdvanceOneSecondNs = 1_000_000_000
 const kAdvanceTenSecondsNs = 10_000_000_000
@@ -44,7 +44,7 @@ export default function EngineControls({
     onCascade,
 }: Props) {
     const t = useTranslation()
-    const tier = useAuthStore((s) => s.tier)
+    const operations = useAuthStore((s) => s.operations)
     const isRunning = snapshot?.state === 'running'
     const isDeterministic = snapshot?.engine_mode === 'deterministic'
     const playbackState = snapshot?.playback_state ?? 'playing'
@@ -56,16 +56,16 @@ export default function EngineControls({
     )
     const [targetDirty, setTargetDirty] = useState(false)
 
-    const canStart = hasPermission(tier, 'command.start_engine')
-    const canStop = hasPermission(tier, 'command.stop_engine')
-    const canPlay = hasPermission(tier, 'command.play_engine')
-    const canPause = hasPermission(tier, 'command.pause_engine')
-    const canSetPlaybackSpeed = hasPermission(tier, 'command.set_playback_speed')
-    const canAdvance = hasPermission(tier, 'command.advance_engine')
-    const canCascade = hasPermission(tier, 'command.evaluate_cascade')
+    const canStart = hasOperation(operations, 'engine.start')
+    const canStop = hasOperation(operations, 'engine.stop')
+    const canPlay = hasOperation(operations, 'engine.playback.play')
+    const canPause = hasOperation(operations, 'engine.playback.pause')
+    const canSetPlaybackSpeed = hasOperation(operations, 'engine.speed.set')
+    const canAdvance = hasOperation(operations, 'engine.advance')
+    const canCascade = hasOperation(operations, 'engine.cascade.trigger')
 
-    const tierLockMsg = (key: string) =>
-        t.lab.lockedTierRequired.replace('{tier}', requiredTierName(key))
+    const lockMsg = (operationKey: string) =>
+        t.lab.lockedOperationRequired.replace('{operation}', operationKey)
 
     useEffect(() => {
         if (!targetDirty) setTargetSeconds(formatTargetSeconds(simulationElapsedSeconds))
@@ -86,7 +86,7 @@ export default function EngineControls({
             {/* ── Transport pill: Stop/Start + Play/Pause + Speed ─────────── */}
             <div className="flex items-center gap-0 rounded-lg border border-gray-700 bg-gray-900/80 overflow-hidden">
                 {!isRunning ? (
-                    <Tooltip content={canStart ? t.lab.start : tierLockMsg('command.start_engine')}>
+                    <Tooltip content={canStart ? t.lab.start : lockMsg('engine.start')}>
                         <button
                             onClick={onStart}
                             disabled={!canStart}
@@ -97,7 +97,7 @@ export default function EngineControls({
                         </button>
                     </Tooltip>
                 ) : (
-                    <Tooltip content={canStop ? t.lab.stop : tierLockMsg('command.stop_engine')}>
+                    <Tooltip content={canStop ? t.lab.stop : lockMsg('engine.stop')}>
                         <button
                             onClick={onStop}
                             disabled={!canStop}
@@ -113,7 +113,7 @@ export default function EngineControls({
                     <>
                         <div className="w-px h-6 bg-gray-700 shrink-0" />
                         {playbackState === 'paused' ? (
-                            <Tooltip content={canPlay ? t.lab.play : tierLockMsg('command.play_engine')}>
+                            <Tooltip content={canPlay ? t.lab.play : lockMsg('engine.playback.play')}>
                                 <button
                                     onClick={onPlay}
                                     disabled={!canPlay || !onPlay}
@@ -124,7 +124,7 @@ export default function EngineControls({
                                 </button>
                             </Tooltip>
                         ) : (
-                            <Tooltip content={canPause ? t.lab.pause : tierLockMsg('command.pause_engine')}>
+                            <Tooltip content={canPause ? t.lab.pause : lockMsg('engine.playback.pause')}>
                                 <button
                                     onClick={onPause}
                                     disabled={!canPause || !onPause}
@@ -145,7 +145,7 @@ export default function EngineControls({
                                     content={
                                         canSetPlaybackSpeed
                                             ? `${t.lab.speed} ${preset}x`
-                                            : tierLockMsg('command.set_playback_speed')
+                                            : lockMsg('engine.speed.set')
                                     }
                                 >
                                     <button
@@ -188,7 +188,7 @@ export default function EngineControls({
 
                     <div className="w-px h-6 bg-gray-700 shrink-0" />
 
-                    <Tooltip content={canAdvance ? t.lab.replayToTarget : tierLockMsg('command.advance_engine')}>
+                    <Tooltip content={canAdvance ? t.lab.replayToTarget : lockMsg('engine.advance')}>
                         <button
                             onClick={handleReplayToTarget}
                             disabled={!canAdvance || !onReplayToTarget || !hasValidReplayTarget || replayToTargetPending}
@@ -206,7 +206,7 @@ export default function EngineControls({
 
                     <div className="w-px h-6 bg-gray-700 shrink-0" />
 
-                    <Tooltip content={canAdvance ? `${t.lab.advance} +1s` : tierLockMsg('command.advance_engine')}>
+                    <Tooltip content={canAdvance ? `${t.lab.advance} +1s` : lockMsg('engine.advance')}>
                         <button
                             onClick={() => onAdvance?.(kAdvanceOneSecondNs)}
                             disabled={!canAdvance || !onAdvance}
@@ -216,7 +216,7 @@ export default function EngineControls({
                             +1s
                         </button>
                     </Tooltip>
-                    <Tooltip content={canAdvance ? `${t.lab.advance} +10s` : tierLockMsg('command.advance_engine')}>
+                    <Tooltip content={canAdvance ? `${t.lab.advance} +10s` : lockMsg('engine.advance')}>
                         <button
                             onClick={() => onAdvance?.(kAdvanceTenSecondsNs)}
                             disabled={!canAdvance || !onAdvance}
@@ -232,7 +232,7 @@ export default function EngineControls({
             {/* ── Non-deterministic: Cascade ──────────────────────────────── */}
             {isRunning && !isDeterministic && onCascade && hasCascade && (
                 <Tooltip
-                    content={canCascade ? t.lab.cascadeTip : tierLockMsg('command.evaluate_cascade')}
+                    content={canCascade ? t.lab.cascadeTip : lockMsg('engine.cascade.trigger')}
                 >
                     <button
                         onClick={onCascade}

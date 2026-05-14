@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import {
-    TierRequiredError,
+    PolicyDenialError,
     DEFAULT_REQUEST_TIMEOUT_MS,
     login,
     logout,
@@ -31,7 +31,7 @@ describe('services/api', () => {
         useAuthStore.setState({
             token: null,
             user: null,
-            tier: null,
+            operations: [],
             loading: false,
             selectedUserId: null,
         })
@@ -42,28 +42,38 @@ describe('services/api', () => {
         vi.useRealTimers()
     })
 
-    describe('TierRequiredError', () => {
-        it('extends Error with tier metadata', () => {
-            const err = new TierRequiredError({
-                permission: 'command.evaluate_cascade',
-                userId: 'free_demo',
-                userTier: { name: 'free', level: 1 },
-                requiredTier: { name: 'enterprise', level: 3 },
-                reason: 'tier too low',
+    describe('PolicyDenialError', () => {
+        it('extends Error with policy metadata', () => {
+            const err = new PolicyDenialError({
+                operation: 'engine.cascade.trigger',
+                requiredEntitlement: 'logcraft.advanced_dsl',
+                quotaKey: '',
+                quotaLimit: null,
+                userId: 'logcraft_demo',
+                subject: 'session-abc',
+                role: 'demo_logcraft',
+                identityKind: 'demo',
+                deploymentContext: 'public_demo',
+                reason: 'entitlement required',
             })
             expect(err).toBeInstanceOf(Error)
-            expect(err.name).toBe('TierRequiredError')
-            expect(err.message).toBe('tier too low')
-            expect(err.permission).toBe('command.evaluate_cascade')
-            expect(err.requiredTier).toEqual({ name: 'enterprise', level: 3 })
+            expect(err.name).toBe('PolicyDenialError')
+            expect(err.message).toBe('entitlement required')
+            expect(err.operation).toBe('engine.cascade.trigger')
+            expect(err.requiredEntitlement).toBe('logcraft.advanced_dsl')
         })
 
         it('falls back to generic message when reason is empty', () => {
-            const err = new TierRequiredError({
-                permission: '',
+            const err = new PolicyDenialError({
+                operation: '',
+                requiredEntitlement: '',
+                quotaKey: '',
+                quotaLimit: null,
                 userId: '',
-                userTier: null,
-                requiredTier: null,
+                subject: '',
+                role: '',
+                identityKind: '',
+                deploymentContext: '',
                 reason: '',
             })
             expect(err.message).toBe('Access denied')
@@ -95,24 +105,26 @@ describe('services/api', () => {
             expect(headers.Authorization).toBeUndefined()
         })
 
-        it('throws TierRequiredError on HTTP 403', async () => {
+        it('throws PolicyDenialError on HTTP 403', async () => {
             fetchMock.mockResolvedValue(
                 jsonResponse(
                     {
-                        permission: 'command.generate_burst',
-                        user: 'free_demo',
-                        user_tier: { name: 'free', level: 1 },
-                        required_tier: { name: 'pro', level: 2 },
-                        reason: 'pro tier required',
+                        operation: 'engine.agent.rate.set',
+                        required_entitlement: 'logcraft.advanced_dsl',
+                        user: 'logcraft_demo',
+                        role: 'demo_logcraft',
+                        identity_kind: 'demo',
+                        deployment_context: 'public_demo',
+                        reason: 'entitlement required',
                     },
                     { status: 403 },
                 ),
             )
 
             await expect(createEngine('name: test')).rejects.toMatchObject({
-                name: 'TierRequiredError',
-                permission: 'command.generate_burst',
-                requiredTier: { name: 'pro', level: 2 },
+                name: 'PolicyDenialError',
+                operation: 'engine.agent.rate.set',
+                requiredEntitlement: 'logcraft.advanced_dsl',
             })
         })
 

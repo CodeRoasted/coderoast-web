@@ -5,7 +5,7 @@ import {
     getEngineScenario,
     getInsightReports,
     getInsightStatus,
-    TierRequiredError,
+    PolicyDenialError,
     validateScenario,
 } from '@/services/api'
 import { engineWs } from '@/services/websocket'
@@ -47,7 +47,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
 
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
-    const [tierError, setTierError] = useState<TierRequiredError | null>(null)
+    const [accessError, setAccessError] = useState<PolicyDenialError | null>(null)
     const [replayToTargetPending, setReplayToTargetPending] = useState(false)
     const [insightCatchingUp, setInsightCatchingUp] = useState(false)
     const replayToTargetPendingRef = useRef(false)
@@ -150,8 +150,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 setInsightError(null)
             } catch (e) {
                 if (cancelled) return
-                if (e instanceof TierRequiredError) {
-                    setTierError(e)
+                if (e instanceof PolicyDenialError) {
+                    setAccessError(e)
                 } else {
                     setInsightError(e instanceof Error ? e.message : String(e))
                 }
@@ -258,8 +258,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             setValidationErrors([])
             setUnavailableCapabilities([])
         } catch (e) {
-            if (e instanceof TierRequiredError) {
-                setTierError(e)
+            if (e instanceof PolicyDenialError) {
+                setAccessError(e)
                 return
             }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
@@ -271,8 +271,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             setStatusMessage(t.lab.created)
             connectToEngine(engine_id)
         } catch (e) {
-            if (e instanceof TierRequiredError) {
-                setTierError(e)
+            if (e instanceof PolicyDenialError) {
+                setAccessError(e)
                 return
             }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
@@ -336,8 +336,8 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
         setValidationErrors,
         unavailableCapabilities,
         setUnavailableCapabilities,
-        tierError,
-        setTierError,
+        accessError,
+        setAccessError,
         replayToTargetPending,
         insightCatchingUp,
         // commands

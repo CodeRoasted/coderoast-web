@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from '@/hooks/useTranslation'
-import { listScenarios, getScenario, TierRequiredError, type ScenarioMeta } from '@/services/api'
+import { listScenarios, getScenario, PolicyDenialError, type ScenarioMeta } from '@/services/api'
 import { useEngineStore } from '@/store/useEngineStore'
 import type { PlaygroundMode } from '@/types/playground'
 import OnboardingShell from './onboarding/OnboardingShell'
@@ -90,7 +90,7 @@ export default function OnboardingModal({ open, mode, onClose, onReady, onLaunch
             setStep(3)
             onReady()
         } catch (e) {
-            if (e instanceof TierRequiredError) {
+            if (e instanceof PolicyDenialError) {
                 setError(t.lab.onboarding.tierLocked)
             } else {
                 setError(e instanceof Error ? e.message : String(e))

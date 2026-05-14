@@ -3,7 +3,7 @@ import type { AgentSnapshot } from '@/types/engine'
 import Tooltip from '@/components/Tooltip'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useAuthStore } from '@/store/useAuthStore'
-import { hasPermission, requiredTierName } from '@/utils/permissions'
+import { hasOperation } from '@/utils/permissions'
 
 interface Props {
     agent: AgentSnapshot
@@ -24,10 +24,10 @@ export default function AgentControls({
     onBurst,
 }: Props) {
     const t = useTranslation()
-    const tier = useAuthStore((s) => s.tier)
-    const canSetRate = hasPermission(tier, 'command.set_agent_rate')
-    const canSetErrorRate = hasPermission(tier, 'command.set_agent_error_rate')
-    const canBurst = hasPermission(tier, 'command.generate_burst')
+    const operations = useAuthStore((s) => s.operations)
+    const canSetRate = hasOperation(operations, 'engine.agent.rate.set')
+    const canSetErrorRate = hasOperation(operations, 'engine.agent.error_rate.set')
+    const canBurst = hasOperation(operations, 'engine.agent.rate.set')
 
     const [rateInput, setRateInput] = useState(agent.rate_rps)
     const [errorInput, setErrorInput] = useState(Math.round(agent.error_ratio * 100))
@@ -43,8 +43,8 @@ export default function AgentControls({
         if (!draggingError) setErrorInput(Math.round(agent.error_ratio * 100))
     }, [agent.error_ratio, draggingError])
 
-    const tierLockMsg = (key: string) =>
-        t.lab.lockedTierRequired.replace('{tier}', requiredTierName(key))
+    const lockMsg = (op: string) =>
+        t.lab.lockedOperationRequired.replace('{operation}', op)
 
     const handleBurstClick = () => {
         if (!onBurst || !canBurst) return
@@ -57,7 +57,7 @@ export default function AgentControls({
                 <Tooltip
                     content={
                         !canSetRate
-                            ? tierLockMsg('command.set_agent_rate')
+                            ? lockMsg('engine.agent.rate.set')
                             : t.lab.rateTip
                     }
                     placement="top"
@@ -89,7 +89,7 @@ export default function AgentControls({
                 <Tooltip
                     content={
                         !canSetErrorRate
-                            ? tierLockMsg('command.set_agent_error_rate')
+                            ? lockMsg('engine.agent.error_rate.set')
                             : t.lab.errorsTip
                     }
                     placement="top"
@@ -119,7 +119,7 @@ export default function AgentControls({
             )}
             {onBurst && (
                 <Tooltip
-                    content={canBurst ? t.lab.burstTip : tierLockMsg('command.generate_burst')}
+                    content={canBurst ? t.lab.burstTip : lockMsg('engine.agent.rate.set')}
                     placement="top"
                 >
                     <div className="flex items-center gap-2 w-full">
