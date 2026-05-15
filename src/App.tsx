@@ -136,7 +136,18 @@ export default function App() {
             }
         }
 
-        clearAuth()
+        // No persisted state — first visit (e.g. incognito). Auto-login as
+        // logcraft_demo so the lab is immediately usable without a manual
+        // identity selection. Falls back to anonymous if the server rejects it
+        // (e.g. demo mode disabled).
+        login('logcraft_demo')
+            .then(({ token: fresh, user, access }) => {
+                if (cancelled) return
+                setAuth(fresh, user, access?.operations ?? [])
+            })
+            .catch(() => {
+                if (!cancelled) clearAuth()
+            })
         return () => {
             cancelled = true
         }

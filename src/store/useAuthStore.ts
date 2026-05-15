@@ -1,10 +1,13 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import type { SelectableUser } from '@/services/api'
 
 interface AuthUser {
     id: string
     name: string
 }
+
+export type { SelectableUser }
 
 interface AuthState {
     /** Bearer token when logged in, null for unauthenticated (anonymous) visitors. */
@@ -17,12 +20,21 @@ interface AuthState {
     loading: boolean
     /** User id the operator explicitly selected in the dropdown (persisted). */
     selectedUserId: string | null
+    /**
+     * Cached demo-user list. Populated once after bootstrap by UserSelector
+     * and kept in memory for the lifetime of the page so navigating away and
+     * back never triggers a second GET /users round-trip.
+     * Not persisted — resets on hard reload (intentional; list is fast to
+     * re-fetch and demo accounts rarely change).
+     */
+    demoUsers: SelectableUser[] | null
 
     setAuth: (token: string | null, user: AuthUser, operations?: string[]) => void
     setOperations: (operations: string[]) => void
     clearAuth: () => void
     setLoading: (loading: boolean) => void
     setSelectedUserId: (userId: string | null) => void
+    setDemoUsers: (users: SelectableUser[]) => void
 }
 
 /**
@@ -41,6 +53,7 @@ export const useAuthStore = create<AuthState>()(
             operations: [],
             loading: true,
             selectedUserId: null,
+            demoUsers: null,
 
             setAuth: (token, user, operations = []) =>
                 set({ token, user, operations, loading: false }),
@@ -52,9 +65,11 @@ export const useAuthStore = create<AuthState>()(
                     operations: [],
                     loading: false,
                     selectedUserId: null,
+                    demoUsers: null,
                 }),
             setLoading: (loading) => set({ loading }),
             setSelectedUserId: (userId) => set({ selectedUserId: userId }),
+            setDemoUsers: (users) => set({ demoUsers: users }),
         }),
         {
             name: 'coderoast.auth',

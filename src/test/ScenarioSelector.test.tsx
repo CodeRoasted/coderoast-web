@@ -85,7 +85,7 @@ describe('ScenarioSelector', () => {
         fireEvent.click(card)
 
         await waitFor(() => {
-            expect(mockedGet).toHaveBeenCalledWith('hello', 'logcraft')
+            expect(mockedGet).toHaveBeenCalledWith('hello', 'logcraft', expect.any(AbortSignal))
             expect(useEngineStore.getState().scenarioYaml).toContain('agents:')
             expect(useEngineStore.getState().selectedScenarioId).toBe('hello')
         })
@@ -132,6 +132,6 @@ describe('ScenarioSelector', () => {
         })
         expect(useEngineStore.getState().selectedScenarioId).toBeNull()
         expect(useEngineStore.getState().scenarioYaml).toBe('')
-        expect(mockedList).toHaveBeenCalledWith('insight')
+        expect(mockedList).toHaveBeenCalledWith('insight', expect.any(AbortSignal))
     })
 })

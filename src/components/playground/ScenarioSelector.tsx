@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
-import { CheckCircle, Clock, Tag, Loader2, AlertCircle } from 'lucide-react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
+import { CheckCircle, Clock, Tag, Loader2, AlertCircle, X } from 'lucide-react'
 import { useEngineStore } from '@/store/useEngineStore'
 import { listScenarios, getScenario, PolicyDenialError, type ScenarioMeta } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -18,15 +18,25 @@ export default function ScenarioPicker({ mode }: Props) {
     const [scenarios, setScenarios] = useState<ScenarioMeta[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [selectError, setSelectError] = useState<string | null>(null)
+    const [selectingId, setSelectingId] = useState<string | null>(null)
     const [accessError, setAccessError] = useState<PolicyDenialError | null>(null)
+    const selectControllerRef = useRef<AbortController | null>(null)
 
     useEffect(() => {
+        const controller = new AbortController()
         setLoading(true)
         setError(null)
-        listScenarios(mode)
+        listScenarios(mode, controller.signal)
             .then(({ scenarios: list }) => setScenarios(list))
-            .catch((e) => setError(e instanceof Error ? e.message : String(e)))
+            .catch((e) => {
+                // Ignore aborts caused by mode switches / unmounts
+                if (e instanceof DOMException && e.name === 'AbortError') return
+                if (e instanceof Error && e.message.startsWith('Request to') && e.message.endsWith('timed out') && controller.signal.aborted) return
+                setError(e instanceof Error ? e.message : String(e))
+            })
             .finally(() => setLoading(false))
+        return () => controller.abort()
     }, [mode])
 
     const handleSelectScenario = useCallback(
@@ -34,20 +44,34 @@ export default function ScenarioPicker({ mode }: Props) {
             if (isCurrentlySelected) {
                 setSelectedScenarioId(null)
                 setScenarioYaml('')
-            } else {
-                setSelectedScenarioId(id)
-                try {
-                    const { yaml } = await getScenario(id, mode)
-                    setScenarioYaml(yaml)
-                    setError(null)
-                } catch (fetchError) {
-                    setSelectedScenarioId(null)
-                    setScenarioYaml('')
-                    if (fetchError instanceof PolicyDenialError) {
-                        setAccessError(fetchError)
-                    } else {
-                        setError(fetchError instanceof Error ? fetchError.message : String(fetchError))
-                    }
+                setSelectError(null)
+                return
+            }
+            // Cancel any previous in-flight selection fetch
+            selectControllerRef.current?.abort()
+            const controller = new AbortController()
+            selectControllerRef.current = controller
+
+            setSelectedScenarioId(id)
+            setSelectingId(id)
+            setSelectError(null)
+            try {
+                const { yaml } = await getScenario(id, mode, controller.signal)
+                setScenarioYaml(yaml)
+            } catch (fetchError) {
+                // Silently drop aborts — user clicked a different scenario
+                if (controller.signal.aborted) return
+                setSelectedScenarioId(null)
+                setScenarioYaml('')
+                if (fetchError instanceof PolicyDenialError) {
+                    setAccessError(fetchError)
+                } else {
+                    setSelectError(fetchError instanceof Error ? fetchError.message : String(fetchError))
+                }
+            } finally {
+                // Only clear spinner if we're still the active selection request
+                if (selectControllerRef.current === controller) {
+                    setSelectingId(null)
                 }
             }
         },
@@ -104,6 +128,7 @@ export default function ScenarioPicker({ mode }: Props) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {items.map((s) => {
                             const selected = selectedScenarioId === s.id
+                            const fetching = selectingId === s.id
                             return (
                                 <button
                                     key={s.id}
@@ -117,7 +142,10 @@ export default function ScenarioPicker({ mode }: Props) {
                                         <span className="font-mono text-sm font-semibold text-white leading-tight">
                                             {s.name || s.id.split('/').pop()}
                                         </span>
-                                        {selected && (
+                                        {fetching && (
+                                            <Loader2 className="w-4 h-4 animate-spin text-brand-400 flex-shrink-0 mt-0.5" />
+                                        )}
+                                        {!fetching && selected && (
                                             <CheckCircle className="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5" />
                                         )}
                                     </div>
@@ -145,6 +173,17 @@ export default function ScenarioPicker({ mode }: Props) {
                 </div>
             ))}
         </div>
+        {selectError && (
+            <div className="flex items-center justify-between gap-3 p-3 mt-4 rounded-xl bg-red-900/20 border border-red-700/50 text-sm text-red-400">
+                <div className="flex items-center gap-2 min-w-0">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{selectError}</span>
+                </div>
+                <button onClick={() => setSelectError(null)} className="shrink-0 hover:text-red-300 transition-colors">
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+        )}
         <TierLockModal error={accessError} onClose={() => setAccessError(null)} />
         </>
     )

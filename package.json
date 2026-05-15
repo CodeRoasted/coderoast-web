@@ -6,8 +6,10 @@
     "scripts": {
         "dev": "vite",
         "dev:phone": "vite --open /phone.html",
+        "dev:vps": "bash scripts/dev-vps.sh",
         "build": "tsc -b && vite build",
         "preview": "vite preview",
+        "preview:vps": "PROXY_TARGET=https://api.coderoast.fr vite preview",
         "lint": "eslint .",
         "test": "vitest run",
         "test:watch": "vitest"

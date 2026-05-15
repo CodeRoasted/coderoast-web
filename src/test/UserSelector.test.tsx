@@ -40,6 +40,7 @@ describe('UserSelector', () => {
             operations: [],
             loading: false,
             selectedUserId: null,
+            demoUsers: null,
         })
         mockedListUsers.mockReset()
         mockedLogin.mockReset()
@@ -69,39 +70,60 @@ describe('UserSelector', () => {
         expect(order.indexOf('insight_demo')).toBeLessThan(order.indexOf('admin'))
     })
 
-    it('auto-logs in as logcraft_demo on first visit', async () => {
+    it('calls listUsers once token is available and not loading', async () => {
         mockedListUsers.mockResolvedValue({
             users: [userInsight, userLogcraft, userAdmin],
         })
-        mockedLogin.mockResolvedValue({
+        useAuthStore.setState({
             token: 'logcraft-token',
             user: { id: 'logcraft_demo', name: 'LogCraft Demo' },
-            access: null,
+            loading: false,
         })
 
         render(<UserSelector />)
 
         await waitFor(() => {
-            expect(mockedLogin).toHaveBeenCalledWith('logcraft_demo')
+            expect(mockedListUsers).toHaveBeenCalled()
         })
-        await waitFor(() => {
-            expect(useAuthStore.getState().token).toBe('logcraft-token')
-        })
+        expect(mockedLogin).not.toHaveBeenCalled()
     })
 
-    it('does not auto-login when a user is already selected', async () => {
-        useAuthStore.setState({
-            token: 'existing',
-            user: { id: 'logcraft_demo', name: 'LogCraft Demo' },
-            selectedUserId: 'logcraft_demo',
+    it('does not refetch user list when token changes after switching identity', async () => {
+        mockedListUsers.mockResolvedValue({
+            users: [userLogcraft, userInsight],
         })
-        mockedListUsers.mockResolvedValue({ users: [userLogcraft, userInsight] })
+        useAuthStore.setState({
+            token: 'logcraft-token',
+            user: { id: 'logcraft_demo', name: 'LogCraft Demo' },
+            loading: false,
+            demoUsers: null,
+        })
 
         render(<UserSelector />)
 
         await waitFor(() => {
             expect(screen.getByRole('combobox')).toBeInTheDocument()
         })
-        expect(mockedLogin).not.toHaveBeenCalled()
+        expect(mockedListUsers).toHaveBeenCalledTimes(1)
+
+        // Simulate switching to insight user — token changes but demoUsers
+        // is already populated in the store, so no second fetch.
+        useAuthStore.setState({
+            token: 'insight-token',
+            user: { id: 'insight_demo', name: 'InSight Demo' },
+            loading: false,
+        })
+
+        await new Promise((r) => setTimeout(r, 50))
+        // Should NOT have called listUsers again
+        expect(mockedListUsers).toHaveBeenCalledTimes(1)
+    })
+
+    it('skips listUsers while auth is loading', async () => {
+        useAuthStore.setState({ token: 'some-token', loading: true })
+        render(<UserSelector />)
+
+        await new Promise((r) => setTimeout(r, 50))
+        expect(mockedListUsers).not.toHaveBeenCalled()
     })
 })

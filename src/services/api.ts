@@ -165,15 +165,36 @@ function authHeaders(): Record<string, string> {
  * scenario validation, which has been observed at ~3s under load.
  */
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15000
+/**
+ * Shorter deadline used for the *first* attempt of a retried GET request.
+ * If the tunnel/network hiccups, this timeout fires sooner so the retry
+ * kicks in faster rather than making the user wait the full 15 s.
+ */
+export const GET_FIRST_ATTEMPT_TIMEOUT_MS = 5_000
 
-async function request<T>(url: string, options?: RequestInit): Promise<T> {
-    // Honour a caller-provided signal when present; otherwise install our
-    // own timeout so a hung backend can never freeze the UI indefinitely.
+/**
+ * Single-attempt HTTP request. Called by `request()` which adds retry logic
+ * for read-only endpoints on transient network failures (e.g. SSH tunnel
+ * hiccups in dev mode).
+ */
+async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS): Promise<T> {
+    // Always install an internal timeout. If the caller also passed a signal
+    // (e.g. component-unmount cleanup), forward its abort to our controller so
+    // whichever fires first wins — preventing both stale-response state updates
+    // and hung requests after navigation / mode switches.
     let timer: ReturnType<typeof setTimeout> | null = null
-    let signal = options?.signal ?? null
-    if (!signal && typeof AbortController !== 'undefined') {
+    let signal: AbortSignal | null = null
+    if (typeof AbortController !== 'undefined') {
         const controller = new AbortController()
-        timer = setTimeout(() => controller.abort(), DEFAULT_REQUEST_TIMEOUT_MS)
+        timer = setTimeout(() => controller.abort(), timeoutMs)
+        const callerSignal = options?.signal ?? null
+        if (callerSignal) {
+            if (callerSignal.aborted) {
+                controller.abort()
+            } else {
+                callerSignal.addEventListener('abort', () => controller.abort(), { once: true })
+            }
+        }
         signal = controller.signal
     }
 
@@ -214,6 +235,31 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
         throw new Error(body.error || body.reason || `HTTP ${resp.status}`)
     }
     return resp.json()
+}
+
+/**
+ * HTTP request with one automatic retry for GET endpoints on timeout errors.
+ * Non-GET requests (POST/PUT/DELETE) are never retried — they are not
+ * idempotent. The retry is suppressed if the caller's AbortSignal has already
+ * fired (mode switch, component unmount).
+ */
+async function request<T>(url: string, options?: RequestInit): Promise<T> {
+    const isReadOnly = !options?.method || options.method === 'GET'
+    if (!isReadOnly) return requestOnce<T>(url, options)
+
+    try {
+        return await requestOnce<T>(url, options, GET_FIRST_ATTEMPT_TIMEOUT_MS)
+    } catch (firstErr) {
+        const isTimeout =
+            firstErr instanceof Error && firstErr.message.endsWith('timed out')
+        if (!isTimeout || options?.signal?.aborted) throw firstErr
+
+        // Short pause so a recovering tunnel has a moment to re-establish
+        await new Promise<void>((r) => setTimeout(r, 400))
+        if (options?.signal?.aborted) throw firstErr
+
+        return requestOnce<T>(url, options) // full DEFAULT_REQUEST_TIMEOUT_MS
+    }
 }
 
 /**
@@ -326,18 +372,20 @@ export async function sendCommand(
 
 export async function listScenarios(
     playground?: PlaygroundMode,
+    signal?: AbortSignal,
 ): Promise<{ playground?: PlaygroundMode; scenarios: ScenarioMeta[] }> {
     const query = playground ? `?playground=${encodeURIComponent(playground)}` : ''
-    return request(`/scenarios${query}`)
+    return request(`/scenarios${query}`, signal ? { signal } : undefined)
 }
 
 export async function getScenario(
     id: string,
     playground?: PlaygroundMode,
+    signal?: AbortSignal,
 ): Promise<{ id: string; playground?: PlaygroundMode; yaml: string }> {
     const params = new URLSearchParams({ id })
     if (playground) params.set('playground', playground)
-    return request(`/scenarios?${params.toString()}`)
+    return request(`/scenarios?${params.toString()}`, signal ? { signal } : undefined)
 }
 
 export interface ValidationResult {

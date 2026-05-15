@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 import { UserCircle2, Loader2 } from 'lucide-react'
-import { login, listUsers, type SelectableUser } from '@/services/api'
+import { login, listUsers } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTranslation } from '@/hooks/useTranslation'
 
 const ANON_VALUE = '__anonymous__'
 
 /**
- * Demo-user dropdown. Lists the hardcoded accounts exposed by `GET /users`
- * and lets the operator switch identity on the fly, including an
- * "Anonymous" option that drops the bearer token.
+ * Demo-user dropdown. Lists the accounts exposed by `GET /users` and lets
+ * the operator switch identity on the fly.
  *
- * Intentionally small and self-contained so it can live in the lab navbar
- * without entangling other components.
+ * The user list is fetched once per page load and stored in the global auth
+ * store (`demoUsers`). Navigating away and back does NOT re-fetch — the
+ * component immediately reads the cached list from the store.
  */
 export default function UserSelector() {
     const t = useTranslation()
@@ -21,13 +21,24 @@ export default function UserSelector() {
     const setAuth = useAuthStore((s) => s.setAuth)
     const clearAuth = useAuthStore((s) => s.clearAuth)
     const setSelectedUserId = useAuthStore((s) => s.setSelectedUserId)
+    const setDemoUsers = useAuthStore((s) => s.setDemoUsers)
 
-    const [users, setUsers] = useState<SelectableUser[]>([])
-    const [loading, setLoading] = useState(true)
+    const storeLoading = useAuthStore((s) => s.loading)
+    const token = useAuthStore((s) => s.token)
+    // Read the cached list directly from the store so remounts are instant.
+    const demoUsers = useAuthStore((s) => s.demoUsers)
+
+    const [loading, setLoading] = useState(false)
     const [switching, setSwitching] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
+        // Wait for App-level auth bootstrap to complete and for a session token
+        // to be present. Also skip if we already have a cached list in the store
+        // (survives navigation without re-fetching).
+        if (storeLoading || !token || demoUsers !== null) return
+
+        setLoading(true)
         listUsers()
             .then(({ users: list }) => {
                 // Filter out the "anonymous" seed user — we expose it as a
@@ -40,32 +51,13 @@ export default function UserSelector() {
                     if (aDemo !== bDemo) return aDemo - bDemo
                     return a.name.localeCompare(b.name)
                 })
-                setUsers(sorted)
-
-                // Auto-pick logcraft_demo on first visit so the operator can
-                // hit "Run" immediately without having to choose a user.
-                const { selectedUserId: persisted, token, user: currentUser } = useAuthStore.getState()
-                // Treat legacy tier-era stale picks as "no explicit selection".
-                const stalePicks = new Set(['free_demo', 'pro_demo', 'ent_demo'])
-                const hasExplicitSelection = persisted !== null && !stalePicks.has(persisted)
-                const defaultUser =
-                    sorted.find((u) => u.id === 'logcraft_demo') ?? sorted[0]
-                if (!hasExplicitSelection && defaultUser && (currentUser?.id !== defaultUser.id || !token)) {
-                    if (persisted !== null) setSelectedUserId(null)
-                    login(defaultUser.id)
-                        .then(({ token: t2, user: principal, access }) => {
-                            const ops = access?.operations ?? defaultUser.access?.operations ?? []
-                            setAuth(t2, principal, ops)
-                        })
-                        .catch(() => {
-                            // Non-fatal: user can still pick manually.
-                        })
-                }
+                setDemoUsers(sorted)
             })
-            .catch((err) => setError(err instanceof Error ? err.message : String(err)))
+            .catch((err) => {
+                setError(err instanceof Error ? err.message : String(err))
+            })
             .finally(() => setLoading(false))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [storeLoading, token, demoUsers, setDemoUsers])
 
     const current = selectedUserId ?? user?.id ?? ANON_VALUE
 
@@ -78,7 +70,7 @@ export default function UserSelector() {
                 setSelectedUserId(null)
             } else {
                 const { token, user: principal, access } = await login(value)
-                const picked = users.find((u) => u.id === value)
+                const picked = demoUsers?.find((u) => u.id === value)
                 const ops = access?.operations ?? picked?.access?.operations ?? []
                 setAuth(token, principal, ops)
                 setSelectedUserId(value)
@@ -99,6 +91,8 @@ export default function UserSelector() {
         )
     }
 
+    if (!demoUsers || demoUsers.length === 0) return null
+
     return (
         <div className="flex items-center gap-2">
             <UserCircle2 className="w-4 h-4 text-gray-400" />
@@ -109,7 +103,7 @@ export default function UserSelector() {
                 title={t.auth.signedInAs}
                 className="bg-gray-900 border border-gray-700 text-gray-200 text-xs rounded-md px-2 py-1 focus:outline-none focus:border-brand-500 disabled:opacity-50"
             >
-                {users.map((u) => (
+                {demoUsers.map((u) => (
                     <option key={u.id} value={u.id}>
                         {u.name}
                     </option>

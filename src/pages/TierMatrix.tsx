@@ -147,11 +147,17 @@ export default function TierMatrix() {
                                                         </span>
                                                     </td>
                                                     <td className="px-4 py-2 border-l border-gray-800">
-                                                        <span
-                                                            className={`text-xs font-mono px-1.5 py-0.5 rounded border ${entitlementAccent(op.required_entitlement)}`}
-                                                        >
-                                                            {op.required_entitlement}
-                                                        </span>
+                                                        {op.required_entitlement ? (
+                                                            <span
+                                                                className={`text-xs font-mono px-1.5 py-0.5 rounded border ${entitlementAccent(op.required_entitlement)}`}
+                                                            >
+                                                                {op.required_entitlement}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-xs text-gray-600 italic">
+                                                                none
+                                                            </span>
+                                                        )}
                                                     </td>
                                                     <td className="px-4 py-2 text-center border-l border-gray-800">
                                                         {hasIt ? (

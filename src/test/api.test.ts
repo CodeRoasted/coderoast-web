@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import {
     PolicyDenialError,
     DEFAULT_REQUEST_TIMEOUT_MS,
+    GET_FIRST_ATTEMPT_TIMEOUT_MS,
     login,
     logout,
     whoami,
@@ -162,10 +163,18 @@ describe('services/api', () => {
             )
 
             const pending = listScenarios()
-            // Advance past the timeout window, then unwind the queued
-            // microtasks so the pending Promise resolves.
-            vi.advanceTimersByTime(DEFAULT_REQUEST_TIMEOUT_MS + 1)
-            await expect(pending).rejects.toThrow(/timed out/i)
+            // Attach the rejection handler BEFORE advancing timers so the
+            // rejection that occurs mid-advance is never "unhandled".
+            // GET requests are retried once (400 ms delay), so we advance
+            // through: first timeout → retry delay → second timeout.
+            const assertion = expect(pending).rejects.toThrow(/timed out/i)
+            // First GET attempt uses GET_FIRST_ATTEMPT_TIMEOUT_MS (shorter),
+            // retry uses DEFAULT_REQUEST_TIMEOUT_MS (full). Advance through
+            // both plus the 400 ms retry delay.
+            await vi.advanceTimersByTimeAsync(
+                GET_FIRST_ATTEMPT_TIMEOUT_MS + 400 + DEFAULT_REQUEST_TIMEOUT_MS + 500,
+            )
+            await assertion
         })
     })
 
