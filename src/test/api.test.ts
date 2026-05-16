@@ -6,7 +6,6 @@ import {
     login,
     logout,
     whoami,
-    listUsers,
     createEngine,
     getInsightReports,
     getInsightStatus,
@@ -50,10 +49,10 @@ describe('services/api', () => {
                 requiredEntitlement: 'logcraft.advanced_dsl',
                 quotaKey: '',
                 quotaLimit: null,
-                userId: 'logcraft_demo',
+                userId: 'visitor',
                 subject: 'session-abc',
-                role: 'demo_logcraft',
-                identityKind: 'demo',
+                role: 'visitor',
+                identityKind: 'visitor',
                 deploymentContext: 'public_demo',
                 reason: 'entitlement required',
             })
@@ -112,9 +111,9 @@ describe('services/api', () => {
                     {
                         operation: 'engine.agent.rate.set',
                         required_entitlement: 'logcraft.advanced_dsl',
-                        user: 'logcraft_demo',
-                        role: 'demo_logcraft',
-                        identity_kind: 'demo',
+                        user: 'visitor',
+                        role: 'visitor',
+                        identity_kind: 'visitor',
                         deployment_context: 'public_demo',
                         reason: 'entitlement required',
                     },
@@ -214,16 +213,6 @@ describe('services/api', () => {
             const call = fetchMock.mock.calls[0]!
             expect(call[0]).toContain('/logout')
             expect((call[1] as RequestInit).method).toBe('POST')
-        })
-
-        it('listUsers GETs /users', async () => {
-            fetchMock.mockResolvedValue(jsonResponse({ users: [] }))
-
-            await listUsers()
-
-            const call = fetchMock.mock.calls[0]!
-            expect(call[0]).toContain('/users')
-            expect((call[1] as RequestInit).method).toBeUndefined()
         })
 
         it('validateScenario POSTs the yaml payload', async () => {

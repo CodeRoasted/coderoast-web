@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEngineStore } from '@/store/useEngineStore'
+import { useAuthStore } from '@/store/useAuthStore'
+import { login } from '@/services/api'
 import OnboardingModal from '@/components/playground/OnboardingModal'
-import TierLockModal from '@/components/playground/TierLockModal'
+import LabStatusToast from '@/components/playground/lab/LabStatusToast'
 import LabTopBar from '@/components/playground/lab/LabTopBar'
 import LabPickerView from '@/components/playground/lab/LabPickerView'
 import LabDashboardView from '@/components/playground/lab/LabDashboardView'
-import LabStatusToast from '@/components/playground/lab/LabStatusToast'
 import { useEngineLifecycle } from '@/hooks/useEngineLifecycle'
 import { useFirstVisitOnboarding } from '@/hooks/useFirstVisitOnboarding'
 import type { PlaygroundMode } from '@/types/playground'
@@ -21,7 +22,7 @@ interface LabProps {
  *   – `useFirstVisitOnboarding` (cookie-gated wizard + hello-world preload)
  *   – `LabTopBar` (sticky nav)
  *   – `LabPickerView` (no engine yet) OR `LabDashboardView` (engine attached)
- *   – `OnboardingModal`, `TierLockModal`, `LabStatusToast` (overlays)
+ *   – `OnboardingModal`, `LabStatusToast` (overlays)
  */
 export default function Lab({ defaultMode = 'insight' }: LabProps) {
     const navigate = useNavigate()
@@ -44,6 +45,23 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
     const [mode, setMode] = useState<PlaygroundMode>(defaultMode)
     const lifecycle = useEngineLifecycle({ insightEnabled: mode === 'insight' })
     const onboarding = useFirstVisitOnboarding(mode)
+
+    // Auto-login as visitor if the user has no session yet when entering the playground.
+    const setAuth = useAuthStore((s) => s.setAuth)
+    const setSelectedUserId = useAuthStore((s) => s.setSelectedUserId)
+    const currentUserId = useAuthStore((s) => s.user?.id ?? null)
+    useEffect(() => {
+        if (currentUserId === 'visitor') return
+        if (!currentUserId) {
+            login('visitor')
+                .then(({ token, user, access }) => {
+                    setAuth(token, user, access?.operations ?? [])
+                    setSelectedUserId('visitor')
+                })
+                .catch(() => { }) // fall through; lifecycle will surface the error
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mode])
 
     useEffect(() => {
         if (!engineId) setMode(defaultMode)
@@ -155,11 +173,7 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
                 )}
             </div>
 
-            <TierLockModal
-                error={lifecycle.accessError}
-                onClose={() => lifecycle.setAccessError(null)}
-            />
-            <LabStatusToast message={statusMessage} />
+            <LabStatusToast message={lifecycle.accessError ?? statusMessage} />
         </div>
     )
 }

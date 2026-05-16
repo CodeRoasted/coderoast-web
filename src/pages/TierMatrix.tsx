@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle } from 'lucide-react'
-import { getCapabilityMatrix, type CapabilityMatrix, type OperationInfo } from '@/services/api'
+import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle, Gauge } from 'lucide-react'
+import { getCapabilityMatrix, type CapabilityMatrix, type OperationInfo, type QuotaInfo, type QuotaUsage } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import Tooltip from '@/components/Tooltip'
@@ -19,7 +19,11 @@ function groupOperations(ops: OperationInfo[]): GroupedOps {
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([category, items]) => ({
             category,
-            items: items.slice().sort((a, b) => a.key.localeCompare(b.key)),
+            items: items.slice().sort((a, b) => {
+                const ea = a.required_entitlement ?? ''
+                const eb = b.required_entitlement ?? ''
+                return ea.localeCompare(eb) || a.key.localeCompare(b.key)
+            }),
         }))
 }
 
@@ -33,9 +37,39 @@ function entitlementAccent(entitlement: string): string {
 }
 
 /**
- * Capability matrix — renders the live access-control configuration
- * exposed by GET /tiers. Everything is server-driven; nothing is hard-coded.
+ * Format a numeric quota value with its unit embedded.
+ * Returns the display label and a Tailwind colour class.
  */
+function formatQuotaValue(
+    value: number,
+    unit: string,
+    unlimited: string,
+    noAccess: string,
+): { label: string; className: string } {
+    if (value < 0) return { label: unlimited, className: 'text-emerald-400' }
+    if (value === 0) return { label: noAccess, className: 'text-gray-500' }
+    if (unit === 'bytes') {
+        const label =
+            value >= 1_000_000_000
+                ? `${(value / 1_000_000_000).toFixed(1)} GB`
+                : value >= 1_000_000
+                  ? `${(value / 1_000_000).toFixed(0)} MB`
+                  : `${value.toLocaleString()} B`
+        return { label, className: 'text-gray-200' }
+    }
+    // Non-bytes: append abbreviated unit
+    const abbrev: Record<string, string> = {
+        engines: value === 1 ? 'engine' : 'engines',
+        seconds: 's',
+        calls: value === 1 ? 'call' : 'calls',
+        requests: value === 1 ? 'req' : 'req',
+        'calls/day': value === 1 ? 'call/day' : 'calls/day',
+        'req/min': 'req/min',
+    }
+    const suffix = abbrev[unit] ?? unit
+    return { label: `${value.toLocaleString()} ${suffix}`, className: 'text-gray-200' }
+}
+
 export default function TierMatrix() {
     const t = useTranslation()
     const operations = useAuthStore((s) => s.operations)
@@ -94,86 +128,154 @@ export default function TierMatrix() {
                 )}
 
                 {matrix && !loading && !error && (
-                    <div className="overflow-x-auto rounded-xl border border-gray-800 bg-gray-900/60">
-                        <table className="min-w-full text-sm">
-                            <thead>
-                                <tr className="border-b border-gray-800 bg-gray-900">
-                                    <th className="text-left font-semibold text-gray-300 px-4 py-3">
-                                        {t.tiers.feature}
-                                    </th>
-                                    <th className="text-left font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
-                                        Required entitlement
-                                    </th>
-                                    <th className="text-center font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
-                                        You
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {groups.map((group) => (
-                                    <>
-                                        <tr key={`group-${group.category}`} className="bg-gray-950/70">
-                                            <td
-                                                colSpan={3}
-                                                className="px-4 py-2 text-[11px] uppercase tracking-widest text-gray-500 font-semibold"
-                                            >
-                                                {group.category}
-                                            </td>
-                                        </tr>
-                                        {group.items.map((op) => {
-                                            const hasIt = operations.includes(op.key)
-                                            return (
-                                                <tr
-                                                    key={op.key}
-                                                    className="border-t border-gray-800/70 hover:bg-gray-900/80"
+                    <>
+                        {/* ── Quotas ─────────────────────────────────────────────── */}
+                        <div className="space-y-3">
+                            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-300">
+                                <Gauge className="w-4 h-4 text-brand-400" />
+                                {t.tiers.yourLimits}
+                            </h2>
+                            {matrix.current_access?.quotas?.length ? (
+                                <div className="overflow-x-auto rounded-xl border border-gray-800 bg-gray-900/60">
+                                    <table className="min-w-full text-sm">
+                                        <thead>
+                                            <tr className="border-b border-gray-800 bg-gray-900">
+                                                <th className="text-left font-semibold text-gray-300 px-4 py-3">
+                                                    {t.tiers.quota}
+                                                </th>
+                                                <th className="text-left font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
+                                                    {t.tiers.usage}
+                                                </th>
+                                                <th className="text-left font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
+                                                    {t.tiers.limit}
+                                                </th>
+                                                <th className="text-left font-semibold text-gray-300 px-4 py-3 border-l border-gray-800 hidden sm:table-cell">
+                                                    Description
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {matrix.current_access.quotas.map((q: QuotaInfo) => {
+                                                const { label: limitLabel, className: limitClass } = formatQuotaValue(q.limit, q.unit, t.tiers.unlimited, t.tiers.noAccess)
+                                                const usageEntry: QuotaUsage | undefined =
+                                                    matrix.current_access?.quota_usage?.find(
+                                                        (u) => u.key === q.key,
+                                                    )
+                                                const usedValue = usageEntry?.used ?? null
+                                                const { label: usageLabel } =
+                                                    usedValue !== null
+                                                        ? formatQuotaValue(usedValue, q.unit, t.tiers.unlimited, t.tiers.noAccess)
+                                                        : { label: '—' }
+                                                return (
+                                                    <tr
+                                                        key={q.key}
+                                                        className="border-t border-gray-800/70 hover:bg-gray-900/80"
+                                                    >
+                                                        <td className="px-4 py-2 font-mono text-xs text-gray-300">
+                                                            {q.key}
+                                                        </td>
+                                                        <td className="px-4 py-2 font-mono text-xs text-gray-400 border-l border-gray-800">
+                                                            {usageLabel}
+                                                        </td>
+                                                        <td className={`px-4 py-2 font-mono text-xs font-semibold border-l border-gray-800 ${limitClass}`}>
+                                                            {limitLabel}
+                                                        </td>
+                                                        <td className="px-4 py-2 text-xs text-gray-500 border-l border-gray-800 hidden sm:table-cell">
+                                                            {q.description}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-gray-500 italic">{t.tiers.noQuotas}</p>
+                            )}
+                        </div>
+
+                        {/* ── Operations ─────────────────────────────────────────── */}
+                        <div className="overflow-x-auto rounded-xl border border-gray-800 bg-gray-900/60">
+                            <table className="min-w-full text-sm">
+                                <thead>
+                                    <tr className="border-b border-gray-800 bg-gray-900">
+                                        <th className="text-left font-semibold text-gray-300 px-4 py-3">
+                                            {t.tiers.feature}
+                                        </th>
+                                        <th className="text-left font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
+                                            Required entitlement
+                                        </th>
+                                        <th className="text-center font-semibold text-gray-300 px-4 py-3 border-l border-gray-800">
+                                            You
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {groups.map((group) => (
+                                        <>
+                                            <tr key={`group-${group.category}`} className="bg-gray-950/70">
+                                                <td
+                                                    colSpan={3}
+                                                    className="px-4 py-2 text-[11px] uppercase tracking-widest text-gray-500 font-semibold"
                                                 >
-                                                    <td className="px-4 py-2 font-mono text-xs text-gray-200">
-                                                        <span className="inline-flex items-center gap-1.5">
-                                                            <span>{op.key}</span>
-                                                            {op.description && (
-                                                                <Tooltip
-                                                                    content={
-                                                                        <span className="block max-w-xs text-xs leading-snug">
-                                                                            {op.description}
-                                                                        </span>
-                                                                    }
+                                                    {group.category}
+                                                </td>
+                                            </tr>
+                                            {group.items.map((op) => {
+                                                const hasIt = operations.includes(op.key)
+                                                return (
+                                                    <tr
+                                                        key={op.key}
+                                                        className="border-t border-gray-800/70 hover:bg-gray-900/80"
+                                                    >
+                                                        <td className="px-4 py-2 font-mono text-xs text-gray-200">
+                                                            <span className="inline-flex items-center gap-1.5">
+                                                                <span>{op.key}</span>
+                                                                {op.description && (
+                                                                    <Tooltip
+                                                                        content={
+                                                                            <span className="block max-w-xs text-xs leading-snug">
+                                                                                {op.description}
+                                                                            </span>
+                                                                        }
+                                                                    >
+                                                                        <HelpCircle
+                                                                            className="w-3.5 h-3.5 text-gray-500 hover:text-brand-400 transition-colors cursor-help"
+                                                                            aria-label={op.description}
+                                                                        />
+                                                                    </Tooltip>
+                                                                )}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-2 border-l border-gray-800">
+                                                            {op.required_entitlement ? (
+                                                                <span
+                                                                    className={`text-xs font-mono px-1.5 py-0.5 rounded border ${entitlementAccent(op.required_entitlement)}`}
                                                                 >
-                                                                    <HelpCircle
-                                                                        className="w-3.5 h-3.5 text-gray-500 hover:text-brand-400 transition-colors cursor-help"
-                                                                        aria-label={op.description}
-                                                                    />
-                                                                </Tooltip>
+                                                                    {op.required_entitlement}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-xs text-gray-600 italic">
+                                                                    none
+                                                                </span>
                                                             )}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-4 py-2 border-l border-gray-800">
-                                                        {op.required_entitlement ? (
-                                                            <span
-                                                                className={`text-xs font-mono px-1.5 py-0.5 rounded border ${entitlementAccent(op.required_entitlement)}`}
-                                                            >
-                                                                {op.required_entitlement}
-                                                            </span>
-                                                        ) : (
-                                                            <span className="text-xs text-gray-600 italic">
-                                                                none
-                                                            </span>
-                                                        )}
-                                                    </td>
-                                                    <td className="px-4 py-2 text-center border-l border-gray-800">
-                                                        {hasIt ? (
-                                                            <Check className="w-4 h-4 text-emerald-400 mx-auto" />
-                                                        ) : (
-                                                            <X className="w-4 h-4 text-gray-600 mx-auto" />
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })}
-                                    </>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                                        </td>
+                                                        <td className="px-4 py-2 text-center border-l border-gray-800">
+                                                            {hasIt ? (
+                                                                <Check className="w-4 h-4 text-emerald-400 mx-auto" />
+                                                            ) : (
+                                                                <X className="w-4 h-4 text-gray-600 mx-auto" />
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
                 )}
             </div>
         </div>

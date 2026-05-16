@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { CheckCircle, Clock, Tag, Loader2, AlertCircle, X } from 'lucide-react'
 import { useEngineStore } from '@/store/useEngineStore'
-import { listScenarios, getScenario, PolicyDenialError, type ScenarioMeta } from '@/services/api'
+import { useAuthStore } from '@/store/useAuthStore'
+import { listScenarios, getScenario, login, PolicyDenialError, type ScenarioMeta } from '@/services/api'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { PlaygroundMode } from '@/types/playground'
-import TierLockModal from './TierLockModal'
 
 const CATEGORY_ORDER = ['Simple', 'Demo', 'Showcase']
 
@@ -14,13 +14,14 @@ interface Props {
 
 export default function ScenarioPicker({ mode }: Props) {
     const { selectedScenarioId, setSelectedScenarioId, setScenarioYaml } = useEngineStore()
+    const setAuth = useAuthStore((s) => s.setAuth)
+    const setSelectedUserId = useAuthStore((s) => s.setSelectedUserId)
     const t = useTranslation()
     const [scenarios, setScenarios] = useState<ScenarioMeta[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [selectError, setSelectError] = useState<string | null>(null)
     const [selectingId, setSelectingId] = useState<string | null>(null)
-    const [accessError, setAccessError] = useState<PolicyDenialError | null>(null)
     const selectControllerRef = useRef<AbortController | null>(null)
 
     useEffect(() => {
@@ -61,11 +62,25 @@ export default function ScenarioPicker({ mode }: Props) {
             } catch (fetchError) {
                 // Silently drop aborts — user clicked a different scenario
                 if (controller.signal.aborted) return
-                setSelectedScenarioId(null)
-                setScenarioYaml('')
                 if (fetchError instanceof PolicyDenialError) {
-                    setAccessError(fetchError)
+                    // Auto-upgrade to visitor and retry transparently
+                    const visitorId = 'visitor'
+                    try {
+                        const { token, user, access } = await login(visitorId)
+                        setAuth(token, user, access?.operations ?? [])
+                        setSelectedUserId(visitorId)
+                        const { yaml } = await getScenario(id, mode, controller.signal)
+                        setScenarioYaml(yaml)
+                        return
+                    } catch (upgradeError) {
+                        if (controller.signal.aborted) return
+                        setSelectedScenarioId(null)
+                        setScenarioYaml('')
+                        setSelectError(upgradeError instanceof Error ? upgradeError.message : String(upgradeError))
+                    }
                 } else {
+                    setSelectedScenarioId(null)
+                    setScenarioYaml('')
                     setSelectError(fetchError instanceof Error ? fetchError.message : String(fetchError))
                 }
             } finally {
@@ -75,7 +90,7 @@ export default function ScenarioPicker({ mode }: Props) {
                 }
             }
         },
-        [mode, setSelectedScenarioId, setScenarioYaml],
+        [mode, setSelectedScenarioId, setScenarioYaml, setAuth, setSelectedUserId],
     )
 
     const grouped = useMemo(() => {
@@ -116,75 +131,74 @@ export default function ScenarioPicker({ mode }: Props) {
 
     return (
         <>
-        <div className="space-y-8">
-            {grouped.map(([category, items]) => (
-                <div key={category}>
-                    <div className="flex items-center gap-2 mb-4">
-                        <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
-                            {category}
-                        </span>
-                        <div className="flex-1 h-px bg-gray-800" />
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {items.map((s) => {
-                            const selected = selectedScenarioId === s.id
-                            const fetching = selectingId === s.id
-                            return (
-                                <button
-                                    key={s.id}
-                                    onClick={() => handleSelectScenario(s.id, selected)}
-                                    className={`text-left p-4 rounded-xl border transition-all duration-200 ${selected
-                                        ? 'border-brand-500 bg-brand-500/10 shadow-lg shadow-brand-500/10'
-                                        : 'border-gray-700/50 bg-gray-900 hover:border-gray-600 hover:bg-gray-800/80'
-                                        }`}
-                                >
-                                    <div className="flex items-start justify-between gap-2 mb-2">
-                                        <span className="font-mono text-sm font-semibold text-white leading-tight">
-                                            {s.name || s.id.split('/').pop()}
-                                        </span>
-                                        {fetching && (
-                                            <Loader2 className="w-4 h-4 animate-spin text-brand-400 flex-shrink-0 mt-0.5" />
-                                        )}
-                                        {!fetching && selected && (
-                                            <CheckCircle className="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5" />
-                                        )}
-                                    </div>
-                                    {s.description && (
-                                        <p className="text-xs text-gray-400 leading-relaxed mb-3 line-clamp-2">
-                                            {s.description}
-                                        </p>
-                                    )}
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        {s.duration && (
-                                            <span className="flex items-center gap-1 text-xs text-gray-500">
-                                                <Clock className="w-3 h-3" />
-                                                {s.duration}
+            <div className="space-y-8">
+                {grouped.map(([category, items]) => (
+                    <div key={category}>
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+                                {category}
+                            </span>
+                            <div className="flex-1 h-px bg-gray-800" />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {items.map((s) => {
+                                const selected = selectedScenarioId === s.id
+                                const fetching = selectingId === s.id
+                                return (
+                                    <button
+                                        key={s.id}
+                                        onClick={() => handleSelectScenario(s.id, selected)}
+                                        className={`text-left p-4 rounded-xl border transition-all duration-200 ${selected
+                                            ? 'border-brand-500 bg-brand-500/10 shadow-lg shadow-brand-500/10'
+                                            : 'border-gray-700/50 bg-gray-900 hover:border-gray-600 hover:bg-gray-800/80'
+                                            }`}
+                                    >
+                                        <div className="flex items-start justify-between gap-2 mb-2">
+                                            <span className="font-mono text-sm font-semibold text-white leading-tight">
+                                                {s.name || s.id.split('/').pop()}
                                             </span>
+                                            {fetching && (
+                                                <Loader2 className="w-4 h-4 animate-spin text-brand-400 flex-shrink-0 mt-0.5" />
+                                            )}
+                                            {!fetching && selected && (
+                                                <CheckCircle className="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5" />
+                                            )}
+                                        </div>
+                                        {s.description && (
+                                            <p className="text-xs text-gray-400 leading-relaxed mb-3 line-clamp-2">
+                                                {s.description}
+                                            </p>
                                         )}
-                                        <span className="flex items-center gap-1 text-xs text-gray-600">
-                                            <Tag className="w-3 h-3" />
-                                            {s.id}
-                                        </span>
-                                    </div>
-                                </button>
-                            )
-                        })}
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            {s.duration && (
+                                                <span className="flex items-center gap-1 text-xs text-gray-500">
+                                                    <Clock className="w-3 h-3" />
+                                                    {s.duration}
+                                                </span>
+                                            )}
+                                            <span className="flex items-center gap-1 text-xs text-gray-600">
+                                                <Tag className="w-3 h-3" />
+                                                {s.id}
+                                            </span>
+                                        </div>
+                                    </button>
+                                )
+                            })}
+                        </div>
                     </div>
-                </div>
-            ))}
-        </div>
-        {selectError && (
-            <div className="flex items-center justify-between gap-3 p-3 mt-4 rounded-xl bg-red-900/20 border border-red-700/50 text-sm text-red-400">
-                <div className="flex items-center gap-2 min-w-0">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">{selectError}</span>
-                </div>
-                <button onClick={() => setSelectError(null)} className="shrink-0 hover:text-red-300 transition-colors">
-                    <X className="w-4 h-4" />
-                </button>
+                ))}
             </div>
-        )}
-        <TierLockModal error={accessError} onClose={() => setAccessError(null)} />
+            {selectError && (
+                <div className="flex items-center justify-between gap-3 p-3 mt-4 rounded-xl bg-red-900/20 border border-red-700/50 text-sm text-red-400">
+                    <div className="flex items-center gap-2 min-w-0">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">{selectError}</span>
+                    </div>
+                    <button onClick={() => setSelectError(null)} className="shrink-0 hover:text-red-300 transition-colors">
+                        <X className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
         </>
     )
 }

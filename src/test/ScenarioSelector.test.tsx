@@ -6,6 +6,7 @@ import { useEngineStore } from '@/store/useEngineStore'
 vi.mock('@/services/api', () => ({
     listScenarios: vi.fn(),
     getScenario: vi.fn(),
+    login: vi.fn(),
     PolicyDenialError: class PolicyDenialError extends Error {
         operation: string
         requiredEntitlement: string
@@ -33,10 +34,11 @@ vi.mock('@/services/api', () => ({
 }))
 
 import ScenarioSelector from '@/components/playground/ScenarioSelector'
-import { listScenarios, getScenario } from '@/services/api'
+import { listScenarios, getScenario, login } from '@/services/api'
 
 const mockedList = vi.mocked(listScenarios)
 const mockedGet = vi.mocked(getScenario)
+const mockedLogin = vi.mocked(login)
 
 describe('ScenarioSelector', () => {
     beforeEach(() => {
@@ -46,6 +48,7 @@ describe('ScenarioSelector', () => {
         })
         mockedList.mockReset()
         mockedGet.mockReset()
+        mockedLogin.mockReset()
     })
 
     it('renders categories in Simple → Demo → Showcase order', async () => {
@@ -91,7 +94,7 @@ describe('ScenarioSelector', () => {
         })
     })
 
-    it('shows the access-denial modal when scenario fetch is policy-gated', async () => {
+    it('auto-logs in as visitor and retries when scenario fetch is policy-gated', async () => {
         const { PolicyDenialError } = await import('@/services/api')
         mockedList.mockResolvedValue({
             scenarios: [
@@ -104,20 +107,27 @@ describe('ScenarioSelector', () => {
                 },
             ],
         })
-        mockedGet.mockRejectedValue(
-            new PolicyDenialError({
-                operation: 'scenario.showcase.load',
-                requiredEntitlement: 'insight.showcase',
-                quotaKey: '',
-                quotaLimit: null,
-                userId: 'logcraft_demo',
-                subject: 'session-abc',
-                role: 'demo_logcraft',
-                identityKind: 'demo',
-                deploymentContext: 'public_demo',
-                reason: 'entitlement insight.showcase required',
-            }),
-        )
+        mockedGet
+            .mockRejectedValueOnce(
+                new PolicyDenialError({
+                    operation: 'scenario.showcase.load',
+                    requiredEntitlement: 'insight.showcase',
+                    quotaKey: '',
+                    quotaLimit: null,
+                    userId: 'visitor',
+                    subject: 'session-abc',
+                    role: 'visitor',
+                    identityKind: 'visitor',
+                    deploymentContext: 'public_demo',
+                    reason: 'entitlement insight.showcase required',
+                }),
+            )
+            .mockResolvedValueOnce({ id: 'insight_only', yaml: 'agents:\n  - name: x' })
+        mockedLogin.mockResolvedValue({
+            token: 'visitor-token',
+            user: { id: 'visitor', name: 'InSight Visitor' },
+            access: null,
+        })
 
         render(
             <MemoryRouter>
@@ -128,10 +138,9 @@ describe('ScenarioSelector', () => {
         fireEvent.click(card)
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /switch/i })).toBeInTheDocument()
+            expect(mockedLogin).toHaveBeenCalledWith('visitor')
+            expect(useEngineStore.getState().scenarioYaml).toContain('agents:')
+            expect(useEngineStore.getState().selectedScenarioId).toBe('insight_only')
         })
-        expect(useEngineStore.getState().selectedScenarioId).toBeNull()
-        expect(useEngineStore.getState().scenarioYaml).toBe('')
-        expect(mockedList).toHaveBeenCalledWith('insight', expect.any(AbortSignal))
     })
 })

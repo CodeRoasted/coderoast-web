@@ -289,7 +289,7 @@ const fr: typeof en = {
             lab: 'Playground InSight',
             useCases: 'Cas d’usage',
             pricing: 'Tarifs',
-            tierMatrix: 'Matrice des paliers',
+            tierMatrix: 'Profil d\'accès',
             roadmap: 'Roadmap',
             github: 'GitHub',
             contact: 'Contact',
@@ -806,7 +806,7 @@ const fr: typeof en = {
         signedInAs: 'Connecté en tant que',
         requiresTier: 'Cette fonctionnalité requiert le palier {tier}.',
         youAre: 'Vous êtes connecté en tant que {role}.',
-        tierMatrix: 'Matrice des paliers',
+        tierMatrix: 'Profil d\'accès',
         tierLockTitle: 'Palier supérieur requis',
         tierLockBody:
             'La capacité « {permission} » est incluse dans le palier {tier}. Vous êtes actuellement sur {current}.',
@@ -820,12 +820,19 @@ const fr: typeof en = {
         scenarioNotAvailable: 'Ce scénario requiert des capacités non disponibles dans ce déploiement :',
     },
     tiers: {
-        title: 'Matrice des paliers & fonctionnalités',
+        title: 'Profil d\'accès',
         description:
-            'Cette page reflète la configuration live du contrôle d\'accès du backend. Chaque clé de permission est regroupée par catégorie ; ✓ indique que le palier de la colonne donne accès à la fonctionnalité, ✗ indique l\'inverse.',
-        loading: 'Chargement de la matrice…',
+            'Vos droits actuels, l\'accès aux opérations et les limites de quota — servis en direct depuis la configuration du contrôle d\'accès du backend.',
+        loading: 'Chargement du profil d\'accès…',
         feature: 'Fonctionnalité',
         disabled: 'désactivé',
+        yourLimits: 'Vos limites',
+        quota: 'Quota',
+        usage: 'Utilisation',
+        limit: 'Limite',
+        unlimited: 'Illimité',
+        noAccess: 'Aucun accès',
+        noQuotas: 'Aucune information de quota disponible.',
     },
 }
 

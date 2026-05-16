@@ -287,7 +287,7 @@ const en = {
             lab: 'InSight Playground',
             useCases: 'Use cases',
             pricing: 'Pricing',
-            tierMatrix: 'Tier matrix',
+            tierMatrix: 'Access profile',
             roadmap: 'Roadmap',
             github: 'GitHub',
             contact: 'Contact',
@@ -805,7 +805,7 @@ const en = {
         signedInAs: 'Signed in as',
         requiresTier: 'This feature requires the {tier} tier.',
         youAre: 'You are signed in as {role}.',
-        tierMatrix: 'Tier matrix',
+        tierMatrix: 'Access profile',
         tierLockTitle: 'This needs a higher tier',
         tierLockBody:
             'The "{permission}" capability is included in the {tier} tier. You\'re currently on {current}.',
@@ -819,12 +819,19 @@ const en = {
         scenarioNotAvailable: 'This scenario requires capabilities that are not available in this deployment:',
     },
     tiers: {
-        title: 'Tier & Feature Matrix',
+        title: 'Access profile',
         description:
-            'This page mirrors the live access-control configuration of the backend. Every permission key is grouped by category; ✓ means the tier grants the feature, ✗ means it does not.',
-        loading: 'Loading feature matrix…',
+            'Your current entitlements, operation access, and quota limits — served live from the backend access-control configuration.',
+        loading: 'Loading access profile…',
         feature: 'Feature',
         disabled: 'disabled',
+        yourLimits: 'Your limits',
+        quota: 'Quota',
+        usage: 'Usage',
+        limit: 'Limit',
+        unlimited: 'Unlimited',
+        noAccess: 'No access',
+        noQuotas: 'No quota information available.',
     },
 }
 

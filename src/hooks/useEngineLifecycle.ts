@@ -47,7 +47,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
 
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
-    const [accessError, setAccessError] = useState<PolicyDenialError | null>(null)
+    const [accessError, setAccessError] = useState<string | null>(null)
     const [replayToTargetPending, setReplayToTargetPending] = useState(false)
     const [insightCatchingUp, setInsightCatchingUp] = useState(false)
     const replayToTargetPendingRef = useRef(false)
@@ -151,7 +151,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             } catch (e) {
                 if (cancelled) return
                 if (e instanceof PolicyDenialError) {
-                    setAccessError(e)
+                    setAccessError(e.message)
                 } else {
                     setInsightError(e instanceof Error ? e.message : String(e))
                 }
@@ -259,7 +259,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             setUnavailableCapabilities([])
         } catch (e) {
             if (e instanceof PolicyDenialError) {
-                setAccessError(e)
+                setAccessError(e.message)
                 return
             }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)
@@ -272,7 +272,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
             connectToEngine(engine_id)
         } catch (e) {
             if (e instanceof PolicyDenialError) {
-                setAccessError(e)
+                setAccessError(e.message)
                 return
             }
             setStatusMessage(`${t.lab.error}: ${e instanceof Error ? e.message : String(e)}`)

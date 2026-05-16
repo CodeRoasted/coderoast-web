@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Brain, HelpCircle, ScrollText } from 'lucide-react'
-import UserSelector from '@/components/UserSelector'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { PlaygroundMode } from '@/types/playground'
 
@@ -82,7 +81,6 @@ export default function LabTopBar({
                     >
                         {t.auth.tierMatrix}
                     </Link>
-                    <UserSelector />
                 </div>
             </div>
         </div>

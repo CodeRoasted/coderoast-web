@@ -15,7 +15,7 @@ interface Props {
  * Styled confirmation modal for seed-determinism warnings.
  *
  * Replaces the raw `window.confirm()` so the warning matches the visual
- * language of the rest of the lab (same pattern as TierLockModal).
+ * language of the rest of the lab.
  * Amber-themed rather than brand-purple to signal "caution, not blocked".
  */
 export default function SeedConfirmModal({ open, actionLabel, onConfirm, onCancel }: Props) {

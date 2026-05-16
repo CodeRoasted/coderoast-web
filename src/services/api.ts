@@ -31,6 +31,13 @@ export interface QuotaInfo {
     description: string
 }
 
+/** Current consumption for a single quota key. */
+export interface QuotaUsage {
+    key: string
+    /** null when usage is not tracked for this principal/key. */
+    used: number | null
+}
+
 /** Subject's current access profile as returned by login / whoami / /users. */
 export interface AccessProfile {
     tenant_id: string
@@ -44,6 +51,8 @@ export interface AccessProfile {
     /** Permitted operation keys for this subject (same as capabilities). */
     operations: string[]
     quotas: QuotaInfo[]
+    /** Current consumption per quota key. Present in /access/profile responses. */
+    quota_usage?: QuotaUsage[]
 }
 
 export interface LoginResponse {
@@ -52,12 +61,12 @@ export interface LoginResponse {
     access: AccessProfile | null
 }
 
-/** A selectable demo user exposed by `GET /users`. */
+/** A selectable visitor user exposed by `GET /users`. */
 export interface SelectableUser {
     id: string
     name: string
     role: string
-    is_demo: boolean
+    is_visitor: boolean
     access?: AccessProfile
 }
 
@@ -293,12 +302,8 @@ export async function whoami(): Promise<WhoAmIResponse> {
     return request('/whoami')
 }
 
-export async function listUsers(): Promise<{ users: SelectableUser[] }> {
-    return request('/users')
-}
-
 export async function getCapabilityMatrix(): Promise<CapabilityMatrix> {
-    return request('/tiers')
+    return request('/access/profile')
 }
 
 /** @deprecated Use getCapabilityMatrix */
