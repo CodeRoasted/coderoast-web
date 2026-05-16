@@ -724,6 +724,13 @@ const fr: typeof en = {
         seedConfirmTitle: 'Scénario seedé — attention',
         seedConfirmProceed: 'Procéder quand même',
         seedConfirmCancel: 'Annuler',
+        leaveEngineTitle: 'Quitter le lab ?',
+        leaveEngineBody:
+            "Votre moteur sera arrêté et détruit. Le quota de runs déjà consommé ne sera pas restauré.",
+        leaveEngineProceed: 'Quitter quand même',
+        leaveEngineCancel: 'Rester',
+        leaveEngineDismiss: 'Ignorer',
+
         filters: 'Filtres',
         filterAllLevels: 'Tous niveaux',
         filterAllAgents: 'Tous agents',

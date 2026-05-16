@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom'
 import Home from '@/pages/Home'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -66,6 +66,68 @@ function HashScrollManager() {
     return null
 }
 
+function RootLayout() {
+    return (
+        <div className="min-h-screen bg-gray-950 text-gray-100">
+            <HashScrollManager />
+            <ErrorBoundary>
+                <Outlet />
+            </ErrorBoundary>
+        </div>
+    )
+}
+
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: <RootLayout />,
+        children: [
+            { index: true, element: <Home /> },
+            {
+                path: 'logcraft',
+                element: <Suspense fallback={<SpinnerFallback />}><LogCraftPage /></Suspense>,
+            },
+            {
+                path: 'lab',
+                element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="insight" /></Suspense>,
+            },
+            {
+                path: 'lab/logcraft',
+                element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="logcraft" /></Suspense>,
+            },
+            {
+                path: 'lab/insight',
+                element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="insight" /></Suspense>,
+            },
+            {
+                path: 'tiers',
+                element: <Suspense fallback={<SpinnerFallback />}><TierMatrix /></Suspense>,
+            },
+            {
+                path: 'use-cases',
+                element: <Suspense fallback={<SpinnerFallback />}><UseCases /></Suspense>,
+            },
+            // Legacy redirect
+            {
+                path: 'playground',
+                element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="insight" /></Suspense>,
+            },
+            {
+                path: 'legal/terms',
+                element: <Suspense fallback={<SpinnerFallback />}><Terms /></Suspense>,
+            },
+            {
+                path: 'legal/privacy',
+                element: <Suspense fallback={<SpinnerFallback />}><Privacy /></Suspense>,
+            },
+            {
+                path: 'legal/trademark',
+                element: <Suspense fallback={<SpinnerFallback />}><Trademark /></Suspense>,
+            },
+        ],
+    },
+])
+
 export default function App() {
     const setAuth = useAuthStore((state) => state.setAuth)
     const clearAuth = useAuthStore((state) => state.clearAuth)
@@ -101,8 +163,13 @@ export default function App() {
                     if (cancelled) return
                     if (info.token_valid) {
                         setAuth(persistedToken, info.user, info.access?.operations ?? [])
-                    } else if (persistedUserId) {
-                        return login(persistedUserId)
+                    } else {
+                        // Token is stale — re-login with the persisted user id
+                        // when available, otherwise fall back to the visitor
+                        // auto-login so the app stays usable after a Redis
+                        // restart without requiring a manual page reload.
+                        const reloginAs = persistedUserId ?? 'visitor'
+                        return login(reloginAs)
                             .then(({ token: fresh, user, access }) => {
                                 if (cancelled) return
                                 setAuth(fresh, user, access?.operations ?? [])
@@ -110,8 +177,6 @@ export default function App() {
                             .catch(() => {
                                 if (!cancelled) clearAuth()
                             })
-                    } else {
-                        clearAuth()
                     }
                 })
                 .catch(() => {
@@ -153,97 +218,5 @@ export default function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    return (
-        <BrowserRouter>
-            <div className="min-h-screen bg-gray-950 text-gray-100">
-                <HashScrollManager />
-                <ErrorBoundary>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route
-                            path="/logcraft"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <LogCraftPage />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/lab"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Lab defaultMode="insight" />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/lab/logcraft"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Lab defaultMode="logcraft" />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/lab/insight"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Lab defaultMode="insight" />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/tiers"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <TierMatrix />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/use-cases"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <UseCases />
-                                </Suspense>
-                            }
-                        />
-                        {/* Legacy redirect */}
-                        <Route
-                            path="/playground"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Lab defaultMode="insight" />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/legal/terms"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Terms />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/legal/privacy"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Privacy />
-                                </Suspense>
-                            }
-                        />
-                        <Route
-                            path="/legal/trademark"
-                            element={
-                                <Suspense fallback={<SpinnerFallback />}>
-                                    <Trademark />
-                                </Suspense>
-                            }
-                        />
-                    </Routes>
-                </ErrorBoundary>
-            </div>
-        </BrowserRouter>
-    )
+    return <RouterProvider router={router} />
 }

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle, Gauge } from 'lucide-react'
+import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle, Gauge, RefreshCw } from 'lucide-react'
 import { getCapabilityMatrix, type CapabilityMatrix, type OperationInfo, type QuotaInfo, type QuotaUsage } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -39,15 +39,19 @@ function entitlementAccent(entitlement: string): string {
 /**
  * Format a numeric quota value with its unit embedded.
  * Returns the display label and a Tailwind colour class.
+ *
+ * @param zeroLabel  String to show when value === 0.  Pass `null` to render
+ *                   zero as a real number (e.g. usage column where 0 = "nothing
+ *                   consumed yet", not "access denied").
  */
 function formatQuotaValue(
     value: number,
     unit: string,
     unlimited: string,
-    noAccess: string,
+    noAccess: string | null,
 ): { label: string; className: string } {
     if (value < 0) return { label: unlimited, className: 'text-emerald-400' }
-    if (value === 0) return { label: noAccess, className: 'text-gray-500' }
+    if (value === 0 && noAccess !== null) return { label: noAccess, className: 'text-gray-500' }
     if (unit === 'bytes') {
         const label =
             value >= 1_000_000_000
@@ -77,12 +81,16 @@ export default function TierMatrix() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
+    const refresh = useCallback(() => {
+        setLoading(true)
+        setError(null)
         getCapabilityMatrix()
             .then(setMatrix)
             .catch((err) => setError(err instanceof Error ? err.message : String(err)))
             .finally(() => setLoading(false))
     }, [])
+
+    useEffect(() => { refresh() }, [refresh])
 
     const groups: GroupedOps = useMemo(
         () => (matrix ? groupOperations(matrix.operations) : []),
@@ -107,6 +115,15 @@ export default function TierMatrix() {
                             <span className="text-gray-300">{t.tiers.title}</span>
                         </h1>
                     </div>
+                    <button
+                        onClick={refresh}
+                        disabled={loading}
+                        className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 disabled:opacity-40 transition-colors"
+                        title="Refresh usage data"
+                    >
+                        <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </button>
                 </div>
             </div>
 
@@ -162,10 +179,10 @@ export default function TierMatrix() {
                                                         (u) => u.key === q.key,
                                                     )
                                                 const usedValue = usageEntry?.used ?? null
-                                                const { label: usageLabel } =
+                                                const { label: usageLabel, className: usageClass } =
                                                     usedValue !== null
-                                                        ? formatQuotaValue(usedValue, q.unit, t.tiers.unlimited, t.tiers.noAccess)
-                                                        : { label: '—' }
+                                                        ? formatQuotaValue(usedValue, q.unit, t.tiers.unlimited, null)
+                                                        : { label: '—', className: 'text-gray-600' }
                                                 return (
                                                     <tr
                                                         key={q.key}
@@ -174,7 +191,7 @@ export default function TierMatrix() {
                                                         <td className="px-4 py-2 font-mono text-xs text-gray-300">
                                                             {q.key}
                                                         </td>
-                                                        <td className="px-4 py-2 font-mono text-xs text-gray-400 border-l border-gray-800">
+                                                        <td className={`px-4 py-2 font-mono text-xs border-l border-gray-800 ${usageClass}`}>
                                                             {usageLabel}
                                                         </td>
                                                         <td className={`px-4 py-2 font-mono text-xs font-semibold border-l border-gray-800 ${limitClass}`}>

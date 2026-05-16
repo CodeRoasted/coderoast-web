@@ -723,6 +723,13 @@ const en = {
         seedConfirmTitle: 'Seeded scenario — heads up',
         seedConfirmProceed: 'Proceed anyway',
         seedConfirmCancel: 'Cancel',
+        leaveEngineTitle: 'Leave the lab?',
+        leaveEngineBody:
+            'Your engine will be stopped and destroyed. Any run quota already consumed will not be restored.',
+        leaveEngineProceed: 'Leave anyway',
+        leaveEngineCancel: 'Stay',
+        leaveEngineDismiss: 'Dismiss',
+
         filters: 'Filters',
         filterAllLevels: 'All levels',
         filterAllAgents: 'All agents',

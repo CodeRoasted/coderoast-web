@@ -5,10 +5,18 @@ import { useTranslation } from '@/hooks/useTranslation'
 
 interface Props {
     open: boolean
-    /** The human-readable action string inserted into the warning body. */
+    /** The human-readable action string inserted into the warning body (unused when `body` is provided). */
     actionLabel: string
     onConfirm: () => void
     onCancel: () => void
+    /** Override the modal title (defaults to seed-determinism copy). */
+    title?: string
+    /** Override the modal body (defaults to seed-determinism warning with actionLabel). */
+    body?: string
+    /** Override the confirm button label. */
+    confirmLabel?: string
+    /** Override the cancel button label. */
+    cancelLabel?: string
 }
 
 /**
@@ -17,9 +25,26 @@ interface Props {
  * Replaces the raw `window.confirm()` so the warning matches the visual
  * language of the rest of the lab.
  * Amber-themed rather than brand-purple to signal "caution, not blocked".
+ *
+ * Pass `title`, `body`, `confirmLabel`, `cancelLabel` to reuse this modal
+ * for non-seed confirmations (e.g. leaving an active engine).
  */
-export default function SeedConfirmModal({ open, actionLabel, onConfirm, onCancel }: Props) {
+export default function SeedConfirmModal({
+    open,
+    actionLabel,
+    onConfirm,
+    onCancel,
+    title,
+    body,
+    confirmLabel,
+    cancelLabel,
+}: Props) {
     const t = useTranslation()
+
+    const resolvedTitle = title ?? t.lab.seedConfirmTitle
+    const resolvedBody = body ?? t.lab.seedDeterminismWarning.replace('{action}', actionLabel)
+    const resolvedConfirm = confirmLabel ?? t.lab.seedConfirmProceed
+    const resolvedCancel = cancelLabel ?? t.lab.seedConfirmCancel
 
     return createPortal(
         <AnimatePresence>
@@ -41,7 +66,7 @@ export default function SeedConfirmModal({ open, actionLabel, onConfirm, onCance
                         <button
                             onClick={onCancel}
                             className="absolute top-3 right-3 p-1 rounded text-gray-500 hover:text-gray-200 hover:bg-gray-800/60 transition-colors"
-                            aria-label={t.lab.seedConfirmCancel}
+                            aria-label={resolvedCancel}
                         >
                             <X className="w-4 h-4" />
                         </button>
@@ -51,10 +76,10 @@ export default function SeedConfirmModal({ open, actionLabel, onConfirm, onCance
                         </div>
 
                         <h2 className="font-display text-xl font-bold text-white mb-2">
-                            {t.lab.seedConfirmTitle}
+                            {resolvedTitle}
                         </h2>
                         <p className="text-sm text-gray-400 leading-relaxed mb-5">
-                            {t.lab.seedDeterminismWarning.replace('{action}', actionLabel)}
+                            {resolvedBody}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-2">
@@ -62,13 +87,13 @@ export default function SeedConfirmModal({ open, actionLabel, onConfirm, onCance
                                 onClick={onConfirm}
                                 className="flex-1 px-4 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold transition-colors"
                             >
-                                {t.lab.seedConfirmProceed}
+                                {resolvedConfirm}
                             </button>
                             <button
                                 onClick={onCancel}
                                 className="flex-1 px-4 py-2.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium transition-colors"
                             >
-                                {t.lab.seedConfirmCancel}
+                                {resolvedCancel}
                             </button>
                         </div>
                     </motion.div>

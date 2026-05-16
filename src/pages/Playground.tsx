@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useBlocker, useNavigate } from 'react-router-dom'
 import { useEngineStore } from '@/store/useEngineStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { login } from '@/services/api'
 import OnboardingModal from '@/components/playground/OnboardingModal'
+import SeedConfirmModal from '@/components/playground/SeedConfirmModal'
 import LabStatusToast from '@/components/playground/lab/LabStatusToast'
 import LabTopBar from '@/components/playground/lab/LabTopBar'
 import LabPickerView from '@/components/playground/lab/LabPickerView'
 import LabDashboardView from '@/components/playground/lab/LabDashboardView'
 import { useEngineLifecycle } from '@/hooks/useEngineLifecycle'
 import { useFirstVisitOnboarding } from '@/hooks/useFirstVisitOnboarding'
+import { useTranslation } from '@/hooks/useTranslation'
 import type { PlaygroundMode } from '@/types/playground'
 
 interface LabProps {
@@ -26,6 +28,7 @@ interface LabProps {
  */
 export default function Lab({ defaultMode = 'insight' }: LabProps) {
     const navigate = useNavigate()
+    const t = useTranslation()
     const engineId = useEngineStore((s) => s.engineId)
     const snapshot = useEngineStore((s) => s.snapshot)
     const connected = useEngineStore((s) => s.connected)
@@ -43,8 +46,46 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
     const insightError = useEngineStore((s) => s.insightError)
 
     const [mode, setMode] = useState<PlaygroundMode>(defaultMode)
+    const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false)
     const lifecycle = useEngineLifecycle({ insightEnabled: mode === 'insight' })
     const onboarding = useFirstVisitOnboarding(mode)
+
+    // Block all React Router navigations (links, browser back) while an engine is active.
+    const blocker = useBlocker(!!engineId)
+    useEffect(() => {
+        if (blocker.state === 'blocked') setLeaveConfirmOpen(true)
+    }, [blocker.state])
+
+    // Guard the "Back to scenarios" button (does not navigate, just resets state).
+    const handleBackWithConfirm = useCallback(() => {
+        if (engineId) {
+            setLeaveConfirmOpen(true)
+        } else {
+            lifecycle.handleBackToScenarios()
+        }
+    }, [engineId, lifecycle])
+
+    // Confirm leaving: proceed router nav OR reset lab state.
+    const handleLeaveConfirm = useCallback(() => {
+        setLeaveConfirmOpen(false)
+        if (blocker.state === 'blocked') {
+            blocker.proceed()
+        } else {
+            lifecycle.handleBackToScenarios()
+        }
+    }, [blocker, lifecycle])
+
+    const handleLeaveCancel = useCallback(() => {
+        setLeaveConfirmOpen(false)
+        if (blocker.state === 'blocked') blocker.reset()
+    }, [blocker])
+
+    // Dismiss the status toast (clears both accessError and the store message).
+    const setStatusMessage = useEngineStore((s) => s.setStatusMessage)
+    const handleToastDismiss = useCallback(() => {
+        lifecycle.setAccessError(null)
+        setStatusMessage(null)
+    }, [lifecycle, setStatusMessage])
 
     // Auto-login as visitor if the user has no session yet when entering the playground.
     const setAuth = useAuthStore((s) => s.setAuth)
@@ -102,7 +143,7 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
                 mode={mode}
                 engineId={engineId}
                 connected={connected}
-                onBackToScenarios={lifecycle.handleBackToScenarios}
+                onBackToScenarios={handleBackWithConfirm}
                 onRequestHelp={onboarding.requestFirstVisit}
             />
 
@@ -173,7 +214,21 @@ export default function Lab({ defaultMode = 'insight' }: LabProps) {
                 )}
             </div>
 
-            <LabStatusToast message={lifecycle.accessError ?? statusMessage} />
+            <LabStatusToast
+                message={lifecycle.accessError ?? statusMessage}
+                onDismiss={handleToastDismiss}
+            />
+
+            <SeedConfirmModal
+                open={leaveConfirmOpen}
+                actionLabel=""
+                onConfirm={handleLeaveConfirm}
+                onCancel={handleLeaveCancel}
+                title={t.lab.leaveEngineTitle}
+                body={t.lab.leaveEngineBody}
+                confirmLabel={t.lab.leaveEngineProceed}
+                cancelLabel={t.lab.leaveEngineCancel}
+            />
         </div>
     )
 }

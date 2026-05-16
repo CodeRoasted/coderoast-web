@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { X } from 'lucide-react'
 
 interface Props {
     message: string | null
+    onDismiss?: () => void
 }
 
 /**
@@ -12,8 +14,9 @@ interface Props {
  *
  * Auto-dismissal is owned by the producer (see useEngineLifecycle), this
  * component just animates in/out when the message changes.
+ * Pass `onDismiss` to render a manual close button.
  */
-export default function LabStatusToast({ message }: Props) {
+export default function LabStatusToast({ message, onDismiss }: Props) {
     return (
         <AnimatePresence>
             {message && (
@@ -30,7 +33,16 @@ export default function LabStatusToast({ message }: Props) {
                                 : 'bg-gray-800/95 border-gray-600/50 text-gray-200'
                         }`}
                 >
-                    {message}
+                    <span className="flex-1 min-w-0">{message}</span>
+                    {onDismiss && (
+                        <button
+                            onClick={onDismiss}
+                            className="shrink-0 p-0.5 rounded opacity-60 hover:opacity-100 transition-opacity"
+                            aria-label="Dismiss"
+                        >
+                            <X className="w-3.5 h-3.5" />
+                        </button>
+                    )}
                 </motion.div>
             )}
         </AnimatePresence>
