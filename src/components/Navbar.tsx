@@ -78,7 +78,7 @@ export default function Navbar() {
                     {/* Right side */}
                     <div className="flex items-center gap-2">
                         <a
-                            href="https://github.com/coderoast-dev"
+                            href="https://github.com/CodeRoasted"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="GitHub"

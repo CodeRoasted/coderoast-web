@@ -111,7 +111,7 @@ export default function LogCraftPage() {
                                     <ArrowRight className="w-4 h-4" />
                                 </Link>
                                 <a
-                                    href="https://github.com/coderoast-dev/logcraft-playground"
+                                    href="https://github.com/CodeRoasted/logcraft-playground"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 px-8 py-4 bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold rounded-xl transition-colors text-base border border-gray-700"

@@ -88,7 +88,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <a
-                                        href="https://github.com/coderoast-dev"
+                                        href="https://github.com/CodeRoasted"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-gray-400 hover:text-brand-400 transition-colors"
@@ -170,7 +170,7 @@ export default function Footer() {
                                 </button>
                                 <span className="text-gray-700" aria-hidden="true">·</span>
                                 <a
-                                    href="https://github.com/coderoast-dev"
+                                    href="https://github.com/CodeRoasted"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="GitHub"
