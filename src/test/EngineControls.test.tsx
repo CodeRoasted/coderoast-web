@@ -32,12 +32,12 @@ const snapshot: EngineSnapshot = {
 }
 
 describe('EngineControls', () => {
-    it('sends replay-to-target in elapsed nanoseconds', () => {
+    it('sends play-to-target in elapsed nanoseconds', () => {
         useAuthStore.setState({
             operations: ['engine.start', 'engine.stop', 'engine.playback.play', 'engine.playback.pause', 'engine.speed.set', 'engine.advance', 'engine.cascade.trigger'],
             loading: false,
         })
-        const onReplayToTarget = vi.fn()
+        const onPlayToTarget = vi.fn()
 
         render(
             <EngineControls
@@ -45,7 +45,7 @@ describe('EngineControls', () => {
                 hasEngine
                 onStart={vi.fn()}
                 onStop={vi.fn()}
-                onReplayToTarget={onReplayToTarget}
+                onPlayToTarget={onPlayToTarget}
             />,
         )
 
@@ -54,12 +54,12 @@ describe('EngineControls', () => {
         expect(targetInput).toHaveAttribute('type', 'text')
 
         fireEvent.change(targetInput, { target: { value: '7.25' } })
-        fireEvent.click(screen.getByRole('button', { name: 'Replay to target' }))
+        fireEvent.click(screen.getByRole('button', { name: 'Play to target' }))
 
-        expect(onReplayToTarget).toHaveBeenCalledWith(7_250_000_000)
+        expect(onPlayToTarget).toHaveBeenCalledWith(7_250_000_000)
     })
 
-    it('hides replay-to-target editing until playback is paused', () => {
+    it('hides play-to-target editing until playback is paused', () => {
         useAuthStore.setState({
             operations: ['engine.start', 'engine.stop', 'engine.playback.play', 'engine.playback.pause', 'engine.speed.set', 'engine.advance', 'engine.cascade.trigger'],
             loading: false,
@@ -71,15 +71,15 @@ describe('EngineControls', () => {
                 hasEngine
                 onStart={vi.fn()}
                 onStop={vi.fn()}
-                onReplayToTarget={vi.fn()}
+                onPlayToTarget={vi.fn()}
             />,
         )
 
         expect(screen.queryByLabelText('Target seconds')).not.toBeInTheDocument()
-        expect(screen.queryByRole('button', { name: 'Replay to target' })).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: 'Play to target' })).not.toBeInTheDocument()
     })
 
-    it('shows replay-to-target progress while the command is pending', () => {
+    it('shows play-to-target progress while the command is pending', () => {
         useAuthStore.setState({
             operations: ['engine.start', 'engine.stop', 'engine.playback.play', 'engine.playback.pause', 'engine.speed.set', 'engine.advance', 'engine.cascade.trigger'],
             loading: false,
@@ -91,13 +91,13 @@ describe('EngineControls', () => {
                 hasEngine
                 onStart={vi.fn()}
                 onStop={vi.fn()}
-                onReplayToTarget={vi.fn()}
-                replayToTargetPending
+                onPlayToTarget={vi.fn()}
+                playToTargetPending
             />,
         )
 
         expect(screen.getByText('Replaying')).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: 'Replay to target' })).toBeDisabled()
+        expect(screen.getByRole('button', { name: 'Play to target' })).toBeDisabled()
         expect(screen.getByLabelText('Target seconds')).toBeDisabled()
     })
 })

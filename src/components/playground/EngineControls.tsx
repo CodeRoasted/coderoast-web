@@ -25,8 +25,8 @@ interface Props {
     onPause?: () => void
     onSetPlaybackSpeed?: (multiplier: number) => void
     onAdvance?: (durationNs: number) => void
-    onReplayToTarget?: (targetElapsedNs: number) => void
-    replayToTargetPending?: boolean
+    onPlayToTarget?: (targetElapsedNs: number) => void
+    playToTargetPending?: boolean
     onCascade?: () => void
 }
 
@@ -39,8 +39,8 @@ export default function EngineControls({
     onPause,
     onSetPlaybackSpeed,
     onAdvance,
-    onReplayToTarget,
-    replayToTargetPending = false,
+    onPlayToTarget,
+    playToTargetPending = false,
     onCascade,
 }: Props) {
     const t = useTranslation()
@@ -73,9 +73,9 @@ export default function EngineControls({
 
     const parsedTargetSeconds = Number(targetSeconds)
     const hasValidReplayTarget = Number.isFinite(parsedTargetSeconds) && parsedTargetSeconds >= 0
-    const handleReplayToTarget = () => {
-        if (!onReplayToTarget || !hasValidReplayTarget) return
-        onReplayToTarget(Math.round(parsedTargetSeconds * kNanosecondsPerSecond))
+    const handlePlayToTarget = () => {
+        if (!onPlayToTarget || !hasValidReplayTarget) return
+        onPlayToTarget(Math.round(parsedTargetSeconds * kNanosecondsPerSecond))
         setTargetDirty(false)
     }
 
@@ -181,26 +181,26 @@ export default function EngineControls({
                             }}
                             aria-label={t.lab.targetSeconds}
                             className="w-16 bg-gray-950/80 border border-gray-700 rounded px-1.5 py-0.5 text-xs text-gray-100 text-right font-mono outline-none focus:border-brand-500/70 focus:ring-1 focus:ring-brand-500/30 disabled:opacity-40 disabled:cursor-not-allowed"
-                            disabled={!canAdvance || !onReplayToTarget || replayToTargetPending}
+                            disabled={!canAdvance || !onPlayToTarget || playToTargetPending}
                         />
                         <span className="text-[10px] text-gray-500">s</span>
                     </div>
 
                     <div className="w-px h-6 bg-gray-700 shrink-0" />
 
-                    <Tooltip content={canAdvance ? t.lab.replayToTarget : lockMsg('engine.advance')}>
+                    <Tooltip content={canAdvance ? t.lab.playToTarget : lockMsg('engine.advance')}>
                         <button
-                            onClick={handleReplayToTarget}
-                            disabled={!canAdvance || !onReplayToTarget || !hasValidReplayTarget || replayToTargetPending}
-                            aria-label={t.lab.replayToTarget}
+                            onClick={handlePlayToTarget}
+                            disabled={!canAdvance || !onPlayToTarget || !hasValidReplayTarget || playToTargetPending}
+                            aria-label={t.lab.playToTarget}
                             className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                            {replayToTargetPending ? (
+                            {playToTargetPending ? (
                                 <Loader2 className="w-3 h-3 animate-spin" />
                             ) : (
                                 <RotateCcw className="w-3 h-3" />
                             )}
-                            {replayToTargetPending ? t.lab.replaying : t.lab.replay}
+                            {playToTargetPending ? t.lab.replaying : t.lab.replay}
                         </button>
                     </Tooltip>
 

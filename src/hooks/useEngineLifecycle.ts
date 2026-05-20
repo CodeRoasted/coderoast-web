@@ -21,7 +21,7 @@ interface EngineLifecycleOptions {
  * Owns the entire engine lifecycle for the Lab page:
  *   – validation + creation (handleRun)
  *   – WebSocket wiring + auto-start handshake
- *   – live commands (start / stop / play / pause / set_speed / advance / replay_to_target / cascade / set_rate / set_error_rate / burst)
+ *   – live commands (start / stop / play / pause / set_speed / advance / play_to_target / cascade / set_rate / set_error_rate / burst)
  *   – tear-down on unmount + on "back to scenarios"
  *   – validation/capability/tier errors
  *
@@ -48,15 +48,15 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const [unavailableCapabilities, setUnavailableCapabilities] = useState<string[]>([])
     const [accessError, setAccessError] = useState<string | null>(null)
-    const [replayToTargetPending, setReplayToTargetPending] = useState(false)
+    const [playToTargetPending, setPlayToTargetPending] = useState(false)
     const [insightCatchingUp, setInsightCatchingUp] = useState(false)
-    const replayToTargetPendingRef = useRef(false)
+    const playToTargetPendingRef = useRef(false)
     const lastStatusLinesRef = useRef<number>(0)
     const linesAtSeekRef = useRef<number | null>(null)
 
     const setReplayPending = useCallback((pending: boolean) => {
-        replayToTargetPendingRef.current = pending
-        setReplayToTargetPending(pending)
+        playToTargetPendingRef.current = pending
+        setPlayToTargetPending(pending)
     }, [])
 
     // Mirror engineId into a ref so the unmount effect can read the latest
@@ -195,7 +195,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                     engineWs.sendCommand({ type: 'start' })
                 },
                 onResult: (success, message) => {
-                    if (replayToTargetPendingRef.current) {
+                    if (playToTargetPendingRef.current) {
                         setReplayPending(false)
                         if (success) {
                             linesAtSeekRef.current = lastStatusLinesRef.current
@@ -292,15 +292,15 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
         (durationNs: number) => engineWs.sendCommand({ type: 'advance', duration_ns: durationNs }),
         [],
     )
-    const handleReplayToTarget = useCallback(
+    const handlePlayToTarget = useCallback(
         (targetElapsedNs: number) => {
             if (!engineWs.connected) {
                 setStatusMessage(t.lab.websocketNotConnected)
                 return
             }
             setReplayPending(true)
-            setStatusMessage(t.lab.replayingToTarget)
-            engineWs.sendCommand({ type: 'replay_to_target', target_elapsed_ns: targetElapsedNs })
+            setStatusMessage(t.lab.playingToTarget)
+            engineWs.sendCommand({ type: 'play_to_target', target_elapsed_ns: targetElapsedNs })
         },
         [setReplayPending, setStatusMessage, t],
     )
@@ -338,7 +338,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
         setUnavailableCapabilities,
         accessError,
         setAccessError,
-        replayToTargetPending,
+        playToTargetPending,
         insightCatchingUp,
         // commands
         handleRun,
@@ -348,7 +348,7 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
         handlePause,
         handleSetPlaybackSpeed,
         handleAdvance,
-        handleReplayToTarget,
+        handlePlayToTarget,
         handleCascade,
         handleSetRate,
         handleSetErrorRate,

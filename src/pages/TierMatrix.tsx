@@ -77,6 +77,8 @@ function formatQuotaValue(
 export default function TierMatrix() {
     const t = useTranslation()
     const operations = useAuthStore((s) => s.operations)
+    const authToken = useAuthStore((s) => s.token)
+    const authLoading = useAuthStore((s) => s.loading)
     const [matrix, setMatrix] = useState<CapabilityMatrix | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -90,7 +92,17 @@ export default function TierMatrix() {
             .finally(() => setLoading(false))
     }, [])
 
-    useEffect(() => { refresh() }, [refresh])
+    // Re-fetch the capability matrix whenever the auth token changes (e.g. after the
+    // bootstrap re-logs in as visitor following a stale-token invalidation). Without
+    // this, the first fetch races the bootstrap and may return the anonymous profile
+    // (all-zero quotas) because the old token was not yet recognised by the server.
+    // We also wait until the auth bootstrap has finished (authLoading === false) so
+    // the first fetch always runs with a settled session.
+    useEffect(() => {
+        if (!authLoading) {
+            refresh()
+        }
+    }, [authLoading, authToken, refresh])
 
     const groups: GroupedOps = useMemo(
         () => (matrix ? groupOperations(matrix.operations) : []),

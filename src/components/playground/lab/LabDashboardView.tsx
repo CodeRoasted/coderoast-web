@@ -23,7 +23,7 @@ interface Props {
     insightLatestWindow: InsightLatestWindow | null
     insightLoading: boolean
     insightError: string | null
-    replayToTargetPending: boolean
+    playToTargetPending: boolean
     insightCatchingUp?: boolean
     isRunning: boolean
     onStart: () => void
@@ -32,7 +32,7 @@ interface Props {
     onPause: () => void
     onSetPlaybackSpeed: (multiplier: number) => void
     onAdvance: (durationNs: number) => void
-    onReplayToTarget: (targetElapsedNs: number) => void
+    onPlayToTarget: (targetElapsedNs: number) => void
     onCascade?: () => void
     onSetRate?: (name: string, rps: number) => void
     onSetErrorRate?: (name: string, rate: number) => void
@@ -65,7 +65,7 @@ export default function LabDashboardView({
     insightLatestWindow,
     insightLoading,
     insightError,
-    replayToTargetPending,
+    playToTargetPending,
     insightCatchingUp = false,
     isRunning,
     onStart,
@@ -74,7 +74,7 @@ export default function LabDashboardView({
     onPause,
     onSetPlaybackSpeed,
     onAdvance,
-    onReplayToTarget,
+    onPlayToTarget,
     onCascade,
     onSetRate,
     onSetErrorRate,
@@ -97,12 +97,12 @@ export default function LabDashboardView({
                         onPause={onPause}
                         onSetPlaybackSpeed={onSetPlaybackSpeed}
                         onAdvance={onAdvance}
-                        onReplayToTarget={onReplayToTarget}
-                        replayToTargetPending={replayToTargetPending}
+                        onPlayToTarget={onPlayToTarget}
+                        playToTargetPending={playToTargetPending}
                         onCascade={onCascade}
                     />
                 </div>
-                <EngineTimeline snapshot={snapshot} onSeek={onReplayToTarget} />
+                <EngineTimeline snapshot={snapshot} onSeek={onPlayToTarget} />
                 {!isRunning && (
                     <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs">
                         <AlertCircle className="w-3.5 h-3.5" />
