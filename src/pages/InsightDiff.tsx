@@ -295,6 +295,16 @@ export default function InsightDiff() {
     }, [pinned, hovered])
 
     const changes = useMemo(() => report?.ranked_changes ?? [], [report])
+    // Display order: severity tier descending (a NOTABLE never sits below a
+    // WEAK); significance order is preserved within a tier (stable sort). The
+    // original source index rides along — every pin/hover/focus path keys on it.
+    const sortedChanges = useMemo(
+        () =>
+            changes
+                .map((change, index) => ({ change, index }))
+                .sort((a, b) => SEV_RANK[b.change.severity] - SEV_RANK[a.change.severity]),
+        [changes]
+    )
     const baselineHl = useMemo(
         () => buildHighlights(changes, activeSet, 'baseline_line_refs'),
         [changes, activeSet]
@@ -486,7 +496,7 @@ export default function InsightDiff() {
                                         onMouseLeave={() => setHovered(null)}
                                         className="max-h-[28rem] overflow-auto rounded-lg border border-gray-800 divide-y divide-gray-800/60"
                                     >
-                                        {report.ranked_changes.map((change, idx) => (
+                                        {sortedChanges.map(({ change, index: idx }) => (
                                             <ChangeRow
                                                 key={idx}
                                                 change={change}
