@@ -23,7 +23,15 @@ const fr: typeof en = {
             'Collez un run de référence et un run modifié. insight_diff fait ressortir les changements structurellement significatifs, classés, et supprime le bruit qu’un diff classique vous impose. Du bruit des logs à la compréhension, en ~90 secondes — propulsé par InSight.',
         cta: 'Diff de deux logs',
         ctaSecondary: 'Explorer InSight',
-        trust: 'MetaLog · templates Drain · détection de dérive · paquets explain · replay déterministe',
+        trust: 'rapport de changements classé · bruit supprimé · déterministe · logs jamais stockés',
+    },
+    diffShowcase: {
+        eyebrow: 'insight_diff',
+        title: 'Votre CI est rouge. Quelles lignes comptent vraiment ?',
+        subtitle:
+            'Collez le dernier run vert et le run en échec. insight_diff classe ce qui a structurellement changé — nouvelles erreurs, un fichier de test devenu rouge, décalages de fréquence — et masque les centaines de lignes inchangées. Sans agent, sans installation ; un rapport partageable en ~90 secondes.',
+        cta: 'Diff de deux logs',
+        note: 'Gratuit · tourne dans votre session navigateur · logs jamais stockés',
     },
     problem: {
         title: 'On ne livre pas une observabilité qu\'on n\'a jamais testée.',

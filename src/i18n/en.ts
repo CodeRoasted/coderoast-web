@@ -23,6 +23,14 @@ const en = {
         ctaSecondary: 'Explore InSight',
         trust: 'ranked change report · noise suppressed · deterministic · logs never stored',
     },
+    diffShowcase: {
+        eyebrow: 'insight_diff',
+        title: 'Your CI went red. Which lines actually matter?',
+        subtitle:
+            'Paste the last green run and the failing one. insight_diff ranks what structurally changed — new errors, a test file gone red, frequency shifts — and mutes the hundreds of lines that didn\'t. No agent, no setup; a shareable report in about 90 seconds.',
+        cta: 'Diff two logs',
+        note: 'Free · runs in your browser session · logs never stored',
+    },
     problem: {
         title: 'You can\'t ship observability you\'ve never tested.',
         subtitle:

@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import Footer from '@/components/Footer'
 
+const InsightDiffShowcase = lazy(() => import('@/components/home/InsightDiffShowcase'))
 const ProblemSection = lazy(() => import('@/components/home/ProblemSection'))
 const ProductShowcase = lazy(() => import('@/components/home/ProductShowcase'))
 const HowItWorks = lazy(() => import('@/components/home/HowItWorks'))
@@ -26,6 +27,9 @@ export default function Home() {
             <Navbar />
             <main>
                 <Hero />
+                <Suspense fallback={<LoadingFallback />}>
+                    <InsightDiffShowcase />
+                </Suspense>
                 <Suspense fallback={<LoadingFallback />}>
                     <ProblemSection />
                 </Suspense>
