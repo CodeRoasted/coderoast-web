@@ -48,18 +48,17 @@ export function insightChrome(t: Translation): ProductNavbarConfig {
     }
 }
 
-export function insightDiffChrome(t: Translation): ProductNavbarConfig {
+export function siftChrome(t: Translation): ProductNavbarConfig {
     return {
         brand: (
-            <span className="font-mono font-bold text-lg text-white">
+            <span className="font-display font-bold text-xl text-white">
                 <span className="bg-gradient-to-r from-brand-500 to-orange-400 bg-clip-text text-transparent">
-                    insight
+                    Sift
                 </span>
-                _diff
             </span>
         ),
-        homeTo: '/insight-diff',
-        links: [{ label: t.nav.product, to: '/insight-diff', end: true }, contact(t), pricing(t)],
+        homeTo: '/sift',
+        links: [{ label: t.nav.product, to: '/sift', end: true }, contact(t), pricing(t)],
         cta: { label: t.hero.cta, to: '/diff', Icon: GitCompareArrows },
     }
 }

@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 
 // The home is the umbrella lobby: what CodeRoast is (Hero) → the product
 // portfolio → roadmap → maker note. Product deep-dives live on their own pages
-// (/logcraft, /insight, /insight-diff), not here.
+// (/logcraft, /insight, /sift), not here.
 const Portfolio = lazy(() => import('@/components/Portfolio'))
 const ComingSoon = lazy(() => import('@/components/ComingSoon'))
 const MakerNote = lazy(() => import('@/components/home/MakerNote'))

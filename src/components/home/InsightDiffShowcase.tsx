@@ -41,7 +41,7 @@ function SampleReport() {
                 <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
                 <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
                 <span className="ml-2 font-mono text-xs text-gray-500">
-                    insight-diff green.log fail.log
+                    sift green.log fail.log
                 </span>
             </div>
             <div className="p-5">
@@ -76,7 +76,7 @@ export default function InsightDiffShowcase() {
     const t = useTranslation()
     return (
         <section
-            id="insight-diff"
+            id="sift"
             className="relative py-24 sm:py-28 bg-gray-950 border-b border-gray-800/60"
         >
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">

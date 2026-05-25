@@ -27,10 +27,10 @@ const fr: typeof en = {
         trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
     },
     diffShowcase: {
-        eyebrow: 'insight_diff',
+        eyebrow: 'Sift',
         title: 'Votre CI est rouge. Quelles lignes comptent vraiment ?',
         subtitle:
-            'Collez le dernier run vert et le run en échec. insight_diff classe ce qui a structurellement changé — nouvelles erreurs, un fichier de test devenu rouge, décalages de fréquence — et masque les centaines de lignes inchangées. Sans agent, sans installation ; un rapport partageable en ~90 secondes.',
+            'Collez le dernier run vert et le run en échec. Sift classe ce qui a structurellement changé — nouvelles erreurs, un fichier de test devenu rouge, décalages de fréquence — et masque les centaines de lignes inchangées. Sans agent, sans installation ; un rapport partageable en ~90 secondes.',
         cta: 'Diff de deux logs',
         note: 'Gratuit · tourne dans votre session navigateur · logs jamais stockés',
     },
@@ -135,10 +135,10 @@ const fr: typeof en = {
         title: 'Un moteur. Une surface pour chaque besoin.',
         subtitle:
             'Chaque produit CodeRoast transforme le bruit des logs en compréhension pour un usage précis — choisissez celui qui correspond au problème devant vous. La gamme s’étoffe ; le moteur en dessous reste le même.',
-        insightDiff: {
-            name: 'insight_diff',
+        sift: {
+            name: 'Sift',
             description:
-                'Collez un run de référence et un run modifié. insight_diff classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le coin d’entrée CI/CD : zéro infra, ~90 secondes.',
+                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le coin d’entrée CI/CD : zéro infra, ~90 secondes.',
             status: 'Live · démo gratuite',
             highlights: [
                 'Classement du « ce qui a changé », bruit supprimé',

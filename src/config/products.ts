@@ -7,7 +7,7 @@ import { Bird, Eye, GitCompareArrows, Layers, ScrollText } from 'lucide-react'
 // hero/nav never change as the slate grows. Display copy lives in i18n under
 // `t.portfolio[slug]`; this holds only the structural metadata.
 
-export type ProductSlug = 'insightDiff' | 'logcraft' | 'insight' | 'metalogForwarding' | 'canary'
+export type ProductSlug = 'sift' | 'logcraft' | 'insight' | 'metalogForwarding' | 'canary'
 
 export type ProductTier = 'live' | 'beta' | 'soon'
 
@@ -25,11 +25,11 @@ export interface ProductDef {
 // a `soon` entry with neither is a non-clickable teaser of the slate to come.
 export const products: ProductDef[] = [
     {
-        slug: 'insightDiff',
+        slug: 'sift',
         tier: 'live',
         accent: 'from-brand-500 to-orange-500',
         Icon: GitCompareArrows,
-        page: '/insight-diff',
+        page: '/sift',
         tool: '/diff',
     },
     {

@@ -18,7 +18,7 @@ import { runInsightDiff, PolicyDenialError } from '@/services/api'
 import type { ChangeReportResponse, DiffRankedChange, DiffSeverity } from '@/types/diff'
 import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
-import { insightDiffChrome } from '@/config/productChrome'
+import { siftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 import { diffPresets, type DiffPreset } from '@/data/diffPresets'
 
@@ -312,7 +312,7 @@ export default function InsightDiff() {
 
     return (
         <>
-            <ProductNavbar {...insightDiffChrome(t)} />
+            <ProductNavbar {...siftChrome(t)} />
             <main className="bg-gray-950 min-h-screen pt-28 pb-16">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-2 text-brand-400 text-xs font-semibold mb-3">

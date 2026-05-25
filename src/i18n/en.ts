@@ -25,10 +25,10 @@ const en = {
         trust: 'deterministic · precision-first · runs on your infra · logs never stored',
     },
     diffShowcase: {
-        eyebrow: 'insight_diff',
+        eyebrow: 'Sift',
         title: 'Your CI went red. Which lines actually matter?',
         subtitle:
-            'Paste the last green run and the failing one. insight_diff ranks what structurally changed — new errors, a test file gone red, frequency shifts — and mutes the hundreds of lines that didn\'t. No agent, no setup; a shareable report in about 90 seconds.',
+            'Paste the last green run and the failing one. Sift ranks what structurally changed — new errors, a test file gone red, frequency shifts — and mutes the hundreds of lines that didn\'t. No agent, no setup; a shareable report in about 90 seconds.',
         cta: 'Diff two logs',
         note: 'Free · runs in your browser session · logs never stored',
     },
@@ -133,10 +133,10 @@ const en = {
         title: 'One engine. A surface for every job.',
         subtitle:
             'Every CodeRoast product turns log noise into comprehension for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
-        insightDiff: {
-            name: 'insight_diff',
+        sift: {
+            name: 'Sift',
             description:
-                'Paste a baseline run and a changed run. insight_diff ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, ~90 seconds.',
+                'Paste a baseline run and a changed run. Sift ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, ~90 seconds.',
             status: 'Live · free demo',
             highlights: [
                 'Ranked “what changed”, noise suppressed',

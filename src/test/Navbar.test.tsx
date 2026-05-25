@@ -26,9 +26,9 @@ describe('Navbar', () => {
     it('reveals the registry-driven product slate when the Products menu opens', () => {
         renderWithRouter(<Navbar />)
         // Closed by default — no product entries in the DOM yet.
-        expect(screen.queryByText('insight_diff')).toBeNull()
+        expect(screen.queryByText('Sift')).toBeNull()
         fireEvent.click(screen.getByRole('button', { name: /products/i }))
-        expect(screen.getAllByText('insight_diff').length).toBeGreaterThan(0)
+        expect(screen.getAllByText('Sift').length).toBeGreaterThan(0)
         expect(screen.getAllByText('LogCraft').length).toBeGreaterThan(0)
         expect(screen.getAllByText('InSight').length).toBeGreaterThan(0)
     })
