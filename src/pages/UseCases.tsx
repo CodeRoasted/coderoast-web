@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Beaker, PresentationIcon, GraduationCap, ArrowRight, Check } from 'lucide-react'
 import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
+import { logcraftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 
 /**
@@ -38,7 +39,7 @@ export default function UseCasesPage() {
 
     return (
         <>
-            <ProductNavbar />
+            <ProductNavbar {...logcraftChrome(t)} />
             <main className="bg-gray-950 min-h-screen">
                 {/* Hero */}
                 <section className="relative pt-32 pb-12 overflow-hidden">

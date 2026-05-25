@@ -118,27 +118,6 @@ const en = {
             },
         ],
     },
-    useCasesHome: {
-        title: 'Three jobs LogCraft is good at.',
-        subtitle: 'Pick the one that sounds like yours.',
-        items: [
-            {
-                title: 'Test your log pipeline',
-                description:
-                    'Replay the same multi-service incident every CI run. Verify your parsing, alerting and retention rules survive bursts, cascades and malformed records.',
-            },
-            {
-                title: 'Demo your observability product',
-                description:
-                    'Spin up a "production" without a production. Make the SE story show real cascades, real p99 spikes, real incident timelines — in ten seconds.',
-            },
-            {
-                title: 'Train your on-call',
-                description:
-                    'Hand a junior the Lab URL, hit Cascade, and let them debug a real-looking incident with a known root cause — no risk to anything live.',
-            },
-        ],
-    },
     pricingTeaser: {
         title: 'Free for solo. Paid where it gets real.',
         subtitle:

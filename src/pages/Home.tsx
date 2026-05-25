@@ -3,12 +3,9 @@ import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import Footer from '@/components/Footer'
 
-const InsightDiffShowcase = lazy(() => import('@/components/home/InsightDiffShowcase'))
-const ProblemSection = lazy(() => import('@/components/home/ProblemSection'))
-const ProductShowcase = lazy(() => import('@/components/home/ProductShowcase'))
-const HowItWorks = lazy(() => import('@/components/home/HowItWorks'))
-const FeatureGrid = lazy(() => import('@/components/home/FeatureGrid'))
-const UseCasesHome = lazy(() => import('@/components/home/UseCasesHome'))
+// The home is the umbrella lobby: what CodeRoast is (Hero) → the product
+// portfolio → roadmap → maker note. Product deep-dives live on their own pages
+// (/logcraft, /insight, /insight-diff), not here.
 const Portfolio = lazy(() => import('@/components/Portfolio'))
 const ComingSoon = lazy(() => import('@/components/ComingSoon'))
 const MakerNote = lazy(() => import('@/components/home/MakerNote'))
@@ -27,24 +24,6 @@ export default function Home() {
             <Navbar />
             <main>
                 <Hero />
-                <Suspense fallback={<LoadingFallback />}>
-                    <InsightDiffShowcase />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <ProblemSection />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <ProductShowcase />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <HowItWorks />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <FeatureGrid />
-                </Suspense>
-                <Suspense fallback={<LoadingFallback />}>
-                    <UseCasesHome />
-                </Suspense>
                 <Suspense fallback={<LoadingFallback />}>
                     <Portfolio />
                 </Suspense>

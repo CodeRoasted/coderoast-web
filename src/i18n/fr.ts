@@ -120,27 +120,6 @@ const fr: typeof en = {
             },
         ],
     },
-    useCasesHome: {
-        title: 'Trois usages où LogCraft excelle.',
-        subtitle: 'Choisissez celui qui ressemble au vôtre.',
-        items: [
-            {
-                title: 'Stresser votre pipeline de logs',
-                description:
-                    'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, cascades et records mal formés.',
-            },
-            {
-                title: 'Démontrer votre produit d\'observabilité',
-                description:
-                    'Monter une "production" sans production. Faire la démo SE avec de vraies cascades, de vrais pics p99, de vraies timelines d\'incident — en dix secondes.',
-            },
-            {
-                title: 'Former votre astreinte',
-                description:
-                    'Donnez l\'URL du Lab à un junior, cliquez Cascade, laissez-le debug un incident réaliste à cause racine connue — sans risque pour quoi que ce soit.',
-            },
-        ],
-    },
     pricingTeaser: {
         title: 'Gratuit pour le solo. Payant là où ça devient sérieux.',
         subtitle:

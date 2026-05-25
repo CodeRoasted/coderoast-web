@@ -29,6 +29,7 @@ export const products: ProductDef[] = [
         tier: 'live',
         accent: 'from-brand-500 to-orange-500',
         Icon: GitCompareArrows,
+        page: '/insight-diff',
         tool: '/diff',
     },
     {
@@ -44,6 +45,7 @@ export const products: ProductDef[] = [
         tier: 'beta',
         accent: 'from-blue-500 to-cyan-500',
         Icon: Eye,
+        page: '/insight',
         tool: '/lab/insight',
     },
     {

@@ -26,7 +26,11 @@ import {
     BookOpen,
 } from 'lucide-react'
 import ProductNavbar from '@/components/ProductNavbar'
+import ProblemSection from '@/components/home/ProblemSection'
+import HowItWorks from '@/components/home/HowItWorks'
+import FeatureGrid from '@/components/home/FeatureGrid'
 import Footer from '@/components/Footer'
+import { logcraftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export default function LogCraftPage() {
@@ -68,9 +72,11 @@ export default function LogCraftPage() {
         'from-indigo-500 to-purple-500',
     ]
 
+    const logcraftNav = logcraftChrome(t)
+
     return (
         <>
-            <ProductNavbar />
+            <ProductNavbar {...logcraftNav} />
             <main>
                 {/* ── Hero ─────────────────────────────────────────────── */}
                 <section className="relative min-h-[70vh] flex items-center pt-20 pb-16 overflow-hidden bg-gray-950">
@@ -122,6 +128,8 @@ export default function LogCraftPage() {
                         </motion.div>
                     </div>
                 </section>
+
+                <ProblemSection />
 
                 {/* ── How LogCraft fits in your stack ─────────────────── */}
                 <section className="py-24 bg-gray-900/40">
@@ -181,6 +189,9 @@ export default function LogCraftPage() {
                         </div>
                     </div>
                 </section>
+
+                <HowItWorks />
+                <FeatureGrid />
 
                 {/* ── Use cases ───────────────────────────────────────── */}
                 <section className="py-24 bg-gray-950">

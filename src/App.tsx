@@ -10,6 +10,8 @@ const Lab = lazy(() => import('@/pages/Playground'))
 const InsightDiff = lazy(() => import('@/pages/InsightDiff'))
 const TierMatrix = lazy(() => import('@/pages/TierMatrix'))
 const UseCases = lazy(() => import('@/pages/UseCases'))
+const InsightProductPage = lazy(() => import('@/pages/Insight'))
+const InsightDiffProductPage = lazy(() => import('@/pages/InsightDiffProduct'))
 const Terms = lazy(() => import('@/pages/legal/Terms'))
 const Privacy = lazy(() => import('@/pages/legal/Privacy'))
 const Trademark = lazy(() => import('@/pages/legal/Trademark'))
@@ -107,6 +109,14 @@ const router = createBrowserRouter([
             {
                 path: 'diff',
                 element: <Suspense fallback={<SpinnerFallback />}><InsightDiff /></Suspense>,
+            },
+            {
+                path: 'insight-diff',
+                element: <Suspense fallback={<SpinnerFallback />}><InsightDiffProductPage /></Suspense>,
+            },
+            {
+                path: 'insight',
+                element: <Suspense fallback={<SpinnerFallback />}><InsightProductPage /></Suspense>,
             },
             {
                 path: 'use-cases',
