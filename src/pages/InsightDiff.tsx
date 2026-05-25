@@ -20,6 +20,7 @@ import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import { insightDiffChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
+import { diffPresets, type DiffPreset } from '@/data/diffPresets'
 
 // Severity = a neutral→warm HEAT ladder (slate → amber → orange → crimson),
 // deliberately NOT git red/green. Color carries *importance*; change-type
@@ -263,6 +264,13 @@ export default function InsightDiff() {
         setFocus({ baseline: -1, changed: -1, nonce: 0 })
     }, [])
 
+    // Load a built-in sample pair into the inputs — the visitor then hits Compare.
+    const loadPreset = useCallback((preset: DiffPreset) => {
+        setBaseline(preset.baseline)
+        setChanged(preset.changed)
+        setError(null)
+    }, [])
+
     // Highlight = every pinned change, plus the one being hovered (preview).
     const activeSet = useMemo(() => {
         const set = new Set(pinned)
@@ -323,7 +331,21 @@ export default function InsightDiff() {
                 {/* Input */}
                 {!report && (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                        <div className="mt-8 flex flex-wrap items-center gap-2">
+                            <span className="text-xs text-gray-500">No logs handy? Load a sample:</span>
+                            {diffPresets.map((preset) => (
+                                <button
+                                    key={preset.id}
+                                    type="button"
+                                    onClick={() => loadPreset(preset)}
+                                    title={preset.description}
+                                    className="px-3 py-1.5 rounded-full border border-gray-700 text-xs text-gray-300 hover:border-brand-500/60 hover:text-brand-300 transition-colors"
+                                >
+                                    {preset.label}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             {(
                                 [
                                     ['Baseline log', baseline, setBaseline],
