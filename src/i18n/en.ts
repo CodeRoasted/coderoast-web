@@ -150,25 +150,24 @@ const en = {
         enterprise: { name: 'Enterprise', price: 'Custom', tagline: 'Topology & on-prem' },
     },
     portfolio: {
-        title: 'The other half of the picture.',
+        title: 'One engine. A surface for every job.',
         subtitle:
-            'InSight is the promoted CodeRoast product. LogCraft is the deterministic signal source that makes its live demo repeatable.',
-        insight: {
-            name: 'InSight',
+            'Every CodeRoast product turns log noise into comprehension for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
+        insightDiff: {
+            name: 'insight_diff',
             description:
-                'A streaming analysis pipeline that turns noisy logs into templates, MetaLogs, detector evidence, and explanation packets. It now runs behind the Lab so a scenario can produce buyer-visible findings instead of just raw output.',
-            status: 'Promoted · API live',
+                'Paste a baseline run and a changed run. insight_diff ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, ~90 seconds.',
+            status: 'Live · free demo',
             highlights: [
-                'Explain-first insight cards',
-                'Drain-style template mining',
-                'MetaLog compression layer',
-                'Detector evidence for AI explain',
+                'Ranked “what changed”, noise suppressed',
+                'Line-level provenance highlighting',
+                'Runs locally — logs never leave (CLI / Action)',
             ],
         },
         logcraft: {
             name: 'LogCraft',
             description:
-                'A synthetic log generator and chaos scenario engine. Describe a fleet of agents in YAML, hit run, and get reproducible, production-shaped log streams — with cascading failures, scheduled incidents, latency distributions and 20+ output formats (JSON, ECS, OTLP, Syslog, CLF, Prometheus, StatsD…). Use it to test your log pipeline, demo your dashboards, train your on-call.',
+                'A synthetic log generator and chaos scenario engine. Describe a fleet of agents in YAML, hit run, and get reproducible, production-shaped log streams — cascading failures, latency distributions, 20+ output formats. Test your pipeline, demo your dashboards, train your on-call.',
             status: 'Beta · usable today',
             highlights: [
                 'YAML-defined agents & topology',
@@ -177,16 +176,29 @@ const en = {
                 '20+ output formats (ECS, OTLP, Prometheus…)',
             ],
         },
-        playground: {
-            name: 'InSight Playground',
+        insight: {
+            name: 'InSight',
             description:
-                'The browser demo where LogCraft feeds InSight. Pick a scenario, launch a live engine, watch the raw stream, then inspect the explain view with severity, confidence, action hints, templates, and evidence.',
-            status: 'Live now',
+                'The streaming analysis pipeline behind it all: noisy logs become templates, MetaLogs, detector evidence, and explanation packets — precision-first, so one alert means one real incident. Try it live in the Lab.',
+            status: 'Beta · API live',
             highlights: [
-                'Zero-install, browser-based',
-                'Live InSight reports',
-                'Logs, incidents, templates, evidence',
+                'Explain-first insight cards',
+                'Drain-style template mining',
+                'MetaLog compression layer',
+                'Detector evidence for AI explain',
             ],
+        },
+        metalogForwarding: {
+            name: 'MetaLog forwarding',
+            description:
+                'Compress the stream into MetaLogs and forward those, not raw gigabytes — a structural fingerprint at a fraction of the volume. The CFO-visible half of the story.',
+            status: 'Coming soon',
+        },
+        canary: {
+            name: 'Canary validation',
+            description:
+                'diff(baseline, canary) as a structural kill-signal — catch a bad release before the metrics move, on the same engine as the CI diff.',
+            status: 'Coming soon',
         },
     },
     roadmap: {
