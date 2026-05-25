@@ -333,7 +333,7 @@ export default function InsightDiff() {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-2 text-brand-400 text-xs font-semibold mb-3">
                     <GitCompareArrows className="w-4 h-4" />
-                    INSIGHT DIFF
+                    SIFT
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-display font-bold text-white">
                     What changed between two logs — and what's just noise
