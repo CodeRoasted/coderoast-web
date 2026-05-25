@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Brain, Github } from 'lucide-react'
+import { Menu, X, Github, GitCompareArrows } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import LanguageToggle from './LanguageToggle'
 import Logo from './Logo'
@@ -73,6 +73,12 @@ export default function Navbar() {
                         >
                             {t.nav.logcraft}
                         </Link>
+                        <Link
+                            to="/lab/insight"
+                            className="text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
+                        >
+                            {t.nav.lab}
+                        </Link>
                     </div>
 
                     {/* Right side */}
@@ -88,11 +94,11 @@ export default function Navbar() {
                         </a>
                         <LanguageToggle />
                         <Link
-                            to="/lab/insight"
+                            to="/diff"
                             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white text-sm font-semibold shadow-md shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
-                            <Brain className="w-3.5 h-3.5" />
-                            {t.nav.lab}
+                            <GitCompareArrows className="w-3.5 h-3.5" />
+                            {t.hero.cta}
                         </Link>
                         <button
                             className="lg:hidden p-2 text-gray-300"
@@ -134,10 +140,17 @@ export default function Navbar() {
                             <Link
                                 to="/lab/insight"
                                 onClick={() => setIsOpen(false)}
+                                className="block text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
+                            >
+                                {t.nav.lab}
+                            </Link>
+                            <Link
+                                to="/diff"
+                                onClick={() => setIsOpen(false)}
                                 className="flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
                             >
-                                <Brain className="w-3.5 h-3.5" />
-                                {t.nav.lab}
+                                <GitCompareArrows className="w-3.5 h-3.5" />
+                                {t.hero.cta}
                             </Link>
                         </div>
                     </motion.div>

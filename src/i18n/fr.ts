@@ -11,17 +11,18 @@ const fr: typeof en = {
         pricing: 'Tarifs',
         logcraft: 'LogCraft',
         lab: 'Playground InSight',
+        diff: 'Diff de logs',
         logcraftPlayground: 'Playground LogCraft',
         useCases: 'Cas d’usage',
         contact: 'Contact',
     },
     hero: {
-        badge: 'Démo explain InSight · flux LogCraft déterministe · backend /api/v1 live',
-        tagline: 'Du chaos de logs à l’explication claire.',
+        badge: 'insight_diff · collez deux logs · gratuit & limité',
+        tagline: 'Ce qui a changé entre deux logs — et ce qui n’est que du bruit.',
         subtitle:
-            'InSight transforme des incidents synthétiques live en preuves MetaLog, détections, puis explications prêtes pour l’opérateur. LogCraft fournit le signal reproductible ; InSight montre ce qui s’est passé et pourquoi.',
-        cta: 'Ouvrir le Playground InSight',
-        ctaSecondary: 'Voir le pipeline',
+            'Collez un run de référence et un run modifié. insight_diff fait ressortir les changements structurellement significatifs, classés, et supprime le bruit qu’un diff classique vous impose. Du bruit des logs à la compréhension, en ~90 secondes — propulsé par InSight.',
+        cta: 'Diff de deux logs',
+        ctaSecondary: 'Explorer InSight',
         trust: 'MetaLog · templates Drain · détection de dérive · paquets explain · replay déterministe',
     },
     problem: {

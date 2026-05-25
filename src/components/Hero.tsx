@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Brain } from 'lucide-react'
+import { ArrowRight, GitCompareArrows } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ParticleBackground from './ParticleBackground'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -66,19 +66,19 @@ export default function Hero() {
                         className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-10"
                     >
                         <Link
-                            to="/lab/insight"
+                            to="/diff"
                             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white font-semibold shadow-lg shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
-                            <Brain className="w-5 h-5" />
+                            <GitCompareArrows className="w-5 h-5" />
                             {t.hero.cta}
                             <ArrowRight className="w-4 h-4" />
                         </Link>
-                        <a
-                            href="#how"
+                        <Link
+                            to="/lab/insight"
                             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-gray-700 text-gray-200 font-semibold hover:border-brand-500/60 hover:text-brand-300 transition-all"
                         >
                             {t.hero.ctaSecondary}
-                        </a>
+                        </Link>
                     </motion.div>
 
                     <motion.p
