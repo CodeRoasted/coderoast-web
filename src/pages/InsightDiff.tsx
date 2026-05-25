@@ -433,7 +433,7 @@ export default function InsightDiff() {
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-xs text-gray-600 mb-2">
+                                    <p className="text-xs text-gray-500 mb-2">
                                         hover to preview · click to pin (stack multiple) · color = severity,
                                         not add/remove
                                     </p>
@@ -472,8 +472,8 @@ export default function InsightDiff() {
                 )}
 
                 {report && (
-                    <div className="mt-6 flex items-center gap-2 text-xs text-gray-600">
-                        <ArrowRight className="w-3 h-3" />
+                    <div className="mt-6 flex items-center gap-2 text-xs text-gray-400">
+                        <ArrowRight className="w-3 h-3 text-brand-400" />
                         Want this in CI? The same engine runs as a local CLI and a GitHub Action.
                     </div>
                 )}
