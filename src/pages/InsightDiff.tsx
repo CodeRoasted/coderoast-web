@@ -16,6 +16,10 @@ import {
 } from 'lucide-react'
 import { runInsightDiff, PolicyDenialError } from '@/services/api'
 import type { ChangeReportResponse, DiffRankedChange, DiffSeverity } from '@/types/diff'
+import ProductNavbar from '@/components/ProductNavbar'
+import Footer from '@/components/Footer'
+import { insightDiffChrome } from '@/config/productChrome'
+import { useTranslation } from '@/hooks/useTranslation'
 
 // Severity = a neutral→warm HEAT ladder (slate → amber → orange → crimson),
 // deliberately NOT git red/green. Color carries *importance*; change-type
@@ -204,6 +208,7 @@ function ChangeRow({
 }
 
 export default function InsightDiff() {
+    const t = useTranslation()
     const [baseline, setBaseline] = useState('')
     const [changed, setChanged] = useState('')
     const [report, setReport] = useState<ChangeReportResponse | null>(null)
@@ -298,7 +303,9 @@ export default function InsightDiff() {
     const suppressed = report ? report.summary.total_changes - report.summary.significant_changes : 0
 
     return (
-        <main className="bg-gray-950 min-h-screen pt-28 pb-16">
+        <>
+            <ProductNavbar {...insightDiffChrome(t)} />
+            <main className="bg-gray-950 min-h-screen pt-28 pb-16">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-2 text-brand-400 text-xs font-semibold mb-3">
                     <GitCompareArrows className="w-4 h-4" />
@@ -478,6 +485,8 @@ export default function InsightDiff() {
                     </div>
                 )}
             </div>
-        </main>
+            </main>
+            <Footer />
+        </>
     )
 }

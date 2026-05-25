@@ -12,6 +12,8 @@ const en = {
         logcraftPlayground: 'LogCraft Playground',
         useCases: 'Use cases',
         contact: 'Contact',
+        signIn: 'Sign in',
+        back: 'Back',
     },
     hero: {
         badge: 'CodeRoast · log noise → comprehension',
@@ -497,7 +499,7 @@ const en = {
                 launchPaused: 'Create paused pipeline',
             },
         },
-        backToLogCraft: 'Back to product',
+        backToHome: 'Back to CodeRoast',
         backToScenarios: 'Back to scenarios',
         live: 'Live',
         selectScenario: 'Pick a scenario',

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Github, ArrowLeft } from 'lucide-react'
 import LanguageToggle from './LanguageToggle'
 import Logo from './Logo'
+import ProductsMenu, { ProductsMobileLinks } from './ProductsMenu'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export interface ProductNavLink {
@@ -12,6 +13,7 @@ export interface ProductNavLink {
     to?: string // internal route
     href?: string // external (mailto, …)
     end?: boolean
+    disabled?: boolean // greyed-out placeholder (e.g. pricing — not live yet)
 }
 
 export interface ProductNavbarConfig {
@@ -46,6 +48,16 @@ export default function ProductNavbar({ brand, homeTo, links, cta }: ProductNavb
     const active = 'text-brand-400'
     const renderLink = (link: ProductNavLink, onClick?: () => void, block = false) => {
         const cls = `${block ? 'block ' : ''}${base}`
+        if (link.disabled)
+            return (
+                <span
+                    key={link.label}
+                    className={`${block ? 'block ' : ''}text-sm font-medium text-gray-600 cursor-not-allowed`}
+                    title="Coming soon"
+                >
+                    {link.label}
+                </span>
+            )
         if (link.href)
             return (
                 <a key={link.label} href={link.href} onClick={onClick} className={cls}>
@@ -97,13 +109,20 @@ export default function ProductNavbar({ brand, homeTo, links, cta }: ProductNavb
                         </Link>
                     </div>
 
-                    {/* Desktop links */}
+                    {/* Desktop links — cross-product switcher + this product's nav */}
                     <div className="hidden lg:flex items-center gap-7">
+                        <ProductsMenu />
                         {links.map((link) => renderLink(link))}
                     </div>
 
                     {/* Right side */}
                     <div className="flex items-center gap-2">
+                        <span
+                            className="hidden sm:inline-flex text-sm font-medium text-gray-600 cursor-not-allowed"
+                            title="Accounts coming soon"
+                        >
+                            {t.nav.signIn}
+                        </span>
                         <a
                             href="https://github.com/CodeRoasted"
                             target="_blank"
@@ -141,6 +160,7 @@ export default function ProductNavbar({ brand, homeTo, links, cta }: ProductNavb
                         className="lg:hidden bg-gray-950/95 border-b border-gray-800"
                     >
                         <div className="px-4 py-4 space-y-3">
+                            <ProductsMobileLinks onNavigate={() => setIsOpen(false)} />
                             {links.map((link) => renderLink(link, () => setIsOpen(false), true))}
                             <Link
                                 to={cta.to}

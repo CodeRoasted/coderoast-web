@@ -21,7 +21,9 @@ const contact = (t: Translation) => ({
     label: t.nav.contact,
     href: 'mailto:contact@coderoast.fr',
 })
-const pricing = (t: Translation) => ({ label: t.footer.links.tierMatrix, to: '/tiers' })
+// Pricing isn't set yet — show it greyed everywhere rather than linking to the
+// access/capability matrix (which is not a price list).
+const pricing = (t: Translation) => ({ label: t.nav.pricing, disabled: true })
 
 export function logcraftChrome(t: Translation): ProductNavbarConfig {
     return {

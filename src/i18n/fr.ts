@@ -14,6 +14,8 @@ const fr: typeof en = {
         logcraftPlayground: 'Playground LogCraft',
         useCases: 'Cas d’usage',
         contact: 'Contact',
+        signIn: 'Connexion',
+        back: 'Retour',
     },
     hero: {
         badge: 'CodeRoast · du bruit des logs à la compréhension',
@@ -499,7 +501,7 @@ const fr: typeof en = {
                 launchPaused: 'Créer le pipeline en pause',
             },
         },
-        backToLogCraft: 'Retour au produit',
+        backToHome: 'Retour à CodeRoast',
         backToScenarios: 'Retour aux scénarios',
         live: 'En direct',
         selectScenario: 'Choisissez un scénario',
