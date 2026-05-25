@@ -107,10 +107,20 @@ function LogPane({
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (focusLine < 0 || !containerRef.current) return
-        containerRef.current
-            .querySelector<HTMLElement>(`[data-line="${focusLine}"]`)
-            ?.scrollIntoView({ block: 'center' })
+        const container = containerRef.current
+        if (focusLine < 0 || !container) return
+        const el = container.querySelector<HTMLElement>(`[data-line="${focusLine}"]`)
+        if (!el) return
+        // Scroll WITHIN the pane only. scrollIntoView would also scroll the page
+        // (every scrollable ancestor), which moves the window scrollbar and makes
+        // pinning multiple changes unusable — so centre the line by nudging the
+        // container's own scrollTop instead.
+        const delta =
+            el.getBoundingClientRect().top -
+            container.getBoundingClientRect().top -
+            container.clientHeight / 2 +
+            el.clientHeight / 2
+        container.scrollTo({ top: container.scrollTop + delta, behavior: 'smooth' })
     }, [focusNonce, focusLine])
 
     return (
@@ -238,7 +248,13 @@ export default function InsightDiff() {
             const result = await runInsightDiff({ baseline, changed })
             setReport(result)
             setSubmitted({ baseline, changed })
-            setPinned(new Set())
+            // Auto-pin everything notable-or-worse so all the suspicious lines
+            // light up across both panes the moment the report lands.
+            const autoPinned = new Set<number>()
+            result.ranked_changes.forEach((change, index) => {
+                if (SEV_RANK[change.severity] >= SEV_RANK.medium) autoPinned.add(index)
+            })
+            setPinned(autoPinned)
             setHovered(null)
             setFocus({ baseline: -1, changed: -1, nonce: 0 })
         } catch (err) {
