@@ -73,12 +73,12 @@ export default function Hero() {
                             {t.hero.cta}
                             <ArrowRight className="w-4 h-4" />
                         </Link>
-                        <Link
-                            to="/lab/insight"
+                        <a
+                            href="#portfolio"
                             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-gray-700 text-gray-200 font-semibold hover:border-brand-500/60 hover:text-brand-300 transition-all"
                         >
                             {t.hero.ctaSecondary}
-                        </Link>
+                        </a>
                     </motion.div>
 
                     <motion.p

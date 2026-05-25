@@ -5,9 +5,8 @@ import type en from "./en"
 const fr: typeof en = {
     nav: {
         home: 'Accueil',
+        products: 'Produits',
         product: 'Produit',
-        how: 'Comment',
-        features: 'Fonctionnalités',
         pricing: 'Tarifs',
         logcraft: 'LogCraft',
         lab: 'Playground InSight',
@@ -17,13 +16,13 @@ const fr: typeof en = {
         contact: 'Contact',
     },
     hero: {
-        badge: 'insight_diff · collez deux logs · gratuit & limité',
-        tagline: 'Ce qui a changé entre deux logs — et ce qui n’est que du bruit.',
+        badge: 'CodeRoast · du bruit des logs à la compréhension',
+        tagline: 'Transformez le bruit des logs en compréhension.',
         subtitle:
-            'Collez un run de référence et un run modifié. insight_diff fait ressortir les changements structurellement significatifs, classés, et supprime le bruit qu’un diff classique vous impose. Du bruit des logs à la compréhension, en ~90 secondes — propulsé par InSight.',
+            'CodeRoast compresse les logs bruyants en une structure classée et déterministe — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets. Précision d’abord, et tourne sur votre infra. Commencez par comparer deux runs CI.',
         cta: 'Diff de deux logs',
-        ctaSecondary: 'Explorer InSight',
-        trust: 'rapport de changements classé · bruit supprimé · déterministe · logs jamais stockés',
+        ctaSecondary: 'Voir tous les produits',
+        trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
     },
     diffShowcase: {
         eyebrow: 'insight_diff',

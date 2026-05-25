@@ -3,9 +3,8 @@
 const en = {
     nav: {
         home: 'Home',
+        products: 'Products',
         product: 'Product',
-        how: 'How',
-        features: 'Features',
         pricing: 'Pricing',
         logcraft: 'LogCraft',
         lab: 'InSight Playground',
@@ -15,13 +14,13 @@ const en = {
         contact: 'Contact',
     },
     hero: {
-        badge: 'insight_diff · paste two logs · free & metered',
-        tagline: 'What changed between two logs — and what\'s just noise.',
+        badge: 'CodeRoast · log noise → comprehension',
+        tagline: 'Turn log noise into comprehension.',
         subtitle:
-            'Paste a baseline run and a changed run. insight_diff surfaces the structurally significant changes, ranked, and suppresses the noise a plain diff buries you in. Log noise to comprehension, in about 90 seconds — powered by InSight.',
+            'CodeRoast compresses noisy logs into ranked, deterministic structure — so you (or an LLM) read what actually changed, not gigabytes of it. Precision-first, and it runs on your infra. Start by diffing two CI runs.',
         cta: 'Diff two logs',
-        ctaSecondary: 'Explore InSight',
-        trust: 'ranked change report · noise suppressed · deterministic · logs never stored',
+        ctaSecondary: 'See all products',
+        trust: 'deterministic · precision-first · runs on your infra · logs never stored',
     },
     diffShowcase: {
         eyebrow: 'insight_diff',
