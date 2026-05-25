@@ -7,6 +7,7 @@ import { login, whoami } from '@/services/api'
 
 const LogCraftPage = lazy(() => import('@/pages/LogCraft'))
 const Lab = lazy(() => import('@/pages/Playground'))
+const InsightDiff = lazy(() => import('@/pages/InsightDiff'))
 const TierMatrix = lazy(() => import('@/pages/TierMatrix'))
 const UseCases = lazy(() => import('@/pages/UseCases'))
 const Terms = lazy(() => import('@/pages/legal/Terms'))
@@ -102,6 +103,10 @@ const router = createBrowserRouter([
             {
                 path: 'tiers',
                 element: <Suspense fallback={<SpinnerFallback />}><TierMatrix /></Suspense>,
+            },
+            {
+                path: 'diff',
+                element: <Suspense fallback={<SpinnerFallback />}><InsightDiff /></Suspense>,
             },
             {
                 path: 'use-cases',
