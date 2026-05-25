@@ -22,6 +22,10 @@ export interface DiffRankedChange {
     template_id?: string
     summary: string
     evidence?: string[]
+    // 0-based source-line indices this change occupies in each pane (over the
+    // lines as split for ingest). new_template → changed only; vanished → baseline.
+    baseline_line_refs?: number[]
+    changed_line_refs?: number[]
 }
 
 export interface DiffInputProvenance {
