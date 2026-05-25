@@ -10,6 +10,7 @@ import {
     GitCompareArrows,
     Loader2,
     Pencil,
+    Pin,
     TrendingUp,
     Waves,
 } from 'lucide-react'
@@ -81,7 +82,7 @@ function LogPane({
         if (firstHl < 0 || !containerRef.current) return
         containerRef.current
             .querySelector<HTMLElement>(`[data-line="${firstHl}"]`)
-            ?.scrollIntoView({ block: 'nearest' })
+            ?.scrollIntoView({ block: 'center' })
     }, [firstHl])
 
     const hue = severity ? SEVERITY[severity].line : 'border-brand-500 bg-brand-500/10'
@@ -125,12 +126,16 @@ function ChangeRow({
     change,
     index,
     active,
-    onActivate,
+    pinned,
+    onHover,
+    onPin,
 }: {
     change: DiffRankedChange
     index: number
     active: boolean
-    onActivate: (index: number | null) => void
+    pinned: boolean
+    onHover: (index: number | null) => void
+    onPin: (index: number) => void
 }) {
     const sev = SEVERITY[change.severity] ?? SEVERITY.low
     const kind = KIND[change.kind] ?? KIND_FALLBACK
@@ -140,11 +145,16 @@ function ChangeRow({
         <li>
             <button
                 type="button"
-                onMouseEnter={() => onActivate(index)}
-                onFocus={() => onActivate(index)}
-                onClick={() => onActivate(active ? null : index)}
+                onMouseEnter={() => onHover(index)}
+                onFocus={() => onHover(index)}
+                onClick={() => onPin(index)}
+                aria-pressed={pinned}
                 className={`w-full text-left flex gap-3 py-3 pl-3 pr-2 border-l-2 rounded-r-md transition-colors ${
-                    active ? sev.line : 'border-transparent hover:bg-gray-800/20'
+                    active
+                        ? sev.line
+                        : pinned
+                          ? 'border-transparent bg-gray-800/30'
+                          : 'border-transparent hover:bg-gray-800/20'
                 }`}
             >
                 <span
@@ -161,6 +171,7 @@ function ChangeRow({
                                 · {refCount} line{refCount > 1 ? 's' : ''}
                             </span>
                         )}
+                        {pinned && <Pin className="w-3 h-3 text-brand-400 fill-brand-400" />}
                     </div>
                     <p className="text-gray-100 text-sm break-words leading-snug">{change.summary}</p>
                     {change.evidence?.map((line, idx) => (
@@ -179,7 +190,8 @@ export default function InsightDiff() {
     const [changed, setChanged] = useState('')
     const [report, setReport] = useState<ChangeReportResponse | null>(null)
     const [submitted, setSubmitted] = useState<{ baseline: string; changed: string } | null>(null)
-    const [activeIdx, setActiveIdx] = useState<number | null>(null)
+    const [pinned, setPinned] = useState<number | null>(null) // click-to-stick
+    const [hovered, setHovered] = useState<number | null>(null) // transient preview
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
 
@@ -195,7 +207,8 @@ export default function InsightDiff() {
             const result = await runInsightDiff({ baseline, changed })
             setReport(result)
             setSubmitted({ baseline, changed })
-            setActiveIdx(null)
+            setPinned(null)
+            setHovered(null)
         } catch (err) {
             setReport(null)
             if (err instanceof PolicyDenialError) {
@@ -212,6 +225,7 @@ export default function InsightDiff() {
         }
     }, [baseline, changed])
 
+    const activeIdx = hovered ?? pinned // hover previews over the pinned selection
     const active = activeIdx != null && report ? report.ranked_changes[activeIdx] : null
     const baselineHl = useMemo(() => new Set(active?.baseline_line_refs ?? []), [active])
     const changedHl = useMemo(() => new Set(active?.changed_line_refs ?? []), [active])
@@ -305,7 +319,8 @@ export default function InsightDiff() {
                                 type="button"
                                 onClick={() => {
                                     setReport(null)
-                                    setActiveIdx(null)
+                                    setPinned(null)
+                                    setHovered(null)
                                 }}
                                 className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 transition-colors"
                             >
@@ -321,22 +336,24 @@ export default function InsightDiff() {
                                 noise.
                             </p>
                         ) : (
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                                <div>
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-start">
+                                <div className="lg:col-span-1">
                                     <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wide mb-1">
                                         Significant changes
                                     </h2>
                                     <p className="text-xs text-gray-600 mb-2">
-                                        hover to highlight the lines · color = severity, not add/remove
+                                        hover to preview · click to pin · color = severity, not add/remove
                                     </p>
-                                    <ul onMouseLeave={() => setActiveIdx(null)}>
+                                    <ul onMouseLeave={() => setHovered(null)}>
                                         {report.ranked_changes.map((change, idx) => (
                                             <ChangeRow
                                                 key={idx}
                                                 change={change}
                                                 index={idx}
                                                 active={activeIdx === idx}
-                                                onActivate={setActiveIdx}
+                                                pinned={pinned === idx}
+                                                onHover={setHovered}
+                                                onPin={(i) => setPinned((cur) => (cur === i ? null : i))}
                                             />
                                         ))}
                                     </ul>
@@ -348,7 +365,7 @@ export default function InsightDiff() {
                                     )}
                                 </div>
 
-                                <div className="space-y-4">
+                                <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <LogPane
                                         title="Baseline"
                                         text={submitted.baseline}
