@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Check, X, Loader2, AlertCircle, Shield, HelpCircle, Gauge, RefreshCw } from 'lucide-react'
 import { getCapabilityMatrix, type CapabilityMatrix, type OperationInfo, type QuotaInfo, type QuotaUsage } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -76,6 +76,7 @@ function formatQuotaValue(
 
 export default function TierMatrix() {
     const t = useTranslation()
+    const navigate = useNavigate()
     const operations = useAuthStore((s) => s.operations)
     const authToken = useAuthStore((s) => s.token)
     const authLoading = useAuthStore((s) => s.loading)
@@ -114,13 +115,14 @@ export default function TierMatrix() {
             <div className="sticky top-0 z-40 bg-gray-900/90 backdrop-blur-lg border-b border-gray-700/50">
                 <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Link
-                            to="/lab/logcraft"
+                        <button
+                            type="button"
+                            onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/'))}
                             className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            {t.lab.title}
-                        </Link>
+                            {t.nav.back}
+                        </button>
                         <div className="h-5 w-px bg-gray-700" />
                         <h1 className="font-display font-bold text-lg flex items-center gap-2">
                             <Shield className="w-4 h-4 text-brand-500" />

@@ -41,11 +41,11 @@ export default function LabTopBar({
                         </button>
                     ) : (
                         <Link
-                            to="/#product"
+                            to="/"
                             className="flex items-center gap-2 text-sm text-gray-400 hover:text-brand-400 transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span className="hidden sm:inline">{t.lab.backToLogCraft}</span>
+                            <span className="hidden sm:inline">{t.lab.backToHome}</span>
                         </Link>
                     )}
                     <div className="h-5 w-px bg-gray-700 hidden sm:block" />

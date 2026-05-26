@@ -1,24 +1,41 @@
 import { useEffect, useState } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, FlaskConical, Github, ArrowLeft } from 'lucide-react'
+import { Menu, X, Github, ArrowLeft } from 'lucide-react'
 import LanguageToggle from './LanguageToggle'
 import Logo from './Logo'
+import ProductsMenu, { ProductsMobileLinks } from './ProductsMenu'
 import { useTranslation } from '@/hooks/useTranslation'
 
+export interface ProductNavLink {
+    label: string
+    to?: string // internal route
+    href?: string // external (mailto, …)
+    end?: boolean
+    disabled?: boolean // greyed-out placeholder (e.g. pricing — not live yet)
+}
+
+export interface ProductNavbarConfig {
+    // Styled wordmark shown beside the back-to-CodeRoast escape hatch.
+    brand: ReactNode
+    // Where the wordmark links (the product's own page).
+    homeTo: string
+    links: ProductNavLink[]
+    cta: { label: string; to: string; Icon: ComponentType<{ className?: string }> }
+}
+
 /**
- * Navbar variant used on LogCraft / Lab / Use Cases / Tiers — the "product"
- * surface — instead of the personal portfolio Navbar. Drops the portfolio
- * anchor links (#how, #features…) which only resolve on `/`, and surfaces
- * the navigation a LogCraft visitor actually cares about: Product, Use
- * cases, Pricing, plus a back-to-portfolio escape hatch and the Open Lab
- * CTA. Item #7 of the brutal UX audit ("split LogCraft from the personal
- * portfolio nav").
+ * Per-product navbar — the focused "product surface" chrome (back-to-CodeRoast
+ * escape hatch, product wordmark, product sub-nav, product CTA), driven
+ * entirely by props so every product page shares one implementation. Replaces
+ * the version that was hardcoded to LogCraft.
  */
-export default function ProductNavbar() {
+export default function ProductNavbar({ brand, homeTo, links, cta }: ProductNavbarConfig) {
     const [isOpen, setIsOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const t = useTranslation()
+    const CtaIcon = cta.Icon
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 8)
@@ -27,9 +44,38 @@ export default function ProductNavbar() {
         return () => window.removeEventListener('scroll', onScroll)
     }, [])
 
-    const navLinkBase =
-        'text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors'
-    const navLinkActive = 'text-brand-400'
+    const base = 'text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors'
+    const active = 'text-brand-400'
+    const renderLink = (link: ProductNavLink, onClick?: () => void, block = false) => {
+        const cls = `${block ? 'block ' : ''}${base}`
+        if (link.disabled)
+            return (
+                <span
+                    key={link.label}
+                    className={`${block ? 'block ' : ''}text-sm font-medium text-gray-600 cursor-not-allowed`}
+                    title="Coming soon"
+                >
+                    {link.label}
+                </span>
+            )
+        if (link.href)
+            return (
+                <a key={link.label} href={link.href} onClick={onClick} className={cls}>
+                    {link.label}
+                </a>
+            )
+        return (
+            <NavLink
+                key={link.label}
+                to={link.to as string}
+                end={link.end}
+                onClick={onClick}
+                className={({ isActive }) => `${cls} ${isActive ? active : ''}`}
+            >
+                {link.label}
+            </NavLink>
+        )
+    }
 
     return (
         <motion.nav
@@ -54,54 +100,29 @@ export default function ProductNavbar() {
                             CodeRoast
                         </Link>
                         <span className="hidden sm:inline-block w-px h-5 bg-gray-800" />
-                        <Link to="/logcraft" className="flex items-center gap-2 group hover:opacity-90 transition-opacity">
+                        <Link
+                            to={homeTo}
+                            className="flex items-center gap-2 group hover:opacity-90 transition-opacity"
+                        >
                             <Logo size="sm" />
-                            <span className="font-display font-bold text-xl text-white">
-                                <span className="bg-gradient-to-r from-brand-500 to-orange-400 bg-clip-text text-transparent">
-                                    Log
-                                </span>
-                                Craft
-                            </span>
+                            {brand}
                         </Link>
                     </div>
 
-                    {/* Desktop links */}
+                    {/* Desktop links — cross-product switcher + this product's nav */}
                     <div className="hidden lg:flex items-center gap-7">
-                        <NavLink
-                            to="/logcraft"
-                            end
-                            className={({ isActive }) =>
-                                `${navLinkBase} ${isActive ? navLinkActive : ''}`
-                            }
-                        >
-                            {t.nav.product}
-                        </NavLink>
-                        <NavLink
-                            to="/use-cases"
-                            className={({ isActive }) =>
-                                `${navLinkBase} ${isActive ? navLinkActive : ''}`
-                            }
-                        >
-                            {t.nav.useCases}
-                        </NavLink>
-                        <a
-                            href="mailto:contact@coderoast.fr"
-                            className={navLinkBase}
-                        >
-                            {t.nav.contact}
-                        </a>
-                        <NavLink
-                            to="/tiers"
-                            className={({ isActive }) =>
-                                `${navLinkBase} ${isActive ? navLinkActive : ''}`
-                            }
-                        >
-                            {t.footer.links.tierMatrix}
-                        </NavLink>
+                        <ProductsMenu />
+                        {links.map((link) => renderLink(link))}
                     </div>
 
                     {/* Right side */}
                     <div className="flex items-center gap-2">
+                        <span
+                            className="hidden sm:inline-flex text-sm font-medium text-gray-600 cursor-not-allowed"
+                            title="Accounts coming soon"
+                        >
+                            {t.nav.signIn}
+                        </span>
                         <a
                             href="https://github.com/CodeRoasted"
                             target="_blank"
@@ -113,11 +134,11 @@ export default function ProductNavbar() {
                         </a>
                         <LanguageToggle />
                         <Link
-                            to="/lab/logcraft"
+                            to={cta.to}
                             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white text-sm font-semibold shadow-md shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
-                            <FlaskConical className="w-3.5 h-3.5" />
-                            {t.nav.logcraftPlayground}
+                            <CtaIcon className="w-3.5 h-3.5" />
+                            {cta.label}
                         </Link>
                         <button
                             className="lg:hidden p-2 text-gray-300"
@@ -139,48 +160,15 @@ export default function ProductNavbar() {
                         className="lg:hidden bg-gray-950/95 border-b border-gray-800"
                     >
                         <div className="px-4 py-4 space-y-3">
-                            <NavLink
-                                to="/logcraft"
-                                end
-                                onClick={() => setIsOpen(false)}
-                                className={({ isActive }) =>
-                                    `block ${navLinkBase} ${isActive ? navLinkActive : ''}`
-                                }
-                            >
-                                {t.nav.product}
-                            </NavLink>
-                            <NavLink
-                                to="/use-cases"
-                                onClick={() => setIsOpen(false)}
-                                className={({ isActive }) =>
-                                    `block ${navLinkBase} ${isActive ? navLinkActive : ''}`
-                                }
-                            >
-                                {t.nav.useCases}
-                            </NavLink>
-                            <a
-                                href="mailto:contact@coderoast.fr"
-                                onClick={() => setIsOpen(false)}
-                                className={`block ${navLinkBase}`}
-                            >
-                                {t.nav.contact}
-                            </a>
-                            <NavLink
-                                to="/tiers"
-                                onClick={() => setIsOpen(false)}
-                                className={({ isActive }) =>
-                                    `block ${navLinkBase} ${isActive ? navLinkActive : ''}`
-                                }
-                            >
-                                {t.footer.links.tierMatrix}
-                            </NavLink>
+                            <ProductsMobileLinks onNavigate={() => setIsOpen(false)} />
+                            {links.map((link) => renderLink(link, () => setIsOpen(false), true))}
                             <Link
-                                to="/lab/logcraft"
+                                to={cta.to}
                                 onClick={() => setIsOpen(false)}
                                 className="flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
                             >
-                                <FlaskConical className="w-3.5 h-3.5" />
-                                {t.nav.logcraftPlayground}
+                                <CtaIcon className="w-3.5 h-3.5" />
+                                {cta.label}
                             </Link>
                             <Link
                                 to="/"

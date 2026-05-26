@@ -7,6 +7,7 @@ import type {
     InsightStatus,
 } from '@/types/engine'
 import type { PlaygroundMode } from '@/types/playground'
+import type { ChangeReportResponse, DiffRequest } from '@/types/diff'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export interface ScenarioMeta {
@@ -353,6 +354,18 @@ export async function getInsightStatus(engineId: string): Promise<InsightStatus>
 
 export async function getInsightReports(engineId: string): Promise<InsightReportsResponse> {
     return request(`/engines/${encodeURIComponent(engineId)}/insight/reports`)
+}
+
+/**
+ * insight_diff hosted demo: compare two log blobs into a ranked, noise-suppressed
+ * change report. Visitor-accessible + daily-quota'd by IP (a 403 PolicyDenialError
+ * with quotaKey `insight.diff.compare.daily` means the daily allowance is spent).
+ */
+export async function runInsightDiff(payload: DiffRequest): Promise<ChangeReportResponse> {
+    return request('/insight/diff', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    })
 }
 
 export async function reconfigureInsight(

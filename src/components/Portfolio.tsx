@@ -1,30 +1,20 @@
 import { motion } from 'framer-motion'
-import { Eye, ScrollText, FlaskConical } from 'lucide-react'
 import AppCard from './AppCard'
+import { products } from '@/config/products'
 import { useTranslation } from '@/hooks/useTranslation'
 
+// Display copy for one product card. Soon-tier entries omit highlights.
+interface PortfolioCopy {
+    name: string
+    description: string
+    status: string
+    highlights?: string[]
+}
+
+// The evolutive product index: cards are driven entirely by the product
+// registry (src/config/products.ts), so the slate grows by editing one list.
 export default function Portfolio() {
     const t = useTranslation()
-
-    const apps = [
-        {
-            ...t.portfolio.insight,
-            icon: <Eye className="w-6 h-6" />,
-            gradient: 'from-blue-500 to-cyan-500',
-        },
-        {
-            ...t.portfolio.logcraft,
-            icon: <ScrollText className="w-6 h-6" />,
-            gradient: 'from-brand-500 to-orange-500',
-            link: '/logcraft',
-        },
-        {
-            ...t.portfolio.playground,
-            icon: <FlaskConical className="w-6 h-6" />,
-            gradient: 'from-purple-500 to-pink-500',
-            link: '/lab/insight',
-        },
-    ]
 
     return (
         <section
@@ -48,20 +38,23 @@ export default function Portfolio() {
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {apps.map((app, i) => (
-                        <AppCard
-                            key={app.name}
-                            name={app.name}
-                            description={app.description}
-                            status={app.status}
-                            icon={app.icon}
-                            gradient={app.gradient}
-                            index={i}
-                            highlights={'highlights' in app ? (app.highlights as string[]) : undefined}
-                            link={'link' in app ? (app.link as string) : undefined}
-                            badge={'badge' in app ? (app.badge as string) : undefined}
-                        />
-                    ))}
+                    {products.map((product, index) => {
+                        const copy = t.portfolio[product.slug] as PortfolioCopy
+                        const Icon = product.Icon
+                        return (
+                            <AppCard
+                                key={product.slug}
+                                name={copy.name}
+                                description={copy.description}
+                                status={copy.status}
+                                icon={<Icon className="w-6 h-6" />}
+                                gradient={product.accent}
+                                index={index}
+                                highlights={copy.highlights}
+                                link={product.page ?? product.tool}
+                            />
+                        )
+                    })}
                 </div>
             </div>
         </section>

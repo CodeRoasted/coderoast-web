@@ -3,24 +3,34 @@
 const en = {
     nav: {
         home: 'Home',
+        products: 'Products',
         product: 'Product',
-        how: 'How',
-        features: 'Features',
         pricing: 'Pricing',
         logcraft: 'LogCraft',
         lab: 'InSight Playground',
+        diff: 'Diff logs',
         logcraftPlayground: 'LogCraft Playground',
         useCases: 'Use cases',
         contact: 'Contact',
+        signIn: 'Sign in',
+        back: 'Back',
     },
     hero: {
-        badge: 'InSight explain demo · deterministic LogCraft feed · live /api/v1 backend',
-        tagline: 'From log storm to clear explanation.',
+        badge: 'CodeRoast · log noise → comprehension',
+        tagline: 'Turn log noise into comprehension.',
         subtitle:
-            'InSight turns live synthetic incidents into MetaLog evidence, detector findings, and operator-ready explanations. LogCraft supplies the reproducible signal; InSight shows what happened and why.',
-        cta: 'Open InSight Playground',
-        ctaSecondary: 'See the pipeline',
-        trust: 'MetaLog · Drain templates · drift detection · explain packets · deterministic replay',
+            'CodeRoast compresses noisy logs into ranked, deterministic structure — so you (or an LLM) read what actually changed, not gigabytes of it. Precision-first, and it runs on your infra. Start by diffing two CI runs.',
+        cta: 'Diff two logs',
+        ctaSecondary: 'See all products',
+        trust: 'deterministic · precision-first · runs on your infra · logs never stored',
+    },
+    diffShowcase: {
+        eyebrow: 'Sift',
+        title: 'Your CI went red. Which lines actually matter?',
+        subtitle:
+            'Paste the last green run and the failing one. Sift ranks what structurally changed — new errors, a test file gone red, frequency shifts — and mutes the hundreds of lines that didn\'t. No agent, no setup; a shareable report in about 90 seconds.',
+        cta: 'Diff two logs',
+        note: 'Free · runs in your browser session · logs never stored',
     },
     problem: {
         title: 'You can\'t ship observability you\'ve never tested.',
@@ -110,27 +120,6 @@ const en = {
             },
         ],
     },
-    useCasesHome: {
-        title: 'Three jobs LogCraft is good at.',
-        subtitle: 'Pick the one that sounds like yours.',
-        items: [
-            {
-                title: 'Test your log pipeline',
-                description:
-                    'Replay the same multi-service incident every CI run. Verify your parsing, alerting and retention rules survive bursts, cascades and malformed records.',
-            },
-            {
-                title: 'Demo your observability product',
-                description:
-                    'Spin up a "production" without a production. Make the SE story show real cascades, real p99 spikes, real incident timelines — in ten seconds.',
-            },
-            {
-                title: 'Train your on-call',
-                description:
-                    'Hand a junior the Lab URL, hit Cascade, and let them debug a real-looking incident with a known root cause — no risk to anything live.',
-            },
-        ],
-    },
     pricingTeaser: {
         title: 'Free for solo. Paid where it gets real.',
         subtitle:
@@ -141,25 +130,24 @@ const en = {
         enterprise: { name: 'Enterprise', price: 'Custom', tagline: 'Topology & on-prem' },
     },
     portfolio: {
-        title: 'The other half of the picture.',
+        title: 'One engine. A surface for every job.',
         subtitle:
-            'InSight is the promoted CodeRoast product. LogCraft is the deterministic signal source that makes its live demo repeatable.',
-        insight: {
-            name: 'InSight',
+            'Every CodeRoast product turns log noise into comprehension for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
+        sift: {
+            name: 'Sift',
             description:
-                'A streaming analysis pipeline that turns noisy logs into templates, MetaLogs, detector evidence, and explanation packets. It now runs behind the Lab so a scenario can produce buyer-visible findings instead of just raw output.',
-            status: 'Promoted · API live',
+                'Paste a baseline run and a changed run. Sift ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, ~90 seconds.',
+            status: 'Live · free demo',
             highlights: [
-                'Explain-first insight cards',
-                'Drain-style template mining',
-                'MetaLog compression layer',
-                'Detector evidence for AI explain',
+                'Ranked “what changed”, noise suppressed',
+                'Line-level provenance highlighting',
+                'Runs locally — logs never leave (CLI / Action)',
             ],
         },
         logcraft: {
             name: 'LogCraft',
             description:
-                'A synthetic log generator and chaos scenario engine. Describe a fleet of agents in YAML, hit run, and get reproducible, production-shaped log streams — with cascading failures, scheduled incidents, latency distributions and 20+ output formats (JSON, ECS, OTLP, Syslog, CLF, Prometheus, StatsD…). Use it to test your log pipeline, demo your dashboards, train your on-call.',
+                'A synthetic log generator and chaos scenario engine. Describe a fleet of agents in YAML, hit run, and get reproducible, production-shaped log streams — cascading failures, latency distributions, 20+ output formats. Test your pipeline, demo your dashboards, train your on-call.',
             status: 'Beta · usable today',
             highlights: [
                 'YAML-defined agents & topology',
@@ -168,16 +156,29 @@ const en = {
                 '20+ output formats (ECS, OTLP, Prometheus…)',
             ],
         },
-        playground: {
-            name: 'InSight Playground',
+        insight: {
+            name: 'InSight',
             description:
-                'The browser demo where LogCraft feeds InSight. Pick a scenario, launch a live engine, watch the raw stream, then inspect the explain view with severity, confidence, action hints, templates, and evidence.',
-            status: 'Live now',
+                'The streaming analysis pipeline behind it all: noisy logs become templates, MetaLogs, detector evidence, and explanation packets — precision-first, so one alert means one real incident. Try it live in the Lab.',
+            status: 'Beta · API live',
             highlights: [
-                'Zero-install, browser-based',
-                'Live InSight reports',
-                'Logs, incidents, templates, evidence',
+                'Explain-first insight cards',
+                'Drain-style template mining',
+                'MetaLog compression layer',
+                'Detector evidence for AI explain',
             ],
+        },
+        metalogForwarding: {
+            name: 'MetaLog forwarding',
+            description:
+                'Compress the stream into MetaLogs and forward those, not raw gigabytes — a structural fingerprint at a fraction of the volume. The CFO-visible half of the story.',
+            status: 'Coming soon',
+        },
+        canary: {
+            name: 'Canary validation',
+            description:
+                'diff(baseline, canary) as a structural kill-signal — catch a bad release before the metrics move, on the same engine as the CI diff.',
+            status: 'Coming soon',
         },
     },
     roadmap: {
@@ -498,7 +499,7 @@ const en = {
                 launchPaused: 'Create paused pipeline',
             },
         },
-        backToLogCraft: 'Back to product',
+        backToHome: 'Back to CodeRoast',
         backToScenarios: 'Back to scenarios',
         live: 'Live',
         selectScenario: 'Pick a scenario',

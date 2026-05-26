@@ -1,18 +1,11 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Brain, Github } from 'lucide-react'
+import { Menu, X, Github, GitCompareArrows } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import LanguageToggle from './LanguageToggle'
 import Logo from './Logo'
+import ProductsMenu, { ProductsMobileLinks } from './ProductsMenu'
 import { useTranslation } from '@/hooks/useTranslation'
-
-// Anchor links only valid on home; on sub-pages we send them to /#hash so
-// the browser scrolls into view after navigation.
-const anchorLinks = [
-    { key: 'product' as const, hash: '#product' },
-    { key: 'how' as const, hash: '#how' },
-    { key: 'features' as const, hash: '#features' },
-]
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
@@ -28,7 +21,10 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', onScroll)
     }, [])
 
-    const resolveHref = (hash: string) => (isHome ? hash : `/${hash}`)
+    useEffect(() => setIsOpen(false), [location.pathname])
+
+    // Greyed-out placeholders: pricing isn't set and accounts don't exist yet.
+    const disabled = 'text-sm font-medium text-gray-600 cursor-not-allowed'
 
     return (
         <motion.nav
@@ -44,7 +40,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <a
-                        href={resolveHref('#hero')}
+                        href={isHome ? '#hero' : '/#hero'}
                         className="flex items-center gap-2 group hover:opacity-90 transition-opacity"
                     >
                         <Logo size="sm" />
@@ -56,27 +52,22 @@ export default function Navbar() {
                         </span>
                     </a>
 
-                    {/* Desktop links */}
+                    {/* Desktop links — umbrella only: Products ▾ + Pricing (soon) */}
                     <div className="hidden lg:flex items-center gap-7">
-                        {anchorLinks.map(({ key, hash }) => (
-                            <a
-                                key={key}
-                                href={resolveHref(hash)}
-                                className="text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
-                            >
-                                {t.nav[key]}
-                            </a>
-                        ))}
-                        <Link
-                            to="/logcraft"
-                            className="text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
-                        >
-                            {t.nav.logcraft}
-                        </Link>
+                        <ProductsMenu />
+                        <span className={disabled} title="Pricing coming soon">
+                            {t.nav.pricing}
+                        </span>
                     </div>
 
                     {/* Right side */}
                     <div className="flex items-center gap-2">
+                        <span
+                            className={`hidden sm:inline-flex ${disabled}`}
+                            title="Accounts coming soon"
+                        >
+                            {t.nav.signIn}
+                        </span>
                         <a
                             href="https://github.com/CodeRoasted"
                             target="_blank"
@@ -88,11 +79,11 @@ export default function Navbar() {
                         </a>
                         <LanguageToggle />
                         <Link
-                            to="/lab/insight"
+                            to="/diff"
                             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-brand-600 to-orange-500 text-white text-sm font-semibold shadow-md shadow-brand-700/30 hover:shadow-brand-700/50 hover:scale-[1.02] transition-all"
                         >
-                            <Brain className="w-3.5 h-3.5" />
-                            {t.nav.lab}
+                            <GitCompareArrows className="w-3.5 h-3.5" />
+                            {t.hero.cta}
                         </Link>
                         <button
                             className="lg:hidden p-2 text-gray-300"
@@ -114,31 +105,17 @@ export default function Navbar() {
                         className="lg:hidden bg-gray-950/95 border-b border-gray-800"
                     >
                         <div className="px-4 py-4 space-y-3">
-                            {anchorLinks.map(({ key, hash }) => (
-                                <a
-                                    key={key}
-                                    href={resolveHref(hash)}
-                                    onClick={() => setIsOpen(false)}
-                                    className="block text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
-                                >
-                                    {t.nav[key]}
-                                </a>
-                            ))}
+                            <ProductsMobileLinks onNavigate={() => setIsOpen(false)} />
+                            <span className={`block ${disabled}`}>{t.nav.pricing}</span>
                             <Link
-                                to="/logcraft"
+                                to="/diff"
                                 onClick={() => setIsOpen(false)}
-                                className="block text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
+                                className="flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors pt-2 border-t border-gray-800/60"
                             >
-                                {t.nav.logcraft}
+                                <GitCompareArrows className="w-3.5 h-3.5" />
+                                {t.hero.cta}
                             </Link>
-                            <Link
-                                to="/lab/insight"
-                                onClick={() => setIsOpen(false)}
-                                className="flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
-                            >
-                                <Brain className="w-3.5 h-3.5" />
-                                {t.nav.lab}
-                            </Link>
+                            <span className={`block ${disabled}`}>{t.nav.signIn}</span>
                         </div>
                     </motion.div>
                 )}

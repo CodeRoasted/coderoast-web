@@ -5,24 +5,34 @@ import type en from "./en"
 const fr: typeof en = {
     nav: {
         home: 'Accueil',
+        products: 'Produits',
         product: 'Produit',
-        how: 'Comment',
-        features: 'Fonctionnalités',
         pricing: 'Tarifs',
         logcraft: 'LogCraft',
         lab: 'Playground InSight',
+        diff: 'Diff de logs',
         logcraftPlayground: 'Playground LogCraft',
         useCases: 'Cas d’usage',
         contact: 'Contact',
+        signIn: 'Connexion',
+        back: 'Retour',
     },
     hero: {
-        badge: 'Démo explain InSight · flux LogCraft déterministe · backend /api/v1 live',
-        tagline: 'Du chaos de logs à l’explication claire.',
+        badge: 'CodeRoast · du bruit des logs à la compréhension',
+        tagline: 'Transformez le bruit des logs en compréhension.',
         subtitle:
-            'InSight transforme des incidents synthétiques live en preuves MetaLog, détections, puis explications prêtes pour l’opérateur. LogCraft fournit le signal reproductible ; InSight montre ce qui s’est passé et pourquoi.',
-        cta: 'Ouvrir le Playground InSight',
-        ctaSecondary: 'Voir le pipeline',
-        trust: 'MetaLog · templates Drain · détection de dérive · paquets explain · replay déterministe',
+            'CodeRoast compresse les logs bruyants en une structure classée et déterministe — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets. Précision d’abord, et tourne sur votre infra. Commencez par comparer deux runs CI.',
+        cta: 'Diff de deux logs',
+        ctaSecondary: 'Voir tous les produits',
+        trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
+    },
+    diffShowcase: {
+        eyebrow: 'Sift',
+        title: 'Votre CI est rouge. Quelles lignes comptent vraiment ?',
+        subtitle:
+            'Collez le dernier run vert et le run en échec. Sift classe ce qui a structurellement changé — nouvelles erreurs, un fichier de test devenu rouge, décalages de fréquence — et masque les centaines de lignes inchangées. Sans agent, sans installation ; un rapport partageable en ~90 secondes.',
+        cta: 'Diff de deux logs',
+        note: 'Gratuit · tourne dans votre session navigateur · logs jamais stockés',
     },
     problem: {
         title: 'On ne livre pas une observabilité qu\'on n\'a jamais testée.',
@@ -112,27 +122,6 @@ const fr: typeof en = {
             },
         ],
     },
-    useCasesHome: {
-        title: 'Trois usages où LogCraft excelle.',
-        subtitle: 'Choisissez celui qui ressemble au vôtre.',
-        items: [
-            {
-                title: 'Stresser votre pipeline de logs',
-                description:
-                    'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, cascades et records mal formés.',
-            },
-            {
-                title: 'Démontrer votre produit d\'observabilité',
-                description:
-                    'Monter une "production" sans production. Faire la démo SE avec de vraies cascades, de vrais pics p99, de vraies timelines d\'incident — en dix secondes.',
-            },
-            {
-                title: 'Former votre astreinte',
-                description:
-                    'Donnez l\'URL du Lab à un junior, cliquez Cascade, laissez-le debug un incident réaliste à cause racine connue — sans risque pour quoi que ce soit.',
-            },
-        ],
-    },
     pricingTeaser: {
         title: 'Gratuit pour le solo. Payant là où ça devient sérieux.',
         subtitle:
@@ -143,25 +132,24 @@ const fr: typeof en = {
         enterprise: { name: 'Entreprise', price: 'Sur mesure', tagline: 'Topologie & on-prem' },
     },
     portfolio: {
-        title: 'L\'autre moitié du tableau.',
+        title: 'Un moteur. Une surface pour chaque besoin.',
         subtitle:
-            'InSight est le produit CodeRoast promu. LogCraft est la source de signal déterministe qui rend la démo live reproductible.',
-        insight: {
-            name: 'InSight',
+            'Chaque produit CodeRoast transforme le bruit des logs en compréhension pour un usage précis — choisissez celui qui correspond au problème devant vous. La gamme s’étoffe ; le moteur en dessous reste le même.',
+        sift: {
+            name: 'Sift',
             description:
-                'Un pipeline d’analyse streaming qui transforme des logs bruyants en templates, MetaLogs, preuves de détection et paquets d’explication. Il tourne maintenant derrière le Lab pour produire des résultats visibles, pas seulement une sortie brute.',
-            status: 'Promu · API live',
+                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le coin d’entrée CI/CD : zéro infra, ~90 secondes.',
+            status: 'Live · démo gratuite',
             highlights: [
-                'Cartes explain en premier plan',
-                'Mining de templates type Drain',
-                'Couche de compression MetaLog',
-                'Preuves de détection pour l’IA explain',
+                'Classement du « ce qui a changé », bruit supprimé',
+                'Surlignage de provenance ligne à ligne',
+                'Tourne en local — les logs ne sortent pas (CLI / Action)',
             ],
         },
         logcraft: {
             name: 'LogCraft',
             description:
-                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — cascades de pannes, queues de latence, incidents planifiés, 20+ formats de sortie. Pour stresser votre pipeline, démontrer vos dashboards, entraîner votre astreinte.',
+                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — cascades de pannes, queues de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre astreinte.',
             status: 'Bêta · utilisable',
             highlights: [
                 'Agents & topologie en YAML',
@@ -170,16 +158,29 @@ const fr: typeof en = {
                 '20+ formats (ECS, OTLP, Prometheus…)',
             ],
         },
-        playground: {
-            name: 'Playground InSight',
+        insight: {
+            name: 'InSight',
             description:
-                'La démo navigateur où LogCraft nourrit InSight. Choisissez un scénario, lancez le moteur, observez le flux brut, puis inspectez la vue explain avec sévérité, confiance, action, templates et preuves.',
-            status: 'Disponible',
+                'Le pipeline d’analyse streaming derrière tout le reste : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — précision d’abord, une alerte = un vrai incident. À essayer en live dans le Lab.',
+            status: 'Bêta · API live',
             highlights: [
-                'Zéro installation',
-                'Rapports InSight live',
-                'Logs, incidents, templates, preuves',
+                'Cartes explain en premier plan',
+                'Mining de templates type Drain',
+                'Couche de compression MetaLog',
+                'Preuves de détection pour l’IA explain',
             ],
+        },
+        metalogForwarding: {
+            name: 'Forwarding MetaLog',
+            description:
+                'Compressez le flux en MetaLogs et transférez ceux-ci, pas des gigaoctets bruts — une empreinte structurelle pour une fraction du volume. La moitié visible par le CFO.',
+            status: 'Bientôt',
+        },
+        canary: {
+            name: 'Validation canary',
+            description:
+                'diff(référence, canary) comme signal d’arrêt structurel — détectez une mauvaise release avant que les métriques ne bougent, sur le même moteur que le diff CI.',
+            status: 'Bientôt',
         },
     },
     roadmap: {
@@ -500,7 +501,7 @@ const fr: typeof en = {
                 launchPaused: 'Créer le pipeline en pause',
             },
         },
-        backToLogCraft: 'Retour au produit',
+        backToHome: 'Retour à CodeRoast',
         backToScenarios: 'Retour aux scénarios',
         live: 'En direct',
         selectScenario: 'Choisissez un scénario',
