@@ -68,12 +68,6 @@ const TONE_RANK: Record<Tone, number> = { low: 0, medium: 1, recovery: 2, high: 
 const toneOf = (change: DiffRankedChange): Tone =>
     change.polarity === 'recovery' ? 'recovery' : change.severity
 
-// Display grouping: regressions (what broke) lead, then recoveries (what
-// healed), then neutral structural changes.
-const POLARITY_GROUP: Record<string, number> = { regression: 0, recovery: 1, neutral: 2 }
-const groupOf = (change: DiffRankedChange): number =>
-    POLARITY_GROUP[change.polarity ?? 'neutral'] ?? 2
-
 // Change-type: a neutral (uncolored) icon + label, decoupled from severity.
 const KIND: Record<string, { Icon: typeof Activity; label: string }> = {
     new_error_pattern: { Icon: AlertTriangle, label: 'error appeared' },
@@ -317,19 +311,11 @@ export default function InsightDiff() {
     }, [pinned, hovered])
 
     const changes = useMemo(() => report?.ranked_changes ?? [], [report])
-    // Display order: regressions → recoveries → neutral, then severity desc (a
-    // NOTABLE never sits below a WEAK), then significance. The original source
-    // index rides along — every pin/hover/focus path keys on it.
+    // Render in the backend's order — it already ranks regressions → recoveries
+    // → presence → rate → shape, then significance; re-sorting here would undo
+    // that. The source index rides along for pin / hover / focus.
     const sortedChanges = useMemo(
-        () =>
-            changes
-                .map((change, index) => ({ change, index }))
-                .sort(
-                    (a, b) =>
-                        groupOf(a.change) - groupOf(b.change) ||
-                        SEV_RANK[b.change.severity] - SEV_RANK[a.change.severity] ||
-                        b.change.significance - a.change.significance
-                ),
+        () => changes.map((change, index) => ({ change, index })),
         [changes]
     )
     const baselineHl = useMemo(
