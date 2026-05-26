@@ -257,13 +257,13 @@ export default function InsightDiff() {
         [baseline, changed, loading]
     )
 
-    const handleCompare = useCallback(async () => {
+    const runCompare = useCallback(async (base: string, chg: string) => {
         setLoading(true)
         setError(null)
         try {
-            const result = await runInsightDiff({ baseline, changed })
+            const result = await runInsightDiff({ baseline: base, changed: chg })
             setReport(result)
-            setSubmitted({ baseline, changed })
+            setSubmitted({ baseline: base, changed: chg })
             // Auto-pin everything notable-or-worse so all the suspicious lines
             // light up across both panes the moment the report lands.
             const autoPinned = new Set<number>()
@@ -287,7 +287,22 @@ export default function InsightDiff() {
         } finally {
             setLoading(false)
         }
-    }, [baseline, changed])
+    }, [])
+
+    const handleCompare = useCallback(
+        () => runCompare(baseline, changed),
+        [runCompare, baseline, changed]
+    )
+
+    // Swap which side is baseline vs changed. A regression one way is a recovery
+    // the other, so flipping is the fastest way to sanity-check polarity. If a
+    // report is on screen, re-run flipped so the other direction is one click away.
+    const handleSwap = useCallback(() => {
+        setBaseline(changed)
+        setChanged(baseline)
+        setError(null)
+        if (report) runCompare(changed, baseline)
+    }, [baseline, changed, report, runCompare])
 
     const resetResult = useCallback(() => {
         setReport(null)
@@ -416,6 +431,16 @@ export default function InsightDiff() {
                                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                                 {loading ? 'Comparing…' : 'Compare'}
                             </button>
+                            <button
+                                type="button"
+                                onClick={handleSwap}
+                                disabled={(!baseline && !changed) || loading}
+                                title="Swap baseline ⇄ changed"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <ArrowLeftRight className="w-4 h-4" />
+                                Swap
+                            </button>
                             <span className="text-xs text-gray-600">
                                 Free · metered per day · logs are not stored
                             </span>
@@ -449,14 +474,26 @@ export default function InsightDiff() {
                                     {report.inputs.changed.lines_observed.toLocaleString()} lines
                                 </p>
                             </div>
-                            <button
-                                type="button"
-                                onClick={resetResult}
-                                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 transition-colors"
-                            >
-                                <Pencil className="w-3.5 h-3.5" />
-                                New comparison
-                            </button>
+                            <div className="shrink-0 flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={handleSwap}
+                                    disabled={loading}
+                                    title="Swap baseline ⇄ changed and re-compare"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    <ArrowLeftRight className="w-3.5 h-3.5" />
+                                    Swap sides
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={resetResult}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 transition-colors"
+                                >
+                                    <Pencil className="w-3.5 h-3.5" />
+                                    New comparison
+                                </button>
+                            </div>
                         </div>
 
                         {report.ranked_changes.length === 0 ? (
