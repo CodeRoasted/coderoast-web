@@ -14,10 +14,14 @@ export interface DiffSummary {
 }
 
 export type DiffSeverity = 'low' | 'medium' | 'high' | 'critical'
+export type DiffPolarity = 'regression' | 'recovery' | 'neutral'
 
 export interface DiffRankedChange {
     kind: string
     severity: DiffSeverity
+    // Direction of the change: 'recovery' (an error cleared — rendered green),
+    // 'regression' (a new error — severity heat), or 'neutral'. Absent ⇒ neutral.
+    polarity?: DiffPolarity
     significance: number
     template_id?: string
     summary: string

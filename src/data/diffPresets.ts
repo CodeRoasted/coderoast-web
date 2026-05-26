@@ -218,12 +218,79 @@ function serviceIncident(): Pair {
     return { baseline: run(7, false), changed: run(19, true) }
 }
 
+// ── Hotfix verification: recovery ⇄ regression in one diff ──────────────────
+// The broken run had DB connection errors; the hotfix run CLEARED them (the
+// workload held — not idle) but introduced a NEW upstream-timeout error. A
+// filter can flag the new error; it can NEVER tell you the old ones recovered.
+function hotfix(): Pair {
+    const endpoints = [
+        'GET  /api/orders', 'POST /api/checkout', 'GET  /api/cart', 'GET  /api/products',
+        'POST /api/payments', 'GET  /api/user/profile', 'GET  /healthz', 'POST /api/login',
+    ]
+    const run = (seed: number, fixed: boolean): string => {
+        const r = rng(seed)
+        const o: string[] = []
+        for (let i = 0; i < 72; i++) {
+            o.push(`INFO  request ${endpoints[i % endpoints.length]} 200 ${int(r, 2, 90)}ms`)
+            if (i % 9 === 0) o.push(`INFO  cache hit key=user:${int(r, 1000, 9999)}`)
+            if (!fixed && i % 6 === 0)
+                o.push(`ERROR sqlalchemy.exc.OperationalError: connection refused to db host ${host(r)}`)
+            if (fixed && i % 14 === 0)
+                o.push(`ERROR gateway: upstream payments timed out after 30000ms (req ${int(r, 10000, 99999)})`)
+        }
+        return o.join('\n')
+    }
+    return { baseline: run(31, false), changed: run(43, true) }
+}
+
+// ── Silent regression: NO error keyword anywhere ────────────────────────────
+// The "checkout completed" success marker VANISHED (checkouts silently stopped
+// succeeding) and a benign "retrying payment" line SPIKED 2 → 27. `grep ERROR`
+// finds nothing; Sift flags the vanished success and the frequency surge.
+function silentRegression(): Pair {
+    const endpoints = [
+        'GET  /api/orders', 'GET  /api/products', 'GET  /api/cart', 'GET  /api/user/profile',
+        'GET  /api/search', 'GET  /healthz', 'POST /api/login',
+    ]
+    const run = (seed: number, broken: boolean): string => {
+        const r = rng(seed)
+        const o: string[] = []
+        for (let i = 0; i < 80; i++) {
+            o.push(`INFO  request ${endpoints[i % endpoints.length]} 200 ${int(r, 2, 110)}ms`)
+            if (!broken && i % 4 === 0) // healthy: checkouts succeed
+                o.push(`INFO  checkout completed order=${int(r, 100000, 999999)}`)
+            if (!broken && i % 40 === 0) // healthy: the rare retry
+                o.push(`INFO  retrying payment gateway (attempt ${int(r, 1, 2)})`)
+            if (broken && i % 3 === 0) // broken: retries surge, success line gone
+                o.push(`INFO  retrying payment gateway (attempt ${int(r, 1, 5)})`)
+        }
+        return o.join('\n')
+    }
+    return { baseline: run(57, false), changed: run(61, true) }
+}
+
+const hotfixPair = hotfix()
+const silent = silentRegression()
 const ci = ciPipeline()
 const unit = pytest()
 const load = loadTest()
 const incident = serviceIncident()
 
 export const diffPresets: DiffPreset[] = [
+    {
+        id: 'hotfix',
+        label: 'Hotfix verify',
+        description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
+        baseline: hotfixPair.baseline,
+        changed: hotfixPair.changed,
+    },
+    {
+        id: 'silent-regression',
+        label: 'Silent regression',
+        description: 'No new error at all — a success line vanished and a retry surged. grep finds nothing.',
+        baseline: silent.baseline,
+        changed: silent.changed,
+    },
     {
         id: 'ci-cd',
         label: 'CI/CD run',

@@ -52,6 +52,28 @@ const SEVERITY: Record<DiffSeverity, { label: string; badge: string; line: strin
 
 const SEV_RANK: Record<DiffSeverity, number> = { low: 0, medium: 1, high: 2, critical: 3 }
 
+// Tone = what colour a change/line gets. Regressions use the severity heat;
+// a RECOVERY (an error cleared) reads GREEN — a *semantic* better/worse signal,
+// NOT git add/remove. One tone drives both the row badge and the line highlight.
+type Tone = DiffSeverity | 'recovery'
+const TONE: Record<Tone, { label: string; badge: string; line: string }> = {
+    ...SEVERITY,
+    recovery: {
+        label: 'RECOVERED',
+        badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40',
+        line: 'border-emerald-500 bg-emerald-500/10',
+    },
+}
+const TONE_RANK: Record<Tone, number> = { low: 0, medium: 1, recovery: 2, high: 3, critical: 4 }
+const toneOf = (change: DiffRankedChange): Tone =>
+    change.polarity === 'recovery' ? 'recovery' : change.severity
+
+// Display grouping: regressions (what broke) lead, then recoveries (what
+// healed), then neutral structural changes.
+const POLARITY_GROUP: Record<string, number> = { regression: 0, recovery: 1, neutral: 2 }
+const groupOf = (change: DiffRankedChange): number =>
+    POLARITY_GROUP[change.polarity ?? 'neutral'] ?? 2
+
 // Change-type: a neutral (uncolored) icon + label, decoupled from severity.
 const KIND: Record<string, { Icon: typeof Activity; label: string }> = {
     new_error_pattern: { Icon: AlertTriangle, label: 'error appeared' },
@@ -70,21 +92,21 @@ function countLines(text: string): number {
     return text.split('\n').filter((line) => line.trim().length > 0).length
 }
 
-// Build lineIndex -> severity for one pane, from all active changes. When two
-// changes touch the same line, the higher severity wins.
+// Build lineIndex -> tone for one pane, from all active changes. When two
+// changes touch the same line, the higher-ranked tone wins.
 function buildHighlights(
     changes: DiffRankedChange[],
     active: Set<number>,
     key: 'baseline_line_refs' | 'changed_line_refs'
-): Map<number, DiffSeverity> {
-    const map = new Map<number, DiffSeverity>()
+): Map<number, Tone> {
+    const map = new Map<number, Tone>()
     for (const idx of active) {
         const change = changes[idx]
         if (!change) continue
+        const tone = toneOf(change)
         for (const line of change[key] ?? []) {
             const prev = map.get(line)
-            if (prev === undefined || SEV_RANK[change.severity] > SEV_RANK[prev])
-                map.set(line, change.severity)
+            if (prev === undefined || TONE_RANK[tone] > TONE_RANK[prev]) map.set(line, tone)
         }
     }
     return map
@@ -99,7 +121,7 @@ function LogPane({
 }: {
     title: string
     text: string
-    highlights: Map<number, DiffSeverity>
+    highlights: Map<number, Tone>
     focusLine: number
     focusNonce: number // bumped on every hover/click so re-focusing the same line re-scrolls
 }) {
@@ -136,18 +158,18 @@ function LogPane({
                 className="h-80 overflow-auto rounded-lg border border-gray-800 bg-gray-900/60 font-mono text-[11px] leading-relaxed py-1"
             >
                 {lines.map((line, idx) => {
-                    const sev = highlights.get(idx)
+                    const tone = highlights.get(idx)
                     return (
                         <div
                             key={idx}
                             data-line={idx}
-                            className={`flex border-l-2 ${sev ? SEVERITY[sev].line : 'border-transparent'}`}
+                            className={`flex border-l-2 ${tone ? TONE[tone].line : 'border-transparent'}`}
                         >
                             <span className="select-none w-10 shrink-0 px-2 text-right text-gray-700">
                                 {idx + 1}
                             </span>
                             <span
-                                className={`px-2 whitespace-pre-wrap break-all ${sev ? 'text-gray-100' : 'text-gray-500'}`}
+                                className={`px-2 whitespace-pre-wrap break-all ${tone ? 'text-gray-100' : 'text-gray-500'}`}
                             >
                                 {line || ' '}
                             </span>
@@ -174,7 +196,7 @@ function ChangeRow({
     onHover: (index: number) => void
     onPin: (index: number) => void
 }) {
-    const sev = SEVERITY[change.severity] ?? SEVERITY.low
+    const style = TONE[toneOf(change)]
     const kind = KIND[change.kind] ?? KIND_FALLBACK
     const Icon = kind.Icon
     const refCount = (change.baseline_line_refs?.length ?? 0) + (change.changed_line_refs?.length ?? 0)
@@ -187,13 +209,13 @@ function ChangeRow({
                 onClick={() => onPin(index)}
                 aria-pressed={pinned}
                 className={`w-full text-left flex gap-3 py-3 pl-3 pr-2 border-l-2 transition-colors ${
-                    active ? sev.line : 'border-transparent hover:bg-gray-800/20'
+                    active ? style.line : 'border-transparent hover:bg-gray-800/20'
                 }`}
             >
                 <span
-                    className={`mt-0.5 h-fit px-1.5 py-0.5 rounded text-[10px] font-semibold border ${sev.badge}`}
+                    className={`mt-0.5 h-fit px-1.5 py-0.5 rounded text-[10px] font-semibold border ${style.badge}`}
                 >
-                    {sev.label}
+                    {style.label}
                 </span>
                 <div className="min-w-0">
                     <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
@@ -295,14 +317,19 @@ export default function InsightDiff() {
     }, [pinned, hovered])
 
     const changes = useMemo(() => report?.ranked_changes ?? [], [report])
-    // Display order: severity tier descending (a NOTABLE never sits below a
-    // WEAK); significance order is preserved within a tier (stable sort). The
-    // original source index rides along — every pin/hover/focus path keys on it.
+    // Display order: regressions → recoveries → neutral, then severity desc (a
+    // NOTABLE never sits below a WEAK), then significance. The original source
+    // index rides along — every pin/hover/focus path keys on it.
     const sortedChanges = useMemo(
         () =>
             changes
                 .map((change, index) => ({ change, index }))
-                .sort((a, b) => SEV_RANK[b.change.severity] - SEV_RANK[a.change.severity]),
+                .sort(
+                    (a, b) =>
+                        groupOf(a.change) - groupOf(b.change) ||
+                        SEV_RANK[b.change.severity] - SEV_RANK[a.change.severity] ||
+                        b.change.significance - a.change.significance
+                ),
         [changes]
     )
     const baselineHl = useMemo(
