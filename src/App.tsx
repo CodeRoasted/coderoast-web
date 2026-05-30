@@ -12,6 +12,7 @@ const TierMatrix = lazy(() => import('@/pages/TierMatrix'))
 const UseCases = lazy(() => import('@/pages/UseCases'))
 const InsightProductPage = lazy(() => import('@/pages/Insight'))
 const SiftPage = lazy(() => import('@/pages/Sift'))
+const VisionPage = lazy(() => import('@/pages/Vision'))
 const Terms = lazy(() => import('@/pages/legal/Terms'))
 const Privacy = lazy(() => import('@/pages/legal/Privacy'))
 const Trademark = lazy(() => import('@/pages/legal/Trademark'))
@@ -117,6 +118,10 @@ const router = createBrowserRouter([
             {
                 path: 'insight',
                 element: <Suspense fallback={<SpinnerFallback />}><InsightProductPage /></Suspense>,
+            },
+            {
+                path: 'vision',
+                element: <Suspense fallback={<SpinnerFallback />}><VisionPage /></Suspense>,
             },
             {
                 path: 'use-cases',

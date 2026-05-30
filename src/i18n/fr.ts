@@ -16,6 +16,7 @@ const fr: typeof en = {
         contact: 'Contact',
         signIn: 'Connexion',
         back: 'Retour',
+        vision: 'Vision',
     },
     hero: {
         badge: 'CodeRoast · du bruit des logs à la compréhension',
@@ -25,6 +26,171 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
         ctaSecondary: 'Voir tous les produits',
         trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
+    },
+    vision: {
+        badge: 'CodeRoast · la thèse MetaLog',
+        titleLead: 'Pas stockés. Pas échantillonnés. Pas exfiltrés.',
+        titleAccent: 'Distillés.',
+        subtitle:
+            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, re-dérivable jusqu’à la ligne source exacte, et qui ne quitte jamais votre machine. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une lentille sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
+        ctaPrimary: 'Diff de deux logs',
+        ctaSecondary: 'Voir les produits',
+        pain: {
+            title: 'Le modèle que tout le monde a fini par accepter est cassé, en silence.',
+            subtitle: 'Quatre compromis qu’on vous a présentés comme normaux.',
+            points: [
+                {
+                    title: 'Vous rationnez vos propres logs.',
+                    description:
+                        'Pour survivre à la facture au Go, les équipes suppriment des lignes de log à la main — en s’aveuglant volontairement pour réduire une facture.',
+                },
+                {
+                    title: 'Vous échantillonnez justement celui qui comptait.',
+                    description:
+                        'À l’échelle, le fournisseur jette des events. Le fatal rare — celui dont vous aviez besoin — est le premier à disparaître.',
+                },
+                {
+                    title: 'Vos données vivent sur les serveurs d’un autre.',
+                    description:
+                        'Les logs quittent votre périmètre pour être cherchés, et l’IA les lit bruts. La conformité déteste ça ; vous aussi devriez.',
+                },
+                {
+                    title: 'L’IA vous donne un récit que vous ne pouvez pas reproduire.',
+                    description:
+                        'Un « pourquoi ça a cassé » plausible, régénéré différemment à chaque fois. Rien sur quoi gater une release.',
+                },
+            ],
+        },
+        artifact: {
+            title: 'Voici le MetaLog.',
+            subtitle:
+                'Une empreinte bornée et déterministe par fenêtre de votre flux. C’est ça, le produit entier — tout le reste ne fait que le lire.',
+            steps: [
+                {
+                    step: 'Des gigaoctets en entrée',
+                    description:
+                        'Pointez-le sur un flux brut, non instrumenté — sortie CI, un service, une flotte entière.',
+                },
+                {
+                    step: '4 Ko en sortie',
+                    description:
+                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre machine.',
+                },
+                {
+                    step: 'Attrape la régression',
+                    description:
+                        'La saillance fait remonter le fatal solitaire seule — sans baseline, sans requête, sans seuil à régler.',
+                },
+                {
+                    step: 'Diff, instantané',
+                    description:
+                        'Deux empreintes en entrée, un « ce qui a changé » classé en sortie — et chaque trouvaille se re-dérive jusqu’à la ligne source exacte.',
+                },
+            ],
+            badges: [
+                'zéro instrumentation',
+                'aucun langage de requête',
+                'rien ne quitte votre machine',
+                'bit-identique à chaque run',
+            ],
+        },
+        punchThem: 'L’ancien modèle',
+        punchUs: 'Le MetaLog',
+        punches: [
+            {
+                title: 'Eux vous font supprimer vos logs. Nous, on vous dit d’en envoyer plus.',
+                them:
+                    'Le secret honteux de la tarification au Go : les équipes ne font pas que payer — elles rationnent. Des ingénieurs passent du vrai temps de sprint à arracher des lignes de log pour réduire une facture cloud, s’aveuglant volontairement. C’est aussi de la lossiness — sauf qu’elle est décidée à la main, en amont, avant que quiconque sache ce qui comptera, et payée en heures d’ingénierie. La pire qui soit.',
+                us:
+                    'Envoyez tout. Loggez plus, pas moins. Le coût cesse d’être le verrou — l’empreinte est bornée et vos logs bruts ne quittent jamais votre machine. Plus aucun ingénieur ne trie le grain de l’ivraie pour tenir un budget, jamais. La distillation est automatique et dirigée par la saillance : le fatal rare survit parce qu’il compte, pas parce que quelqu’un a bien deviné le trimestre dernier.',
+            },
+            {
+                title: 'Votre facture IA est la prochaine à partir à la verticale.',
+                them:
+                    'Tout a un LLM greffé dessus maintenant — et les logs bruts sont la chose la plus chère qu’on puisse lui donner à manger. Vous payez au token pour des gigaoctets de bruit, et le modèle s’y noie exactement comme un humain.',
+                us:
+                    'Ne collez pas vos logs — collez ce qui compte. Un MetaLog est un brief borné et pré-structuré : une fraction des tokens, une fraction du coût. Et un LLM lit un MetaLog mieux que presque n’importe quel humain ne lit le brut — la structure est déjà faite. Moins cher ET plus net.',
+            },
+        ],
+        tie:
+            'Tout le monde est lossy à l’échelle. La seule question, c’est comment vous perdez. Eux perdent à l’aveugle et en amont — un humain qui supprime des logs, un fournisseur qui les échantillonne. Nous perdons de façon informée et récupérable : la saillance décide quoi garder, et chaque insight se re-dérive jusqu’à la ligne source exacte.',
+        contrast: {
+            title: 'Ce que le MetaLog n’est pas.',
+            subtitle: 'Deux modèles pour la même douleur. L’un accumule. L’autre distille.',
+            columnOld: 'Accumuler · Datadog · Splunk · Honeycomb',
+            columnNew: 'Distiller · MetaLog',
+            rows: [
+                {
+                    old: 'Échantillonne les events pour plafonner le coût — l’event rare est le premier à partir.',
+                    new: 'Garde le saillant, jette l’ennuyeux. Le fatal solitaire survit parce qu’il a scoré, pas parce qu’il était fréquent.',
+                },
+                {
+                    old: 'L’instrumentation est le ticket d’entrée — réécrivez votre code en wide events avant de voir la moindre valeur.',
+                    new: 'Lit les logs non structurés que vous avez déjà. Instrumentation optionnelle, jamais requise.',
+                },
+                {
+                    old: 'Vos logs vivent sur leurs serveurs ; leur IA les lit bruts.',
+                    new: 'On-prem et souverain — gardez vos logs. Le LLM ne voit qu’un brief borné et assaini.',
+                },
+                {
+                    old: 'Un « pourquoi ça a cassé » probabiliste que vous ne pouvez pas reproduire.',
+                    new: 'Un fait structurel déterministe — bit-identique, citable, re-dérivable à la ligne source. Le seul qu’on met derrière un gate CI dur.',
+                },
+                {
+                    old: 'Payer pour stocker des gigaoctets à vie — et en lire moins de 5 %.',
+                    new: 'Une empreinte bornée, ~150:1. La faible empreinte est un effet de bord de la distillation, pas le but.',
+                },
+            ],
+            otelNote:
+                'Déjà sur OTel ? On distille ça aussi — la structure est du signal gratuit. Et vous obtenez quand même un MetaLog souverain, pas un énième entrepôt de spans qui vous enferme.',
+        },
+        hub: {
+            title: 'Un flux en entrée. Un MetaLog en sortie. Tout le reste est une lentille.',
+            subtitle:
+                'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une lentille différente sur la même empreinte.',
+            lenses: [
+                {
+                    name: 'Sift',
+                    status: 'Live',
+                    description: 'Diff structurel de CI. Deux runs en entrée, un « ce qui a changé » classé en sortie.',
+                },
+                {
+                    name: 'Détection streaming',
+                    status: 'Beta',
+                    description:
+                        'Détection d’anomalies continue, précision d’abord — une alerte, un vrai incident.',
+                },
+                {
+                    name: 'Forwarding MetaLog',
+                    status: 'Bientôt',
+                    description:
+                        'Transférez des empreintes, pas des gigaoctets bruts — ~150:1 sur votre facture d’observabilité.',
+                },
+                {
+                    name: 'Validation canary',
+                    status: 'Bientôt',
+                    description:
+                        'diff(baseline, canary) comme signal de kill structurel avant que les métriques ne bougent.',
+                },
+                {
+                    name: 'Post-mortem d’incident',
+                    status: 'Bientôt',
+                    description: 'Rejouez l’évolution de la structure, à partir des empreintes stockées.',
+                },
+                {
+                    name: 'Débogueur IA',
+                    status: 'Bientôt',
+                    description:
+                        'Donnez à un LLM un brief borné dans le même contexte que votre code — jamais de logs bruts.',
+                },
+            ],
+        },
+        closing: {
+            title: 'La vision, c’est le MetaLog. Le chemin d’entrée, c’est Sift.',
+            subtitle:
+                'Comparez deux runs CI en environ 90 secondes — sans agent, sans installation, logs jamais stockés. Le même artefact alimente tout ce qui précède.',
+            cta: 'Diff de deux logs',
+        },
     },
     diffShowcase: {
         eyebrow: 'Sift',
