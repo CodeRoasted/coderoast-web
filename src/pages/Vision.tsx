@@ -274,6 +274,18 @@ export default function Vision() {
                                 {v.contrast.otelNote}
                             </p>
                         </motion.div>
+
+                        {/* Named-brand comparison lives on its own surface (/how-we-compare);
+                            /vision teaches the axis nameless, so this link stays brand-neutral. */}
+                        <motion.div {...fadeUp} className="mt-8 text-center">
+                            <Link
+                                to="/how-we-compare"
+                                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors"
+                            >
+                                {v.compareCta}
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </motion.div>
                     </div>
                 </section>
 

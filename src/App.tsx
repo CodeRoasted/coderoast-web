@@ -13,6 +13,8 @@ const UseCases = lazy(() => import('@/pages/UseCases'))
 const InsightProductPage = lazy(() => import('@/pages/Insight'))
 const SiftPage = lazy(() => import('@/pages/Sift'))
 const VisionPage = lazy(() => import('@/pages/Vision'))
+const HowWeBuildPage = lazy(() => import('@/pages/HowWeBuild'))
+const HowWeComparePage = lazy(() => import('@/pages/HowWeCompare'))
 const Terms = lazy(() => import('@/pages/legal/Terms'))
 const Privacy = lazy(() => import('@/pages/legal/Privacy'))
 const Trademark = lazy(() => import('@/pages/legal/Trademark'))
@@ -122,6 +124,14 @@ const router = createBrowserRouter([
             {
                 path: 'vision',
                 element: <Suspense fallback={<SpinnerFallback />}><VisionPage /></Suspense>,
+            },
+            {
+                path: 'how-we-build',
+                element: <Suspense fallback={<SpinnerFallback />}><HowWeBuildPage /></Suspense>,
+            },
+            {
+                path: 'how-we-compare',
+                element: <Suspense fallback={<SpinnerFallback />}><HowWeComparePage /></Suspense>,
             },
             {
                 path: 'use-cases',

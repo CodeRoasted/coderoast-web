@@ -33,6 +33,7 @@ const en = {
             'CodeRoast distils any log stream into a MetaLog — a small, deterministic fingerprint of what your system actually did. Bit-identical across runs, citable, re-derivable to the exact source line, and it never leaves your box. Sift, anomaly detection, AI triage: every product is just a lens on that one artifact. Reading 4 KB instead of storing gigabytes is the side effect — not the pitch.',
         ctaPrimary: 'Diff two logs',
         ctaSecondary: 'See the products',
+        compareCta: 'See how we compare',
         pain: {
             title: 'The model everyone settled for is quietly broken.',
             subtitle: 'Four compromises you’ve been told are normal.',
@@ -440,6 +441,81 @@ const en = {
             cta: 'Contact us',
         },
     },
+    howWeBuild: {
+        badge: 'Engineering discipline',
+        title: 'How we build',
+        subtitle: 'Determinism is a product promise. It starts with how we engineer.',
+        intro:
+            'CodeRoast makes one guarantee: same inputs, same output — bit for bit. A diff you can put behind a CI gate. That isn’t a slogan; it’s an engineering discipline, and it governs everything we ship — including how we use our own tools.',
+        sections: [
+            {
+                title: 'Generation is not decision.',
+                body:
+                    'We treat AI the way we treat any powerful, unspecified tool: bounded. AI generates — boilerplate, test scaffolding, exploration. Contracts bound it — types, unit and regression tests, API surfaces, human review. A human decides. Nothing reaches a release on a model’s say-so; it reaches a release because it passed a gate a human designed. Reliability isn’t a property of the generator — it’s a property of the frame around it.',
+            },
+            {
+                title: 'The product inherits the same line.',
+                body:
+                    'This is why InSight is deterministic. A model never decides whether your incident is real, whether a log change is significant, or what belongs in a window — those are structural facts our engine computes and reproduces. In our product, AI only ever narrates what the deterministic engine has already ranked: on your infrastructure, opt-in, your own key, over a bounded fingerprint — never raw logs, never in the path that decides. Other “AI log analysis” hallucinates the finding. We rank deterministically and narrate optionally. The boundary is bright on purpose.',
+            },
+        ],
+        commit: {
+            title: 'What we commit to.',
+            items: [
+                {
+                    title: 'Determinism is a gate, not a claim.',
+                    description:
+                        'Every release passes a deterministic regression suite; same inputs produce the same output, and we test exactly that.',
+                },
+                {
+                    title: 'The guarantee path is model-free.',
+                    description:
+                        'Detection, ranking, significance, window membership — no model inference touches any of it. It is reproducible structural computation.',
+                },
+                {
+                    title: 'Your logs never leave your infrastructure.',
+                    description:
+                        'The CLI and Action run in your CI; nothing is shipped to us. When AI narration is enabled, it runs on your key and your machine, over a bounded fingerprint — not raw logs.',
+                },
+            ],
+        },
+        closing: 'We hold internally the discipline we sell externally. That’s the whole point.',
+        cta: 'Diff two logs',
+    },
+    howWeCompare: {
+        badge: 'A different machine',
+        title: 'How we compare',
+        subtitle: 'Short version: we’re not a cheaper anything. We’re a different machine.',
+        intro:
+            'You’re probably here to slot us next to a tool you already know. Fair — let’s do it honestly. But one thing makes the comparison strange before we start: almost everything on the shelf is a warehouse. It stores your observability data and competes on price, cardinality, and who hosts it. We don’t store it. We distil it into a bounded, deterministic fingerprint — on your own infrastructure. That’s not a cheaper warehouse. It’s a different machine. Here’s how that lands against the two tools people put us next to.',
+        versus: [
+            {
+                title: 'vs Datadog — a different machine, not a cheaper one',
+                body: [
+                    'Datadog’s model is accumulate-and-bill: ship everything to their cloud, pay by volume. When the bill bites, their own answer is to sample — decide which lines stay searchable and hope you didn’t drop the one that mattered. The famous Datadog invoice is the tax of the accumulate model, and sampling is the blind cut it forces.',
+                    'We don’t make that bill cheaper. We remove the reason to ship logs off-box at all: distil a complete behavioural fingerprint locally, keep your raw logs where they are. More logs, on-prem — the parachute for the cut teams are already making blind. The cost savings fall out of that, but cost isn’t the pitch: the pitch is that a deterministic structural fact — same inputs, same answer — is something a sampled, probabilistic warehouse structurally cannot hand you. You’re not buying a cheaper Datadog. You’re buying a different object.',
+                ],
+            },
+            {
+                title: 'vs Honeycomb — the same conviction, the opposite bet',
+                body: [
+                    'We start where Honeycomb starts: dumb storage is over, the intelligence is the product. They’re pushing observability forward, and so are we — same conviction, opposite directions. They’re not the enemy; the warehouse mindset is.',
+                    'Then the bet diverges, cleanly. Honeycomb bets on richness: keep every event at full cardinality so you can ask any question after the fact. We bet on compression: distil the behaviour up front into a bounded, comparable fingerprint, so “what changed / what’s wrong” is already structured when you look. Honeycomb is unbeatable when you don’t yet know what you’ll need to ask. We’re unbeatable when you need a deterministic, gateable, on-prem fact — reproducible bit for bit, the only kind you can put behind a hard CI gate. One bet asks you to instrument wide events; ours reads the logs you already write. Pick the bet that fits your problem — plenty of teams will want both.',
+                ],
+            },
+        ],
+        wrongTool: {
+            title: 'Where we’re the wrong tool',
+            body:
+                'We’re honest about our edges, because a tool that claims to win everything is lying. We are not a shared searchable UI for 200 engineers, not your compliance-retention store, and we will not fetch the exact payload user 4823 sent last Tuesday. That’s the warehouse’s job — keep it. We tell you what your system’s behaviour did and how it changed, deterministically, without shipping your logs anywhere. If your dominant need is org-wide ad-hoc search over raw history, we’re a complement, not a replacement.',
+        },
+        otel: {
+            title: 'Already on OpenTelemetry?',
+            body:
+                'Good — your logs are already well-formed, which means there’s even less reason to ship them somewhere to make sense of them. We distil them where they are, and you keep a sovereign fingerprint you own. Same inputs, same answer. Keep your logs.',
+        },
+        cta: 'Diff two logs',
+    },
     footer: {
         tagline: 'An indie engineering shop. C++ where it counts, web where it should.',
         rights: 'All rights reserved.',
@@ -456,6 +532,8 @@ const en = {
             pricing: 'Pricing',
             tierMatrix: 'Access profile',
             roadmap: 'Roadmap',
+            howWeBuild: 'How we build',
+            howWeCompare: 'How we compare',
             github: 'GitHub',
             contact: 'Contact',
             support: 'Support the build',
