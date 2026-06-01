@@ -158,9 +158,12 @@ function canaryDeploy(): Pair {
     return { baseline: run(501, false), changed: run(509, true) }
 }
 
-// ── Hot key: one client wedged hammering, throttling kicks in silently ───────
-// Zero errors — but a new "rate limit" template appears and dominates: a single
-// account is hammering one key. grep ERROR is clean; Sift flags the new behaviour.
+// ── Throttling takes over: a new template appears and dominates the run ───────
+// Zero errors — but a new "rate limit" template appears and takes over ~a third of
+// the run. The honest signal is its SHARE, not its existence: a text diff sees the
+// new lines; only a structural diff ranks the one template now dominating the stream.
+// (Per-account concentration — "which key is hammering" — is a future engine beat on
+// the field-distribution axis, NOT what fires today; do not claim it in the copy.)
 function hotKey(): Pair {
     const routes = [
         'GET  /api/feed', 'POST /api/event', 'GET  /api/profile', 'GET  /api/notifications',
@@ -247,8 +250,8 @@ export const diffPresets: DiffPreset[] = [
     },
     {
         id: 'hot-key',
-        label: 'Hot key / throttling',
-        description: 'No errors — but a new throttling line appears and dominates: one account is hammering one key. New behavior grep can’t see.',
+        label: 'Throttling takes over',
+        description: 'No errors — but a new throttling line appears and takes over a third of the run. A text diff shows the new lines exist; Sift ranks the one template now dominating the stream.',
         baseline: hotkey.baseline,
         changed: hotkey.changed,
     },
