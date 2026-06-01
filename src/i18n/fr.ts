@@ -22,10 +22,10 @@ const fr: typeof en = {
         badge: 'CodeRoast · du bruit des logs à la compréhension',
         tagline: 'Transformez le bruit des logs en compréhension.',
         subtitle:
-            'CodeRoast compresse les logs bruyants en une structure classée et déterministe — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets. Précision d’abord, et tourne sur votre infra. Commencez par comparer deux runs CI.',
+            'CodeRoast compresse le bruit de vos logs en une structure déterministe et hiérarchisée — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, plutôt que des gigaoctets. La précision avant tout, et tout tourne sur votre infra. Commencez par comparer deux runs CI.',
         cta: 'Diff de deux logs',
         ctaSecondary: 'Voir tous les produits',
-        trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
+        trust: 'déterministe · précision avant tout · tourne sur votre infra · logs jamais stockés',
     },
     vision: {
         badge: 'CodeRoast · la thèse MetaLog',
@@ -58,7 +58,7 @@ const fr: typeof en = {
                 {
                     title: 'L’IA vous donne un récit que vous ne pouvez pas reproduire.',
                     description:
-                        'Un « pourquoi ça a cassé » plausible, régénéré différemment à chaque fois. Rien sur quoi gater une release.',
+                        'Un « pourquoi ça a cassé » plausible, régénéré différemment à chaque fois. Rien qu’on puisse mettre derrière une gate.',
                 },
             ],
         },
@@ -123,7 +123,7 @@ const fr: typeof en = {
             rows: [
                 {
                     old: 'Échantillonne les events pour plafonner le coût — l’event rare est le premier à partir.',
-                    new: 'Garde le saillant, jette l’ennuyeux. Le fatal solitaire survit parce qu’il a scoré, pas parce qu’il était fréquent.',
+                    new: 'Garde le saillant, jette l’ennuyeux. Le fatal solitaire survit parce qu’il est saillant, pas parce qu’il était fréquent.',
                 },
                 {
                     old: 'L’instrumentation est le ticket d’entrée — réécrivez votre code en wide events avant de voir la moindre valeur.',
@@ -193,13 +193,84 @@ const fr: typeof en = {
             cta: 'Diff de deux logs',
         },
     },
-    diffShowcase: {
+    // FR PLACEHOLDER — EN strings verbatim, awaiting Eqya's French pass (do NOT
+    // machine-translate; the de-calque voice-check is PO's lane). Structure mirrors
+    // en.ts § sift 1:1 (enforced by `typeof en`).
+    sift: {
         eyebrow: 'Sift',
-        title: 'Votre CI est rouge. Quelles lignes comptent vraiment ?',
-        subtitle:
-            'Collez le dernier run vert et le run en échec. Sift classe ce qui a structurellement changé — nouvelles erreurs, un fichier de test devenu rouge, décalages de fréquence — et masque les centaines de lignes inchangées. Sans agent, sans installation ; un rapport partageable en ~90 secondes.',
-        cta: 'Diff de deux logs',
-        note: 'Gratuit · tourne dans votre session navigateur · logs jamais stockés',
+        hero: {
+            title: 'Vos tests passent. Vos logs disent l’inverse.',
+            subtitle:
+                'Réussite ou échec, ça tient en un bit ; et grep, encore faut-il savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un motif qui a envahi tout le run — puis fait taire les centaines de diffs sans intérêt. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent, sans compte, ~90 secondes.',
+            ctaPrimary: 'Ajouter l’Action',
+            ctaSecondary: 'Essayer dans le navigateur',
+            trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne le quittent jamais.',
+            samplePassed: 'les deux runs au vert',
+            kicker:
+                'Les deux runs sont au vert. Ni le statut du build ni grep n’y voient quoi que ce soit — il n’y a aucune erreur à chercher. Sift, lui, voit que votre cache a cessé de fonctionner en silence.',
+        },
+        comment: {
+            title: 'Il vit là où vous travaillez déjà.',
+            body:
+                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — indicatif par défaut, un gate strict quand vous le voulez. Un seul commentaire épinglé, mis à jour en place, déterministe. La chose la plus forte qu’il dira jamais, c’est celle qu’aucune coche verte ne dira :',
+        },
+        catches: {
+            title: 'Conçu pour les changements qui n’ont pas l’air d’en être.',
+            colChange: 'Ce qui a changé',
+            colTextDiff: 'Diff texte',
+            colPassFail: 'Pass/échec',
+            colSift: 'Sift',
+            rows: [
+                {
+                    change: 'Une ligne de succès disparue en silence (cache, retry, un chemin de code)',
+                    textDiff: 'noyée',
+                    passFail: 'invisible',
+                    sift: 'Disappeared : "…" — une ligne classée',
+                },
+                {
+                    change: 'La part d’un motif dans le run a bougé (4 % → 38 %)',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Frequency shift',
+                },
+                {
+                    change: 'Une erreur que vous avez corrigée a vraiment disparu',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Recovery — au vert : "votre correctif a marché"',
+                },
+                {
+                    change: 'Les mêmes erreurs qu’avant, mais un vrai changement dessous (leurre)',
+                    textDiff: 'noyé',
+                    passFail: 'invisible',
+                    sift: 'le bruit masqué, le vrai changement remonté',
+                },
+                {
+                    change: 'Un tout nouveau motif d’erreur',
+                    textDiff: 'noyé dans le bruit',
+                    passFail: 'invisible si les tests passent',
+                    sift: 'une ligne, classée par sévérité',
+                },
+            ],
+        },
+        free: {
+            title: 'Tout le produit sans état est gratuit. On ne plaisante pas.',
+            body:
+                'La CLI, la GitHub Action, le commentaire de PR, le gate bloquant — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur, et on ne le fera jamais. Le gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds, non.',
+            cta: 'Voir les paliers',
+        },
+        trust: {
+            title: 'Un fait sur lequel poser un gate.',
+            body:
+                'Mêmes entrées, même diff — au bit près, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière un gate CI bloquant ; un gate instable est désactivé en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas un gate. Rien n’est envoyé, pas de compte, pas d’agent — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+            cta: 'Comment on construit',
+        },
+        install: {
+            title: 'Deux fichiers de logs en entrée. Un rapport classé en sortie.',
+            actionLabel: 'L’Action',
+            cliLabel: 'La CLI',
+            cliLead: 'un seul binaire statique, aucun runtime —',
+        },
     },
     problem: {
         title: 'On ne livre pas une observabilité qu\'on n\'a jamais testée.',
@@ -209,7 +280,7 @@ const fr: typeof en = {
             {
                 title: 'Vos alertes marchent en staging — parce qu\'il ne s\'y passe rien.',
                 description:
-                    'Pas de rafales, pas de cascades, pas de records sales. Le premier vrai incident est le premier vrai test.',
+                    'Pas de rafales, pas de cascades, pas d\'enregistrements parasites. Le premier vrai incident est le premier vrai test.',
             },
             {
                 title: 'Vos dashboards sont jolis jusqu\'au moment où la cascade frappe.',
@@ -228,18 +299,18 @@ const fr: typeof en = {
         subtitle:
             'Lancez un scénario LogCraft déterministe et regardez InSight condenser le flux en templates, MetaLogs, preuves de détection et explication exploitable.',
         yamlLabel: 'scenario.yaml',
-        logsLabel: 'flux de preuve live',
+        logsLabel: 'flux de preuves en direct',
         cta: 'Ouvrir le Playground InSight',
     },
     features: {
-        title: 'Tous les boutons que la vraie vie a.',
+        title: 'Tous les réglages que la vraie vie impose.',
         subtitle:
             'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui modélise la forme du trafic, les pannes et la latence comme la prod — sur un seed que vous contrôlez.',
         items: [
             {
                 title: 'Déterministe par seed',
                 description:
-                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident bit-pour-bit.',
+                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine, n\'importe quel jour. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident au bit près.',
             },
             {
                 title: 'Plus de vingt formats',
@@ -264,7 +335,7 @@ const fr: typeof en = {
             {
                 title: 'Cœur C++20',
                 description:
-                    'Pipeline shardé, faible contention, microseconde. Tient des runs multi-millions de records sur un laptop.',
+                    'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions d\'enregistrements sur un simple portable.',
             },
         ],
     },
@@ -305,7 +376,7 @@ const fr: typeof en = {
         sift: {
             name: 'Sift',
             description:
-                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le coin d’entrée CI/CD : zéro infra, ~90 secondes.',
+                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le point d’entrée CI/CD : zéro infra, ~90 secondes.',
             status: 'Live · démo gratuite',
             highlights: [
                 'Classement du « ce qui a changé », bruit supprimé',
@@ -502,7 +573,7 @@ const fr: typeof en = {
                 title: 'face à Honeycomb — la même conviction, le pari inverse',
                 body: [
                     'On part d’où part Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
-                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, gateable, sur votre infra — reproductible au bit près, le seul genre qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
+                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, sur votre infra — reproductible au bit près, le seul qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
                 ],
             },
         ],
@@ -598,7 +669,7 @@ const fr: typeof en = {
             },
             train: {
                 tag: 'Formation on-call',
-                title: 'Former un on-call sans éveiller personne',
+                title: 'Former un on-call sans réveiller personne',
                 outcome:
                     'Donnez l’URL du Lab à un junior, un scénario avec cause racine connue, et laissez-le le traiter comme un vrai ticket. Rejouez le même seed dans toute l’équipe pour un benchmark juste.',
                 yamlSnippet:
@@ -647,7 +718,7 @@ const fr: typeof en = {
                 {
                     title: 'Stresser votre pipeline de logs',
                     description:
-                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, cascades et records mal formés.',
+                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux cascades et aux enregistrements malformés.',
                 },
                 {
                     title: 'Démontrer votre produit d\'observabilité',
@@ -935,14 +1006,14 @@ const fr: typeof en = {
         speed: 'Vitesse',
         cascade: 'Cascade',
         cascadeTip:
-            'Force un round d\'évaluation cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne le reste".',
+            'Force un cycle d\'évaluation de cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne tout le reste".',
         rate: 'Cadence',
         rateTip:
-            'Records par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
+            'Enregistrements par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
         errorsTip:
-            'Part de records marqués comme erreurs (0–100%). Force une panne sans toucher au YAML.',
+            'Part d\'enregistrements marqués comme erreurs (0–100%). Force une panne sans toucher au YAML.',
         burst: 'Rafale',
-        burstTip: 'Émet immédiatement N records en plus. Pour saturer les buffers de l\'agrégateur.',
+        burstTip: 'Émet immédiatement N enregistrements de plus. Pour saturer les buffers de l\'agrégateur.',
         apply: 'Appliquer',
         send: 'Envoyer',
         reset: 'Réinit.',
@@ -956,7 +1027,7 @@ const fr: typeof en = {
         unlockedTip:
             'Vous contrôlez cet agent — il ne suit plus les phases du scénario. Cliquez de nouveau pour reverrouiller (les sliders reviennent au scénario).',
         lockedTierRequired:
-            'Nécessite le tier {tier}. Changez d\'utilisateur (en haut à droite) pour un tier supérieur.',
+            'Nécessite le palier {tier}. Changez d\'utilisateur (en haut à droite) pour un palier supérieur.',
         lockedOperationRequired:
             'Nécessite la capacité {operation}. Changez d\'utilisateur (en haut à droite) pour accéder à ce contrôle.',
         seededAgentOwned:

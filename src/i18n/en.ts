@@ -191,13 +191,86 @@ const en = {
             cta: 'Diff two logs',
         },
     },
-    diffShowcase: {
+    // Sift product front door (/sift). Copy governed by
+    // technical_docs/product/web_copy.md § "Page: Sift" — final, not paraphrased.
+    // Engine-output mocks (the sample report rows, PR comment, install blocks)
+    // are language-neutral CLI/comment output and live in the page component, not
+    // here — only translatable prose is keyed.
+    sift: {
         eyebrow: 'Sift',
-        title: 'Your CI went red. Which lines actually matter?',
-        subtitle:
-            'Paste the last green run and the failing one. Sift ranks what structurally changed — new errors, a test file gone red, frequency shifts — and mutes the hundreds of lines that didn\'t. No agent, no setup; a shareable report in about 90 seconds.',
-        cta: 'Diff two logs',
-        note: 'Free · runs in your browser session · logs never stored',
+        hero: {
+            title: 'Your tests pass. Your logs say otherwise.',
+            subtitle:
+                'Pass/fail is one bit; grep needs to know what to look for. Sift reads the structure of two runs and ranks what actually changed — a success line that silently vanished, an error you fixed, a pattern that took over the run — then mutes the hundreds of diffs that don\'t matter. Two log files in, a ranked report out. No agent, no account, ~90 seconds.',
+            ctaPrimary: 'Add the Action',
+            ctaSecondary: 'Try it in your browser',
+            trust: 'Free, forever · runs in your CI · your logs never leave it.',
+            samplePassed: 'both runs passed',
+            kicker:
+                'Both runs are green. Pass/fail sees nothing. Grep sees nothing — there\'s no error to search for. Sift sees your cache silently stopped working.',
+        },
+        comment: {
+            title: 'It lives where you already work.',
+            body:
+                'Wire Sift in once and every PR gets a structural diff as a comment — advisory by default, a hard gate when you want one. One sticky comment, updated in place, deterministic. The loudest thing it ever says is the thing no green checkmark will:',
+        },
+        catches: {
+            title: 'Built for the changes that don\'t look like changes.',
+            colChange: 'What changed',
+            colTextDiff: 'Text diff',
+            colPassFail: 'Pass/fail',
+            colSift: 'Sift',
+            rows: [
+                {
+                    change: 'A success line silently vanished (cache, retry, a code path)',
+                    textDiff: 'buried',
+                    passFail: 'invisible',
+                    sift: 'Disappeared: "…" — one ranked line',
+                },
+                {
+                    change: 'A pattern\'s share of the run moved (4% → 38%)',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Frequency shift',
+                },
+                {
+                    change: 'An error you fixed actually cleared',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Recovery — green: "your fix worked"',
+                },
+                {
+                    change: 'Same errors as before, but a real change underneath (decoy)',
+                    textDiff: 'drowned',
+                    passFail: 'invisible',
+                    sift: 'the noise muted, the real change surfaced',
+                },
+                {
+                    change: 'A brand-new error pattern',
+                    textDiff: 'buried in noise',
+                    passFail: 'invisible if tests pass',
+                    sift: 'one line, ranked by severity',
+                },
+            ],
+        },
+        free: {
+            title: 'The whole stateless product is free. We mean it.',
+            body:
+                'The CLI, the GitHub Action, the PR comment, the hard-fail gate — on any repo, public or private. We don\'t meter it and we never will. The gate is not a paywall: a team that trusts the comment just adds exit 1 itself — charging for an if statement would be insulting. What\'s paid is scale and memory — spanning an org (multi-repo, seats, SSO) and a deterministic history of your CI over time. A one-off diff is substitutable; a structural record of how your builds drift is not.',
+            cta: 'See the tiers',
+        },
+        trust: {
+            title: 'A fact you can gate on.',
+            body:
+                'Same inputs, same diff — bit for bit, across machines. That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs on your key over a bounded fingerprint — never raw logs, never in the path that decides.',
+            cta: 'How we build',
+        },
+        install: {
+            title: 'Two log files in. A ranked report out.',
+            actionLabel: 'The Action',
+            cliLabel: 'The CLI',
+            cliLead: 'one static binary, no runtime —',
+        },
     },
     problem: {
         title: 'You can\'t ship observability you\'ve never tested.',
