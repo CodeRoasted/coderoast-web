@@ -87,6 +87,22 @@ export default function Footer() {
                                     </a>
                                 </li>
                                 <li>
+                                    <Link
+                                        to="/how-we-build"
+                                        className="text-gray-400 hover:text-brand-400 transition-colors"
+                                    >
+                                        {t.footer.links.howWeBuild}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="/how-we-compare"
+                                        className="text-gray-400 hover:text-brand-400 transition-colors"
+                                    >
+                                        {t.footer.links.howWeCompare}
+                                    </Link>
+                                </li>
+                                <li>
                                     <a
                                         href="https://github.com/CodeRoasted"
                                         target="_blank"

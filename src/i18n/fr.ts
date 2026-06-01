@@ -16,6 +16,7 @@ const fr: typeof en = {
         contact: 'Contact',
         signIn: 'Connexion',
         back: 'Retour',
+        vision: 'Vision',
     },
     hero: {
         badge: 'CodeRoast · du bruit des logs à la compréhension',
@@ -25,6 +26,172 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
         ctaSecondary: 'Voir tous les produits',
         trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
+    },
+    vision: {
+        badge: 'CodeRoast · la thèse MetaLog',
+        titleLead: 'Pas stockés. Pas échantillonnés. Pas exfiltrés.',
+        titleAccent: 'Distillés.',
+        subtitle:
+            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, re-dérivable jusqu’à la ligne source exacte, et qui ne quitte jamais votre machine. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une lentille sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
+        ctaPrimary: 'Diff de deux logs',
+        ctaSecondary: 'Voir les produits',
+        compareCta: 'Voir comment on se compare',
+        pain: {
+            title: 'Le modèle que tout le monde a fini par accepter est cassé, en silence.',
+            subtitle: 'Quatre compromis qu’on vous a présentés comme normaux.',
+            points: [
+                {
+                    title: 'Vous rationnez vos propres logs.',
+                    description:
+                        'Pour survivre à la facture au Go, les équipes suppriment des lignes de log à la main — en s’aveuglant volontairement pour réduire une facture.',
+                },
+                {
+                    title: 'Vous échantillonnez justement celui qui comptait.',
+                    description:
+                        'À l’échelle, le fournisseur jette des events. Le fatal rare — celui dont vous aviez besoin — est le premier à disparaître.',
+                },
+                {
+                    title: 'Vos données vivent sur les serveurs d’un autre.',
+                    description:
+                        'Les logs quittent votre périmètre pour être cherchés, et l’IA les lit bruts. La conformité déteste ça ; vous aussi devriez.',
+                },
+                {
+                    title: 'L’IA vous donne un récit que vous ne pouvez pas reproduire.',
+                    description:
+                        'Un « pourquoi ça a cassé » plausible, régénéré différemment à chaque fois. Rien sur quoi gater une release.',
+                },
+            ],
+        },
+        artifact: {
+            title: 'Voici le MetaLog.',
+            subtitle:
+                'Une empreinte bornée et déterministe par fenêtre de votre flux. C’est ça, le produit entier — tout le reste ne fait que le lire.',
+            steps: [
+                {
+                    step: 'Des gigaoctets en entrée',
+                    description:
+                        'Pointez-le sur un flux brut, non instrumenté — sortie CI, un service, une flotte entière.',
+                },
+                {
+                    step: '4 Ko en sortie',
+                    description:
+                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre machine.',
+                },
+                {
+                    step: 'Attrape la régression',
+                    description:
+                        'La saillance fait remonter le fatal solitaire seule — sans baseline, sans requête, sans seuil à régler.',
+                },
+                {
+                    step: 'Diff, instantané',
+                    description:
+                        'Deux empreintes en entrée, un « ce qui a changé » classé en sortie — et chaque trouvaille se re-dérive jusqu’à la ligne source exacte.',
+                },
+            ],
+            badges: [
+                'zéro instrumentation',
+                'aucun langage de requête',
+                'rien ne quitte votre machine',
+                'bit-identique à chaque run',
+            ],
+        },
+        punchThem: 'L’ancien modèle',
+        punchUs: 'Le MetaLog',
+        punches: [
+            {
+                title: 'Eux vous font supprimer vos logs. Nous, on vous dit d’en envoyer plus.',
+                them:
+                    'Le secret honteux de la tarification au Go : les équipes ne font pas que payer — elles rationnent. Des ingénieurs passent du vrai temps de sprint à arracher des lignes de log pour réduire une facture cloud, s’aveuglant volontairement. C’est aussi de la lossiness — sauf qu’elle est décidée à la main, en amont, avant que quiconque sache ce qui comptera, et payée en heures d’ingénierie. La pire qui soit.',
+                us:
+                    'Envoyez tout. Loggez plus, pas moins. Le coût cesse d’être le verrou — l’empreinte est bornée et vos logs bruts ne quittent jamais votre machine. Plus aucun ingénieur ne trie le grain de l’ivraie pour tenir un budget, jamais. La distillation est automatique et dirigée par la saillance : le fatal rare survit parce qu’il compte, pas parce que quelqu’un a bien deviné le trimestre dernier.',
+            },
+            {
+                title: 'Votre facture IA est la prochaine à partir à la verticale.',
+                them:
+                    'Tout a un LLM greffé dessus maintenant — et les logs bruts sont la chose la plus chère qu’on puisse lui donner à manger. Vous payez au token pour des gigaoctets de bruit, et le modèle s’y noie exactement comme un humain.',
+                us:
+                    'Ne collez pas vos logs — collez ce qui compte. Un MetaLog est un brief borné et pré-structuré : une fraction des tokens, une fraction du coût. Et un LLM lit un MetaLog mieux que presque n’importe quel humain ne lit le brut — la structure est déjà faite. Moins cher ET plus net.',
+            },
+        ],
+        tie:
+            'Tout le monde est lossy à l’échelle. La seule question, c’est comment vous perdez. Eux perdent à l’aveugle et en amont — un humain qui supprime des logs, un fournisseur qui les échantillonne. Nous perdons de façon informée et récupérable : la saillance décide quoi garder, et chaque insight se re-dérive jusqu’à la ligne source exacte.',
+        contrast: {
+            title: 'Ce que le MetaLog n’est pas.',
+            subtitle: 'Deux modèles pour la même douleur. L’un accumule. L’autre distille.',
+            columnOld: 'Accumuler · Datadog · Splunk · Honeycomb',
+            columnNew: 'Distiller · MetaLog',
+            rows: [
+                {
+                    old: 'Échantillonne les events pour plafonner le coût — l’event rare est le premier à partir.',
+                    new: 'Garde le saillant, jette l’ennuyeux. Le fatal solitaire survit parce qu’il a scoré, pas parce qu’il était fréquent.',
+                },
+                {
+                    old: 'L’instrumentation est le ticket d’entrée — réécrivez votre code en wide events avant de voir la moindre valeur.',
+                    new: 'Lit les logs non structurés que vous avez déjà. Instrumentation optionnelle, jamais requise.',
+                },
+                {
+                    old: 'Vos logs vivent sur leurs serveurs ; leur IA les lit bruts.',
+                    new: 'On-prem et souverain — gardez vos logs. Le LLM ne voit qu’un brief borné et assaini.',
+                },
+                {
+                    old: 'Un « pourquoi ça a cassé » probabiliste que vous ne pouvez pas reproduire.',
+                    new: 'Un fait structurel déterministe — bit-identique, citable, re-dérivable à la ligne source. Le seul qu’on met derrière un gate CI dur.',
+                },
+                {
+                    old: 'Payer pour stocker des gigaoctets à vie — et en lire moins de 5 %.',
+                    new: 'Une empreinte bornée, ~150:1. La faible empreinte est un effet de bord de la distillation, pas le but.',
+                },
+            ],
+            otelNote:
+                'Déjà sur OTel ? On distille ça aussi — la structure est du signal gratuit. Et vous obtenez quand même un MetaLog souverain, pas un énième entrepôt de spans qui vous enferme.',
+        },
+        hub: {
+            title: 'Un flux en entrée. Un MetaLog en sortie. Tout le reste est une lentille.',
+            subtitle:
+                'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une lentille différente sur la même empreinte.',
+            lenses: [
+                {
+                    name: 'Sift',
+                    status: 'Live',
+                    description: 'Diff structurel de CI. Deux runs en entrée, un « ce qui a changé » classé en sortie.',
+                },
+                {
+                    name: 'Détection streaming',
+                    status: 'Beta',
+                    description:
+                        'Détection d’anomalies continue, précision d’abord — une alerte, un vrai incident.',
+                },
+                {
+                    name: 'Forwarding MetaLog',
+                    status: 'Bientôt',
+                    description:
+                        'Transférez des empreintes, pas des gigaoctets bruts — ~150:1 sur votre facture d’observabilité.',
+                },
+                {
+                    name: 'Validation canary',
+                    status: 'Bientôt',
+                    description:
+                        'diff(baseline, canary) comme signal de kill structurel avant que les métriques ne bougent.',
+                },
+                {
+                    name: 'Post-mortem d’incident',
+                    status: 'Bientôt',
+                    description: 'Rejouez l’évolution de la structure, à partir des empreintes stockées.',
+                },
+                {
+                    name: 'Débogueur IA',
+                    status: 'Bientôt',
+                    description:
+                        'Donnez à un LLM un brief borné dans le même contexte que votre code — jamais de logs bruts.',
+                },
+            ],
+        },
+        closing: {
+            title: 'La vision, c’est le MetaLog. Le chemin d’entrée, c’est Sift.',
+            subtitle:
+                'Comparez deux runs CI en environ 90 secondes — sans agent, sans installation, logs jamais stockés. Le même artefact alimente tout ce qui précède.',
+            cta: 'Diff de deux logs',
+        },
     },
     diffShowcase: {
         eyebrow: 'Sift',
@@ -276,6 +443,81 @@ const fr: typeof en = {
             cta: 'Nous contacter',
         },
     },
+    howWeBuild: {
+        badge: 'Discipline d’ingénierie',
+        title: 'Comment on construit',
+        subtitle: 'Le déterminisme est une promesse produit. Elle commence par notre façon de construire.',
+        intro:
+            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — au bit près. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
+        sections: [
+            {
+                title: 'Générer n’est pas décider.',
+                body:
+                    'On traite l’IA comme tout outil puissant et non spécifié : on la borne. L’IA génère — boilerplate, échafaudage de tests, exploration. Les contrats la bornent — types, tests unitaires et de régression, surfaces d’API, revue humaine. Un humain décide. Rien n’atteint une release sur la seule parole d’un modèle ; ça l’atteint parce que c’est passé par une gate qu’un humain a conçue. La fiabilité n’est pas une propriété du générateur — c’est une propriété du cadre qui l’entoure.',
+            },
+            {
+                title: 'Le produit hérite de la même ligne.',
+                body:
+                    'C’est pour ça qu’InSight est déterministe. Un modèle ne décide jamais si votre incident est réel, si un changement de log est significatif, ni ce qui appartient à une fenêtre — ce sont des faits structurels que notre moteur calcule et reproduit. Dans notre produit, l’IA ne fait jamais que raconter ce que le moteur déterministe a déjà classé : sur votre infra, en opt-in, avec votre propre clé, sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide. Les autres « analyses de logs par IA » hallucinent le résultat. Nous, on classe de façon déterministe et on raconte en option. La frontière est nette, volontairement.',
+            },
+        ],
+        commit: {
+            title: 'Ce sur quoi on s’engage.',
+            items: [
+                {
+                    title: 'Le déterminisme est une gate, pas une promesse en l’air.',
+                    description:
+                        'Chaque release passe une suite de régression déterministe ; mêmes entrées, même sortie, et c’est exactement ce qu’on teste.',
+                },
+                {
+                    title: 'Le chemin de garantie est sans modèle.',
+                    description:
+                        'Détection, classement, significativité, appartenance à une fenêtre — aucune inférence de modèle n’y touche. C’est du calcul structurel reproductible.',
+                },
+                {
+                    title: 'Vos logs ne quittent jamais votre infra.',
+                    description:
+                        'La CLI et l’Action tournent dans votre CI ; rien ne nous est envoyé. Quand la narration IA est activée, elle tourne avec votre clé, sur votre machine, sur une empreinte bornée — pas les logs bruts.',
+                },
+            ],
+        },
+        closing: 'On tient en interne la discipline qu’on vend en externe. C’est tout l’enjeu.',
+        cta: 'Diff de deux logs',
+    },
+    howWeCompare: {
+        badge: 'Une machine différente',
+        title: 'Comment on se compare',
+        subtitle: 'Version courte : on n’est pas un truc moins cher. On est une machine différente.',
+        intro:
+            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Normal — faisons-le honnêtement. Mais une chose rend la comparaison étrange avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et ça se bat sur le prix, la cardinalité, et qui l’héberge. Nous, on ne le stocke pas. On le distille en une empreinte bornée et déterministe — sur votre propre infra. Ce n’est pas un entrepôt moins cher. C’est une machine différente. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
+        versus: [
+            {
+                title: 'face à Datadog — une machine différente, pas une moins chère',
+                body: [
+                    'Le modèle de Datadog, c’est accumuler-et-facturer : envoyez tout vers leur cloud, payez au volume. Quand la facture pique, leur propre réponse, c’est d’échantillonner — décider quelles lignes restent cherchables et prier pour ne pas avoir jeté celle qui comptait. La fameuse facture Datadog est la taxe du modèle d’accumulation, et l’échantillonnage en est la coupe à l’aveugle.',
+                    'On ne rend pas cette facture moins chère. On supprime la raison même d’exfiltrer vos logs : on distille une empreinte comportementale complète en local, et vos logs bruts restent là où ils sont. Plus de logs, sur votre infra — le parachute de la coupe que les équipes font déjà à l’aveugle. Les économies en découlent, mais le coût n’est pas l’argument : l’argument, c’est qu’un fait structurel déterministe — mêmes entrées, même réponse — est quelque chose qu’un entrepôt échantillonné et probabiliste ne peut structurellement pas vous donner. Vous n’achetez pas un Datadog moins cher. Vous achetez un objet différent.',
+                ],
+            },
+            {
+                title: 'face à Honeycomb — la même conviction, le pari inverse',
+                body: [
+                    'On part d’où part Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
+                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, gateable, sur votre infra — reproductible au bit près, le seul genre qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
+                ],
+            },
+        ],
+        wrongTool: {
+            title: 'Là où on est le mauvais outil',
+            body:
+                'On est honnêtes sur nos limites, parce qu’un outil qui prétend tout gagner ment. On n’est pas une UI de recherche partagée pour 200 ingénieurs, pas votre stockage de rétention conformité, et on n’ira pas vous chercher le payload exact que l’utilisateur 4823 a envoyé mardi dernier. Ça, c’est le boulot de l’entrepôt — gardez-le. Nous, on vous dit ce que le comportement de votre système a fait et comment il a changé, de façon déterministe, sans exfiltrer vos logs où que ce soit. Si votre besoin dominant, c’est la recherche ad-hoc à l’échelle de l’org sur tout l’historique brut, on est un complément, pas un remplaçant.',
+        },
+        otel: {
+            title: 'Déjà sous OpenTelemetry ?',
+            body:
+                'Tant mieux — vos logs sont déjà bien formés, donc il y a encore moins de raison de les exfiltrer quelque part pour leur donner du sens. On les distille là où ils sont, et vous gardez une empreinte souveraine qui vous appartient. Mêmes entrées, même réponse. Gardez vos logs.',
+        },
+        cta: 'Diff de deux logs',
+    },
     footer: {
         tagline: 'Atelier indé. C++ là où ça compte, web là où il le faut.',
         rights: 'Tous droits réservés.',
@@ -292,6 +534,8 @@ const fr: typeof en = {
             pricing: 'Tarifs',
             tierMatrix: 'Profil d\'accès',
             roadmap: 'Roadmap',
+            howWeBuild: 'Comment on construit',
+            howWeCompare: 'Comment on se compare',
             github: 'GitHub',
             contact: 'Contact',
             support: 'Soutenir',

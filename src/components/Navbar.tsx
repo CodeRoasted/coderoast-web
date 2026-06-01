@@ -55,6 +55,12 @@ export default function Navbar() {
                     {/* Desktop links — umbrella only: Products ▾ + Pricing (soon) */}
                     <div className="hidden lg:flex items-center gap-7">
                         <ProductsMenu />
+                        <Link
+                            to="/vision"
+                            className="text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
+                        >
+                            {t.nav.vision}
+                        </Link>
                         <span className={disabled} title="Pricing coming soon">
                             {t.nav.pricing}
                         </span>
@@ -106,6 +112,13 @@ export default function Navbar() {
                     >
                         <div className="px-4 py-4 space-y-3">
                             <ProductsMobileLinks onNavigate={() => setIsOpen(false)} />
+                            <Link
+                                to="/vision"
+                                onClick={() => setIsOpen(false)}
+                                className="block text-sm font-medium text-gray-300 hover:text-brand-400 transition-colors"
+                            >
+                                {t.nav.vision}
+                            </Link>
                             <span className={`block ${disabled}`}>{t.nav.pricing}</span>
                             <Link
                                 to="/diff"

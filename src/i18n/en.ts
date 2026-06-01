@@ -14,6 +14,7 @@ const en = {
         contact: 'Contact',
         signIn: 'Sign in',
         back: 'Back',
+        vision: 'Vision',
     },
     hero: {
         badge: 'CodeRoast · log noise → comprehension',
@@ -23,6 +24,172 @@ const en = {
         cta: 'Diff two logs',
         ctaSecondary: 'See all products',
         trust: 'deterministic · precision-first · runs on your infra · logs never stored',
+    },
+    vision: {
+        badge: 'CodeRoast · the MetaLog thesis',
+        titleLead: 'Not stored. Not sampled. Not shipped.',
+        titleAccent: 'Distilled.',
+        subtitle:
+            'CodeRoast distils any log stream into a MetaLog — a small, deterministic fingerprint of what your system actually did. Bit-identical across runs, citable, re-derivable to the exact source line, and it never leaves your box. Sift, anomaly detection, AI triage: every product is just a lens on that one artifact. Reading 4 KB instead of storing gigabytes is the side effect — not the pitch.',
+        ctaPrimary: 'Diff two logs',
+        ctaSecondary: 'See the products',
+        compareCta: 'See how we compare',
+        pain: {
+            title: 'The model everyone settled for is quietly broken.',
+            subtitle: 'Four compromises you’ve been told are normal.',
+            points: [
+                {
+                    title: 'You ration your own logging.',
+                    description:
+                        'To survive the per-GB bill, teams delete log lines by hand — blinding the system on purpose to shrink an invoice.',
+                },
+                {
+                    title: 'You sample away the one that mattered.',
+                    description:
+                        'At scale the vendor drops events. The rare fatal — the one you needed — is the first to vanish.',
+                },
+                {
+                    title: 'Your data lives on someone else’s servers.',
+                    description:
+                        'Logs leave your perimeter to be searched, and the AI reads them raw. Compliance hates it; so should you.',
+                },
+                {
+                    title: 'The AI hands you a story you can’t reproduce.',
+                    description:
+                        'A plausible “why it failed”, regenerated differently every time. Nothing you can gate a release on.',
+                },
+            ],
+        },
+        artifact: {
+            title: 'Meet the MetaLog.',
+            subtitle:
+                'One bounded, deterministic fingerprint per window of your stream. This is the whole product — everything else just reads it.',
+            steps: [
+                {
+                    step: 'Gigabytes in',
+                    description:
+                        'Point it at a raw, uninstrumented stream — CI output, a service, a whole fleet.',
+                },
+                {
+                    step: '4 KB out',
+                    description:
+                        'It distils to a bounded structural fingerprint. ~150:1, and it never leaves your box.',
+                },
+                {
+                    step: 'Catches the regression',
+                    description:
+                        'Salience surfaces the lone fatal on its own — no baseline, no query, no threshold tuned.',
+                },
+                {
+                    step: 'Diff it, instantly',
+                    description:
+                        'Two fingerprints in, a ranked “what changed” out — and every finding re-derives to the exact source line.',
+                },
+            ],
+            badges: [
+                'no instrumentation',
+                'no query language',
+                'nothing leaves your box',
+                'bit-identical every run',
+            ],
+        },
+        punchThem: 'The old model',
+        punchUs: 'The MetaLog',
+        punches: [
+            {
+                title: 'They make you delete your logs. We tell you to send more.',
+                them:
+                    'The dirty secret of per-GB pricing: teams don’t just pay — they ration. Engineers burn real sprint time ripping out log lines to shrink a cloud invoice, blinding the system on purpose. That’s lossiness too — decided by hand, upfront, before anyone knows what will matter, and paid for in engineering hours. The worst kind there is.',
+                us:
+                    'Send everything. Log more, not less. Cost stops being the gate — the fingerprint is bounded and your raw logs never leave your box. No engineer triages signal from noise to fit a budget, ever again. The distillation is automatic and salience-directed: the rare fatal survives because it matters, not because someone guessed right last quarter.',
+            },
+            {
+                title: 'Your AI bill is the next one going vertical.',
+                them:
+                    'Everything has an LLM bolted on now — and raw logs are the single most expensive thing you can feed one. You pay per token for gigabytes of noise, and the model drowns in it exactly like a human would.',
+                us:
+                    'Don’t paste your logs — paste what matters. A MetaLog is a bounded, pre-structured brief: a fraction of the tokens, a fraction of the cost. And an LLM reads a MetaLog better than almost any human reads the raw — the structure is already done. Cheaper and sharper.',
+            },
+        ],
+        tie:
+            'Everyone is lossy at scale. The only question is how you lose. They lose blind and upfront — a human deleting logs, a vendor sampling them away. We lose informed and recoverable: salience decides what to keep, and every insight re-derives to the exact source line.',
+        contrast: {
+            title: 'What the MetaLog is not.',
+            subtitle: 'Two models for the same pain. One accumulates. One distils.',
+            columnOld: 'Accumulate · Datadog · Splunk · Honeycomb',
+            columnNew: 'Distil · MetaLog',
+            rows: [
+                {
+                    old: 'Samples events away to cap cost — the rare event is the first to go.',
+                    new: 'Keeps the salient, drops the boring. The lone fatal survives because it scored, not because it was frequent.',
+                },
+                {
+                    old: 'Instrumentation is the price of admission — rewrite your code into wide events before you see any value.',
+                    new: 'Reads the unstructured logs you already have. Instrumentation optional, never required.',
+                },
+                {
+                    old: 'Your logs live on their servers; their AI reads them raw.',
+                    new: 'On-prem and sovereign — keep your logs. The LLM only ever sees a bounded, sanitized brief.',
+                },
+                {
+                    old: 'A probabilistic “why it failed” you can’t reproduce.',
+                    new: 'A deterministic structural fact — bit-identical, citable, re-derivable to the source line. The only kind you can put behind a hard CI gate.',
+                },
+                {
+                    old: 'Pay to store gigabytes forever — and read under 5% of them.',
+                    new: 'A bounded fingerprint, ~150:1. The small footprint is a side effect of distilling, not the point.',
+                },
+            ],
+            otelNote:
+                'Already on OTel? We distil that too — the structure is free signal. You still get a sovereign MetaLog, not another span store to be locked into.',
+        },
+        hub: {
+            title: 'One stream in. One MetaLog out. Everything else is a lens.',
+            subtitle:
+                'The slate grows; the artifact underneath stays the same. Each product is a different lens on the same fingerprint.',
+            lenses: [
+                {
+                    name: 'Sift',
+                    status: 'Live',
+                    description: 'Structural CI diff. Two runs in, a ranked “what changed” out.',
+                },
+                {
+                    name: 'Streaming detection',
+                    status: 'Beta',
+                    description:
+                        'Continuous, precision-first anomaly detection — one alert, one real incident.',
+                },
+                {
+                    name: 'MetaLog forwarding',
+                    status: 'Soon',
+                    description:
+                        'Forward fingerprints, not raw gigabytes — ~150:1 off your observability bill.',
+                },
+                {
+                    name: 'Canary validation',
+                    status: 'Soon',
+                    description:
+                        'diff(baseline, canary) as a structural kill-signal before the metrics move.',
+                },
+                {
+                    name: 'Incident postmortem',
+                    status: 'Soon',
+                    description: 'Replay how the structure evolved, from stored fingerprints.',
+                },
+                {
+                    name: 'AI debugger',
+                    status: 'Soon',
+                    description:
+                        'Feed an LLM a bounded brief in the same context as your code — never raw logs.',
+                },
+            ],
+        },
+        closing: {
+            title: 'The vision is the MetaLog. The way in is Sift.',
+            subtitle:
+                'Diff two CI runs in about 90 seconds — no agent, no setup, logs never stored. The same artifact powers everything above.',
+            cta: 'Diff two logs',
+        },
     },
     diffShowcase: {
         eyebrow: 'Sift',
@@ -274,6 +441,81 @@ const en = {
             cta: 'Contact us',
         },
     },
+    howWeBuild: {
+        badge: 'Engineering discipline',
+        title: 'How we build',
+        subtitle: 'Determinism is a product promise. It starts with how we engineer.',
+        intro:
+            'CodeRoast makes one guarantee: same inputs, same output — bit for bit. A diff you can put behind a CI gate. That isn’t a slogan; it’s an engineering discipline, and it governs everything we ship — including how we use our own tools.',
+        sections: [
+            {
+                title: 'Generation is not decision.',
+                body:
+                    'We treat AI the way we treat any powerful, unspecified tool: bounded. AI generates — boilerplate, test scaffolding, exploration. Contracts bound it — types, unit and regression tests, API surfaces, human review. A human decides. Nothing reaches a release on a model’s say-so; it reaches a release because it passed a gate a human designed. Reliability isn’t a property of the generator — it’s a property of the frame around it.',
+            },
+            {
+                title: 'The product inherits the same line.',
+                body:
+                    'This is why InSight is deterministic. A model never decides whether your incident is real, whether a log change is significant, or what belongs in a window — those are structural facts our engine computes and reproduces. In our product, AI only ever narrates what the deterministic engine has already ranked: on your infrastructure, opt-in, your own key, over a bounded fingerprint — never raw logs, never in the path that decides. Other “AI log analysis” hallucinates the finding. We rank deterministically and narrate optionally. The boundary is bright on purpose.',
+            },
+        ],
+        commit: {
+            title: 'What we commit to.',
+            items: [
+                {
+                    title: 'Determinism is a gate, not a claim.',
+                    description:
+                        'Every release passes a deterministic regression suite; same inputs produce the same output, and we test exactly that.',
+                },
+                {
+                    title: 'The guarantee path is model-free.',
+                    description:
+                        'Detection, ranking, significance, window membership — no model inference touches any of it. It is reproducible structural computation.',
+                },
+                {
+                    title: 'Your logs never leave your infrastructure.',
+                    description:
+                        'The CLI and Action run in your CI; nothing is shipped to us. When AI narration is enabled, it runs on your key and your machine, over a bounded fingerprint — not raw logs.',
+                },
+            ],
+        },
+        closing: 'We hold internally the discipline we sell externally. That’s the whole point.',
+        cta: 'Diff two logs',
+    },
+    howWeCompare: {
+        badge: 'A different machine',
+        title: 'How we compare',
+        subtitle: 'Short version: we’re not a cheaper anything. We’re a different machine.',
+        intro:
+            'You’re probably here to slot us next to a tool you already know. Fair — let’s do it honestly. But one thing makes the comparison strange before we start: almost everything on the shelf is a warehouse. It stores your observability data and competes on price, cardinality, and who hosts it. We don’t store it. We distil it into a bounded, deterministic fingerprint — on your own infrastructure. That’s not a cheaper warehouse. It’s a different machine. Here’s how that lands against the two tools people put us next to.',
+        versus: [
+            {
+                title: 'vs Datadog — a different machine, not a cheaper one',
+                body: [
+                    'Datadog’s model is accumulate-and-bill: ship everything to their cloud, pay by volume. When the bill bites, their own answer is to sample — decide which lines stay searchable and hope you didn’t drop the one that mattered. The famous Datadog invoice is the tax of the accumulate model, and sampling is the blind cut it forces.',
+                    'We don’t make that bill cheaper. We remove the reason to ship logs off-box at all: distil a complete behavioural fingerprint locally, keep your raw logs where they are. More logs, on-prem — the parachute for the cut teams are already making blind. The cost savings fall out of that, but cost isn’t the pitch: the pitch is that a deterministic structural fact — same inputs, same answer — is something a sampled, probabilistic warehouse structurally cannot hand you. You’re not buying a cheaper Datadog. You’re buying a different object.',
+                ],
+            },
+            {
+                title: 'vs Honeycomb — the same conviction, the opposite bet',
+                body: [
+                    'We start where Honeycomb starts: dumb storage is over, the intelligence is the product. They’re pushing observability forward, and so are we — same conviction, opposite directions. They’re not the enemy; the warehouse mindset is.',
+                    'Then the bet diverges, cleanly. Honeycomb bets on richness: keep every event at full cardinality so you can ask any question after the fact. We bet on compression: distil the behaviour up front into a bounded, comparable fingerprint, so “what changed / what’s wrong” is already structured when you look. Honeycomb is unbeatable when you don’t yet know what you’ll need to ask. We’re unbeatable when you need a deterministic, gateable, on-prem fact — reproducible bit for bit, the only kind you can put behind a hard CI gate. One bet asks you to instrument wide events; ours reads the logs you already write. Pick the bet that fits your problem — plenty of teams will want both.',
+                ],
+            },
+        ],
+        wrongTool: {
+            title: 'Where we’re the wrong tool',
+            body:
+                'We’re honest about our edges, because a tool that claims to win everything is lying. We are not a shared searchable UI for 200 engineers, not your compliance-retention store, and we will not fetch the exact payload user 4823 sent last Tuesday. That’s the warehouse’s job — keep it. We tell you what your system’s behaviour did and how it changed, deterministically, without shipping your logs anywhere. If your dominant need is org-wide ad-hoc search over raw history, we’re a complement, not a replacement.',
+        },
+        otel: {
+            title: 'Already on OpenTelemetry?',
+            body:
+                'Good — your logs are already well-formed, which means there’s even less reason to ship them somewhere to make sense of them. We distil them where they are, and you keep a sovereign fingerprint you own. Same inputs, same answer. Keep your logs.',
+        },
+        cta: 'Diff two logs',
+    },
     footer: {
         tagline: 'An indie engineering shop. C++ where it counts, web where it should.',
         rights: 'All rights reserved.',
@@ -290,6 +532,8 @@ const en = {
             pricing: 'Pricing',
             tierMatrix: 'Access profile',
             roadmap: 'Roadmap',
+            howWeBuild: 'How we build',
+            howWeCompare: 'How we compare',
             github: 'GitHub',
             contact: 'Contact',
             support: 'Support the build',
