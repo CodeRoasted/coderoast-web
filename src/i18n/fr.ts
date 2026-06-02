@@ -641,7 +641,7 @@ const fr: typeof en = {
         title: 'Ce qui nous différencie',
         subtitle: 'Version courte : on ne fait pas moins cher. On fait autre chose.',
         intro:
-            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Légitime — alors soyons honnêtes. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre conception. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
+            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. C’est légitime. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre conception. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
         versus: [
             {
                 title: 'face à Datadog — une autre conception, pas une moins chère',

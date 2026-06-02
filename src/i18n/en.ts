@@ -656,7 +656,7 @@ const en = {
         title: 'How we compare',
         subtitle: 'Short version: we’re not a cheaper anything. We’re a different machine.',
         intro:
-            'You’re probably here to slot us next to a tool you already know. Fair — let’s do it honestly. But one thing makes the comparison strange before we start: almost everything on the shelf is a warehouse. It stores your observability data and competes on price, cardinality, and who hosts it. We don’t store it. We distil it into a bounded, deterministic fingerprint — on your own infrastructure. That’s not a cheaper warehouse. It’s a different machine. Here’s how that lands against the two tools people put us next to.',
+            'You’re probably here to slot us next to a tool you already know. Fair. But one thing makes the comparison strange before we start: almost everything on the shelf is a warehouse. It stores your observability data and competes on price, cardinality, and who hosts it. We don’t store it. We distil it into a bounded, deterministic fingerprint — on your own infrastructure. That’s not a cheaper warehouse. It’s a different machine. Here’s how that lands against the two tools people put us next to.',
         versus: [
             {
                 title: 'vs Datadog — a different machine, not a cheaper one',
