@@ -364,17 +364,17 @@ const fr: typeof en = {
             {
                 title: 'Vos alertes fonctionnent en staging — parce qu\'il ne s\'y passe rien.',
                 description:
-                    'Pas de rafales, pas de cascades, pas d\'enregistrements parasites. Le premier vrai incident est le premier vrai test.',
+                    'Pas de rafales, pas de pannes en cascade, pas de record parasite. Le premier vrai incident est le premier vrai test.',
             },
             {
-                title: 'Vos dashboards sont beaux jusqu\'au moment où la cascade frappe.',
+                title: 'Vos dashboards sont beaux jusqu\'au moment où la panne en cascade frappe.',
                 description:
                     'Des p99 que vous n\'avez jamais tracés. Des effets de topologie que personne n\'a dessinés. Des buffers jamais dimensionnés.',
             },
             {
                 title: 'Votre on-call apprend en se faisant pager.',
                 description:
-                    'Sans bac à sable, le seul jeu d\'entraînement, ce sont les vraies pannes. Il y a mieux.',
+                    'Sans sandbox, les vraies pannes deviennent votre seul terrain d\'entraînement. Il existe une meilleure solution.',
             },
         ],
     },
@@ -447,7 +447,7 @@ const fr: typeof en = {
     pricingTeaser: {
         title: 'Gratuit pour le solo. Payant là où ça devient sérieux.',
         subtitle:
-            'Les scénarios starter restent gratuits. Pro et Entreprise débloquent le chaos, les cascades et tout le catalogue de sorties.',
+            'Les scénarios starter restent gratuits. Pro et Entreprise débloquent le chaos, les pannes en cascade et tout le catalogue de sorties.',
         seePlans: 'Voir les tarifs détaillés',
         free: { name: 'Gratuit', price: '0 €', tagline: 'Solo & évaluation' },
         pro: { name: 'Pro', price: 'TBD', tagline: 'Le moteur complet' },
@@ -471,12 +471,12 @@ const fr: typeof en = {
         logcraft: {
             name: 'LogCraft',
             description:
-                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte d’agents en YAML, lancez un run, et obtenez des flux de logs reproductibles, calqués sur la production — cascades de pannes, distributions de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre on-call.',
+                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte d’agents en YAML, lancez un run, et obtenez des flux de logs reproductibles, calqués sur la production — pannes en cascade, distributions de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre on-call.',
             status: 'Bêta · utilisable',
             highlights: [
                 'Agents & topologie en YAML',
                 'Seed déterministe → replays bit-stables',
-                'Cascades & incidents chaos',
+                'Pannes en cascade & incidents chaos',
                 '20+ formats (ECS, OTLP, Prometheus…)',
             ],
         },
@@ -546,7 +546,7 @@ const fr: typeof en = {
     licensing: {
         title: 'Plans LogCraft',
         subtitle:
-            'Gratuit pour le solo et l\'apprentissage. Les paliers payants débloquent les scénarios chaos / cascade / production.',
+            'Gratuit pour le solo et l\'apprentissage. Les paliers payants débloquent les scénarios chaos / panne en cascade / production.',
         badge: 'Tarifs — accès anticipé',
         free: {
             name: 'Gratuit',
@@ -568,11 +568,11 @@ const fr: typeof en = {
             price: 'TBD',
             period: '/mois',
             description:
-                'Le réaliste : incidents chaos, cascades, tous les formats de sortie, replay déterministe.',
+                'Le réaliste : incidents chaos, pannes en cascade, tous les formats de sortie, replay déterministe.',
             features: [
                 'Agents & scénarios illimités',
                 'Tous les sinks (HTTP, ECS, OTLP, Prometheus, StatsD)',
-                'Cascade d\'erreurs & incidents chaos',
+                'Pannes en cascade & incidents chaos',
                 'Distributions de latence (p50/p95/p99)',
                 'Mode replay déterministe',
                 'Templates d\'agents & registre',
@@ -740,9 +740,9 @@ const fr: typeof en = {
             },
             demo: {
                 tag: 'Commerciaux / SE',
-                title: 'Montrer une cascade crédible en cinq minutes',
+                title: 'Montrer une panne en cascade crédible en cinq minutes',
                 outcome:
-                    'Ouvrez le Lab en partage d’écran, lancez “Cascade”, et regardez les dashboards potentiels du prospect virer au rouge. Pas de coordination staging, pas de fuite de données réelles.',
+                    'Ouvrez le Lab en partage d’écran, lancez “Panne en cascade”, et regardez les dashboards potentiels du prospect virer au rouge. Pas de coordination staging, pas de fuite de données réelles.',
                 yamlSnippet:
                     '# DB sature → misses cache → 5xx web\nseed: 1337\nauto_cascade:\n  enabled: true\n  radius: 2\nincidents:\n  - at: "00:00:30"\n    target: orders-db\n    impact: { error_rate: 0.4, latency_x: 8 }',
                 bullets: [
@@ -770,7 +770,7 @@ const fr: typeof en = {
         betaBadge: 'Bêta · gratuit dans le Lab',
         heroTagline: 'Des logs synthétiques réalistes, à la demande.',
         heroSubtitle:
-            'LogCraft est un simulateur déterministe de logs et de chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — cascades, queues de latence, incidents planifiés, sortie ECS / OTLP / Prometheus. Idéal pour stresser votre pipeline, démontrer vos dashboards, former votre on-call, ou alimenter un moteur d\'analyse comme InSight.',
+            'LogCraft est un simulateur déterministe de logs et de chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — pannes en cascade, queues de latence, incidents planifiés, sortie ECS / OTLP / Prometheus. Idéal pour stresser votre pipeline, démontrer vos dashboards, former votre on-call, ou alimenter un moteur d\'analyse comme InSight.',
         launchLab: 'Ouvrir le Lab',
         viewGitHub: 'Voir sur GitHub',
         featuresTitle: 'Ce que LogCraft fait vraiment',
@@ -802,17 +802,17 @@ const fr: typeof en = {
                 {
                     title: 'Tester votre pipeline de logs',
                     description:
-                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux cascades et aux enregistrements malformés.',
+                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux pannes en cascade et aux enregistrements malformés.',
                 },
                 {
                     title: 'Démontrer votre produit d\'observabilité',
                     description:
-                        'Monter une "production" sans production. Faire la démo SE avec de vraies cascades, de vrais pics p99, de vraies timelines d\'incident — en 10 secondes.',
+                        'Monter une "production" sans production. Faire la démo SE avec de vraies pannes en cascade, de vrais pics p99, de vraies timelines d\'incident — en 10 secondes.',
                 },
                 {
                     title: 'Former votre on-call',
                     description:
-                        'Donnez l\'URL du Lab à un junior, cliquez "Cascade", laissez-le debug un incident réaliste à root cause connue — sans risque pour la prod.',
+                        'Donnez l\'URL du Lab à un junior, cliquez "Panne en cascade", laissez-le debug un incident réaliste à root cause connue — sans risque pour la prod.',
                 },
             ],
         },
@@ -833,7 +833,7 @@ const fr: typeof en = {
                     'Où vont les logs. Un scénario peut déclarer autant de sinks qu\'il veut, et chaque agent peut router vers n\'importe quel sous-ensemble. Console, fichier, HTTP, ECS, OTLP, Syslog, CLF, Prometheus, StatsD — simultanément. Pratique pour A/B comparer deux pipelines sur le même flux.',
             },
             incidents: {
-                title: 'Incidents & cascades',
+                title: 'Incidents & pannes en cascade',
                 body:
                     'Perturbations planifiées : "à la minute 5, la base passe à 20 % d\'erreurs avec 8× de latence". Combinez avec `auto_cascade` pour propager la panne aux dépendants avec un rayon d\'impact et un facteur d\'atténuation configurables — comme une vraie panne.',
             },
@@ -1088,9 +1088,9 @@ const fr: typeof en = {
         clock: 'Horloge',
         playback: 'Lecture',
         speed: 'Vitesse',
-        cascade: 'Cascade',
+        cascade: 'Panne en cascade',
         cascadeTip:
-            'Force un cycle d\'évaluation de cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne tout le reste".',
+            'Force un cycle d\'évaluation de panne en cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne tout le reste".',
         rate: 'Cadence',
         rateTip:
             'Enregistrements par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
@@ -1120,7 +1120,7 @@ const fr: typeof en = {
             'Ce scénario est seedé pour une reproduction déterministe. {action} cassera ce déterminisme — les ré-exécutions ne produiront plus des logs identiques.',
         seedActionUnlock: 'Prendre la main sur un agent',
         seedActionBurst: 'Déclencher une rafale',
-        seedActionCascade: 'Forcer une évaluation cascade',
+        seedActionCascade: 'Forcer une évaluation de panne en cascade',
         seedConfirmTitle: 'Scénario seedé — attention',
         seedConfirmProceed: 'Procéder quand même',
         seedConfirmCancel: 'Annuler',
@@ -1184,7 +1184,7 @@ const fr: typeof en = {
                 },
                 demo: {
                     title: 'Démontrer à un client',
-                    desc: 'J’ai besoin d’une cascade crédible à montrer en réunion dans 5 minutes.',
+                    desc: 'J’ai besoin d’une panne en cascade crédible à montrer en réunion dans 5 minutes.',
                 },
                 train: {
                     title: 'Former un on-call',
@@ -1202,7 +1202,7 @@ const fr: typeof en = {
                 },
                 chaos: {
                     title: 'Chaos',
-                    desc: 'Plusieurs services + incidents scriptués + cascade activée. Du matériel de démo.',
+                    desc: 'Plusieurs services + incidents scriptués + panne en cascade activée. Du matériel de démo.',
                 },
             },
         },
