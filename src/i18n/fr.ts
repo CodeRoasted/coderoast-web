@@ -907,7 +907,7 @@ const fr: typeof en = {
         selectScenarioDesc:
             'Chaque scénario est une topologie synthétique qui nourrit InSight. Choisissez, éditez si besoin, puis lancez le pipeline.',
         launchEngine: 'Lancer le Moteur',
-        runDemo: 'Lancer la démo',
+        runDemo: 'Run Demo',
         launchAndStart: 'Lancer le scénario',
         launchPaused: 'Créer en pause',
         autoStartHint: 'démarre le moteur automatiquement',
