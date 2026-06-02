@@ -22,7 +22,7 @@ const fr: typeof en = {
         badge: 'CodeRoast · du bruit des logs à la compréhension',
         tagline: 'Transformez le bruit des logs en compréhension.',
         subtitle:
-            'CodeRoast compresse le bruit de vos logs en une structure déterministe et hiérarchisée — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, plutôt que des gigaoctets. La précision avant tout, et tout tourne sur votre infra. Commencez par comparer deux runs CI.',
+            'CodeRoast compresse le bruit de vos logs en une structure déterministe, classée par pertinence — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets de logs. La précision avant tout. Et tout tourne sur votre infra. Commencez par comparer deux runs CI.',
         cta: 'Diff de deux logs',
         ctaSecondary: 'Voir tous les produits',
         trust: 'déterministe · précision avant tout · tourne sur votre infra · logs jamais stockés',
@@ -135,7 +135,7 @@ const fr: typeof en = {
                 },
                 {
                     old: 'Un « pourquoi ça a cassé » probabiliste que vous ne pouvez pas reproduire.',
-                    new: 'Un fait structurel déterministe — bit-identique, citable, re-dérivable à la ligne source. Le seul qu’on met derrière un gate CI dur.',
+                    new: 'Un fait structurel déterministe — bit-identique, citable, re-dérivable à la ligne source. Le seul qu’on met derrière une gate CI dure.',
                 },
                 {
                     old: 'Payer pour stocker des gigaoctets à vie — et en lire moins de 5 %.',
@@ -159,7 +159,7 @@ const fr: typeof en = {
                     name: 'Détection streaming',
                     status: 'Beta',
                     description:
-                        'Détection d’anomalies continue, précision d’abord — une alerte, un vrai incident.',
+                        'Détection d’anomalies continue, la précision avant tout — une alerte, un vrai incident.',
                 },
                 {
                     name: 'Forwarding MetaLog',
@@ -212,13 +212,13 @@ const fr: typeof en = {
         comment: {
             title: 'Il vit là où vous travaillez déjà.',
             body:
-                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — indicatif par défaut, un gate strict quand vous le voulez. Un seul commentaire épinglé, mis à jour en place, déterministe. La chose la plus forte qu’il dira jamais, c’est celle qu’aucune coche verte ne dira :',
+                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — indicatif par défaut, une gate stricte quand vous le voulez. Un seul commentaire épinglé, mis à jour en place, déterministe. La chose la plus forte qu’il dira jamais, c’est celle qu’aucune coche verte ne dira :',
         },
         catches: {
             title: 'Conçu pour les changements qui n’ont pas l’air d’en être.',
             colChange: 'Ce qui a changé',
             colTextDiff: 'Diff texte',
-            colPassFail: 'Pass/échec',
+            colPassFail: 'Réussite/échec',
             colSift: 'Sift',
             rows: [
                 {
@@ -256,13 +256,13 @@ const fr: typeof en = {
         free: {
             title: 'Tout le produit sans état est gratuit. On ne plaisante pas.',
             body:
-                'La CLI, la GitHub Action, le commentaire de PR, le gate bloquant — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur, et on ne le fera jamais. Le gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds, non.',
+                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur, et on ne le fera jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds, non.',
             cta: 'Voir les paliers',
         },
         trust: {
-            title: 'Un fait sur lequel poser un gate.',
+            title: 'Un fait sur lequel poser une gate.',
             body:
-                'Mêmes entrées, même diff — au bit près, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière un gate CI bloquant ; un gate instable est désactivé en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas un gate. Rien n’est envoyé, pas de compte, pas d’agent — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+                'Mêmes entrées, même diff — au bit près, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est envoyé, pas de compte, pas d’agent — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
         },
         install: {
@@ -370,16 +370,16 @@ const fr: typeof en = {
         enterprise: { name: 'Entreprise', price: 'Sur mesure', tagline: 'Topologie & on-prem' },
     },
     portfolio: {
-        title: 'Un moteur. Une surface pour chaque besoin.',
+        title: 'Un moteur. Une surface pour chaque usage.',
         subtitle:
-            'Chaque produit CodeRoast transforme le bruit des logs en compréhension pour un usage précis — choisissez celui qui correspond au problème devant vous. La gamme s’étoffe ; le moteur en dessous reste le même.',
+            'Chaque produit CodeRoast transforme le bruit des logs en compréhension pour un usage précis — choisissez celui qui correspond au problème que vous avez sous les yeux. La gamme s’étoffe ; le moteur sous-jacent reste le même.',
         sift: {
             name: 'Sift',
             description:
-                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le point d’entrée CI/CD : zéro infra, ~90 secondes.',
+                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, ~90 secondes.',
             status: 'Live · démo gratuite',
             highlights: [
-                'Classement du « ce qui a changé », bruit supprimé',
+                '« Ce qui a changé » classé par pertinence, bruit supprimé',
                 'Surlignage de provenance ligne à ligne',
                 'Tourne en local — les logs ne sortent pas (CLI / Action)',
             ],
@@ -387,7 +387,7 @@ const fr: typeof en = {
         logcraft: {
             name: 'LogCraft',
             description:
-                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — cascades de pannes, queues de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre astreinte.',
+                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte d’agents en YAML, lancez un run, et obtenez des flux de logs reproductibles, calqués sur la production — cascades de pannes, distributions de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre astreinte.',
             status: 'Bêta · utilisable',
             highlights: [
                 'Agents & topologie en YAML',
@@ -399,55 +399,55 @@ const fr: typeof en = {
         insight: {
             name: 'InSight',
             description:
-                'Le pipeline d’analyse streaming derrière tout le reste : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — précision d’abord, une alerte = un vrai incident. À essayer en live dans le Lab.',
+                'Le pipeline d’analyse en streaming derrière tout ça : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — la précision avant tout : une alerte = un vrai incident. À essayer en live dans le Lab.',
             status: 'Bêta · API live',
             highlights: [
-                'Cartes explain en premier plan',
+                'Cartes d’insight explain-first',
                 'Mining de templates type Drain',
                 'Couche de compression MetaLog',
-                'Preuves de détection pour l’IA explain',
+                'Preuves des détecteurs pour l’IA explain',
             ],
         },
         metalogForwarding: {
             name: 'Forwarding MetaLog',
             description:
-                'Compressez le flux en MetaLogs et transférez ceux-ci, pas des gigaoctets bruts — une empreinte structurelle pour une fraction du volume. La moitié visible par le CFO.',
+                'Compressez le flux en MetaLogs et transférez-les, pas des gigaoctets bruts — une empreinte structurelle pour une fraction du volume. La moitié visible par le CFO.',
             status: 'Bientôt',
         },
         canary: {
             name: 'Validation canary',
             description:
-                'diff(référence, canary) comme signal d’arrêt structurel — détectez une mauvaise release avant que les métriques ne bougent, sur le même moteur que le diff CI.',
+                'diff(baseline, canary) comme signal d’arrêt structurel — détectez une mauvaise release avant que les métriques ne bougent, sur le même moteur que le diff CI.',
             status: 'Bientôt',
         },
     },
     roadmap: {
         title: 'Sur la roadmap',
         subtitle:
-            'Ce que nous construisons ensuite, et la direction que prend le produit.',
+            'Ce que nous construisons ensuite, et où va le produit.',
         badge: 'Bientôt',
         items: [
             {
                 title: 'Démo explain IA',
                 description:
-                    'Brancher un agent sur le payload explain pour narrer les preuves MetaLog et recommander l’étape d’investigation suivante.',
+                    'Attacher un agent au payload explain pour narrer les preuves MetaLog et recommander l’étape d’investigation suivante.',
             },
             {
                 title: 'Fixtures de compatibilité',
                 description:
-                    'Promouvoir des scénarios de la bibliothèque en gates de release prouvant que LogCraft, IPC, InSight, serveur et web restent alignés.',
+                    'Promouvoir des scénarios de la bibliothèque en gates de release prouvant que LogCraft, IPC, InSight, serveur et web restent synchronisés.',
             },
             {
                 title: 'Vues traces MetaLog',
                 description:
-                    'Exposer les fenêtres MetaLog et traces de détecteurs après stabilisation de la démo explain-first.',
+                    'Exposer les fenêtres MetaLog et traces de détecteurs une fois la démo explain-first suffisamment stable pour des présentations clients.',
             },
         ],
     },
     maker: {
-        title: 'Construit par un seul ingé.',
+        title: 'Construit par un seul ingénieur.',
         body:
-            'Je m\'appelle Manu. J\'ai passé assez de temps à bricoler des générateurs de logs en shell pour avoir envie d\'un vrai. LogCraft, c\'est ce que j\'aurais voulu avoir — un moteur déterministe, scriptable en YAML, à brancher devant n\'importe quel pipeline. Gratuit dans le Lab, la bibliothèque de scénarios est ouverte sur GitHub, retours sérieusement écoutés.',
+            'Je m\'appelle Manu. J\'ai passé assez de temps à bricoler des générateurs de logs en shell pour avoir envie d\'un vrai. LogCraft, c\'est ce que j\'aurais voulu avoir — un moteur déterministe, piloté par scénarios, que vous pouvez brancher sur n\'importe quel pipeline. Gratuit dans le Lab, la bibliothèque de scénarios est ouverte sur GitHub, et je prends les retours au sérieux.',
         ctaCode: 'Bibliothèque de scénarios (GitHub)',
         ctaContact: 'Me contacter',
         ctaSupport: 'Soutenir le projet',
@@ -596,7 +596,7 @@ const fr: typeof en = {
             product: 'Produit',
             resources: 'Ressources',
             more: 'Plus',
-            legal: 'Mentions légales',
+            legal: 'Mentions légales & sécurité',
         },
         links: {
             logcraft: 'LogCraft',
@@ -609,7 +609,7 @@ const fr: typeof en = {
             howWeCompare: 'Comment on se compare',
             github: 'GitHub',
             contact: 'Contact',
-            support: 'Soutenir',
+            support: 'Soutenir le projet',
             terms: 'Conditions d’utilisation',
             privacy: 'Politique de confidentialité',
             trademark: 'Politique des marques',
