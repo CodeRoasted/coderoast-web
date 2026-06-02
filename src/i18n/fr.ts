@@ -359,7 +359,7 @@ const fr: typeof en = {
     problem: {
         title: 'On ne ship pas une observabilité qu\'on n\'a jamais testée.',
         subtitle:
-            'En staging, c\'est calme. Les mocks sont propres. Puis la prod casse à 3 h du matin et vos alertes n\'ont jamais sonné pour de vrai. LogCraft est l\'entrée qui manque à tout votre aval.',
+            'En staging, c\'est calme. Les mocks sont propres. Puis la prod casse à 3 h du matin et vos alertes n\'ont jamais sonné pour de vrai. LogCraft génère les signaux réalistes qui manquent à tous les outils qui suivent.',
         points: [
             {
                 title: 'Vos alertes fonctionnent en staging — parce qu\'il ne s\'y passe rien.',
