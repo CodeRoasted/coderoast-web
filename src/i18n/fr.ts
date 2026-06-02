@@ -729,7 +729,7 @@ const fr: typeof en = {
                 tag: 'Ingénierie',
                 title: 'Stresser son pipeline de logs avant la prod',
                 outcome:
-                    'Envoyez 50 k records/s d’ECS dans votre collecteur. Observez vos buffers, vos budgets d’erreurs, votre échantillonnage — sous un trafic qui ressemble au réel, pas sous des boucles cURL.',
+                    'Envoyez 50 k enregistrements/s d’ECS dans votre collecteur. Observez vos buffers, vos budgets d’erreurs, votre échantillonnage — sous un trafic qui ressemble au réel, pas sous des boucles cURL.',
                 yamlSnippet:
                     '# 5 services, ECS sur HTTP, 50k r/s, déterministe\nseed: 42\nagents:\n  - name: api-gw\n    type: web_server\n    rate: 18000\n  - name: orders\n    type: web_server\n    rate: 14000\nsinks:\n  - type: http\n    format: ecs\n    endpoint: http://collector:8080',
                 bullets: [
@@ -825,7 +825,7 @@ const fr: typeof en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'Un agent est un service fictif. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
+                    'Un agent est un service fictif. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des enregistrements structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
             },
             outputs: {
                 title: 'Sinks (sorties)',
@@ -870,7 +870,7 @@ const fr: typeof en = {
             registry: {
                 title: 'Registre des types d\'agent',
                 body:
-                    'Les types d\'agent intégrés (web_server, database, cache, queue…) ont des défauts sensés pour les champs, le vocabulaire d\'erreur et la forme de latence. Vous pouvez enregistrer le vôtre via la référence YAML si la sémantique attendue est exotique — la plupart des utilisateurs ne touchent jamais cette couche.',
+                    'Les types d\'agent intégrés (web_server, database, cache, queue…) ont des valeurs par défaut sensées pour les champs, le vocabulaire d\'erreur et la forme de latence. Vous pouvez enregistrer le vôtre via la référence YAML si la sémantique attendue est exotique — la plupart des utilisateurs ne touchent jamais cette couche.',
             },
         },
     },
