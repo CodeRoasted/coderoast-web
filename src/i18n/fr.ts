@@ -199,26 +199,26 @@ const fr: typeof en = {
     sift: {
         eyebrow: 'Sift',
         hero: {
-            title: 'Vos tests passent. Vos logs disent l’inverse.',
+            title: 'Vos tests passent. Vos logs disent le contraire.',
             subtitle:
-                'Réussite ou échec, ça tient en un bit ; et grep, encore faut-il savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un motif qui a envahi tout le run — puis fait taire les centaines de diffs sans intérêt. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent, sans compte, ~90 secondes.',
-            ctaPrimary: 'Ajouter l’Action',
-            ctaSecondary: 'Essayer dans le navigateur',
-            trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne le quittent jamais.',
-            samplePassed: 'les deux runs au vert',
+                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent, sans compte, ~90 secondes.',
+            ctaPrimary: 'Ajoutez l’Action',
+            ctaSecondary: 'Essayez dans votre navigateur',
+            trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne quittent jamais votre infra.',
+            samplePassed: 'les deux runs sont passés',
             kicker:
                 'Les deux runs sont au vert. Ni le statut du build ni grep n’y voient quoi que ce soit — il n’y a aucune erreur à chercher. Sift, lui, voit que votre cache a cessé de fonctionner en silence.',
         },
         comment: {
-            title: 'Il vit là où vous travaillez déjà.',
+            title: 'Il vit là où vous bossez déjà.',
             body:
-                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — indicatif par défaut, une gate stricte quand vous le voulez. Un seul commentaire épinglé, mis à jour en place, déterministe. La chose la plus forte qu’il dira jamais, c’est celle qu’aucune coche verte ne dira :',
+                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante quand vous la voulez. Un seul commentaire épinglé, mis à jour en place, déterministe. La chose la plus forte qu’il dira jamais, c’est celle qu’aucune coche verte ne dira :',
         },
         catches: {
-            title: 'Conçu pour les changements qui n’ont pas l’air d’en être.',
+            title: 'Conçu pour les changements qui ne ressemblent pas à des changements.',
             colChange: 'Ce qui a changé',
             colTextDiff: 'Diff texte',
-            colPassFail: 'Réussite/échec',
+            colPassFail: 'Pass/fail',
             colSift: 'Sift',
             rows: [
                 {
@@ -228,7 +228,7 @@ const fr: typeof en = {
                     sift: 'Disappeared : "…" — une ligne classée',
                 },
                 {
-                    change: 'La part d’un motif dans le run a bougé (4 % → 38 %)',
+                    change: 'La part d’un pattern dans le run a bougé (4 % → 38 %)',
                     textDiff: 'invisible',
                     passFail: 'invisible',
                     sift: 'Frequency shift',
@@ -237,7 +237,7 @@ const fr: typeof en = {
                     change: 'Une erreur que vous avez corrigée a vraiment disparu',
                     textDiff: 'invisible',
                     passFail: 'invisible',
-                    sift: 'Recovery — au vert : "votre correctif a marché"',
+                    sift: 'Recovery — green: "your fix worked"',
                 },
                 {
                     change: 'Les mêmes erreurs qu’avant, mais un vrai changement dessous (leurre)',
@@ -246,7 +246,7 @@ const fr: typeof en = {
                     sift: 'le bruit masqué, le vrai changement remonté',
                 },
                 {
-                    change: 'Un tout nouveau motif d’erreur',
+                    change: 'Un tout nouveau pattern d’erreur',
                     textDiff: 'noyé dans le bruit',
                     passFail: 'invisible si les tests passent',
                     sift: 'une ligne, classée par sévérité',
@@ -256,13 +256,13 @@ const fr: typeof en = {
         free: {
             title: 'Tout le produit sans état est gratuit. On ne plaisante pas.',
             body:
-                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur, et on ne le fera jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds, non.',
+                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur. Jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds, non.',
             cta: 'Voir les paliers',
         },
         trust: {
-            title: 'Un fait sur lequel poser une gate.',
+            title: 'Un fait sur lequel vous pouvez poser une gate.',
             body:
-                'Mêmes entrées, même diff — au bit près, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est envoyé, pas de compte, pas d’agent — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+                'Mêmes entrées, même diff — bit pour bit, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte, pas d’agent — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
         },
         install: {
@@ -310,7 +310,7 @@ const fr: typeof en = {
             {
                 title: 'Déterministe par seed',
                 description:
-                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine, n\'importe quel jour. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident au bit près.',
+                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine, n\'importe quel jour. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident bit pour bit.',
             },
             {
                 title: 'Plus de vingt formats',
@@ -519,7 +519,7 @@ const fr: typeof en = {
         title: 'Comment on construit',
         subtitle: 'Le déterminisme est une promesse produit. Elle commence par notre façon de construire.',
         intro:
-            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — au bit près. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
+            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — bit pour bit. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
         sections: [
             {
                 title: 'Générer n’est pas décider.',
@@ -573,7 +573,7 @@ const fr: typeof en = {
                 title: 'face à Honeycomb — la même conviction, le pari inverse',
                 body: [
                     'On part d’où part Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
-                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, sur votre infra — reproductible au bit près, le seul qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
+                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, sur votre infra — reproductible bit pour bit, le seul qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
                 ],
             },
         ],
@@ -590,7 +590,7 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
     },
     footer: {
-        tagline: 'Atelier indé. C++ là où ça compte, web là où il le faut.',
+        tagline: 'Atelier indé. C++ là où ça compte, web là où il faut.',
         rights: 'Tous droits réservés.',
         sections: {
             product: 'Produit',
@@ -781,7 +781,7 @@ const fr: typeof en = {
             replay: {
                 title: 'Déterminisme & replay',
                 body:
-                    'Au-delà du `seed`, le moteur enregistre l\'ordinal de chaque enregistrement émis pour que deux runs du même YAML produisent des flux identiques au bit près. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
+                    'Au-delà du `seed`, le moteur enregistre l\'ordinal de chaque enregistrement émis pour que deux runs du même YAML produisent des flux identiques bit pour bit. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
             },
             registry: {
                 title: 'Registre des types d\'agent',
@@ -892,7 +892,7 @@ const fr: typeof en = {
                 'InSight ingère le flux et construit les preuves. Quand un détecteur se déclenche, le paquet explain apparaît ici.',
             detectTitle: 'Résumé par sévérité',
             detectEmptyTitle: 'Aucun signal détecteur pour le moment',
-            detectEmptyBody: "Les signaux de détection apparaissent quand InSight ferme une fenêtre MetaLog et trouve un motif statistiquement anormal.",
+            detectEmptyBody: "Les signaux de détection apparaissent quand InSight ferme une fenêtre MetaLog et trouve un pattern statistiquement anormal.",
             detectScore: 'score',
             detectConf: 'conf',
             metalogTitle: 'Preuves MetaLog',
@@ -959,7 +959,7 @@ const fr: typeof en = {
             configReconfigureHint: 'Les modifications des réglages explain prennent effet immédiatement. La modification de la durée de fenêtre réinitialise le chauffage de la pyramide.',
             templatesTitle: 'Focus templates',
             templatesEmptyTitle: 'Aucun focus template',
-            templatesEmptyBody: 'Les templates affectés apparaissent quand une explication nomme les motifs de logs impliqués.',
+            templatesEmptyBody: 'Les templates affectés apparaissent quand une explication nomme les patterns de logs impliqués.',
             ingestTitle: 'Ingestion live',
             ingestRunning: 'Le pipeline serveur consomme le flux shared-memory du moteur.',
             ingestIdle: 'Le moteur est inactif ; InSight attend un flux.',
