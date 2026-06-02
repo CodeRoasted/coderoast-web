@@ -372,7 +372,7 @@ const fr: typeof en = {
                     'Des p99 que vous n\'avez jamais tracés. Des effets de topologie que personne n\'a dessinés. Des buffers jamais dimensionnés.',
             },
             {
-                title: 'Votre on-call apprend en se faisant pager.',
+                title: 'Votre on-call apprend au rythme des alertes en pleine nuit.',
                 description:
                     'Sans sandbox, les vraies pannes deviennent votre seul terrain d\'entraînement. Il existe une meilleure solution.',
             },
@@ -389,7 +389,7 @@ const fr: typeof en = {
     features: {
         title: 'Tous les knobs du monde réel.',
         subtitle:
-            'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui modélise la forme du trafic, les pannes et la latence comme la prod — sur une seed que vous contrôlez.',
+            'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui reproduit le comportement du trafic, les pannes et la latence comme en production — sur une seed que vous contrôlez.',
         items: [
             {
                 title: 'Déterministe par seed',
@@ -781,7 +781,7 @@ const fr: typeof en = {
             'Ouvrez le Lab, cliquez "Run Demo", observez une fausse boutique e-commerce dérailler à la demande.',
         deepDiveTitle: 'Où LogCraft se branche',
         deepDiveSubtitle:
-            'LogCraft se place avant votre stack d\'observabilité — il génère les flux pour stresser tout l\'aval.',
+            'LogCraft se place avant votre stack d\'observabilité — il génère des flux pour stresser tout le reste de la chaîne.',
         fitDiagram: {
             yaml: 'Scénario YAML',
             engine: 'Moteur LogCraft',

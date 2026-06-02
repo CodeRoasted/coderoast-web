@@ -384,7 +384,7 @@ const en = {
                     'p99 spikes you never plotted. Topology effects no one drew. Buffers you never sized.',
             },
             {
-                title: 'Your on-call learns by getting paged.',
+                title: 'Your on-call learns by getting paged at 3 a.m.',
                 description:
                     'Without a sandbox, the only training data is real outages. There is a better way.',
             },
