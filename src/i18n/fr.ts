@@ -251,9 +251,9 @@ const fr: typeof en = {
             ],
         },
         free: {
-            title: 'Tout le produit sans état est gratuit. On ne plaisante pas.',
+            title: 'Tout le produit sans état est gratuit. Sans conditions.',
             body:
-                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur. Jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds, non.',
+                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur. Jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds ne l’est pas.',
             cta: 'Voir les paliers',
         },
         trust: {
