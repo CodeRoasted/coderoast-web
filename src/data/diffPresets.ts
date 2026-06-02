@@ -11,13 +11,13 @@
 //      templates, failures, a circuit breaker) — "N changed, 3 significant".
 //
 // Generation is deterministic (seeded PRNG, no Math.random) because Sift is
-// deterministic and the samples must be stable across loads. Content is plain
-// text — the diff page is English-only; these are demo fixtures, not copy.
+// deterministic and the samples must be stable across loads. The /diff page
+// chrome is i18n'd EN/FR (incl. the picker label + tooltip, keyed by id under
+// t.diff.presets); these fixtures + the engine output stay English by design (the
+// engine emits English regardless of locale).
 
 export interface DiffPreset {
     id: string
-    label: string
-    description: string
     baseline: string
     changed: string
 }
@@ -212,54 +212,14 @@ const canary = canaryDeploy()
 const hotkey = hotKey()
 const escalating = escalatingWarning()
 
+// id maps to the picker label + tooltip in i18n (t.diff.presets[id]); only the
+// English log fixtures live here.
 export const diffPresets: DiffPreset[] = [
-    {
-        id: 'hotfix',
-        label: 'Hotfix verify',
-        description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
-        baseline: hotfixPair.baseline,
-        changed: hotfixPair.changed,
-    },
-    {
-        id: 'silent-regression',
-        label: 'Silent regression',
-        description: 'No new error at all — a success line vanished and a retry surged. grep finds nothing.',
-        baseline: silent.baseline,
-        changed: silent.changed,
-    },
-    {
-        id: 'error-decoy',
-        label: 'Same errors, real change',
-        description: 'Both runs have the IDENTICAL errors (the decoy) — but orders silently stopped completing. Sift mutes the unchanged errors and shows what really moved.',
-        baseline: decoy.baseline,
-        changed: decoy.changed,
-    },
-    {
-        id: 'cache-degradation',
-        label: 'Cache silently died',
-        description: 'Zero errors, still all 200s — but the cache stopped serving and origin fetches surged. A latent p99 cliff a filter is blind to.',
-        baseline: cache.baseline,
-        changed: cache.changed,
-    },
-    {
-        id: 'canary-deploy',
-        label: 'Canary vs stable',
-        description: 'Same traffic, two builds: the new one swapped the checkout handler and lit a flag. A pure behavior diff — no errors involved.',
-        baseline: canary.baseline,
-        changed: canary.changed,
-    },
-    {
-        id: 'hot-key',
-        label: 'Throttling takes over',
-        description: 'No errors — but a new throttling line appears and takes over a third of the run. A text diff shows the new lines exist; Sift ranks the one template now dominating the stream.',
-        baseline: hotkey.baseline,
-        changed: hotkey.changed,
-    },
-    {
-        id: 'escalating-warning',
-        label: 'Escalating warning',
-        description: 'A pool-pressure WARN goes from rare to pervasive — the pre-incident creep, minutes before it pages. Not a new error, so a filter stays quiet.',
-        baseline: escalating.baseline,
-        changed: escalating.changed,
-    },
+    { id: 'hotfix', baseline: hotfixPair.baseline, changed: hotfixPair.changed },
+    { id: 'silent-regression', baseline: silent.baseline, changed: silent.changed },
+    { id: 'error-decoy', baseline: decoy.baseline, changed: decoy.changed },
+    { id: 'cache-degradation', baseline: cache.baseline, changed: cache.changed },
+    { id: 'canary-deploy', baseline: canary.baseline, changed: canary.changed },
+    { id: 'hot-key', baseline: hotkey.baseline, changed: hotkey.changed },
+    { id: 'escalating-warning', baseline: escalating.baseline, changed: escalating.changed },
 ]

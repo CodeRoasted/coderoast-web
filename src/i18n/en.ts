@@ -272,6 +272,102 @@ const en = {
             cliLead: 'one static binary, no runtime —',
         },
     },
+    // The /diff (in-browser Sift) page chrome (InsightDiff.tsx). Only translatable
+    // UI strings live here. NOT keyed (language-neutral by design, engine emits
+    // English regardless of locale): the diffPresets.ts log fixtures, the engine
+    // report rows (change.summary/evidence), and the result stat line ("N changes,
+    // M structurally significant · stability · lines"). severity/kind are the UI's
+    // display labels for the engine enums (chrome); presets carry the picker labels
+    // + tooltips moved out of diffPresets.ts (now fixtures-only).
+    diff: {
+        eyebrow: 'SIFT',
+        title: 'What changed between two logs — and what\'s just noise',
+        subtitle:
+            'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched.',
+        loadSample: 'No logs handy? Load a sample:',
+        baselineLog: 'Baseline log',
+        changedLog: 'Changed log',
+        placeholder: 'paste log lines…',
+        lines: 'lines', // "{n} lines" — the input + pane line counters
+        line: 'line', // singular, for the "· {n} line(s)" ref counter on a change row
+        flagged: 'flagged', // "{n} flagged" — the pane counter when highlights are active
+        compare: 'Compare',
+        comparing: 'Comparing…',
+        swap: 'Swap',
+        swapTitle: 'Swap baseline ⇄ changed',
+        trust: 'Free · metered per day · logs are not stored',
+        paneBaseline: 'Baseline', // result view: the left log-pane title
+        paneChanged: 'Changed', // result view: the right log-pane title
+        swapSides: 'Swap sides',
+        swapSidesTitle: 'Swap baseline ⇄ changed and re-compare',
+        newComparison: 'New comparison',
+        significantChanges: 'Significant changes',
+        clearPinned: 'clear {count} pinned',
+        hint: 'hover to preview · click to pin (stack multiple) · color = severity, not add/remove',
+        emptyResult:
+            'No structurally significant changes — all {count} observed changes are within noise.',
+        suppressed: '{count} changes suppressed as noise (proportional / low-frequency).',
+        ciCallout: 'Want this in CI? The same engine runs as a local CLI and a GitHub Action.',
+        // UI display labels for the engine's severity enum (+ recovery polarity).
+        severity: {
+            critical: 'CRITICAL',
+            high: 'SUSPICIOUS',
+            medium: 'NOTABLE',
+            low: 'WEAK',
+            recovery: 'RECOVERED',
+        },
+        // UI display labels for the engine's change-kind enum (fallback = unknown kind).
+        kind: {
+            new_error_pattern: 'error appeared',
+            escalated_pattern: 'escalated',
+            resolved_pattern: 'resolved',
+            new_template: 'appeared',
+            vanished_template: 'vanished',
+            frequency_shift: 'shifted',
+            entropy_shift: 'branching',
+            emerging_tail: 'emerging in tail',
+            fallback: 'changed',
+        },
+        error: {
+            // {perDay} is replaced with " (N/day)" or "" by the component.
+            quotaReached:
+                'Daily free limit reached{perDay}. Try again tomorrow, or run it locally with the CLI.',
+            accessDenied: 'Access denied.',
+            failed: 'Comparison failed.',
+        },
+        // Preset-picker labels + tooltips, keyed by diffPresets.ts id (the fixtures
+        // themselves stay in diffPresets.ts, English by design).
+        presets: {
+            'hotfix': {
+                label: 'Hotfix verify',
+                description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
+            },
+            'silent-regression': {
+                label: 'Silent regression',
+                description: 'No new error at all — a success line vanished and a retry surged. grep finds nothing.',
+            },
+            'error-decoy': {
+                label: 'Same errors, real change',
+                description: 'Both runs have the IDENTICAL errors (the decoy) — but orders silently stopped completing. Sift mutes the unchanged errors and shows what really moved.',
+            },
+            'cache-degradation': {
+                label: 'Cache silently died',
+                description: 'Zero errors, still all 200s — but the cache stopped serving and origin fetches surged. A latent p99 cliff a filter is blind to.',
+            },
+            'canary-deploy': {
+                label: 'Canary vs stable',
+                description: 'Same traffic, two builds: the new one swapped the checkout handler and lit a flag. A pure behavior diff — no errors involved.',
+            },
+            'hot-key': {
+                label: 'Throttling takes over',
+                description: 'No errors — but a new throttling line appears and takes over a third of the run. A text diff shows the new lines exist; Sift ranks the one template now dominating the stream.',
+            },
+            'escalating-warning': {
+                label: 'Escalating warning',
+                description: 'A pool-pressure WARN goes from rare to pervasive — the pre-incident creep, minutes before it pages. Not a new error, so a filter stays quiet.',
+            },
+        },
+    },
     problem: {
         title: 'You can\'t ship observability you\'ve never tested.',
         subtitle:

@@ -212,7 +212,7 @@ const fr: typeof en = {
         comment: {
             title: 'Il vit là où vous bossez déjà.',
             body:
-                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante quand vous la voulez. Un seul commentaire épinglé, mis à jour en place, déterministe. La chose la plus forte qu’il dira jamais, c’est celle qu’aucune coche verte ne dira :',
+                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante au besoin. Un seul commentaire épinglé à votre PR, mis à jour à chaque push, déterministe. Même avec une coche verte rassurante, Sift voit le problème là où tout semble validé :',
         },
         catches: {
             title: 'Conçu pour les changements qui ne ressemblent pas à des changements.',
@@ -270,6 +270,93 @@ const fr: typeof en = {
             actionLabel: 'L’Action',
             cliLabel: 'La CLI',
             cliLead: 'un seul binaire statique, aucun runtime —',
+        },
+    },
+    // FR PLACEHOLDER — EN strings verbatim, awaiting Eqya's French pass (locked
+    // register: Pass/fail, une gate/bloquante, pattern, bit pour bit, on-call, CTAs
+    // imperative). Do NOT machine-translate. Structure mirrors en.ts § diff 1:1.
+    diff: {
+        eyebrow: 'SIFT',
+        title: 'What changed between two logs — and what\'s just noise',
+        subtitle:
+            'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched.',
+        loadSample: 'No logs handy? Load a sample:',
+        baselineLog: 'Baseline log',
+        changedLog: 'Changed log',
+        placeholder: 'paste log lines…',
+        lines: 'lines',
+        line: 'line',
+        flagged: 'flagged',
+        compare: 'Compare',
+        comparing: 'Comparing…',
+        swap: 'Swap',
+        swapTitle: 'Swap baseline ⇄ changed',
+        trust: 'Free · metered per day · logs are not stored',
+        paneBaseline: 'Baseline',
+        paneChanged: 'Changed',
+        swapSides: 'Swap sides',
+        swapSidesTitle: 'Swap baseline ⇄ changed and re-compare',
+        newComparison: 'New comparison',
+        significantChanges: 'Significant changes',
+        clearPinned: 'clear {count} pinned',
+        hint: 'hover to preview · click to pin (stack multiple) · color = severity, not add/remove',
+        emptyResult:
+            'No structurally significant changes — all {count} observed changes are within noise.',
+        suppressed: '{count} changes suppressed as noise (proportional / low-frequency).',
+        ciCallout: 'Want this in CI? The same engine runs as a local CLI and a GitHub Action.',
+        severity: {
+            critical: 'CRITICAL',
+            high: 'SUSPICIOUS',
+            medium: 'NOTABLE',
+            low: 'WEAK',
+            recovery: 'RECOVERED',
+        },
+        kind: {
+            new_error_pattern: 'error appeared',
+            escalated_pattern: 'escalated',
+            resolved_pattern: 'resolved',
+            new_template: 'appeared',
+            vanished_template: 'vanished',
+            frequency_shift: 'shifted',
+            entropy_shift: 'branching',
+            emerging_tail: 'emerging in tail',
+            fallback: 'changed',
+        },
+        error: {
+            quotaReached:
+                'Daily free limit reached{perDay}. Try again tomorrow, or run it locally with the CLI.',
+            accessDenied: 'Access denied.',
+            failed: 'Comparison failed.',
+        },
+        presets: {
+            'hotfix': {
+                label: 'Hotfix verify',
+                description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
+            },
+            'silent-regression': {
+                label: 'Silent regression',
+                description: 'No new error at all — a success line vanished and a retry surged. grep finds nothing.',
+            },
+            'error-decoy': {
+                label: 'Same errors, real change',
+                description: 'Both runs have the IDENTICAL errors (the decoy) — but orders silently stopped completing. Sift mutes the unchanged errors and shows what really moved.',
+            },
+            'cache-degradation': {
+                label: 'Cache silently died',
+                description: 'Zero errors, still all 200s — but the cache stopped serving and origin fetches surged. A latent p99 cliff a filter is blind to.',
+            },
+            'canary-deploy': {
+                label: 'Canary vs stable',
+                description: 'Same traffic, two builds: the new one swapped the checkout handler and lit a flag. A pure behavior diff — no errors involved.',
+            },
+            'hot-key': {
+                label: 'Throttling takes over',
+                description: 'No errors — but a new throttling line appears and takes over a third of the run. A text diff shows the new lines exist; Sift ranks the one template now dominating the stream.',
+            },
+            'escalating-warning': {
+                label: 'Escalating warning',
+                description: 'A pool-pressure WARN goes from rare to pervasive — the pre-incident creep, minutes before it pages. Not a new error, so a filter stays quiet.',
+            },
         },
     },
     problem: {
