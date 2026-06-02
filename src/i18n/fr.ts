@@ -419,7 +419,7 @@ const fr: typeof en = {
             {
                 title: 'Core C++20',
                 description:
-                    'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions d\'enregistrements sur un simple portable.',
+                    'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions de records sur un simple portable.',
             },
         ],
     },
@@ -729,7 +729,7 @@ const fr: typeof en = {
                 tag: 'Ingénierie',
                 title: 'Stresser son pipeline de logs avant la prod',
                 outcome:
-                    'Envoyez 50 k enregistrements/s d’ECS dans votre collecteur. Observez vos buffers, vos budgets d’erreurs, votre échantillonnage — sous un trafic qui ressemble au réel, pas sous des boucles cURL.',
+                    'Envoyez 50 k records/s d’ECS dans votre collecteur. Observez vos buffers, vos budgets d’erreurs, votre échantillonnage — sous un trafic qui ressemble au réel, pas sous des boucles cURL.',
                 yamlSnippet:
                     '# 5 services, ECS sur HTTP, 50k r/s, déterministe\nseed: 42\nagents:\n  - name: api-gw\n    type: web_server\n    rate: 18000\n  - name: orders\n    type: web_server\n    rate: 14000\nsinks:\n  - type: http\n    format: ecs\n    endpoint: http://collector:8080',
                 bullets: [
@@ -802,7 +802,7 @@ const fr: typeof en = {
                 {
                     title: 'Tester votre pipeline de logs',
                     description:
-                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux pannes en cascade et aux enregistrements malformés.',
+                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux pannes en cascade et aux records malformés.',
                 },
                 {
                     title: 'Démontrer votre produit d\'observabilité',
@@ -825,7 +825,7 @@ const fr: typeof en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'Un agent est un service fictif. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des enregistrements structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
+                    'Un agent est un service fictif. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
             },
             outputs: {
                 title: 'Sinks (sorties)',
@@ -855,7 +855,7 @@ const fr: typeof en = {
             fields: {
                 title: 'Champs (la charge utile)',
                 body:
-                    'Chaque enregistrement embarque une map `fields` que vous contrôlez. Vous déclarez des champs statiques, templatés (`{{user_id}}`) ou des enums pondérés (`status: 200=80%, 500=10%, 503=10%`). Le même schéma traverse tous les sinks, donc votre index ECS, votre exporter OTLP et votre tail fichier voient des enregistrements cohérents.',
+                    'Chaque record embarque une map `fields` que vous contrôlez. Vous déclarez des champs statiques, templatés (`{{user_id}}`) ou des enums pondérés (`status: 200=80%, 500=10%, 503=10%`). Le même schéma traverse tous les sinks, donc votre index ECS, votre exporter OTLP et votre tail fichier voient des records cohérents.',
             },
             cascades: {
                 title: 'Auto-cascades (rayon d\'impact)',
@@ -865,7 +865,7 @@ const fr: typeof en = {
             replay: {
                 title: 'Déterminisme & replay',
                 body:
-                    'Au-delà de la `seed`, le moteur enregistre l\'ordinal de chaque enregistrement émis pour que deux runs du même YAML produisent des flux identiques bit pour bit. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
+                    'Au-delà de la `seed`, le moteur enregistre l\'ordinal de chaque record émis pour que deux runs du même YAML produisent des flux identiques bit pour bit. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
             },
             registry: {
                 title: 'Registre des types d\'agent',
@@ -926,10 +926,10 @@ const fr: typeof en = {
             title: 'Sink Démo LogCraft',
             caption:
                 'Toute sortie avec un champ name: est interceptée par le serveur et capturée ici — qu\'il s\'agisse d\'une sortie fichier, console ou HTTP. Le serveur les redirige vers un drain interne pour que vous voyiez les payloads bruts exactement comme ils seraient arrivés à un vrai collecteur.',
-            empty: 'Aucun enregistrement capturé pour le moment. Démarrez le moteur — toute sortie nommée (name: dans le YAML du scénario) apparaîtra ici.',
+            empty: 'Aucun record capturé pour le moment. Démarrez le moteur — toute sortie nommée (name: dans le YAML du scénario) apparaîtra ici.',
             targets: 'Capturé pour',
             noTargets: 'Aucune sortie HTTP de démo détectée dans ce scénario.',
-            droppedSuffix: ' enregistrement(s) plus ancien(s) ont été abandonnés pour borner le buffer.',
+            droppedSuffix: ' record(s) plus ancien(s) ont été abandonnés pour borner le buffer.',
             showBody: 'Afficher le corps',
             hideBody: 'Masquer le corps',
             copy: 'Copier',
@@ -1095,9 +1095,9 @@ const fr: typeof en = {
         rateTip:
             'Enregistrements par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
         errorsTip:
-            'Part d\'enregistrements marqués comme erreurs (0–100%). Force une panne sans toucher au YAML.',
+            'Part de records marqués comme erreurs (0–100%). Force une panne sans toucher au YAML.',
         burst: 'Rafale',
-        burstTip: 'Émet immédiatement N enregistrements de plus. Pour saturer les buffers de l\'agrégateur.',
+        burstTip: 'Émet immédiatement N records de plus. Pour saturer les buffers de l\'agrégateur.',
         apply: 'Appliquer',
         send: 'Envoyer',
         reset: 'Réinit.',
