@@ -273,22 +273,22 @@ const fr: typeof en = {
         },
     },
     problem: {
-        title: 'On ne livre pas une observabilité qu\'on n\'a jamais testée.',
+        title: 'On ne ship pas une observabilité qu\'on n\'a jamais testée.',
         subtitle:
             'En staging, c\'est calme. Les mocks sont propres. Puis la prod casse à 3 h du matin et vos alertes n\'ont jamais sonné pour de vrai. LogCraft est l\'entrée qui manque à tout votre aval.',
         points: [
             {
-                title: 'Vos alertes marchent en staging — parce qu\'il ne s\'y passe rien.',
+                title: 'Vos alertes fonctionnent en staging — parce qu\'il ne s\'y passe rien.',
                 description:
                     'Pas de rafales, pas de cascades, pas d\'enregistrements parasites. Le premier vrai incident est le premier vrai test.',
             },
             {
-                title: 'Vos dashboards sont jolis jusqu\'au moment où la cascade frappe.',
+                title: 'Vos dashboards sont beaux jusqu\'au moment où la cascade frappe.',
                 description:
                     'Des p99 que vous n\'avez jamais tracés. Des effets de topologie que personne n\'a dessinés. Des buffers jamais dimensionnés.',
             },
             {
-                title: 'Votre astreinte se forme en se faisant réveiller.',
+                title: 'Votre on-call apprend en se faisant pager.',
                 description:
                     'Sans bac à sable, le seul jeu d\'entraînement, ce sont les vraies pannes. Il y a mieux.',
             },
@@ -303,7 +303,7 @@ const fr: typeof en = {
         cta: 'Ouvrir le Playground InSight',
     },
     features: {
-        title: 'Tous les réglages que la vraie vie impose.',
+        title: 'Tous les knobs du monde réel.',
         subtitle:
             'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui modélise la forme du trafic, les pannes et la latence comme la prod — sur un seed que vous contrôlez.',
         items: [
@@ -333,30 +333,30 @@ const fr: typeof en = {
                     'Ouvrez l\'URL, choisissez un scénario, cliquez Run. Grille d\'agents, flux de logs, timeline d\'incidents — en direct.',
             },
             {
-                title: 'Cœur C++20',
+                title: 'Core C++20',
                 description:
                     'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions d\'enregistrements sur un simple portable.',
             },
         ],
     },
     howItWorks: {
-        title: 'Trois étapes. Pas de collecteur, pas de cluster, pas de carte bleue.',
+        title: 'Trois étapes. Pas de collecteurs, pas de clusters, pas de carte bleue.',
         subtitle: '',
         steps: [
             {
                 title: 'Décrire',
                 description:
-                    'Un YAML court : quelques agents, les sinks où ils écrivent, les incidents à planifier. Partez de la démo, changez une ligne, c\'est joué.',
+                    'Un YAML court : quelques agents, les sinks où ils écrivent, les incidents à planifier. Partez de la démo, changez une ligne, et c\'est terminé.',
             },
             {
                 title: 'Lancer',
                 description:
-                    'Cliquez Run dans le Lab — ou appelez l\'API REST depuis la CI. Le moteur lance de vrais threads et émet à la cadence demandée.',
+                    'Lancez Run dans le Lab — ou appelez l\'API REST depuis la CI. Le moteur lance de vrais threads et émet à la cadence demandée.',
             },
             {
                 title: 'Brancher',
                 description:
-                    'Streamez vers votre stack : Datadog, Loki, Splunk, Elastic, OpenTelemetry — ou directement vers InSight pour une détection explicable.',
+                    'Envoyez en stream vers votre stack : Datadog, Loki, Splunk, Elastic, OpenTelemetry — ou directement vers InSight pour une détection explicable.',
             },
         ],
     },
@@ -387,7 +387,7 @@ const fr: typeof en = {
         logcraft: {
             name: 'LogCraft',
             description:
-                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte d’agents en YAML, lancez un run, et obtenez des flux de logs reproductibles, calqués sur la production — cascades de pannes, distributions de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre astreinte.',
+                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte d’agents en YAML, lancez un run, et obtenez des flux de logs reproductibles, calqués sur la production — cascades de pannes, distributions de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre on-call.',
             status: 'Bêta · utilisable',
             highlights: [
                 'Agents & topologie en YAML',
@@ -686,13 +686,13 @@ const fr: typeof en = {
         betaBadge: 'Bêta · gratuit dans le Lab',
         heroTagline: 'Des logs synthétiques réalistes, à la demande.',
         heroSubtitle:
-            'LogCraft est un simulateur de logs et de chaos déterministe. Décrivez une flotte de services en YAML, lancez, et obtenez des flux aux formes de production — cascades, queues de latence, incidents planifiés, sortie ECS / OTLP / Prometheus. Idéal pour stresser votre pipeline, démontrer vos dashboards, former votre astreinte, ou nourrir un moteur d\'analyse comme InSight.',
+            'LogCraft est un simulateur déterministe de logs et de chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — cascades, queues de latence, incidents planifiés, sortie ECS / OTLP / Prometheus. Idéal pour stresser votre pipeline, démontrer vos dashboards, former votre on-call, ou alimenter un moteur d\'analyse comme InSight.',
         launchLab: 'Ouvrir le Lab',
         viewGitHub: 'Voir sur GitHub',
         featuresTitle: 'Ce que LogCraft fait vraiment',
         featuresSubtitle:
             'Pas un backend d\'observabilité. Pas un SaaS de stockage. Un générateur qui produit les logs que votre pipeline ne voit jamais en staging.',
-        ctaTitle: 'Choisissez un scénario, lancez.',
+        ctaTitle: 'Choisissez un scénario, lancez Run.',
         ctaSubtitle:
             'Ouvrez le Lab, cliquez "Run Demo", observez une fausse boutique e-commerce dérailler à la demande.',
         deepDiveTitle: 'Où LogCraft se branche',
@@ -716,7 +716,7 @@ const fr: typeof en = {
                 'Trois usages concrets pour lesquels LogCraft excelle — choisissez le vôtre.',
             items: [
                 {
-                    title: 'Stresser votre pipeline de logs',
+                    title: 'Tester votre pipeline de logs',
                     description:
                         'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux cascades et aux enregistrements malformés.',
                 },
@@ -726,13 +726,13 @@ const fr: typeof en = {
                         'Monter une "production" sans production. Faire la démo SE avec de vraies cascades, de vrais pics p99, de vraies timelines d\'incident — en 10 secondes.',
                 },
                 {
-                    title: 'Former votre astreinte',
+                    title: 'Former votre on-call',
                     description:
                         'Donnez l\'URL du Lab à un junior, cliquez "Cascade", laissez-le debug un incident réaliste à cause racine connue — sans risque pour la prod.',
                 },
             ],
         },
-        conceptsTitle: 'Cinq concepts et vous êtes opérationnel',
+        conceptsTitle: 'Cinq concepts et vous êtes fluent',
         conceptsSubtitle:
             'Le reste de la référence YAML, c\'est pour le jour où ça ne suffit plus.',
         conceptsShowAdvanced: 'Afficher les concepts avancés',
@@ -741,7 +741,7 @@ const fr: typeof en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'Un agent est un faux service. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
+                    'Un agent est un service fictif. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
             },
             outputs: {
                 title: 'Sinks (sorties)',
