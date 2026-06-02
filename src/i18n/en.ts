@@ -426,7 +426,7 @@ const en = {
             {
                 title: 'Browser Lab, zero install',
                 description:
-                    'Open the URL, pick a scenario, hit Run. Live agent grid, live log tail, live incident timeline.',
+                    'Open the Lab, pick a scenario, hit Run. Live agent grid, live log tail, live incident timeline.',
             },
             {
                 title: 'C++20 core',

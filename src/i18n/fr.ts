@@ -414,12 +414,12 @@ const fr: typeof en = {
             {
                 title: 'Lab navigateur, zéro install',
                 description:
-                    'Ouvrez l\'URL, choisissez un scénario, cliquez Run. Grille d\'agents, flux de logs, timeline d\'incidents — en direct.',
+                    'Ouvrez le Lab, choisissez un scénario, Run. Grille d\'agents, flux de logs, timeline d\'incidents — en direct.',
             },
             {
                 title: 'Core C++20',
                 description:
-                    'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions de records sur un simple portable.',
+                    'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions de records sur un simple ordi portable.',
             },
         ],
     },
@@ -816,7 +816,7 @@ const fr: typeof en = {
                 },
             ],
         },
-        conceptsTitle: 'Cinq concepts et vous êtes fluent',
+        conceptsTitle: 'Cinq concepts et vous êtes opérationnel',
         conceptsSubtitle:
             'Le reste de la référence YAML, c\'est pour le jour où ça ne suffit plus.',
         conceptsShowAdvanced: 'Afficher les concepts avancés',
@@ -835,7 +835,7 @@ const fr: typeof en = {
             incidents: {
                 title: 'Incidents & pannes en cascade',
                 body:
-                    'Perturbations planifiées : "à la minute 5, la base passe à 20 % d\'erreurs avec 8× de latence". Combinez avec `auto_cascade` pour propager la panne aux dépendants avec un rayon d\'impact et un facteur d\'atténuation configurables — comme une vraie panne.',
+                    'Perturbations planifiées : "À la 5e minute, la database passe à 20 % d\'erreurs avec 8× de latence". Combinez avec `auto_cascade` pour propager la panne aux dépendants avec un rayon d\'impact et un facteur d\'atténuation configurables — comme une vraie panne.',
             },
             determinism: {
                 title: 'Déterminisme (la seed)',
