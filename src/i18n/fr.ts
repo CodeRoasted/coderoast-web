@@ -171,7 +171,7 @@ const fr: typeof en = {
                     name: 'Validation canary',
                     status: 'Bientôt',
                     description:
-                        'diff(baseline, canary) comme signal de kill structurel avant que les métriques ne bougent.',
+                        'diff(baseline, canary) comme signal d’arrêt structurel avant que les métriques ne bougent.',
                 },
                 {
                     name: 'Post-mortem d’incident',
@@ -193,9 +193,6 @@ const fr: typeof en = {
             cta: 'Diff de deux logs',
         },
     },
-    // FR PLACEHOLDER — EN strings verbatim, awaiting Eqya's French pass (do NOT
-    // machine-translate; the de-calque voice-check is PO's lane). Structure mirrors
-    // en.ts § sift 1:1 (enforced by `typeof en`).
     sift: {
         eyebrow: 'Sift',
         hero: {
@@ -902,7 +899,7 @@ const fr: typeof en = {
         },
         backToHome: 'Retour à CodeRoast',
         backToScenarios: 'Retour aux scénarios',
-        live: 'En direct',
+        live: 'Live',
         selectScenario: 'Choisissez un scénario',
         selectScenarioDesc:
             'Chaque scénario est une topologie synthétique qui nourrit InSight. Choisissez, éditez si besoin, puis lancez le pipeline.',
@@ -923,7 +920,7 @@ const fr: typeof en = {
         sinksDesc:
             'Métriques de livraison de chaque sortie — débit d\'écriture, arriéré, erreurs. Pas le contenu de la destination.',
         drain: {
-            title: 'Sink Démo LogCraft',
+            title: 'Sink de démo LogCraft',
             caption:
                 'Toute sortie avec un champ name: est interceptée par le serveur et capturée ici — qu\'il s\'agisse d\'une sortie fichier, console ou HTTP. Le serveur les redirige vers un drain interne pour que vous voyiez les payloads bruts exactement comme ils seraient arrivés à un vrai collecteur.',
             empty: 'Aucun record capturé pour le moment. Démarrez le moteur — toute sortie nommée (name: dans le YAML du scénario) apparaîtra ici.',
