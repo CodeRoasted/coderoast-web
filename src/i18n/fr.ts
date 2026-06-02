@@ -19,23 +19,23 @@ const fr: typeof en = {
         vision: 'Vision',
     },
     hero: {
-        badge: 'CodeRoast · du bruit des logs à la compréhension',
-        tagline: 'Transformez le bruit des logs en compréhension.',
+        badge: 'CodeRoast · du bruit des logs au signal',
+        tagline: 'Transformez le bruit des logs en signal.',
         subtitle:
-            'CodeRoast compresse les logs bruyants en une structure classée et déterministe — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets. Précision d’abord, et tourne sur votre infra. Commencez par comparer deux runs CI.',
+            'CodeRoast compresse le bruit de vos logs en une structure déterministe, classée par pertinence — pour ne garder que la précision, pas des gigaoctets de logs inutilisables.',
         cta: 'Diff de deux logs',
         ctaSecondary: 'Voir tous les produits',
-        trust: 'déterministe · précision d’abord · tourne sur votre infra · logs jamais stockés',
+        trust: 'déterministe · précision avant tout · tourne sur votre infra · logs jamais stockés',
     },
     vision: {
         badge: 'CodeRoast · la thèse MetaLog',
         titleLead: 'Pas stockés. Pas échantillonnés. Pas exfiltrés.',
         titleAccent: 'Distillés.',
         subtitle:
-            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, re-dérivable jusqu’à la ligne source exacte, et qui ne quitte jamais votre machine. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une lentille sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
+            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, traçable jusqu’à la ligne source exacte, et qui ne quitte jamais votre infra. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une vue sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
         ctaPrimary: 'Diff de deux logs',
         ctaSecondary: 'Voir les produits',
-        compareCta: 'Voir comment on se compare',
+        compareCta: 'Voir ce qui nous différencie',
         pain: {
             title: 'Le modèle que tout le monde a fini par accepter est cassé, en silence.',
             subtitle: 'Quatre compromis qu’on vous a présentés comme normaux.',
@@ -58,7 +58,7 @@ const fr: typeof en = {
                 {
                     title: 'L’IA vous donne un récit que vous ne pouvez pas reproduire.',
                     description:
-                        'Un « pourquoi ça a cassé » plausible, régénéré différemment à chaque fois. Rien sur quoi gater une release.',
+                        'Un « pourquoi ça a cassé » plausible, régénéré différemment à chaque fois. Rien qu’on puisse mettre derrière une gate.',
                 },
             ],
         },
@@ -75,23 +75,23 @@ const fr: typeof en = {
                 {
                     step: '4 Ko en sortie',
                     description:
-                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre machine.',
+                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre infra.',
                 },
                 {
                     step: 'Attrape la régression',
                     description:
-                        'La saillance fait remonter le fatal solitaire seule — sans baseline, sans requête, sans seuil à régler.',
+                        'La saillance fait remonter l’erreur fatale isolée, à elle seule — sans baseline, sans requête, sans seuil à régler.',
                 },
                 {
                     step: 'Diff, instantané',
                     description:
-                        'Deux empreintes en entrée, un « ce qui a changé » classé en sortie — et chaque trouvaille se re-dérive jusqu’à la ligne source exacte.',
+                        'Deux empreintes en entrée, un « ce qui a changé » classé en sortie — et chaque trouvaille remonte jusqu’à la ligne source exacte.',
                 },
             ],
             badges: [
                 'zéro instrumentation',
                 'aucun langage de requête',
-                'rien ne quitte votre machine',
+                'rien ne quitte votre infra',
                 'bit-identique à chaque run',
             ],
         },
@@ -101,12 +101,12 @@ const fr: typeof en = {
             {
                 title: 'Eux vous font supprimer vos logs. Nous, on vous dit d’en envoyer plus.',
                 them:
-                    'Le secret honteux de la tarification au Go : les équipes ne font pas que payer — elles rationnent. Des ingénieurs passent du vrai temps de sprint à arracher des lignes de log pour réduire une facture cloud, s’aveuglant volontairement. C’est aussi de la lossiness — sauf qu’elle est décidée à la main, en amont, avant que quiconque sache ce qui comptera, et payée en heures d’ingénierie. La pire qui soit.',
+                    'Le secret honteux de la tarification au Go : les équipes ne font pas que payer — elles rationnent. Des ingénieurs passent du vrai temps de sprint à arracher des lignes de log pour réduire une facture cloud, s’aveuglant volontairement. C’est aussi de la perte — sauf qu’elle est décidée à la main, en amont, avant que quiconque sache ce qui comptera, et payée en heures d’ingénierie. La pire qui soit.',
                 us:
-                    'Envoyez tout. Loggez plus, pas moins. Le coût cesse d’être le verrou — l’empreinte est bornée et vos logs bruts ne quittent jamais votre machine. Plus aucun ingénieur ne trie le grain de l’ivraie pour tenir un budget, jamais. La distillation est automatique et dirigée par la saillance : le fatal rare survit parce qu’il compte, pas parce que quelqu’un a bien deviné le trimestre dernier.',
+                    'Envoyez tout. Loggez plus, pas moins. Le coût cesse d’être le verrou — l’empreinte est bornée et vos logs bruts ne quittent jamais votre infra. Plus aucun ingénieur ne sépare le bon grain de l’ivraie pour tenir un budget, jamais. La distillation est automatique et dirigée par la saillance : le fatal rare survit parce qu’il compte, pas parce que quelqu’un a bien deviné le trimestre dernier.',
             },
             {
-                title: 'Votre facture IA est la prochaine à partir à la verticale.',
+                title: 'Votre facture IA est la prochaine à s’envoler.',
                 them:
                     'Tout a un LLM greffé dessus maintenant — et les logs bruts sont la chose la plus chère qu’on puisse lui donner à manger. Vous payez au token pour des gigaoctets de bruit, et le modèle s’y noie exactement comme un humain.',
                 us:
@@ -114,7 +114,7 @@ const fr: typeof en = {
             },
         ],
         tie:
-            'Tout le monde est lossy à l’échelle. La seule question, c’est comment vous perdez. Eux perdent à l’aveugle et en amont — un humain qui supprime des logs, un fournisseur qui les échantillonne. Nous perdons de façon informée et récupérable : la saillance décide quoi garder, et chaque insight se re-dérive jusqu’à la ligne source exacte.',
+            'Tout le monde perd de l’information à l’échelle. La seule question, c’est comment vous perdez. Eux perdent à l’aveugle et en amont — un humain qui supprime des logs, un fournisseur qui les échantillonne. Nous perdons de façon informée et récupérable : la saillance décide quoi garder, et chaque insight remonte jusqu’à la ligne source exacte.',
         contrast: {
             title: 'Ce que le MetaLog n’est pas.',
             subtitle: 'Deux modèles pour la même douleur. L’un accumule. L’autre distille.',
@@ -123,7 +123,7 @@ const fr: typeof en = {
             rows: [
                 {
                     old: 'Échantillonne les events pour plafonner le coût — l’event rare est le premier à partir.',
-                    new: 'Garde le saillant, jette l’ennuyeux. Le fatal solitaire survit parce qu’il a scoré, pas parce qu’il était fréquent.',
+                    new: 'Garde le saillant, jette l’ennuyeux. L’erreur fatale isolée survit parce qu’elle est saillante, pas parce qu’elle était fréquente.',
                 },
                 {
                     old: 'L’instrumentation est le ticket d’entrée — réécrivez votre code en wide events avant de voir la moindre valeur.',
@@ -135,7 +135,7 @@ const fr: typeof en = {
                 },
                 {
                     old: 'Un « pourquoi ça a cassé » probabiliste que vous ne pouvez pas reproduire.',
-                    new: 'Un fait structurel déterministe — bit-identique, citable, re-dérivable à la ligne source. Le seul qu’on met derrière un gate CI dur.',
+                    new: 'Un fait structurel déterministe — bit-identique, citable, traçable jusqu’à la ligne source. Le seul qu’on met derrière une gate CI dure.',
                 },
                 {
                     old: 'Payer pour stocker des gigaoctets à vie — et en lire moins de 5 %.',
@@ -146,9 +146,9 @@ const fr: typeof en = {
                 'Déjà sur OTel ? On distille ça aussi — la structure est du signal gratuit. Et vous obtenez quand même un MetaLog souverain, pas un énième entrepôt de spans qui vous enferme.',
         },
         hub: {
-            title: 'Un flux en entrée. Un MetaLog en sortie. Tout le reste est une lentille.',
+            title: 'Un flux en entrée. Un MetaLog en sortie. Tout le reste est une vue.',
             subtitle:
-                'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une lentille différente sur la même empreinte.',
+                'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une vue différente sur la même empreinte.',
             lenses: [
                 {
                     name: 'Sift',
@@ -159,7 +159,7 @@ const fr: typeof en = {
                     name: 'Détection streaming',
                     status: 'Beta',
                     description:
-                        'Détection d’anomalies continue, précision d’abord — une alerte, un vrai incident.',
+                        'Détection d’anomalies continue, la précision avant tout — une alerte, un vrai incident.',
                 },
                 {
                     name: 'Forwarding MetaLog',
@@ -171,7 +171,7 @@ const fr: typeof en = {
                     name: 'Validation canary',
                     status: 'Bientôt',
                     description:
-                        'diff(baseline, canary) comme signal de kill structurel avant que les métriques ne bougent.',
+                        'diff(baseline, canary) comme signal d’arrêt structurel avant que les métriques ne bougent.',
                 },
                 {
                     name: 'Post-mortem d’incident',
@@ -193,33 +193,185 @@ const fr: typeof en = {
             cta: 'Diff de deux logs',
         },
     },
-    diffShowcase: {
+    sift: {
         eyebrow: 'Sift',
-        title: 'Votre CI est rouge. Quelles lignes comptent vraiment ?',
+        hero: {
+            title: 'Vos tests passent. Vos logs disent le contraire.',
+            subtitle:
+                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent à installer, sans compte utilisateur, ~90 secondes.',
+            ctaPrimary: 'Ajoutez l’Action',
+            ctaSecondary: 'Essayez dans votre navigateur',
+            trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne quittent jamais votre infra.',
+            samplePassed: 'les deux runs sont passés',
+            kicker:
+                'Les deux runs sont au vert. Ni le statut du build ni grep n’y voient quoi que ce soit — il n’y a aucune erreur à chercher. Sift, lui, voit que votre cache a cessé de fonctionner en silence.',
+        },
+        comment: {
+            title: 'Il vit là où vous bossez déjà.',
+            body:
+                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante au besoin. Un seul commentaire épinglé à votre PR, mis à jour à chaque push, déterministe. Même avec une coche verte rassurante, Sift voit le problème là où tout semble validé :',
+        },
+        catches: {
+            title: 'Conçu pour les changements qui ne ressemblent pas à des changements.',
+            colChange: 'Ce qui a changé',
+            colTextDiff: 'Diff texte',
+            colPassFail: 'Pass/fail',
+            colSift: 'Sift',
+            rows: [
+                {
+                    change: 'Une ligne de succès disparue en silence (cache, retry, un chemin de code)',
+                    textDiff: 'noyée',
+                    passFail: 'invisible',
+                    sift: 'Disappeared : "…" — une ligne classée',
+                },
+                {
+                    change: 'La part d’un pattern dans le run a bougé (4 % → 38 %)',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Frequency shift',
+                },
+                {
+                    change: 'Une erreur que vous avez corrigée a vraiment disparu',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Recovery — green: "your fix worked"',
+                },
+                {
+                    change: 'Les mêmes erreurs qu’avant, mais un vrai changement dessous (leurre)',
+                    textDiff: 'noyé',
+                    passFail: 'invisible',
+                    sift: 'le bruit masqué, le vrai changement remonté',
+                },
+                {
+                    change: 'Un tout nouveau pattern d’erreur',
+                    textDiff: 'noyé dans le bruit',
+                    passFail: 'invisible si les tests passent',
+                    sift: 'une ligne, classée par sévérité',
+                },
+            ],
+        },
+        free: {
+            title: 'Tout le produit sans état est gratuit. Sans conditions.',
+            body:
+                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur. Jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds ne l’est pas.',
+            cta: 'Voir les paliers',
+        },
+        trust: {
+            title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
+            body:
+                'Mêmes entrées, même diff — bit-identique, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+            cta: 'Comment on construit',
+        },
+        install: {
+            title: 'Deux fichiers de logs en entrée. Un rapport classé en sortie.',
+            actionLabel: 'L’Action',
+            cliLabel: 'La CLI',
+            cliLead: 'un seul binaire statique, aucun runtime —',
+        },
+    },
+    diff: {
+        eyebrow: 'SIFT',
+        title: 'Ce qui a changé entre deux logs — et ce qui n’est que du bruit',
         subtitle:
-            'Collez le dernier run vert et le run en échec. Sift classe ce qui a structurellement changé — nouvelles erreurs, un fichier de test devenu rouge, décalages de fréquence — et masque les centaines de lignes inchangées. Sans agent, sans installation ; un rapport partageable en ~90 secondes.',
-        cta: 'Diff de deux logs',
-        note: 'Gratuit · tourne dans votre session navigateur · logs jamais stockés',
+            'Collez deux flux de logs (un run de référence et un run modifié). InSight ingère les deux et classe les changements structurellement significatifs — survolez ou épinglez un changement pour voir exactement les lignes qu’il touche.',
+        loadSample: 'Pas de logs sous la main ? Chargez un exemple :',
+        baselineLog: 'Log de référence',
+        changedLog: 'Log modifié',
+        placeholder: 'collez des lignes de log…',
+        lines: 'lignes',
+        line: 'ligne',
+        flagged: 'signalés',
+        compare: 'Comparer',
+        comparing: 'Comparaison…',
+        swap: 'Inverser',
+        swapTitle: 'Inverser référence ⇄ modifié',
+        trust: 'Gratuit · quota quotidien · les logs ne sont pas stockés',
+        paneBaseline: 'Référence',
+        paneChanged: 'Modifié',
+        swapSides: 'Inverser les côtés',
+        swapSidesTitle: 'Inverser référence ⇄ modifié et recomparer',
+        newComparison: 'Nouvelle comparaison',
+        significantChanges: 'Changements significatifs',
+        clearPinned: 'retirer {count} épinglé(s)',
+        hint: 'survolez pour prévisualiser · cliquez pour épingler (cumulables) · couleur = sévérité, pas ajout/suppression',
+        emptyResult:
+            'Aucun changement structurellement significatif — les {count} changements observés sont dans le bruit.',
+        suppressed: '{count} changements masqués comme bruit (proportionnels / basse fréquence).',
+        ciCallout: 'Vous le voulez en CI ? Le même moteur tourne en CLI locale et en GitHub Action.',
+        severity: {
+            critical: 'CRITIQUE',
+            high: 'SUSPECT',
+            medium: 'NOTABLE',
+            low: 'FAIBLE',
+            recovery: 'RÉSOLU',
+        },
+        kind: {
+            new_error_pattern: 'erreur apparue',
+            escalated_pattern: 'aggravé',
+            resolved_pattern: 'résolu',
+            new_template: 'apparu',
+            vanished_template: 'disparu',
+            frequency_shift: 'décalage',
+            entropy_shift: 'ramification',
+            emerging_tail: 'émergent en queue',
+            fallback: 'modifié',
+        },
+        error: {
+            quotaReached:
+                'Limite gratuite quotidienne atteinte{perDay}. Réessayez demain, ou lancez-le en local avec la CLI.',
+            accessDenied: 'Accès refusé.',
+            failed: 'La comparaison a échoué.',
+        },
+        presets: {
+            'hotfix': {
+                label: 'Vérif. hotfix',
+                description: 'Un run cassé vs son hotfix : les erreurs DB se sont rétablies, un nouveau timeout a régressé.',
+            },
+            'silent-regression': {
+                label: 'Régression silencieuse',
+                description: 'Aucune nouvelle erreur — une ligne de succès a disparu et les retries ont explosé. grep ne trouve rien.',
+            },
+            'error-decoy': {
+                label: 'Mêmes erreurs, vrai changement',
+                description: 'Les deux runs ont les MÊMES erreurs (le leurre) — mais les commandes ont cessé d’aboutir en silence. Sift masque les erreurs inchangées et montre ce qui a vraiment bougé.',
+            },
+            'cache-degradation': {
+                label: 'Le cache meurt en silence',
+                description: 'Zéro erreur, toujours des 200 — mais le cache ne sert plus et les appels à l’origine ont explosé. Une falaise p99 latente, invisible à un filtre.',
+            },
+            'canary-deploy': {
+                label: 'Canary vs stable',
+                description: 'Même trafic, deux builds : le nouveau a changé le handler de checkout et activé un flag. Un pur diff de comportement — aucune erreur impliquée.',
+            },
+            'hot-key': {
+                label: 'Le throttling prend le dessus',
+                description: 'Aucune erreur — mais une nouvelle ligne de throttling apparaît et accapare un tiers du run. Un diff texte montre que les lignes existent ; Sift classe le template qui domine désormais le flux.',
+            },
+            'escalating-warning': {
+                label: 'Avertissement qui s’aggrave',
+                description: 'Un WARN de pression sur le pool passe de rare à omniprésent — la dérive pré-incident, quelques minutes avant que ça ne page. Pas une nouvelle erreur, donc un filtre reste muet.',
+            },
+        },
     },
     problem: {
-        title: 'On ne livre pas une observabilité qu\'on n\'a jamais testée.',
+        title: 'On ne ship pas une observabilité qu\'on n\'a jamais testée.',
         subtitle:
-            'En staging, c\'est calme. Les mocks sont propres. Puis la prod casse à 3 h du matin et vos alertes n\'ont jamais sonné pour de vrai. LogCraft est l\'entrée qui manque à tout votre aval.',
+            'En staging, c\'est calme. Les mocks sont propres. Puis la prod casse à 3 h du matin et vos alertes n\'ont jamais sonné pour de vrai. LogCraft génère les signaux réalistes qui manquent à tous les outils qui suivent.',
         points: [
             {
-                title: 'Vos alertes marchent en staging — parce qu\'il ne s\'y passe rien.',
+                title: 'Vos alertes fonctionnent en staging — parce qu\'il ne s\'y passe rien.',
                 description:
-                    'Pas de rafales, pas de cascades, pas de records sales. Le premier vrai incident est le premier vrai test.',
+                    'Pas de rafales, pas de pannes en cascade, pas de record parasite. Le premier vrai incident est le premier vrai test.',
             },
             {
-                title: 'Vos dashboards sont jolis jusqu\'au moment où la cascade frappe.',
+                title: 'Vos dashboards sont beaux jusqu\'au moment où la panne en cascade frappe.',
                 description:
                     'Des p99 que vous n\'avez jamais tracés. Des effets de topologie que personne n\'a dessinés. Des buffers jamais dimensionnés.',
             },
             {
-                title: 'Votre astreinte se forme en se faisant réveiller.',
+                title: 'Votre on-call apprend au rythme des alertes en pleine nuit.',
                 description:
-                    'Sans bac à sable, le seul jeu d\'entraînement, ce sont les vraies pannes. Il y a mieux.',
+                    'Sans sandbox, les vraies pannes deviennent votre seul terrain d\'entraînement. Il existe une meilleure solution.',
             },
         ],
     },
@@ -228,18 +380,18 @@ const fr: typeof en = {
         subtitle:
             'Lancez un scénario LogCraft déterministe et regardez InSight condenser le flux en templates, MetaLogs, preuves de détection et explication exploitable.',
         yamlLabel: 'scenario.yaml',
-        logsLabel: 'flux de preuve live',
+        logsLabel: 'flux de preuves en direct',
         cta: 'Ouvrir le Playground InSight',
     },
     features: {
-        title: 'Tous les boutons que la vraie vie a.',
+        title: 'Tous les knobs du monde réel.',
         subtitle:
-            'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui modélise la forme du trafic, les pannes et la latence comme la prod — sur un seed que vous contrôlez.',
+            'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui reproduit le comportement du trafic, les pannes et la latence comme en production — sur une seed que vous contrôlez.',
         items: [
             {
                 title: 'Déterministe par seed',
                 description:
-                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident bit-pour-bit.',
+                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine, n\'importe quel jour. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident, bit-identique.',
             },
             {
                 title: 'Plus de vingt formats',
@@ -259,56 +411,56 @@ const fr: typeof en = {
             {
                 title: 'Lab navigateur, zéro install',
                 description:
-                    'Ouvrez l\'URL, choisissez un scénario, cliquez Run. Grille d\'agents, flux de logs, timeline d\'incidents — en direct.',
+                    'Ouvrez le Lab, choisissez un scénario, Run. Grille d\'agents, flux de logs, timeline d\'incidents — en direct.',
             },
             {
-                title: 'Cœur C++20',
+                title: 'Core C++20',
                 description:
-                    'Pipeline shardé, faible contention, microseconde. Tient des runs multi-millions de records sur un laptop.',
+                    'Pipeline shardé, faible contention, à la microseconde. Tient des runs de plusieurs millions de records sur un simple ordi portable.',
             },
         ],
     },
     howItWorks: {
-        title: 'Trois étapes. Pas de collecteur, pas de cluster, pas de carte bleue.',
+        title: 'Trois étapes. Pas de collecteurs, pas de clusters, pas de carte bleue.',
         subtitle: '',
         steps: [
             {
                 title: 'Décrire',
                 description:
-                    'Un YAML court : quelques agents, les sinks où ils écrivent, les incidents à planifier. Partez de la démo, changez une ligne, c\'est joué.',
+                    'Un YAML court : quelques agents, les sinks où ils écrivent, les incidents à planifier. Partez de la démo, changez une ligne, et c\'est terminé.',
             },
             {
                 title: 'Lancer',
                 description:
-                    'Cliquez Run dans le Lab — ou appelez l\'API REST depuis la CI. Le moteur lance de vrais threads et émet à la cadence demandée.',
+                    'Lancez Run dans le Lab — ou appelez l\'API REST depuis la CI. Le moteur lance de vrais threads et émet à la cadence demandée.',
             },
             {
                 title: 'Brancher',
                 description:
-                    'Streamez vers votre stack : Datadog, Loki, Splunk, Elastic, OpenTelemetry — ou directement vers InSight pour une détection explicable.',
+                    'Envoyez en stream vers votre stack : Datadog, Loki, Splunk, Elastic, OpenTelemetry — ou directement vers InSight pour une détection explicable.',
             },
         ],
     },
     pricingTeaser: {
         title: 'Gratuit pour le solo. Payant là où ça devient sérieux.',
         subtitle:
-            'Les scénarios starter restent gratuits. Pro et Entreprise débloquent le chaos, les cascades et tout le catalogue de sorties.',
+            'Les scénarios starter restent gratuits. Pro et Entreprise débloquent le chaos, les pannes en cascade et tout le catalogue de sorties.',
         seePlans: 'Voir les tarifs détaillés',
         free: { name: 'Gratuit', price: '0 €', tagline: 'Solo & évaluation' },
         pro: { name: 'Pro', price: 'TBD', tagline: 'Le moteur complet' },
         enterprise: { name: 'Entreprise', price: 'Sur mesure', tagline: 'Topologie & on-prem' },
     },
     portfolio: {
-        title: 'Un moteur. Une surface pour chaque besoin.',
+        title: 'Un moteur. Une surface pour chaque usage.',
         subtitle:
-            'Chaque produit CodeRoast transforme le bruit des logs en compréhension pour un usage précis — choisissez celui qui correspond au problème devant vous. La gamme s’étoffe ; le moteur en dessous reste le même.',
+            'Chaque produit CodeRoast transforme le bruit des logs en signal pour un usage précis — choisissez celui qui correspond au problème que vous avez sous les yeux. La gamme s’étoffe ; le moteur sous-jacent reste le même.',
         sift: {
             name: 'Sift',
             description:
-                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit qu’un diff classique vous impose — le coin d’entrée CI/CD : zéro infra, ~90 secondes.',
+                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, ~90 secondes.',
             status: 'Live · démo gratuite',
             highlights: [
-                'Classement du « ce qui a changé », bruit supprimé',
+                '« Ce qui a changé » classé par pertinence, bruit supprimé',
                 'Surlignage de provenance ligne à ligne',
                 'Tourne en local — les logs ne sortent pas (CLI / Action)',
             ],
@@ -316,67 +468,67 @@ const fr: typeof en = {
         logcraft: {
             name: 'LogCraft',
             description:
-                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — cascades de pannes, queues de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre astreinte.',
+                'Un générateur de logs synthétiques et un moteur de scénarios chaos. Décrivez une flotte d’agents en YAML, lancez un run, et obtenez des flux de logs reproductibles, calqués sur la production — pannes en cascade, distributions de latence, 20+ formats de sortie. Stressez votre pipeline, démontrez vos dashboards, entraînez votre on-call.',
             status: 'Bêta · utilisable',
             highlights: [
                 'Agents & topologie en YAML',
                 'Seed déterministe → replays bit-stables',
-                'Cascades & incidents chaos',
+                'Pannes en cascade & incidents chaos',
                 '20+ formats (ECS, OTLP, Prometheus…)',
             ],
         },
         insight: {
             name: 'InSight',
             description:
-                'Le pipeline d’analyse streaming derrière tout le reste : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — précision d’abord, une alerte = un vrai incident. À essayer en live dans le Lab.',
+                'Le pipeline d’analyse en streaming derrière tout ça : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — la précision avant tout : une alerte = un vrai incident. À essayer en live dans le Lab.',
             status: 'Bêta · API live',
             highlights: [
-                'Cartes explain en premier plan',
+                'Cartes d’insight explain-first',
                 'Mining de templates type Drain',
                 'Couche de compression MetaLog',
-                'Preuves de détection pour l’IA explain',
+                'Preuves des détecteurs pour l’IA explain',
             ],
         },
         metalogForwarding: {
             name: 'Forwarding MetaLog',
             description:
-                'Compressez le flux en MetaLogs et transférez ceux-ci, pas des gigaoctets bruts — une empreinte structurelle pour une fraction du volume. La moitié visible par le CFO.',
+                'Compressez le flux en MetaLogs et transférez-les, pas des gigaoctets bruts — une empreinte structurelle pour une fraction du volume. La moitié visible par le CFO.',
             status: 'Bientôt',
         },
         canary: {
             name: 'Validation canary',
             description:
-                'diff(référence, canary) comme signal d’arrêt structurel — détectez une mauvaise release avant que les métriques ne bougent, sur le même moteur que le diff CI.',
+                'diff(baseline, canary) comme signal d’arrêt structurel — détectez une mauvaise release avant que les métriques ne bougent, sur le même moteur que le diff CI.',
             status: 'Bientôt',
         },
     },
     roadmap: {
         title: 'Sur la roadmap',
         subtitle:
-            'Ce que nous construisons ensuite, et la direction que prend le produit.',
+            'Ce que nous construisons ensuite, et où va le produit.',
         badge: 'Bientôt',
         items: [
             {
                 title: 'Démo explain IA',
                 description:
-                    'Brancher un agent sur le payload explain pour narrer les preuves MetaLog et recommander l’étape d’investigation suivante.',
+                    'Attacher un agent au flux de sortie d’InSight, pour des explications plus claires, sans aucune interprétation hallucinée.',
             },
             {
                 title: 'Fixtures de compatibilité',
                 description:
-                    'Promouvoir des scénarios de la bibliothèque en gates de release prouvant que LogCraft, IPC, InSight, serveur et web restent alignés.',
+                    'Promouvoir des scénarios de la bibliothèque en gates de release prouvant que LogCraft, IPC, InSight, serveur et web restent synchronisés.',
             },
             {
                 title: 'Vues traces MetaLog',
                 description:
-                    'Exposer les fenêtres MetaLog et traces de détecteurs après stabilisation de la démo explain-first.',
+                    'Exposer les fenêtres MetaLog et traces de détecteurs une fois la démo explain-first suffisamment stable pour des présentations clients.',
             },
         ],
     },
     maker: {
-        title: 'Construit par un seul ingé.',
+        title: 'Construit par un seul ingénieur.',
         body:
-            'Je m\'appelle Manu. J\'ai passé assez de temps à bricoler des générateurs de logs en shell pour avoir envie d\'un vrai. LogCraft, c\'est ce que j\'aurais voulu avoir — un moteur déterministe, scriptable en YAML, à brancher devant n\'importe quel pipeline. Gratuit dans le Lab, la bibliothèque de scénarios est ouverte sur GitHub, retours sérieusement écoutés.',
+            'Je m\'appelle Manu. J\'ai passé assez de temps à bricoler des générateurs de logs en shell pour avoir envie d\'un vrai. LogCraft, c\'est ce que j\'aurais voulu avoir — un moteur déterministe, piloté par scénarios, que vous pouvez brancher sur n\'importe quel pipeline. Gratuit dans le Lab, la bibliothèque de scénarios est ouverte sur GitHub, et je prends les retours au sérieux.',
         ctaCode: 'Bibliothèque de scénarios (GitHub)',
         ctaContact: 'Me contacter',
         ctaSupport: 'Soutenir le projet',
@@ -391,7 +543,7 @@ const fr: typeof en = {
     licensing: {
         title: 'Plans LogCraft',
         subtitle:
-            'Gratuit pour le solo et l\'apprentissage. Les paliers payants débloquent les scénarios chaos / cascade / production.',
+            'Gratuit pour le solo et l\'apprentissage. Les paliers payants débloquent les scénarios chaos / panne en cascade / production.',
         badge: 'Tarifs — accès anticipé',
         free: {
             name: 'Gratuit',
@@ -413,11 +565,11 @@ const fr: typeof en = {
             price: 'TBD',
             period: '/mois',
             description:
-                'Le réaliste : incidents chaos, cascades, tous les formats de sortie, replay déterministe.',
+                'Le réaliste : incidents chaos, pannes en cascade, tous les formats de sortie, replay déterministe.',
             features: [
                 'Agents & scénarios illimités',
                 'Tous les sinks (HTTP, ECS, OTLP, Prometheus, StatsD)',
-                'Cascade d\'erreurs & incidents chaos',
+                'Pannes en cascade & incidents chaos',
                 'Distributions de latence (p50/p95/p99)',
                 'Mode replay déterministe',
                 'Templates d\'agents & registre',
@@ -430,7 +582,7 @@ const fr: typeof en = {
             price: 'Sur mesure',
             period: '',
             description:
-                'Pour les équipes qui font de LogCraft la colonne synthétique de leur stack d\'observabilité.',
+                'Pour les équipes qui font de LogCraft la colonne vertébrale synthétique de leur stack d\'observabilité.',
             features: [
                 'Tout ce qui est dans Pro',
                 'Simulation de topologie réseau',
@@ -448,7 +600,7 @@ const fr: typeof en = {
         title: 'Comment on construit',
         subtitle: 'Le déterminisme est une promesse produit. Elle commence par notre façon de construire.',
         intro:
-            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — au bit près. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
+            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — bit-identique. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
         sections: [
             {
                 title: 'Générer n’est pas décider.',
@@ -485,24 +637,24 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
     },
     howWeCompare: {
-        badge: 'Une machine différente',
-        title: 'Comment on se compare',
-        subtitle: 'Version courte : on n’est pas un truc moins cher. On est une machine différente.',
+        badge: 'Une autre conception',
+        title: 'Ce qui nous différencie',
+        subtitle: 'Version courte : on ne fait pas moins cher. On fait autre chose.',
         intro:
-            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Normal — faisons-le honnêtement. Mais une chose rend la comparaison étrange avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et ça se bat sur le prix, la cardinalité, et qui l’héberge. Nous, on ne le stocke pas. On le distille en une empreinte bornée et déterministe — sur votre propre infra. Ce n’est pas un entrepôt moins cher. C’est une machine différente. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
+            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. C’est légitime. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre conception. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
         versus: [
             {
-                title: 'face à Datadog — une machine différente, pas une moins chère',
+                title: 'face à Datadog — une autre conception, pas une moins chère',
                 body: [
-                    'Le modèle de Datadog, c’est accumuler-et-facturer : envoyez tout vers leur cloud, payez au volume. Quand la facture pique, leur propre réponse, c’est d’échantillonner — décider quelles lignes restent cherchables et prier pour ne pas avoir jeté celle qui comptait. La fameuse facture Datadog est la taxe du modèle d’accumulation, et l’échantillonnage en est la coupe à l’aveugle.',
-                    'On ne rend pas cette facture moins chère. On supprime la raison même d’exfiltrer vos logs : on distille une empreinte comportementale complète en local, et vos logs bruts restent là où ils sont. Plus de logs, sur votre infra — le parachute de la coupe que les équipes font déjà à l’aveugle. Les économies en découlent, mais le coût n’est pas l’argument : l’argument, c’est qu’un fait structurel déterministe — mêmes entrées, même réponse — est quelque chose qu’un entrepôt échantillonné et probabiliste ne peut structurellement pas vous donner. Vous n’achetez pas un Datadog moins cher. Vous achetez un objet différent.',
+                    'Le modèle de Datadog, c’est accumuler-et-facturer : envoyez tout vers leur cloud, payez au volume. Quand la facture pique, leur réponse, c’est d’échantillonner — décider quelles lignes restent cherchables et prier pour ne pas avoir jeté celle qui comptait. La fameuse facture Datadog est la taxe du modèle d’accumulation, et l’échantillonnage en est la coupe à l’aveugle.',
+                    'On ne rend pas cette facture moins chère. On supprime la raison même d’exfiltrer vos logs : on distille une empreinte comportementale complète en local, et vos logs bruts restent là où ils sont. Plus de logs, sur votre infra — le parachute de la coupe que les équipes font déjà à l’aveugle. Les économies en découlent, mais le coût n’est pas l’argument : l’argument, c’est qu’un fait structurel déterministe — mêmes entrées, même réponse — est quelque chose qu’un entrepôt échantillonné et probabiliste ne peut structurellement pas vous donner. Vous n’achetez pas un Datadog moins cher. Vous achetez une garantie différente.',
                 ],
             },
             {
                 title: 'face à Honeycomb — la même conviction, le pari inverse',
                 body: [
-                    'On part d’où part Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
-                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, gateable, sur votre infra — reproductible au bit près, le seul genre qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
+                    'On part du même constat qu’Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
+                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, sur votre infra — bit-identique, le seul qu’on peut mettre derrière une vraie gate CI. Leur pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
                 ],
             },
         ],
@@ -519,13 +671,13 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
     },
     footer: {
-        tagline: 'Atelier indé. C++ là où ça compte, web là où il le faut.',
+        tagline: 'Indépendant, et sans compromis. Le C++ au cœur, le web en surface.',
         rights: 'Tous droits réservés.',
         sections: {
             product: 'Produit',
             resources: 'Ressources',
             more: 'Plus',
-            legal: 'Mentions légales',
+            legal: 'Mentions légales & sécurité',
         },
         links: {
             logcraft: 'LogCraft',
@@ -535,10 +687,10 @@ const fr: typeof en = {
             tierMatrix: 'Profil d\'accès',
             roadmap: 'Roadmap',
             howWeBuild: 'Comment on construit',
-            howWeCompare: 'Comment on se compare',
+            howWeCompare: 'Ce qui nous différencie',
             github: 'GitHub',
             contact: 'Contact',
-            support: 'Soutenir',
+            support: 'Soutenir le projet',
             terms: 'Conditions d’utilisation',
             privacy: 'Politique de confidentialité',
             trademark: 'Politique des marques',
@@ -555,7 +707,7 @@ const fr: typeof en = {
         alwaysOn: 'Toujours actif',
         onboardingName: 'État de l’onboarding Lab',
         onboardingDesc:
-            'Mémorise que vous avez complété l’assistant d’onboarding du Lab. Sans lui, le tutoriel réapparaît à chaque visite.',
+            'Mémorise que vous avez terminé l’assistant d’onboarding du Lab. Sans lui, le tutoriel réapparaît à chaque visite.',
         cookieKey: 'logcraft_onboarding_dismissed',
         cookieDuration: '1 an',
         resetBtn: 'Réinitialiser',
@@ -585,9 +737,9 @@ const fr: typeof en = {
             },
             demo: {
                 tag: 'Commerciaux / SE',
-                title: 'Montrer une cascade crédible en cinq minutes',
+                title: 'Montrer une panne en cascade crédible en cinq minutes',
                 outcome:
-                    'Ouvrez le Lab en partage d’écran, lancez “Cascade”, et regardez les dashboards potentiels du prospect virer au rouge. Pas de coordination staging, pas de fuite de données réelles.',
+                    'Ouvrez le Lab en partage d’écran, lancez “Panne en cascade”, et regardez les dashboards potentiels du prospect virer au rouge. Pas de coordination staging, pas de fuite de données réelles.',
                 yamlSnippet:
                     '# DB sature → misses cache → 5xx web\nseed: 1337\nauto_cascade:\n  enabled: true\n  radius: 2\nincidents:\n  - at: "00:00:30"\n    target: orders-db\n    impact: { error_rate: 0.4, latency_x: 8 }',
                 bullets: [
@@ -598,9 +750,9 @@ const fr: typeof en = {
             },
             train: {
                 tag: 'Formation on-call',
-                title: 'Former un on-call sans éveiller personne',
+                title: 'Former un on-call sans réveiller personne',
                 outcome:
-                    'Donnez l’URL du Lab à un junior, un scénario avec cause racine connue, et laissez-le le traiter comme un vrai ticket. Rejouez le même seed dans toute l’équipe pour un benchmark juste.',
+                    'Donnez l’URL du Lab à un junior, un scénario avec root cause connue, et laissez-le le traiter comme un vrai ticket. Rejouez la même seed dans toute l’équipe pour un benchmark juste.',
                 yamlSnippet:
                     '# Cause cachée : timeout payment-gw à 02:15\nseed: 7\nincidents:\n  - at: "02:15:00"\n    target: payment-gw\n    impact: { error_rate: 0.6 }\n    silent: true',
                 bullets: [
@@ -615,18 +767,18 @@ const fr: typeof en = {
         betaBadge: 'Bêta · gratuit dans le Lab',
         heroTagline: 'Des logs synthétiques réalistes, à la demande.',
         heroSubtitle:
-            'LogCraft est un simulateur de logs et de chaos déterministe. Décrivez une flotte de services en YAML, lancez, et obtenez des flux aux formes de production — cascades, queues de latence, incidents planifiés, sortie ECS / OTLP / Prometheus. Idéal pour stresser votre pipeline, démontrer vos dashboards, former votre astreinte, ou nourrir un moteur d\'analyse comme InSight.',
+            'LogCraft est un simulateur déterministe de logs et de chaos. Décrivez une flotte de services en YAML, lancez, et obtenez des flux de logs aux formes de production — pannes en cascade, queues de latence, incidents planifiés, sortie ECS / OTLP / Prometheus. Idéal pour stresser votre pipeline, démontrer vos dashboards, former votre on-call, ou alimenter un moteur d\'analyse comme InSight.',
         launchLab: 'Ouvrir le Lab',
         viewGitHub: 'Voir sur GitHub',
         featuresTitle: 'Ce que LogCraft fait vraiment',
         featuresSubtitle:
             'Pas un backend d\'observabilité. Pas un SaaS de stockage. Un générateur qui produit les logs que votre pipeline ne voit jamais en staging.',
-        ctaTitle: 'Choisissez un scénario, lancez.',
+        ctaTitle: 'Choisissez un scénario, lancez Run.',
         ctaSubtitle:
             'Ouvrez le Lab, cliquez "Run Demo", observez une fausse boutique e-commerce dérailler à la demande.',
         deepDiveTitle: 'Où LogCraft se branche',
         deepDiveSubtitle:
-            'LogCraft se place avant votre stack d\'observabilité — il génère les flux pour stresser tout l\'aval.',
+            'LogCraft se place avant votre stack d\'observabilité — il génère des flux pour stresser tout le reste de la chaîne.',
         fitDiagram: {
             yaml: 'Scénario YAML',
             engine: 'Moteur LogCraft',
@@ -645,19 +797,19 @@ const fr: typeof en = {
                 'Trois usages concrets pour lesquels LogCraft excelle — choisissez le vôtre.',
             items: [
                 {
-                    title: 'Stresser votre pipeline de logs',
+                    title: 'Tester votre pipeline de logs',
                     description:
-                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, cascades et records mal formés.',
+                        'Rejouer le même incident multi-services à chaque run CI. Vérifier que vos règles de parsing, d\'alerte et de rétention survivent aux rafales, aux pannes en cascade et aux records malformés.',
                 },
                 {
                     title: 'Démontrer votre produit d\'observabilité',
                     description:
-                        'Monter une "production" sans production. Faire la démo SE avec de vraies cascades, de vrais pics p99, de vraies timelines d\'incident — en 10 secondes.',
+                        'Monter une "production" sans production. Faire la démo SE avec de vraies pannes en cascade, de vrais pics p99, de vraies timelines d\'incident — en 10 secondes.',
                 },
                 {
-                    title: 'Former votre astreinte',
+                    title: 'Former votre on-call',
                     description:
-                        'Donnez l\'URL du Lab à un junior, cliquez "Cascade", laissez-le debug un incident réaliste à cause racine connue — sans risque pour la prod.',
+                        'Donnez l\'URL du Lab à un junior, cliquez "Panne en cascade", laissez-le debug un incident réaliste à root cause connue — sans risque pour la prod.',
                 },
             ],
         },
@@ -670,7 +822,7 @@ const fr: typeof en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'Un agent est un faux service. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
+                    'Un agent est un service factice. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
             },
             outputs: {
                 title: 'Sinks (sorties)',
@@ -678,12 +830,12 @@ const fr: typeof en = {
                     'Où vont les logs. Un scénario peut déclarer autant de sinks qu\'il veut, et chaque agent peut router vers n\'importe quel sous-ensemble. Console, fichier, HTTP, ECS, OTLP, Syslog, CLF, Prometheus, StatsD — simultanément. Pratique pour A/B comparer deux pipelines sur le même flux.',
             },
             incidents: {
-                title: 'Incidents & cascades',
+                title: 'Incidents & pannes en cascade',
                 body:
-                    'Perturbations planifiées : "à la minute 5, la base passe à 20 % d\'erreurs avec 8× de latence". Combinez avec `auto_cascade` pour propager la panne aux dépendants avec un rayon d\'impact et un facteur d\'atténuation configurables — comme une vraie panne.',
+                    'Perturbations planifiées : "À la 5e minute, la database passe à 20 % d\'erreurs avec 8× de latence". Combinez avec `auto_cascade` pour propager la panne aux dépendants avec un rayon d\'impact et un facteur d\'atténuation configurables — comme une vraie panne.',
             },
             determinism: {
-                title: 'Déterminisme (le seed)',
+                title: 'Déterminisme (la seed)',
                 body:
                     'Mettez `seed: 42` et le run devient bit-stable. Mêmes logs, mêmes incidents, même ordre, sur n\'importe quelle machine. Partagez le YAML avec un collègue, vous voyez la même panne. C\'est ce qui rend LogCraft utilisable en CI et comme jeu d\'entraînement pour InSight.',
             },
@@ -700,7 +852,7 @@ const fr: typeof en = {
             fields: {
                 title: 'Champs (la charge utile)',
                 body:
-                    'Chaque enregistrement embarque une map `fields` que vous contrôlez. Vous déclarez des champs statiques, templatés (`{{user_id}}`) ou des enums pondérés (`status: 200=80%, 500=10%, 503=10%`). Le même schéma traverse tous les sinks, donc votre index ECS, votre exporter OTLP et votre tail fichier voient des enregistrements cohérents.',
+                    'Chaque record embarque une map `fields` que vous contrôlez. Vous déclarez des champs statiques, templatés (`{{user_id}}`) ou des enums pondérés (`status: 200=80%, 500=10%, 503=10%`). Le même schéma traverse tous les sinks, donc votre index ECS, votre exporter OTLP et votre tail fichier voient des records cohérents.',
             },
             cascades: {
                 title: 'Auto-cascades (rayon d\'impact)',
@@ -710,12 +862,12 @@ const fr: typeof en = {
             replay: {
                 title: 'Déterminisme & replay',
                 body:
-                    'Au-delà du `seed`, le moteur enregistre l\'ordinal de chaque enregistrement émis pour que deux runs du même YAML produisent des flux identiques au bit près. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
+                    'Au-delà de la `seed`, le moteur enregistre l\'ordinal de chaque record émis pour que deux runs du même YAML produisent des flux bit-identiques. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
             },
             registry: {
                 title: 'Registre des types d\'agent',
                 body:
-                    'Les types d\'agent intégrés (web_server, database, cache, queue…) ont des défauts sensés pour les champs, le vocabulaire d\'erreur et la forme de latence. Vous pouvez enregistrer le vôtre via la référence YAML si la sémantique attendue est exotique — la plupart des utilisateurs ne touchent jamais cette couche.',
+                    'Les types d\'agent intégrés (web_server, database, cache, queue…) ont des valeurs par défaut sensées pour les champs, le vocabulaire d\'erreur et la forme de latence. Vous pouvez enregistrer le vôtre via la référence YAML si la sémantique attendue est exotique — la plupart des utilisateurs ne touchent jamais cette couche.',
             },
         },
     },
@@ -740,19 +892,19 @@ const fr: typeof en = {
                 short: 'Lab InSight déterministe pour replay, preuves détecteur et réglage sans fatigue.',
                 selectScenario: 'Choisissez un scénario déterministe',
                 selectScenarioDesc:
-                    'Choisissez un scénario LogCraft seedé, lancez le pipeline et utilisez des preuves reproductibles pour régler InSight.',
+                    'Choisissez un scénario LogCraft avec seed, lancez le pipeline et utilisez des preuves reproductibles pour régler InSight.',
                 launchAndStart: 'Lancer le scénario InSight',
                 launchPaused: 'Créer le pipeline en pause',
             },
         },
         backToHome: 'Retour à CodeRoast',
         backToScenarios: 'Retour aux scénarios',
-        live: 'En direct',
+        live: 'Live',
         selectScenario: 'Choisissez un scénario',
         selectScenarioDesc:
             'Chaque scénario est une topologie synthétique qui nourrit InSight. Choisissez, éditez si besoin, puis lancez le pipeline.',
         launchEngine: 'Lancer le Moteur',
-        runDemo: 'Lancer la démo',
+        runDemo: 'Run Demo',
         launchAndStart: 'Lancer le scénario',
         launchPaused: 'Créer en pause',
         autoStartHint: 'démarre le moteur automatiquement',
@@ -768,13 +920,13 @@ const fr: typeof en = {
         sinksDesc:
             'Métriques de livraison de chaque sortie — débit d\'écriture, arriéré, erreurs. Pas le contenu de la destination.',
         drain: {
-            title: 'Sink Démo LogCraft',
+            title: 'Sink de démo LogCraft',
             caption:
                 'Toute sortie avec un champ name: est interceptée par le serveur et capturée ici — qu\'il s\'agisse d\'une sortie fichier, console ou HTTP. Le serveur les redirige vers un drain interne pour que vous voyiez les payloads bruts exactement comme ils seraient arrivés à un vrai collecteur.',
-            empty: 'Aucun enregistrement capturé pour le moment. Démarrez le moteur — toute sortie nommée (name: dans le YAML du scénario) apparaîtra ici.',
+            empty: 'Aucun record capturé pour le moment. Démarrez le moteur — toute sortie nommée (name: dans le YAML du scénario) apparaîtra ici.',
             targets: 'Capturé pour',
             noTargets: 'Aucune sortie HTTP de démo détectée dans ce scénario.',
-            droppedSuffix: ' enregistrement(s) plus ancien(s) ont été abandonnés pour borner le buffer.',
+            droppedSuffix: ' record(s) plus ancien(s) ont été abandonnés pour borner le buffer.',
             showBody: 'Afficher le corps',
             hideBody: 'Masquer le corps',
             copy: 'Copier',
@@ -821,7 +973,7 @@ const fr: typeof en = {
                 'InSight ingère le flux et construit les preuves. Quand un détecteur se déclenche, le paquet explain apparaît ici.',
             detectTitle: 'Résumé par sévérité',
             detectEmptyTitle: 'Aucun signal détecteur pour le moment',
-            detectEmptyBody: "Les signaux de détection apparaissent quand InSight ferme une fenêtre MetaLog et trouve un motif statistiquement anormal.",
+            detectEmptyBody: "Les signaux de détection apparaissent quand InSight ferme une fenêtre MetaLog et trouve un pattern statistiquement anormal.",
             detectScore: 'score',
             detectConf: 'conf',
             metalogTitle: 'Preuves MetaLog',
@@ -888,7 +1040,7 @@ const fr: typeof en = {
             configReconfigureHint: 'Les modifications des réglages explain prennent effet immédiatement. La modification de la durée de fenêtre réinitialise le chauffage de la pyramide.',
             templatesTitle: 'Focus templates',
             templatesEmptyTitle: 'Aucun focus template',
-            templatesEmptyBody: 'Les templates affectés apparaissent quand une explication nomme les motifs de logs impliqués.',
+            templatesEmptyBody: 'Les templates affectés apparaissent quand une explication nomme les patterns de logs impliqués.',
             ingestTitle: 'Ingestion live',
             ingestRunning: 'Le pipeline serveur consomme le flux shared-memory du moteur.',
             ingestIdle: 'Le moteur est inactif ; InSight attend un flux.',
@@ -933,16 +1085,16 @@ const fr: typeof en = {
         clock: 'Horloge',
         playback: 'Lecture',
         speed: 'Vitesse',
-        cascade: 'Cascade',
+        cascade: 'Panne en cascade',
         cascadeTip:
-            'Force un round d\'évaluation cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne le reste".',
+            'Force un cycle d\'évaluation de panne en cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne tout le reste".',
         rate: 'Cadence',
         rateTip:
             'Records par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
         errorsTip:
             'Part de records marqués comme erreurs (0–100%). Force une panne sans toucher au YAML.',
         burst: 'Rafale',
-        burstTip: 'Émet immédiatement N records en plus. Pour saturer les buffers de l\'agrégateur.',
+        burstTip: 'Émet immédiatement N records de plus. Pour saturer les buffers de l\'agrégateur.',
         apply: 'Appliquer',
         send: 'Envoyer',
         reset: 'Réinit.',
@@ -956,17 +1108,17 @@ const fr: typeof en = {
         unlockedTip:
             'Vous contrôlez cet agent — il ne suit plus les phases du scénario. Cliquez de nouveau pour reverrouiller (les sliders reviennent au scénario).',
         lockedTierRequired:
-            'Nécessite le tier {tier}. Changez d\'utilisateur (en haut à droite) pour un tier supérieur.',
+            'Nécessite le palier {tier}. Changez d\'utilisateur (en haut à droite) pour un palier supérieur.',
         lockedOperationRequired:
             'Nécessite la capacité {operation}. Changez d\'utilisateur (en haut à droite) pour accéder à ce contrôle.',
         seededAgentOwned:
-            'Déterminisme rompu : cet agent ne reflète plus le scénario seedé.',
+            'Déterminisme rompu : cet agent ne reflète plus le scénario avec seed.',
         seedDeterminismWarning:
-            'Ce scénario est seedé pour une reproduction déterministe. {action} cassera ce déterminisme — les ré-exécutions ne produiront plus des logs identiques.',
+            'Ce scénario utilise une seed pour une reproduction déterministe. {action} cassera ce déterminisme — les ré-exécutions ne produiront plus des logs identiques.',
         seedActionUnlock: 'Prendre la main sur un agent',
         seedActionBurst: 'Déclencher une rafale',
-        seedActionCascade: 'Forcer une évaluation cascade',
-        seedConfirmTitle: 'Scénario seedé — attention',
+        seedActionCascade: 'Forcer une évaluation de panne en cascade',
+        seedConfirmTitle: 'Scénario avec seed — attention',
         seedConfirmProceed: 'Procéder quand même',
         seedConfirmCancel: 'Annuler',
         leaveEngineTitle: 'Quitter le lab ?',
@@ -1029,7 +1181,7 @@ const fr: typeof en = {
                 },
                 demo: {
                     title: 'Démontrer à un client',
-                    desc: 'J’ai besoin d’une cascade crédible à montrer en réunion dans 5 minutes.',
+                    desc: 'J’ai besoin d’une panne en cascade crédible à montrer en réunion dans 5 minutes.',
                 },
                 train: {
                     title: 'Former un on-call',
@@ -1047,7 +1199,7 @@ const fr: typeof en = {
                 },
                 chaos: {
                     title: 'Chaos',
-                    desc: 'Plusieurs services + incidents scriptués + cascade activée. Du matériel de démo.',
+                    desc: 'Plusieurs services + incidents scriptués + panne en cascade activée. Du matériel de démo.',
                 },
             },
         },

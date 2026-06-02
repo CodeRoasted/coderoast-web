@@ -27,24 +27,22 @@ import { diffPresets, type DiffPreset } from '@/data/diffPresets'
 // (the icon below) and *which pane lights up* carry appeared-vs-vanished — so
 // the user never reads color as added/removed. Classes are literal so Tailwind
 // emits them. `line` styles both a highlighted log line and the active row.
-const SEVERITY: Record<DiffSeverity, { label: string; badge: string; line: string }> = {
+// Display labels are i18n (t.diff.severity / t.diff.kind); these consts carry only
+// the locale-invariant CSS + icon mapping.
+const SEVERITY: Record<DiffSeverity, { badge: string; line: string }> = {
     critical: {
-        label: 'CRITICAL',
         badge: 'bg-rose-600/15 text-rose-300 border-rose-600/50',
         line: 'border-rose-500 bg-rose-500/10',
     },
     high: {
-        label: 'SUSPICIOUS',
         badge: 'bg-orange-500/15 text-orange-300 border-orange-500/40',
         line: 'border-orange-500 bg-orange-500/10',
     },
     medium: {
-        label: 'NOTABLE',
         badge: 'bg-amber-500/15 text-amber-300 border-amber-500/40',
         line: 'border-amber-400 bg-amber-400/10',
     },
     low: {
-        label: 'WEAK',
         badge: 'bg-slate-500/15 text-slate-300 border-slate-500/30',
         line: 'border-slate-500 bg-slate-500/10',
     },
@@ -56,10 +54,9 @@ const SEV_RANK: Record<DiffSeverity, number> = { low: 0, medium: 1, high: 2, cri
 // a RECOVERY (an error cleared) reads GREEN — a *semantic* better/worse signal,
 // NOT git add/remove. One tone drives both the row badge and the line highlight.
 type Tone = DiffSeverity | 'recovery'
-const TONE: Record<Tone, { label: string; badge: string; line: string }> = {
+const TONE: Record<Tone, { badge: string; line: string }> = {
     ...SEVERITY,
     recovery: {
-        label: 'RECOVERED',
         badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40',
         line: 'border-emerald-500 bg-emerald-500/10',
     },
@@ -68,18 +65,18 @@ const TONE_RANK: Record<Tone, number> = { low: 0, medium: 1, recovery: 2, high: 
 const toneOf = (change: DiffRankedChange): Tone =>
     change.polarity === 'recovery' ? 'recovery' : change.severity
 
-// Change-type: a neutral (uncolored) icon + label, decoupled from severity.
-const KIND: Record<string, { Icon: typeof Activity; label: string }> = {
-    new_error_pattern: { Icon: AlertTriangle, label: 'error appeared' },
-    escalated_pattern: { Icon: TrendingUp, label: 'escalated' },
-    resolved_pattern: { Icon: Check, label: 'resolved' },
-    new_template: { Icon: ArrowUpRight, label: 'appeared' },
-    vanished_template: { Icon: ArrowDownRight, label: 'vanished' },
-    frequency_shift: { Icon: ArrowLeftRight, label: 'shifted' },
-    entropy_shift: { Icon: Activity, label: 'branching' },
-    emerging_tail: { Icon: Waves, label: 'emerging in tail' },
+// Change-type: a neutral (uncolored) icon, decoupled from severity. The label is
+// i18n (t.diff.kind[change.kind] ?? t.diff.kind.fallback).
+const KIND_ICON: Record<string, typeof Activity> = {
+    new_error_pattern: AlertTriangle,
+    escalated_pattern: TrendingUp,
+    resolved_pattern: Check,
+    new_template: ArrowUpRight,
+    vanished_template: ArrowDownRight,
+    frequency_shift: ArrowLeftRight,
+    entropy_shift: Activity,
+    emerging_tail: Waves,
 }
-const KIND_FALLBACK = { Icon: Activity, label: 'changed' }
 
 function countLines(text: string): number {
     if (text.length === 0) return 0
@@ -119,6 +116,7 @@ function LogPane({
     focusLine: number
     focusNonce: number // bumped on every hover/click so re-focusing the same line re-scrolls
 }) {
+    const t = useTranslation()
     const lines = useMemo(() => text.split('\n'), [text])
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -144,7 +142,9 @@ function LogPane({
             <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-medium text-gray-400">{title}</span>
                 <span className="text-xs text-gray-600">
-                    {highlights.size > 0 ? `${highlights.size} flagged` : `${lines.length} lines`}
+                    {highlights.size > 0
+                        ? `${highlights.size} ${t.diff.flagged}`
+                        : `${lines.length} ${t.diff.lines}`}
                 </span>
             </div>
             <div
@@ -190,9 +190,11 @@ function ChangeRow({
     onHover: (index: number) => void
     onPin: (index: number) => void
 }) {
-    const style = TONE[toneOf(change)]
-    const kind = KIND[change.kind] ?? KIND_FALLBACK
-    const Icon = kind.Icon
+    const t = useTranslation()
+    const tone = toneOf(change)
+    const style = TONE[tone]
+    const Icon = KIND_ICON[change.kind] ?? Activity
+    const kindLabel = (t.diff.kind as Record<string, string>)[change.kind] ?? t.diff.kind.fallback
     const refCount = (change.baseline_line_refs?.length ?? 0) + (change.changed_line_refs?.length ?? 0)
     return (
         <li>
@@ -209,15 +211,15 @@ function ChangeRow({
                 <span
                     className={`mt-0.5 h-fit px-1.5 py-0.5 rounded text-[10px] font-semibold border ${style.badge}`}
                 >
-                    {style.label}
+                    {t.diff.severity[tone]}
                 </span>
                 <div className="min-w-0">
                     <div className="flex items-center gap-1.5 text-gray-500 text-xs mb-0.5">
                         <Icon className="w-3.5 h-3.5" />
-                        <span className="font-mono">{kind.label}</span>
+                        <span className="font-mono">{kindLabel}</span>
                         {refCount > 0 && (
                             <span className="text-gray-600">
-                                · {refCount} line{refCount > 1 ? 's' : ''}
+                                · {refCount} {refCount > 1 ? t.diff.lines : t.diff.line}
                             </span>
                         )}
                         {pinned && <Pin className="w-3 h-3 text-brand-400 fill-brand-400" />}
@@ -278,16 +280,19 @@ export default function InsightDiff() {
             if (err instanceof PolicyDenialError) {
                 setError(
                     err.quotaKey
-                        ? `Daily free limit reached${err.quotaLimit !== null ? ` (${err.quotaLimit}/day)` : ''}. Try again tomorrow, or run it locally with the CLI.`
-                        : err.reason || 'Access denied.'
+                        ? t.diff.error.quotaReached.replace(
+                              '{perDay}',
+                              err.quotaLimit !== null ? ` (${err.quotaLimit}/day)` : ''
+                          )
+                        : err.reason || t.diff.error.accessDenied
                 )
             } else {
-                setError(err instanceof Error ? err.message : 'Comparison failed.')
+                setError(err instanceof Error ? err.message : t.diff.error.failed)
             }
         } finally {
             setLoading(false)
         }
-    }, [])
+    }, [t])
 
     const handleCompare = useCallback(
         () => runCompare(baseline, changed),
@@ -371,51 +376,56 @@ export default function InsightDiff() {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-2 text-brand-400 text-xs font-semibold mb-3">
                     <GitCompareArrows className="w-4 h-4" />
-                    SIFT
+                    {t.diff.eyebrow}
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-display font-bold text-white">
-                    What changed between two logs — and what's just noise
+                    {t.diff.title}
                 </h1>
                 <p className="text-gray-400 mt-2 max-w-2xl">
-                    Paste two log streams (a baseline run and a changed run). InSight ingests both and
-                    ranks the structurally significant changes — hover or pin a change to see exactly
-                    which lines it touched.
+                    {t.diff.subtitle}
                 </p>
 
                 {/* Input */}
                 {!report && (
                     <>
                         <div className="mt-8 flex flex-wrap items-center gap-2">
-                            <span className="text-xs text-gray-500">No logs handy? Load a sample:</span>
-                            {diffPresets.map((preset) => (
-                                <button
-                                    key={preset.id}
-                                    type="button"
-                                    onClick={() => loadPreset(preset)}
-                                    title={preset.description}
-                                    className="px-3 py-1.5 rounded-full border border-gray-700 text-xs text-gray-300 hover:border-brand-500/60 hover:text-brand-300 transition-colors"
-                                >
-                                    {preset.label}
-                                </button>
-                            ))}
+                            <span className="text-xs text-gray-500">{t.diff.loadSample}</span>
+                            {diffPresets.map((preset) => {
+                                const meta = (
+                                    t.diff.presets as Record<string, { label: string; description: string }>
+                                )[preset.id]
+                                return (
+                                    <button
+                                        key={preset.id}
+                                        type="button"
+                                        onClick={() => loadPreset(preset)}
+                                        title={meta?.description}
+                                        className="px-3 py-1.5 rounded-full border border-gray-700 text-xs text-gray-300 hover:border-brand-500/60 hover:text-brand-300 transition-colors"
+                                    >
+                                        {meta?.label ?? preset.id}
+                                    </button>
+                                )
+                            })}
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             {(
                                 [
-                                    ['Baseline log', baseline, setBaseline],
-                                    ['Changed log', changed, setChanged],
+                                    { id: 'baseline', label: t.diff.baselineLog, value: baseline, setter: setBaseline },
+                                    { id: 'changed', label: t.diff.changedLog, value: changed, setter: setChanged },
                                 ] as const
-                            ).map(([label, value, setter]) => (
-                                <div key={label}>
+                            ).map(({ id, label, value, setter }) => (
+                                <div key={id}>
                                     <div className="flex items-center justify-between mb-1">
                                         <label className="text-sm font-medium text-gray-300">{label}</label>
-                                        <span className="text-xs text-gray-600">{countLines(value)} lines</span>
+                                        <span className="text-xs text-gray-600">
+                                            {countLines(value)} {t.diff.lines}
+                                        </span>
                                     </div>
                                     <textarea
                                         value={value}
                                         onChange={(event) => setter(event.target.value)}
                                         spellCheck={false}
-                                        placeholder="paste log lines…"
+                                        placeholder={t.diff.placeholder}
                                         className="w-full h-64 rounded-lg border border-gray-800 bg-gray-900/60 p-3 font-mono text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-brand-600 resize-y"
                                     />
                                 </div>
@@ -429,20 +439,20 @@ export default function InsightDiff() {
                                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-sm transition-colors"
                             >
                                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                                {loading ? 'Comparing…' : 'Compare'}
+                                {loading ? t.diff.comparing : t.diff.compare}
                             </button>
                             <button
                                 type="button"
                                 onClick={handleSwap}
                                 disabled={(!baseline && !changed) || loading}
-                                title="Swap baseline ⇄ changed"
+                                title={t.diff.swapTitle}
                                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
                                 <ArrowLeftRight className="w-4 h-4" />
-                                Swap
+                                {t.diff.swap}
                             </button>
                             <span className="text-xs text-gray-600">
-                                Free · metered per day · logs are not stored
+                                {t.diff.trust}
                             </span>
                         </div>
                     </>
@@ -479,11 +489,11 @@ export default function InsightDiff() {
                                     type="button"
                                     onClick={handleSwap}
                                     disabled={loading}
-                                    title="Swap baseline ⇄ changed and re-compare"
+                                    title={t.diff.swapSidesTitle}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <ArrowLeftRight className="w-3.5 h-3.5" />
-                                    Swap sides
+                                    {t.diff.swapSides}
                                 </button>
                                 <button
                                     type="button"
@@ -491,30 +501,31 @@ export default function InsightDiff() {
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 text-sm hover:border-brand-500/60 hover:text-brand-300 transition-colors"
                                 >
                                     <Pencil className="w-3.5 h-3.5" />
-                                    New comparison
+                                    {t.diff.newComparison}
                                 </button>
                             </div>
                         </div>
 
                         {report.ranked_changes.length === 0 ? (
                             <p className="text-gray-400 text-sm">
-                                No structurally significant changes — all{' '}
-                                {report.summary.total_changes.toLocaleString()} observed changes are within
-                                noise.
+                                {t.diff.emptyResult.replace(
+                                    '{count}',
+                                    report.summary.total_changes.toLocaleString()
+                                )}
                             </p>
                         ) : (
                             <>
                                 {/* Log panes, side by side */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <LogPane
-                                        title="Baseline"
+                                        title={t.diff.paneBaseline}
                                         text={submitted.baseline}
                                         highlights={baselineHl}
                                         focusLine={focus.baseline}
                                         focusNonce={focus.nonce}
                                     />
                                     <LogPane
-                                        title="Changed"
+                                        title={t.diff.paneChanged}
                                         text={submitted.changed}
                                         highlights={changedHl}
                                         focusLine={focus.changed}
@@ -526,7 +537,7 @@ export default function InsightDiff() {
                                 <div>
                                     <div className="flex items-center justify-between mb-1">
                                         <h2 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                                            Significant changes
+                                            {t.diff.significantChanges}
                                         </h2>
                                         {pinned.size > 0 && (
                                             <button
@@ -534,13 +545,12 @@ export default function InsightDiff() {
                                                 onClick={() => setPinned(new Set())}
                                                 className="text-xs text-gray-500 hover:text-gray-300"
                                             >
-                                                clear {pinned.size} pinned
+                                                {t.diff.clearPinned.replace('{count}', String(pinned.size))}
                                             </button>
                                         )}
                                     </div>
                                     <p className="text-xs text-gray-500 mb-2">
-                                        hover to preview · click to pin (stack multiple) · color = severity,
-                                        not add/remove
+                                        {t.diff.hint}
                                     </p>
                                     <ul
                                         onMouseLeave={() => setHovered(null)}
@@ -566,8 +576,10 @@ export default function InsightDiff() {
                                     </ul>
                                     {suppressed > 0 && (
                                         <p className="text-gray-600 text-xs mt-3 italic">
-                                            {suppressed.toLocaleString()} changes suppressed as noise
-                                            (proportional / low-frequency).
+                                            {t.diff.suppressed.replace(
+                                                '{count}',
+                                                suppressed.toLocaleString()
+                                            )}
                                         </p>
                                     )}
                                 </div>
@@ -579,7 +591,7 @@ export default function InsightDiff() {
                 {report && (
                     <div className="mt-6 flex items-center gap-2 text-xs text-gray-400">
                         <ArrowRight className="w-3 h-3 text-brand-400" />
-                        Want this in CI? The same engine runs as a local CLI and a GitHub Action.
+                        {t.diff.ciCallout}
                     </div>
                 )}
             </div>

@@ -17,10 +17,10 @@ const en = {
         vision: 'Vision',
     },
     hero: {
-        badge: 'CodeRoast · log noise → comprehension',
-        tagline: 'Turn log noise into comprehension.',
+        badge: 'CodeRoast · log noise → signal',
+        tagline: 'Turn log noise into signal.',
         subtitle:
-            'CodeRoast compresses noisy logs into ranked, deterministic structure — so you (or an LLM) read what actually changed, not gigabytes of it. Precision-first, and it runs on your infra. Start by diffing two CI runs.',
+            'CodeRoast compresses your log noise into deterministic, relevance-ranked structure — precision, not gigabytes of unusable logs.',
         cta: 'Diff two logs',
         ctaSecondary: 'See all products',
         trust: 'deterministic · precision-first · runs on your infra · logs never stored',
@@ -191,13 +191,182 @@ const en = {
             cta: 'Diff two logs',
         },
     },
-    diffShowcase: {
+    // Sift product front door (/sift). Copy governed by
+    // technical_docs/product/web_copy.md § "Page: Sift" — final, not paraphrased.
+    // Engine-output mocks (the sample report rows, PR comment, install blocks)
+    // are language-neutral CLI/comment output and live in the page component, not
+    // here — only translatable prose is keyed.
+    sift: {
         eyebrow: 'Sift',
-        title: 'Your CI went red. Which lines actually matter?',
+        hero: {
+            title: 'Your tests pass. Your logs say otherwise.',
+            subtitle:
+                'Pass/fail is one bit; grep needs to know what to look for. Sift reads the structure of two runs and ranks what actually changed — a success line that silently vanished, an error you fixed, a pattern that took over the run — then mutes the hundreds of diffs that don\'t matter. Two log files in, a ranked report out. No agent, no account, ~90 seconds.',
+            ctaPrimary: 'Add the Action',
+            ctaSecondary: 'Try it in your browser',
+            trust: 'Free, forever · runs in your CI · your logs never leave it.',
+            samplePassed: 'both runs passed',
+            kicker:
+                'Both runs are green. Pass/fail sees nothing. Grep sees nothing — there\'s no error to search for. Sift sees your cache silently stopped working.',
+        },
+        comment: {
+            title: 'It lives where you already work.',
+            body:
+                'Wire Sift in once and every PR gets a structural diff as a comment — advisory by default, a hard gate when you want one. One sticky comment, updated in place, deterministic. The loudest thing it ever says is the thing no green checkmark will:',
+        },
+        catches: {
+            title: 'Built for the changes that don\'t look like changes.',
+            colChange: 'What changed',
+            colTextDiff: 'Text diff',
+            colPassFail: 'Pass/fail',
+            colSift: 'Sift',
+            rows: [
+                {
+                    change: 'A success line silently vanished (cache, retry, a code path)',
+                    textDiff: 'buried',
+                    passFail: 'invisible',
+                    sift: 'Disappeared: "…" — one ranked line',
+                },
+                {
+                    change: 'A pattern\'s share of the run moved (4% → 38%)',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Frequency shift',
+                },
+                {
+                    change: 'An error you fixed actually cleared',
+                    textDiff: 'invisible',
+                    passFail: 'invisible',
+                    sift: 'Recovery — green: "your fix worked"',
+                },
+                {
+                    change: 'Same errors as before, but a real change underneath (decoy)',
+                    textDiff: 'drowned',
+                    passFail: 'invisible',
+                    sift: 'the noise muted, the real change surfaced',
+                },
+                {
+                    change: 'A brand-new error pattern',
+                    textDiff: 'buried in noise',
+                    passFail: 'invisible if tests pass',
+                    sift: 'one line, ranked by severity',
+                },
+            ],
+        },
+        free: {
+            title: 'The whole stateless product is free. We mean it.',
+            body:
+                'The CLI, the GitHub Action, the PR comment, the hard-fail gate — on any repo, public or private. We don\'t meter it and we never will. The gate is not a paywall: a team that trusts the comment just adds exit 1 itself — charging for an if statement would be insulting. What\'s paid is scale and memory — spanning an org (multi-repo, seats, SSO) and a deterministic history of your CI over time. A one-off diff is substitutable; a structural record of how your builds drift is not.',
+            cta: 'See the tiers',
+        },
+        trust: {
+            title: 'A fact you can gate on.',
+            body:
+                'Same inputs, same diff — bit for bit, across machines. That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs on your key over a bounded fingerprint — never raw logs, never in the path that decides.',
+            cta: 'How we build',
+        },
+        install: {
+            title: 'Two log files in. A ranked report out.',
+            actionLabel: 'The Action',
+            cliLabel: 'The CLI',
+            cliLead: 'one static binary, no runtime —',
+        },
+    },
+    // The /diff (in-browser Sift) page chrome (InsightDiff.tsx). Only translatable
+    // UI strings live here. NOT keyed (language-neutral by design, engine emits
+    // English regardless of locale): the diffPresets.ts log fixtures, the engine
+    // report rows (change.summary/evidence), and the result stat line ("N changes,
+    // M structurally significant · stability · lines"). severity/kind are the UI's
+    // display labels for the engine enums (chrome); presets carry the picker labels
+    // + tooltips moved out of diffPresets.ts (now fixtures-only).
+    diff: {
+        eyebrow: 'SIFT',
+        title: 'What changed between two logs — and what\'s just noise',
         subtitle:
-            'Paste the last green run and the failing one. Sift ranks what structurally changed — new errors, a test file gone red, frequency shifts — and mutes the hundreds of lines that didn\'t. No agent, no setup; a shareable report in about 90 seconds.',
-        cta: 'Diff two logs',
-        note: 'Free · runs in your browser session · logs never stored',
+            'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched.',
+        loadSample: 'No logs handy? Load a sample:',
+        baselineLog: 'Baseline log',
+        changedLog: 'Changed log',
+        placeholder: 'paste log lines…',
+        lines: 'lines', // "{n} lines" — the input + pane line counters
+        line: 'line', // singular, for the "· {n} line(s)" ref counter on a change row
+        flagged: 'flagged', // "{n} flagged" — the pane counter when highlights are active
+        compare: 'Compare',
+        comparing: 'Comparing…',
+        swap: 'Swap',
+        swapTitle: 'Swap baseline ⇄ changed',
+        trust: 'Free · metered per day · logs are not stored',
+        paneBaseline: 'Baseline', // result view: the left log-pane title
+        paneChanged: 'Changed', // result view: the right log-pane title
+        swapSides: 'Swap sides',
+        swapSidesTitle: 'Swap baseline ⇄ changed and re-compare',
+        newComparison: 'New comparison',
+        significantChanges: 'Significant changes',
+        clearPinned: 'clear {count} pinned',
+        hint: 'hover to preview · click to pin (stack multiple) · color = severity, not add/remove',
+        emptyResult:
+            'No structurally significant changes — all {count} observed changes are within noise.',
+        suppressed: '{count} changes suppressed as noise (proportional / low-frequency).',
+        ciCallout: 'Want this in CI? The same engine runs as a local CLI and a GitHub Action.',
+        // UI display labels for the engine's severity enum (+ recovery polarity).
+        severity: {
+            critical: 'CRITICAL',
+            high: 'SUSPICIOUS',
+            medium: 'NOTABLE',
+            low: 'WEAK',
+            recovery: 'RECOVERED',
+        },
+        // UI display labels for the engine's change-kind enum (fallback = unknown kind).
+        kind: {
+            new_error_pattern: 'error appeared',
+            escalated_pattern: 'escalated',
+            resolved_pattern: 'resolved',
+            new_template: 'appeared',
+            vanished_template: 'vanished',
+            frequency_shift: 'shifted',
+            entropy_shift: 'branching',
+            emerging_tail: 'emerging in tail',
+            fallback: 'changed',
+        },
+        error: {
+            // {perDay} is replaced with " (N/day)" or "" by the component.
+            quotaReached:
+                'Daily free limit reached{perDay}. Try again tomorrow, or run it locally with the CLI.',
+            accessDenied: 'Access denied.',
+            failed: 'Comparison failed.',
+        },
+        // Preset-picker labels + tooltips, keyed by diffPresets.ts id (the fixtures
+        // themselves stay in diffPresets.ts, English by design).
+        presets: {
+            'hotfix': {
+                label: 'Hotfix verify',
+                description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
+            },
+            'silent-regression': {
+                label: 'Silent regression',
+                description: 'No new error at all — a success line vanished and a retry surged. grep finds nothing.',
+            },
+            'error-decoy': {
+                label: 'Same errors, real change',
+                description: 'Both runs have the IDENTICAL errors (the decoy) — but orders silently stopped completing. Sift mutes the unchanged errors and shows what really moved.',
+            },
+            'cache-degradation': {
+                label: 'Cache silently died',
+                description: 'Zero errors, still all 200s — but the cache stopped serving and origin fetches surged. A latent p99 cliff a filter is blind to.',
+            },
+            'canary-deploy': {
+                label: 'Canary vs stable',
+                description: 'Same traffic, two builds: the new one swapped the checkout handler and lit a flag. A pure behavior diff — no errors involved.',
+            },
+            'hot-key': {
+                label: 'Throttling takes over',
+                description: 'No errors — but a new throttling line appears and takes over a third of the run. A text diff shows the new lines exist; Sift ranks the one template now dominating the stream.',
+            },
+            'escalating-warning': {
+                label: 'Escalating warning',
+                description: 'A pool-pressure WARN goes from rare to pervasive — the pre-incident creep, minutes before it pages. Not a new error, so a filter stays quiet.',
+            },
+        },
     },
     problem: {
         title: 'You can\'t ship observability you\'ve never tested.',
@@ -215,7 +384,7 @@ const en = {
                     'p99 spikes you never plotted. Topology effects no one drew. Buffers you never sized.',
             },
             {
-                title: 'Your on-call learns by getting paged.',
+                title: 'Your on-call learns by getting paged at 3 a.m.',
                 description:
                     'Without a sandbox, the only training data is real outages. There is a better way.',
             },
@@ -257,7 +426,7 @@ const en = {
             {
                 title: 'Browser Lab, zero install',
                 description:
-                    'Open the URL, pick a scenario, hit Run. Live agent grid, live log tail, live incident timeline.',
+                    'Open the Lab, pick a scenario, hit Run. Live agent grid, live log tail, live incident timeline.',
             },
             {
                 title: 'C++20 core',
@@ -299,7 +468,7 @@ const en = {
     portfolio: {
         title: 'One engine. A surface for every job.',
         subtitle:
-            'Every CodeRoast product turns log noise into comprehension for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
+            'Every CodeRoast product turns log noise into signal for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
         sift: {
             name: 'Sift',
             description:
@@ -357,7 +526,7 @@ const en = {
             {
                 title: 'AI explain demo',
                 description:
-                    'Attach an agent to the explain payload so a demo can narrate the MetaLog evidence and recommend the next investigation step.',
+                    'Attach an agent to InSight\'s output stream — clearer explanations, with no hallucinated interpretation.',
             },
             {
                 title: 'Compatibility fixtures',
@@ -487,7 +656,7 @@ const en = {
         title: 'How we compare',
         subtitle: 'Short version: we’re not a cheaper anything. We’re a different machine.',
         intro:
-            'You’re probably here to slot us next to a tool you already know. Fair — let’s do it honestly. But one thing makes the comparison strange before we start: almost everything on the shelf is a warehouse. It stores your observability data and competes on price, cardinality, and who hosts it. We don’t store it. We distil it into a bounded, deterministic fingerprint — on your own infrastructure. That’s not a cheaper warehouse. It’s a different machine. Here’s how that lands against the two tools people put us next to.',
+            'You’re probably here to slot us next to a tool you already know. Fair. But one thing makes the comparison strange before we start: almost everything on the shelf is a warehouse. It stores your observability data and competes on price, cardinality, and who hosts it. We don’t store it. We distil it into a bounded, deterministic fingerprint — on your own infrastructure. That’s not a cheaper warehouse. It’s a different machine. Here’s how that lands against the two tools people put us next to.',
         versus: [
             {
                 title: 'vs Datadog — a different machine, not a cheaper one',
@@ -500,7 +669,7 @@ const en = {
                 title: 'vs Honeycomb — the same conviction, the opposite bet',
                 body: [
                     'We start where Honeycomb starts: dumb storage is over, the intelligence is the product. They’re pushing observability forward, and so are we — same conviction, opposite directions. They’re not the enemy; the warehouse mindset is.',
-                    'Then the bet diverges, cleanly. Honeycomb bets on richness: keep every event at full cardinality so you can ask any question after the fact. We bet on compression: distil the behaviour up front into a bounded, comparable fingerprint, so “what changed / what’s wrong” is already structured when you look. Honeycomb is unbeatable when you don’t yet know what you’ll need to ask. We’re unbeatable when you need a deterministic, gateable, on-prem fact — reproducible bit for bit, the only kind you can put behind a hard CI gate. One bet asks you to instrument wide events; ours reads the logs you already write. Pick the bet that fits your problem — plenty of teams will want both.',
+                    'Then the bet diverges, cleanly. Honeycomb bets on richness: keep every event at full cardinality so you can ask any question after the fact. We bet on compression: distil the behaviour up front into a bounded, comparable fingerprint, so “what changed / what’s wrong” is already structured when you look. Honeycomb is unbeatable when you don’t yet know what you’ll need to ask. We’re unbeatable when you need a deterministic, gateable, on-prem fact — reproducible bit for bit, the only kind you can put behind a hard CI gate. Their bet asks you to instrument wide events; ours reads the logs you already write. Pick the bet that fits your problem — plenty of teams will want both.',
                 ],
             },
         ],
@@ -517,7 +686,7 @@ const en = {
         cta: 'Diff two logs',
     },
     footer: {
-        tagline: 'An indie engineering shop. C++ where it counts, web where it should.',
+        tagline: 'Independent, and uncompromising. C++ at the core, web at the edge.',
         rights: 'All rights reserved.',
         sections: {
             product: 'Product',
