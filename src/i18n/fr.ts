@@ -201,7 +201,7 @@ const fr: typeof en = {
         hero: {
             title: 'Vos tests passent. Vos logs disent le contraire.',
             subtitle:
-                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent, sans compte, ~90 secondes.',
+                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent à installer, sans compte utilisateur, ~90 secondes.',
             ctaPrimary: 'Ajoutez l’Action',
             ctaSecondary: 'Essayez dans votre navigateur',
             trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne quittent jamais votre infra.',
@@ -262,7 +262,7 @@ const fr: typeof en = {
         trust: {
             title: 'Un fait sur lequel vous pouvez poser une gate.',
             body:
-                'Mêmes entrées, même diff — bit pour bit, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte, pas d’agent — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+                'Mêmes entrées, même diff — bit pour bit, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
         },
         install: {
@@ -305,7 +305,7 @@ const fr: typeof en = {
     features: {
         title: 'Tous les knobs du monde réel.',
         subtitle:
-            'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui modélise la forme du trafic, les pannes et la latence comme la prod — sur un seed que vous contrôlez.',
+            'LogCraft n\'est pas une lib de mock. C\'est un moteur déterministe qui modélise la forme du trafic, les pannes et la latence comme la prod — sur une seed que vous contrôlez.',
         items: [
             {
                 title: 'Déterministe par seed',
@@ -671,7 +671,7 @@ const fr: typeof en = {
                 tag: 'Formation on-call',
                 title: 'Former un on-call sans réveiller personne',
                 outcome:
-                    'Donnez l’URL du Lab à un junior, un scénario avec cause racine connue, et laissez-le le traiter comme un vrai ticket. Rejouez le même seed dans toute l’équipe pour un benchmark juste.',
+                    'Donnez l’URL du Lab à un junior, un scénario avec root cause connue, et laissez-le le traiter comme un vrai ticket. Rejouez la même seed dans toute l’équipe pour un benchmark juste.',
                 yamlSnippet:
                     '# Cause cachée : timeout payment-gw à 02:15\nseed: 7\nincidents:\n  - at: "02:15:00"\n    target: payment-gw\n    impact: { error_rate: 0.6 }\n    silent: true',
                 bullets: [
@@ -728,7 +728,7 @@ const fr: typeof en = {
                 {
                     title: 'Former votre on-call',
                     description:
-                        'Donnez l\'URL du Lab à un junior, cliquez "Cascade", laissez-le debug un incident réaliste à cause racine connue — sans risque pour la prod.',
+                        'Donnez l\'URL du Lab à un junior, cliquez "Cascade", laissez-le debug un incident réaliste à root cause connue — sans risque pour la prod.',
                 },
             ],
         },
@@ -754,7 +754,7 @@ const fr: typeof en = {
                     'Perturbations planifiées : "à la minute 5, la base passe à 20 % d\'erreurs avec 8× de latence". Combinez avec `auto_cascade` pour propager la panne aux dépendants avec un rayon d\'impact et un facteur d\'atténuation configurables — comme une vraie panne.',
             },
             determinism: {
-                title: 'Déterminisme (le seed)',
+                title: 'Déterminisme (la seed)',
                 body:
                     'Mettez `seed: 42` et le run devient bit-stable. Mêmes logs, mêmes incidents, même ordre, sur n\'importe quelle machine. Partagez le YAML avec un collègue, vous voyez la même panne. C\'est ce qui rend LogCraft utilisable en CI et comme jeu d\'entraînement pour InSight.',
             },
@@ -781,7 +781,7 @@ const fr: typeof en = {
             replay: {
                 title: 'Déterminisme & replay',
                 body:
-                    'Au-delà du `seed`, le moteur enregistre l\'ordinal de chaque enregistrement émis pour que deux runs du même YAML produisent des flux identiques bit pour bit. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
+                    'Au-delà de la `seed`, le moteur enregistre l\'ordinal de chaque enregistrement émis pour que deux runs du même YAML produisent des flux identiques bit pour bit. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
             },
             registry: {
                 title: 'Registre des types d\'agent',
