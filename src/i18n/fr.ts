@@ -35,7 +35,7 @@ const fr: typeof en = {
             'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, re-dérivable jusqu’à la ligne source exacte, et qui ne quitte jamais votre machine. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une lentille sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
         ctaPrimary: 'Diff de deux logs',
         ctaSecondary: 'Voir les produits',
-        compareCta: 'Voir comment on se compare',
+        compareCta: 'Voir ce qui nous différencie',
         pain: {
             title: 'Le modèle que tout le monde a fini par accepter est cassé, en silence.',
             subtitle: 'Quatre compromis qu’on vous a présentés comme normaux.',
@@ -641,10 +641,10 @@ const fr: typeof en = {
     },
     howWeCompare: {
         badge: 'Une machine différente',
-        title: 'Comment on se compare',
-        subtitle: 'Version courte : on n’est pas un truc moins cher. On est une machine différente.',
+        title: 'Ce qui nous différencie',
+        subtitle: 'Version courte : on ne fait pas moins cher. On fait autre chose.',
         intro:
-            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Normal — faisons-le honnêtement. Mais une chose rend la comparaison étrange avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et ça se bat sur le prix, la cardinalité, et qui l’héberge. Nous, on ne le stocke pas. On le distille en une empreinte bornée et déterministe — sur votre propre infra. Ce n’est pas un entrepôt moins cher. C’est une machine différente. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
+            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Légitime — alors soyons honnêtes. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre machine. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
         versus: [
             {
                 title: 'face à Datadog — une machine différente, pas une moins chère',
@@ -690,7 +690,7 @@ const fr: typeof en = {
             tierMatrix: 'Profil d\'accès',
             roadmap: 'Roadmap',
             howWeBuild: 'Comment on construit',
-            howWeCompare: 'Comment on se compare',
+            howWeCompare: 'Ce qui nous différencie',
             github: 'GitHub',
             contact: 'Contact',
             support: 'Soutenir le projet',
