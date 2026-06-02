@@ -257,7 +257,7 @@ const fr: typeof en = {
             cta: 'Voir les paliers',
         },
         trust: {
-            title: 'Un fait sur lequel vous pouvez poser une gate.',
+            title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
             body:
                 'Mêmes entrées, même diff — bit-identique, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
