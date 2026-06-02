@@ -20,7 +20,7 @@ const en = {
         badge: 'CodeRoast · log noise → signal',
         tagline: 'Turn log noise into signal.',
         subtitle:
-            'CodeRoast compresses noisy logs into ranked, deterministic structure — so you (or an LLM) read what actually changed, not gigabytes of it. Precision-first, and it runs on your infra. Start by diffing two CI runs.',
+            'CodeRoast compresses your log noise into deterministic, relevance-ranked structure — precision, not gigabytes of unusable logs.',
         cta: 'Diff two logs',
         ctaSecondary: 'See all products',
         trust: 'deterministic · precision-first · runs on your infra · logs never stored',
@@ -526,7 +526,7 @@ const en = {
             {
                 title: 'AI explain demo',
                 description:
-                    'Attach an agent to the explain payload so a demo can narrate the MetaLog evidence and recommend the next investigation step.',
+                    'Attach an agent to InSight\'s output stream — clearer explanations, with no hallucinated interpretation.',
             },
             {
                 title: 'Compatibility fixtures',

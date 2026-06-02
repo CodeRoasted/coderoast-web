@@ -22,7 +22,7 @@ const fr: typeof en = {
         badge: 'CodeRoast · du bruit des logs au signal',
         tagline: 'Transformez le bruit des logs en signal.',
         subtitle:
-            'CodeRoast compresse le bruit de vos logs en une structure déterministe, classée par pertinence — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets de logs. La précision avant tout. Et tout tourne sur votre infra. Commencez par comparer deux runs CI.',
+            'CodeRoast compresse le bruit de vos logs en une structure déterministe, classée par pertinence — pour ne garder que la précision, pas des gigaoctets de logs inutilisables.',
         cta: 'Diff de deux logs',
         ctaSecondary: 'Voir tous les produits',
         trust: 'déterministe · précision avant tout · tourne sur votre infra · logs jamais stockés',
@@ -514,7 +514,7 @@ const fr: typeof en = {
             {
                 title: 'Démo explain IA',
                 description:
-                    'Attacher un agent au payload explain pour narrer les preuves MetaLog et recommander l’étape d’investigation suivante.',
+                    'Attacher un agent au flux de sortie d’InSight, pour des explications plus claires, sans aucune interprétation hallucinée.',
             },
             {
                 title: 'Fixtures de compatibilité',
