@@ -17,8 +17,8 @@ const en = {
         vision: 'Vision',
     },
     hero: {
-        badge: 'CodeRoast · log noise → comprehension',
-        tagline: 'Turn log noise into comprehension.',
+        badge: 'CodeRoast · log noise → signal',
+        tagline: 'Turn log noise into signal.',
         subtitle:
             'CodeRoast compresses noisy logs into ranked, deterministic structure — so you (or an LLM) read what actually changed, not gigabytes of it. Precision-first, and it runs on your infra. Start by diffing two CI runs.',
         cta: 'Diff two logs',
@@ -468,7 +468,7 @@ const en = {
     portfolio: {
         title: 'One engine. A surface for every job.',
         subtitle:
-            'Every CodeRoast product turns log noise into comprehension for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
+            'Every CodeRoast product turns log noise into signal for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
         sift: {
             name: 'Sift',
             description:

@@ -19,8 +19,8 @@ const fr: typeof en = {
         vision: 'Vision',
     },
     hero: {
-        badge: 'CodeRoast · du bruit des logs à la compréhension',
-        tagline: 'Transformez le bruit des logs en compréhension.',
+        badge: 'CodeRoast · du bruit des logs au signal',
+        tagline: 'Transformez le bruit des logs en signal.',
         subtitle:
             'CodeRoast compresse le bruit de vos logs en une structure déterministe, classée par pertinence — pour que vous (ou un LLM) lisiez ce qui a vraiment changé, pas des gigaoctets de logs. La précision avant tout. Et tout tourne sur votre infra. Commencez par comparer deux runs CI.',
         cta: 'Diff de deux logs',
@@ -456,7 +456,7 @@ const fr: typeof en = {
     portfolio: {
         title: 'Un moteur. Une surface pour chaque usage.',
         subtitle:
-            'Chaque produit CodeRoast transforme le bruit des logs en compréhension pour un usage précis — choisissez celui qui correspond au problème que vous avez sous les yeux. La gamme s’étoffe ; le moteur sous-jacent reste le même.',
+            'Chaque produit CodeRoast transforme le bruit des logs en signal pour un usage précis — choisissez celui qui correspond au problème que vous avez sous les yeux. La gamme s’étoffe ; le moteur sous-jacent reste le même.',
         sift: {
             name: 'Sift',
             description:
