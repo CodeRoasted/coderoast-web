@@ -640,14 +640,14 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
     },
     howWeCompare: {
-        badge: 'Une autre mécanique',
+        badge: 'Une autre conception',
         title: 'Ce qui nous différencie',
         subtitle: 'Version courte : on ne fait pas moins cher. On fait autre chose.',
         intro:
-            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Légitime — alors soyons honnêtes. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre mécanique. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
+            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Légitime — alors soyons honnêtes. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre conception. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
         versus: [
             {
-                title: 'face à Datadog — une autre mécanique, pas une moins chère',
+                title: 'face à Datadog — une autre conception, pas une moins chère',
                 body: [
                     'Le modèle de Datadog, c’est accumuler-et-facturer : envoyez tout vers leur cloud, payez au volume. Quand la facture pique, leur réponse, c’est d’échantillonner — décider quelles lignes restent cherchables et prier pour ne pas avoir jeté celle qui comptait. La fameuse facture Datadog est la taxe du modèle d’accumulation, et l’échantillonnage en est la coupe à l’aveugle.',
                     'On ne rend pas cette facture moins chère. On supprime la raison même d’exfiltrer vos logs : on distille une empreinte comportementale complète en local, et vos logs bruts restent là où ils sont. Plus de logs, sur votre infra — le parachute de la coupe que les équipes font déjà à l’aveugle. Les économies en découlent, mais le coût n’est pas l’argument : l’argument, c’est qu’un fait structurel déterministe — mêmes entrées, même réponse — est quelque chose qu’un entrepôt échantillonné et probabiliste ne peut structurellement pas vous donner. Vous n’achetez pas un Datadog moins cher. Vous achetez une garantie différente.',
