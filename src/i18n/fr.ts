@@ -32,7 +32,7 @@ const fr: typeof en = {
         titleLead: 'Pas stockés. Pas échantillonnés. Pas exfiltrés.',
         titleAccent: 'Distillés.',
         subtitle:
-            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, re-dérivable jusqu’à la ligne source exacte, et qui ne quitte jamais votre machine. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une lentille sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
+            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, traçable jusqu’à la ligne source exacte, et qui ne quitte jamais votre infra. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une vue sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
         ctaPrimary: 'Diff de deux logs',
         ctaSecondary: 'Voir les produits',
         compareCta: 'Voir ce qui nous différencie',
@@ -75,23 +75,23 @@ const fr: typeof en = {
                 {
                     step: '4 Ko en sortie',
                     description:
-                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre machine.',
+                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre infra.',
                 },
                 {
                     step: 'Attrape la régression',
                     description:
-                        'La saillance fait remonter le fatal solitaire seule — sans baseline, sans requête, sans seuil à régler.',
+                        'La saillance fait remonter l’erreur fatale isolée, à elle seule — sans baseline, sans requête, sans seuil à régler.',
                 },
                 {
                     step: 'Diff, instantané',
                     description:
-                        'Deux empreintes en entrée, un « ce qui a changé » classé en sortie — et chaque trouvaille se re-dérive jusqu’à la ligne source exacte.',
+                        'Deux empreintes en entrée, un « ce qui a changé » classé en sortie — et chaque trouvaille remonte jusqu’à la ligne source exacte.',
                 },
             ],
             badges: [
                 'zéro instrumentation',
                 'aucun langage de requête',
-                'rien ne quitte votre machine',
+                'rien ne quitte votre infra',
                 'bit-identique à chaque run',
             ],
         },
@@ -101,12 +101,12 @@ const fr: typeof en = {
             {
                 title: 'Eux vous font supprimer vos logs. Nous, on vous dit d’en envoyer plus.',
                 them:
-                    'Le secret honteux de la tarification au Go : les équipes ne font pas que payer — elles rationnent. Des ingénieurs passent du vrai temps de sprint à arracher des lignes de log pour réduire une facture cloud, s’aveuglant volontairement. C’est aussi de la lossiness — sauf qu’elle est décidée à la main, en amont, avant que quiconque sache ce qui comptera, et payée en heures d’ingénierie. La pire qui soit.',
+                    'Le secret honteux de la tarification au Go : les équipes ne font pas que payer — elles rationnent. Des ingénieurs passent du vrai temps de sprint à arracher des lignes de log pour réduire une facture cloud, s’aveuglant volontairement. C’est aussi de la perte — sauf qu’elle est décidée à la main, en amont, avant que quiconque sache ce qui comptera, et payée en heures d’ingénierie. La pire qui soit.',
                 us:
-                    'Envoyez tout. Loggez plus, pas moins. Le coût cesse d’être le verrou — l’empreinte est bornée et vos logs bruts ne quittent jamais votre machine. Plus aucun ingénieur ne trie le grain de l’ivraie pour tenir un budget, jamais. La distillation est automatique et dirigée par la saillance : le fatal rare survit parce qu’il compte, pas parce que quelqu’un a bien deviné le trimestre dernier.',
+                    'Envoyez tout. Loggez plus, pas moins. Le coût cesse d’être le verrou — l’empreinte est bornée et vos logs bruts ne quittent jamais votre infra. Plus aucun ingénieur ne sépare le bon grain de l’ivraie pour tenir un budget, jamais. La distillation est automatique et dirigée par la saillance : le fatal rare survit parce qu’il compte, pas parce que quelqu’un a bien deviné le trimestre dernier.',
             },
             {
-                title: 'Votre facture IA est la prochaine à partir à la verticale.',
+                title: 'Votre facture IA est la prochaine à s’envoler.',
                 them:
                     'Tout a un LLM greffé dessus maintenant — et les logs bruts sont la chose la plus chère qu’on puisse lui donner à manger. Vous payez au token pour des gigaoctets de bruit, et le modèle s’y noie exactement comme un humain.',
                 us:
@@ -114,7 +114,7 @@ const fr: typeof en = {
             },
         ],
         tie:
-            'Tout le monde est lossy à l’échelle. La seule question, c’est comment vous perdez. Eux perdent à l’aveugle et en amont — un humain qui supprime des logs, un fournisseur qui les échantillonne. Nous perdons de façon informée et récupérable : la saillance décide quoi garder, et chaque insight se re-dérive jusqu’à la ligne source exacte.',
+            'Tout le monde perd de l’information à l’échelle. La seule question, c’est comment vous perdez. Eux perdent à l’aveugle et en amont — un humain qui supprime des logs, un fournisseur qui les échantillonne. Nous perdons de façon informée et récupérable : la saillance décide quoi garder, et chaque insight remonte jusqu’à la ligne source exacte.',
         contrast: {
             title: 'Ce que le MetaLog n’est pas.',
             subtitle: 'Deux modèles pour la même douleur. L’un accumule. L’autre distille.',
@@ -123,7 +123,7 @@ const fr: typeof en = {
             rows: [
                 {
                     old: 'Échantillonne les events pour plafonner le coût — l’event rare est le premier à partir.',
-                    new: 'Garde le saillant, jette l’ennuyeux. Le fatal solitaire survit parce qu’il est saillant, pas parce qu’il était fréquent.',
+                    new: 'Garde le saillant, jette l’ennuyeux. L’erreur fatale isolée survit parce qu’elle est saillante, pas parce qu’elle était fréquente.',
                 },
                 {
                     old: 'L’instrumentation est le ticket d’entrée — réécrivez votre code en wide events avant de voir la moindre valeur.',
@@ -135,7 +135,7 @@ const fr: typeof en = {
                 },
                 {
                     old: 'Un « pourquoi ça a cassé » probabiliste que vous ne pouvez pas reproduire.',
-                    new: 'Un fait structurel déterministe — bit-identique, citable, re-dérivable à la ligne source. Le seul qu’on met derrière une gate CI dure.',
+                    new: 'Un fait structurel déterministe — bit-identique, citable, traçable jusqu’à la ligne source. Le seul qu’on met derrière une gate CI dure.',
                 },
                 {
                     old: 'Payer pour stocker des gigaoctets à vie — et en lire moins de 5 %.',
@@ -146,9 +146,9 @@ const fr: typeof en = {
                 'Déjà sur OTel ? On distille ça aussi — la structure est du signal gratuit. Et vous obtenez quand même un MetaLog souverain, pas un énième entrepôt de spans qui vous enferme.',
         },
         hub: {
-            title: 'Un flux en entrée. Un MetaLog en sortie. Tout le reste est une lentille.',
+            title: 'Un flux en entrée. Un MetaLog en sortie. Tout le reste est une vue.',
             subtitle:
-                'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une lentille différente sur la même empreinte.',
+                'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une vue différente sur la même empreinte.',
             lenses: [
                 {
                     name: 'Sift',
@@ -585,7 +585,7 @@ const fr: typeof en = {
             price: 'Sur mesure',
             period: '',
             description:
-                'Pour les équipes qui font de LogCraft la colonne synthétique de leur stack d\'observabilité.',
+                'Pour les équipes qui font de LogCraft la colonne vertébrale synthétique de leur stack d\'observabilité.',
             features: [
                 'Tout ce qui est dans Pro',
                 'Simulation de topologie réseau',
@@ -710,7 +710,7 @@ const fr: typeof en = {
         alwaysOn: 'Toujours actif',
         onboardingName: 'État de l’onboarding Lab',
         onboardingDesc:
-            'Mémorise que vous avez complété l’assistant d’onboarding du Lab. Sans lui, le tutoriel réapparaît à chaque visite.',
+            'Mémorise que vous avez terminé l’assistant d’onboarding du Lab. Sans lui, le tutoriel réapparaît à chaque visite.',
         cookieKey: 'logcraft_onboarding_dismissed',
         cookieDuration: '1 an',
         resetBtn: 'Réinitialiser',
@@ -825,7 +825,7 @@ const fr: typeof en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'Un agent est un service fictif. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
+                    'Un agent est un service factice. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
             },
             outputs: {
                 title: 'Sinks (sorties)',
@@ -895,7 +895,7 @@ const fr: typeof en = {
                 short: 'Lab InSight déterministe pour replay, preuves détecteur et réglage sans fatigue.',
                 selectScenario: 'Choisissez un scénario déterministe',
                 selectScenarioDesc:
-                    'Choisissez un scénario LogCraft seedé, lancez le pipeline et utilisez des preuves reproductibles pour régler InSight.',
+                    'Choisissez un scénario LogCraft avec seed, lancez le pipeline et utilisez des preuves reproductibles pour régler InSight.',
                 launchAndStart: 'Lancer le scénario InSight',
                 launchPaused: 'Créer le pipeline en pause',
             },
@@ -1093,7 +1093,7 @@ const fr: typeof en = {
             'Force un cycle d\'évaluation de panne en cascade. Les agents en panne propagent la dégradation à leurs appelants selon le rayon / l\'atténuation du scénario. Idéal pour montrer "une DB qui entraîne tout le reste".',
         rate: 'Cadence',
         rateTip:
-            'Enregistrements par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
+            'Records par seconde émis par cet agent. Augmentez pour stresser les alertes ; descendez à 0 pour faire taire l\'agent sans arrêter le moteur.',
         errorsTip:
             'Part de records marqués comme erreurs (0–100%). Force une panne sans toucher au YAML.',
         burst: 'Rafale',
@@ -1115,13 +1115,13 @@ const fr: typeof en = {
         lockedOperationRequired:
             'Nécessite la capacité {operation}. Changez d\'utilisateur (en haut à droite) pour accéder à ce contrôle.',
         seededAgentOwned:
-            'Déterminisme rompu : cet agent ne reflète plus le scénario seedé.',
+            'Déterminisme rompu : cet agent ne reflète plus le scénario avec seed.',
         seedDeterminismWarning:
-            'Ce scénario est seedé pour une reproduction déterministe. {action} cassera ce déterminisme — les ré-exécutions ne produiront plus des logs identiques.',
+            'Ce scénario utilise une seed pour une reproduction déterministe. {action} cassera ce déterminisme — les ré-exécutions ne produiront plus des logs identiques.',
         seedActionUnlock: 'Prendre la main sur un agent',
         seedActionBurst: 'Déclencher une rafale',
         seedActionCascade: 'Forcer une évaluation de panne en cascade',
-        seedConfirmTitle: 'Scénario seedé — attention',
+        seedConfirmTitle: 'Scénario avec seed — attention',
         seedConfirmProceed: 'Procéder quand même',
         seedConfirmCancel: 'Annuler',
         leaveEngineTitle: 'Quitter le lab ?',
