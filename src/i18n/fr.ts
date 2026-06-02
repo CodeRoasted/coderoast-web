@@ -262,7 +262,7 @@ const fr: typeof en = {
         trust: {
             title: 'Un fait sur lequel vous pouvez poser une gate.',
             body:
-                'Mêmes entrées, même diff — bit pour bit, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+                'Mêmes entrées, même diff — bit-identique, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
         },
         install: {
@@ -394,7 +394,7 @@ const fr: typeof en = {
             {
                 title: 'Déterministe par seed',
                 description:
-                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine, n\'importe quel jour. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident bit pour bit.',
+                    'Même YAML, même seed, mêmes logs — sur n\'importe quelle machine, n\'importe quel jour. Reproduisez n\'importe quel bug. Rejouez n\'importe quel incident, bit-identique.',
             },
             {
                 title: 'Plus de vingt formats',
@@ -603,7 +603,7 @@ const fr: typeof en = {
         title: 'Comment on construit',
         subtitle: 'Le déterminisme est une promesse produit. Elle commence par notre façon de construire.',
         intro:
-            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — bit pour bit. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
+            'CodeRoast tient une seule garantie : mêmes entrées, même sortie — bit-identique. Un diff que vous pouvez mettre derrière une gate CI. Ce n’est pas un slogan ; c’est une discipline d’ingénierie, et elle gouverne tout ce qu’on livre — y compris notre façon d’utiliser nos propres outils.',
         sections: [
             {
                 title: 'Générer n’est pas décider.',
@@ -640,24 +640,24 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
     },
     howWeCompare: {
-        badge: 'Une machine différente',
+        badge: 'Une autre mécanique',
         title: 'Ce qui nous différencie',
         subtitle: 'Version courte : on ne fait pas moins cher. On fait autre chose.',
         intro:
-            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Légitime — alors soyons honnêtes. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre machine. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
+            'Vous êtes sûrement là pour nous ranger à côté d’un outil que vous connaissez déjà. Légitime — alors soyons honnêtes. Sauf qu’une chose fausse la comparaison avant même de commencer : presque tout ce qui existe est un entrepôt. Ça stocke vos données d’observabilité et rivalise sur le prix, la cardinalité, l’hébergement. Nous, on ne stocke pas : on distille — une empreinte bornée et déterministe, sur votre propre infra. Pas un entrepôt moins cher : une autre mécanique. Voici ce que ça donne face aux deux outils auxquels on nous compare le plus.',
         versus: [
             {
-                title: 'face à Datadog — une machine différente, pas une moins chère',
+                title: 'face à Datadog — une autre mécanique, pas une moins chère',
                 body: [
-                    'Le modèle de Datadog, c’est accumuler-et-facturer : envoyez tout vers leur cloud, payez au volume. Quand la facture pique, leur propre réponse, c’est d’échantillonner — décider quelles lignes restent cherchables et prier pour ne pas avoir jeté celle qui comptait. La fameuse facture Datadog est la taxe du modèle d’accumulation, et l’échantillonnage en est la coupe à l’aveugle.',
-                    'On ne rend pas cette facture moins chère. On supprime la raison même d’exfiltrer vos logs : on distille une empreinte comportementale complète en local, et vos logs bruts restent là où ils sont. Plus de logs, sur votre infra — le parachute de la coupe que les équipes font déjà à l’aveugle. Les économies en découlent, mais le coût n’est pas l’argument : l’argument, c’est qu’un fait structurel déterministe — mêmes entrées, même réponse — est quelque chose qu’un entrepôt échantillonné et probabiliste ne peut structurellement pas vous donner. Vous n’achetez pas un Datadog moins cher. Vous achetez un objet différent.',
+                    'Le modèle de Datadog, c’est accumuler-et-facturer : envoyez tout vers leur cloud, payez au volume. Quand la facture pique, leur réponse, c’est d’échantillonner — décider quelles lignes restent cherchables et prier pour ne pas avoir jeté celle qui comptait. La fameuse facture Datadog est la taxe du modèle d’accumulation, et l’échantillonnage en est la coupe à l’aveugle.',
+                    'On ne rend pas cette facture moins chère. On supprime la raison même d’exfiltrer vos logs : on distille une empreinte comportementale complète en local, et vos logs bruts restent là où ils sont. Plus de logs, sur votre infra — le parachute de la coupe que les équipes font déjà à l’aveugle. Les économies en découlent, mais le coût n’est pas l’argument : l’argument, c’est qu’un fait structurel déterministe — mêmes entrées, même réponse — est quelque chose qu’un entrepôt échantillonné et probabiliste ne peut structurellement pas vous donner. Vous n’achetez pas un Datadog moins cher. Vous achetez une garantie différente.',
                 ],
             },
             {
                 title: 'face à Honeycomb — la même conviction, le pari inverse',
                 body: [
-                    'On part d’où part Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
-                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, sur votre infra — reproductible bit pour bit, le seul qu’on peut mettre derrière une vraie gate CI. Un pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
+                    'On part du même constat qu’Honeycomb : le stockage bête, c’est fini, l’intelligence est le produit. Ils font avancer l’observabilité, nous aussi — même conviction, directions opposées. Ce n’est pas eux l’ennemi ; c’est la mentalité entrepôt.',
+                    'Puis le pari diverge, nettement. Honeycomb mise sur la richesse : garder chaque événement à pleine cardinalité pour poser n’importe quelle question après coup. Nous, on mise sur la compression : distiller le comportement en amont en une empreinte bornée et comparable, pour que « ce qui a changé / ce qui ne va pas » soit déjà structuré quand vous regardez. Honeycomb est imbattable quand vous ne savez pas encore ce que vous aurez à demander. Nous, on est imbattables quand il vous faut un fait déterministe, sur votre infra — bit-identique, le seul qu’on peut mettre derrière une vraie gate CI. Leur pari vous demande d’instrumenter des wide events ; le nôtre lit les logs que vous écrivez déjà. Choisissez le pari qui colle à votre problème — beaucoup d’équipes voudront les deux.',
                 ],
             },
         ],
@@ -865,7 +865,7 @@ const fr: typeof en = {
             replay: {
                 title: 'Déterminisme & replay',
                 body:
-                    'Au-delà de la `seed`, le moteur enregistre l\'ordinal de chaque record émis pour que deux runs du même YAML produisent des flux identiques bit pour bit. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
+                    'Au-delà de la `seed`, le moteur enregistre l\'ordinal de chaque record émis pour que deux runs du même YAML produisent des flux bit-identiques. Combiné à l\'API `engine.snapshot`, vous pouvez mettre en pause un run, partager l\'état et le reprendre ailleurs — pratique pour partager des repros et snapshots CI.',
             },
             registry: {
                 title: 'Registre des types d\'agent',
