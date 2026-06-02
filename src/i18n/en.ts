@@ -686,7 +686,7 @@ const en = {
         cta: 'Diff two logs',
     },
     footer: {
-        tagline: 'An indie engineering shop. C++ where it counts, web where it should.',
+        tagline: 'Independent, and uncompromising. C++ at the core, web at the edge.',
         rights: 'All rights reserved.',
         sections: {
             product: 'Product',

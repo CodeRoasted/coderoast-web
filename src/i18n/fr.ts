@@ -674,7 +674,7 @@ const fr: typeof en = {
         cta: 'Diff de deux logs',
     },
     footer: {
-        tagline: 'Atelier indé. C++ là où ça compte, web là où il faut.',
+        tagline: 'Indépendant, et sans compromis. Le C++ au cœur, le web en surface.',
         rights: 'Tous droits réservés.',
         sections: {
             product: 'Produit',
