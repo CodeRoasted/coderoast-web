@@ -306,7 +306,7 @@ const fr: typeof en = {
             high: 'SUSPECT',
             medium: 'NOTABLE',
             low: 'FAIBLE',
-            recovery: 'RÉTABLI',
+            recovery: 'RÉSOLU',
         },
         kind: {
             new_error_pattern: 'erreur apparue',
@@ -315,7 +315,7 @@ const fr: typeof en = {
             new_template: 'apparu',
             vanished_template: 'disparu',
             frequency_shift: 'décalage',
-            entropy_shift: 'branchage',
+            entropy_shift: 'ramification',
             emerging_tail: 'émergent en queue',
             fallback: 'modifié',
         },
