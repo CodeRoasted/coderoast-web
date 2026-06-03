@@ -23,7 +23,8 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write   # Sift dogfood: post/update the sticky comment (same-repo, private repo — no forks)
+  actions: write         # Sift dogfood: upload the baseline-log artifact (+ read for last-green resolution)
 
 jobs:
   build:
@@ -40,11 +41,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Start build-log capture (lint/test/build below append; Sift diffs it)
+        run: truncate --size 0 "$GITHUB_WORKSPACE/build.log"
+
       - name: Lint
-        run: npm run lint
+        run: npm run lint 2>&1 | tee -a "$GITHUB_WORKSPACE/build.log"
 
       - name: Test
-        run: npm test
+        run: npm test 2>&1 | tee -a "$GITHUB_WORKSPACE/build.log"
 
       - name: Build
-        run: npm run build
+        run: npm run build 2>&1 | tee -a "$GITHUB_WORKSPACE/build.log"
+
+      - name: Sift — structural diff of this run's lint/test/build log (advisory)
+        if: ${{ always() }}
+        continue-on-error: true    # advisory: a Sift error must NEVER fail this build
+        uses: CodeRoasted/sift-action@v1
+        with:
+          log: build.log
+          fail-on: none
+          build-status: ${{ job.status == 'success' && 'green' || 'red' }}
