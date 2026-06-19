@@ -28,9 +28,8 @@ const fr: typeof en = {
         trust: 'déterministe · précision avant tout · tourne sur votre infra · logs jamais stockés',
     },
     determinismLine: {
-        // FR pending Eqya — new homepage determinism one-liner (EN placeholder; web held to cut)
-        line: 'Same logs in, same answer out — byte for byte, across three compilers and two operating systems. Re-proven on every release.',
-        cta: 'How we build',
+        line: 'Mêmes logs en entrée, même réponse en sortie — bit-identique, sur trois compilateurs et deux systèmes d’exploitation. Re-prouvé à chaque release.',
+        cta: 'Comment on construit',
     },
     vision: {
         badge: 'CodeRoast · la thèse MetaLog',
@@ -263,9 +262,8 @@ const fr: typeof en = {
         },
         trust: {
             title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
-            // FR sharpening owed to Eqya: expand "d’une machine à l’autre" to the cross-compiler/cross-OS + public-toolchain claim (see EN master). Left accurate-but-weaker until her voice-pass.
             body:
-                'Mêmes entrées, même diff — bit-identique, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+                'Mêmes entrées, même diff — bit-identique, sur plusieurs compilateurs et systèmes d’exploitation (on compile avec gcc, clang et MSVC, sous Linux et Windows, et on vérifie un résultat identique à chaque release — la chaîne de compilation est publique, vous pouvez donc la reproduire). C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
         },
         install: {
@@ -623,16 +621,14 @@ const fr: typeof en = {
             title: 'Ce sur quoi on s’engage.',
             items: [
                 {
-                    title: 'Le déterminisme est une gate, pas une promesse en l’air.',
-                    // FR sharpening owed to Eqya: strengthen to the tri-toolchain cross-OS claim (see EN master). Left accurate-but-weaker until her voice-pass.
+                    title: 'Le déterminisme, on le teste — on ne se contente pas de le promettre.',
                     description:
-                        'Chaque release passe une suite de régression déterministe ; mêmes entrées, même sortie, et c’est exactement ce qu’on teste.',
+                        'Chaque release re-prouve que les mêmes logs produisent la même empreinte, bit-identique, compilée de trois manières : gcc et clang sous Linux, MSVC sous Windows — trois compilateurs, deux systèmes d’exploitation, trois bibliothèques standard C++. Résultat identique, sinon la release ne part pas. La plupart des outils « reproductibles » sous-entendent sur la même machine ; nous, c’est quelle que soit votre chaîne de compilation.',
                 },
                 {
-                    // FR pending Eqya — new bullet (EN placeholder; web held to cut)
-                    title: 'Don’t trust us — reproduce us.',
+                    title: 'Ne nous croyez pas sur parole — reproduisez-nous.',
                     description:
-                        'The exact compilers we pin are public and open — our build toolchain is its own repo, source and recipe included. Build CodeRoast yourself and you get the same bytes we do. A determinism claim you can’t reproduce is marketing; ours ships with the recipe.',
+                        'Les compilateurs exacts que nous épinglons sont publics et ouverts : notre chaîne de compilation est un dépôt à part entière, sources et recette comprises. Recompilez CodeRoast vous-même, vous obtenez les mêmes octets que nous. Une promesse de déterminisme qu’on ne peut pas reproduire, c’est du marketing ; la nôtre est livrée avec la recette.',
                 },
                 {
                     title: 'Le chemin de garantie est sans modèle.',
