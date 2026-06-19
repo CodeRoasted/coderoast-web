@@ -25,6 +25,10 @@ const en = {
         ctaSecondary: 'See all products',
         trust: 'deterministic · precision-first · runs on your infra · logs never stored',
     },
+    determinismLine: {
+        line: 'Same logs in, same answer out — byte for byte, across three compilers and two operating systems. Re-proven on every release.',
+        cta: 'How we build',
+    },
     vision: {
         badge: 'CodeRoast · the MetaLog thesis',
         titleLead: 'Not stored. Not sampled. Not shipped.',
@@ -262,7 +266,7 @@ const en = {
         trust: {
             title: 'A fact you can gate on.',
             body:
-                'Same inputs, same diff — bit for bit, across machines. That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs on your key over a bounded fingerprint — never raw logs, never in the path that decides.',
+                'Same inputs, same diff — bit for bit, across compilers and operating systems (we build with gcc, clang, and MSVC, on Linux and Windows, and gate on identical output every release — the toolchain is public, so you can reproduce it). That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs on your key over a bounded fingerprint — never raw logs, never in the path that decides.',
             cta: 'How we build',
         },
         install: {
@@ -634,7 +638,12 @@ const en = {
                 {
                     title: 'Determinism is a gate, not a claim.',
                     description:
-                        'Every release passes a deterministic regression suite; same inputs produce the same output, and we test exactly that.',
+                        'Every release re-proves that the same logs produce the same fingerprint byte for byte — built three ways: gcc and clang on Linux, MSVC on Windows (three compilers, two operating systems, three C++ standard libraries). One identical result, or the release doesn’t ship. Most “reproducible” tools mean on the same machine; we mean across whatever toolchain you happen to have.',
+                },
+                {
+                    title: 'Don’t trust us — reproduce us.',
+                    description:
+                        'The exact compilers we pin are public and open — our build toolchain is its own repo, source and recipe included. Build CodeRoast yourself and you get the same bytes we do. A determinism claim you can’t reproduce is marketing; ours ships with the recipe.',
                 },
                 {
                     title: 'The guarantee path is model-free.',

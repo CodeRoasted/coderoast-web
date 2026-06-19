@@ -1,11 +1,13 @@
 import { lazy, Suspense } from 'react'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import DeterminismBand from '@/components/home/DeterminismBand'
 import Footer from '@/components/Footer'
 
-// The home is the umbrella lobby: what CodeRoast is (Hero) → the product
-// portfolio → roadmap → maker note. Product deep-dives live on their own pages
-// (/logcraft, /insight, /sift), not here.
+// The home is the umbrella lobby: what CodeRoast is (Hero) → the determinism
+// promise (the funnel-top one-liner) → the product portfolio → roadmap → maker
+// note. Product deep-dives live on their own pages (/logcraft, /insight, /sift),
+// not here.
 const Portfolio = lazy(() => import('@/components/Portfolio'))
 const ComingSoon = lazy(() => import('@/components/ComingSoon'))
 const MakerNote = lazy(() => import('@/components/home/MakerNote'))
@@ -24,6 +26,7 @@ export default function Home() {
             <Navbar />
             <main>
                 <Hero />
+                <DeterminismBand />
                 <Suspense fallback={<LoadingFallback />}>
                     <Portfolio />
                 </Suspense>

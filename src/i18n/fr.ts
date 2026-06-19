@@ -27,6 +27,11 @@ const fr: typeof en = {
         ctaSecondary: 'Voir tous les produits',
         trust: 'déterministe · précision avant tout · tourne sur votre infra · logs jamais stockés',
     },
+    determinismLine: {
+        // FR pending Eqya — new homepage determinism one-liner (EN placeholder; web held to cut)
+        line: 'Same logs in, same answer out — byte for byte, across three compilers and two operating systems. Re-proven on every release.',
+        cta: 'How we build',
+    },
     vision: {
         badge: 'CodeRoast · la thèse MetaLog',
         titleLead: 'Pas stockés. Pas échantillonnés. Pas exfiltrés.',
@@ -258,6 +263,7 @@ const fr: typeof en = {
         },
         trust: {
             title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
+            // FR sharpening owed to Eqya: expand "d’une machine à l’autre" to the cross-compiler/cross-OS + public-toolchain claim (see EN master). Left accurate-but-weaker until her voice-pass.
             body:
                 'Mêmes entrées, même diff — bit-identique, d’une machine à l’autre. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
             cta: 'Comment on construit',
@@ -618,8 +624,15 @@ const fr: typeof en = {
             items: [
                 {
                     title: 'Le déterminisme est une gate, pas une promesse en l’air.',
+                    // FR sharpening owed to Eqya: strengthen to the tri-toolchain cross-OS claim (see EN master). Left accurate-but-weaker until her voice-pass.
                     description:
                         'Chaque release passe une suite de régression déterministe ; mêmes entrées, même sortie, et c’est exactement ce qu’on teste.',
+                },
+                {
+                    // FR pending Eqya — new bullet (EN placeholder; web held to cut)
+                    title: 'Don’t trust us — reproduce us.',
+                    description:
+                        'The exact compilers we pin are public and open — our build toolchain is its own repo, source and recipe included. Build CodeRoast yourself and you get the same bytes we do. A determinism claim you can’t reproduce is marketing; ours ships with the recipe.',
                 },
                 {
                     title: 'Le chemin de garantie est sans modèle.',

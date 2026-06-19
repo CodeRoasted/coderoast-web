@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Bot, CloudOff, GitCompareArrows, ShieldCheck } from 'lucide-react'
+import { Bot, CloudOff, GitCompareArrows, RefreshCw, ShieldCheck } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -13,9 +13,10 @@ const fadeUp = {
 }
 
 // Index-aligned with t.howWeBuild.commit.items (authored order, not locale-bound):
-// determinism-as-gate · model-free guarantee path · logs stay on your infra.
+// determinism-as-gate · reproduce-us (public toolchain) · model-free guarantee path · logs stay on your infra.
 const commitIcons = [
     <ShieldCheck className="w-5 h-5" />,
+    <RefreshCw className="w-5 h-5" />,
     <Bot className="w-5 h-5" />,
     <CloudOff className="w-5 h-5" />,
 ]
@@ -81,7 +82,7 @@ export default function HowWeBuild() {
                         >
                             {h.commit.title}
                         </motion.h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {h.commit.items.map((item, i) => (
                                 <motion.div
                                     key={item.title}
