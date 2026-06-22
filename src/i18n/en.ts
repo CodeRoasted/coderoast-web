@@ -266,7 +266,7 @@ const en = {
         trust: {
             title: 'A fact you can gate on.',
             body:
-                'Same inputs, same diff — bit for bit, across compilers and operating systems (we build with gcc, clang, and MSVC, on Linux and Windows, and gate on identical output every release — the toolchain is public, so you can reproduce it). That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs on your key over a bounded fingerprint — never raw logs, never in the path that decides.',
+                'Same inputs, same diff — bit for bit, across compilers and operating systems (we build with gcc, clang, and MSVC, on Linux and Windows, and gate on identical output every release — the toolchain is public, so you can reproduce it). That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs locally by default — nothing leaves; point it at an endpoint you control and only the bounded fingerprint travels there — never raw logs, never the verdict, never anything in the path that decides.',
             cta: 'How we build',
         },
         install: {
