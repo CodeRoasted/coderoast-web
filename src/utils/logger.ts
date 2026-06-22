@@ -36,10 +36,6 @@ export function logError(
   if (isDev) {
     console.error(`[${logEntry.timestamp}] ${message}`, { error, context })
   }
-
-  // TODO: Send to observability service (Sentry, DataDog, etc.)
-  // const observer = services().observability()
-  // observer?.capture(logEntry)
 }
 
 /**
@@ -53,7 +49,6 @@ export function logWarn(
   if (isDev) {
     console.warn(`[WARN] ${message}`, context || {})
   }
-  // TODO: send to observability
 }
 
 /**
@@ -67,5 +62,4 @@ export function logInfo(
   if (isDev) {
     console.log(`[INFO] ${message}`, context || {})
   }
-  // TODO: send to observability
 }
