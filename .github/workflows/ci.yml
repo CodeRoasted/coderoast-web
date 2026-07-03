@@ -4,23 +4,6 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [ main ]
-    # NOTE (paths-filter audit, [[ci-vendoring-baseline-drift]]): coderoast-web is the Vite/TS frontend
-    # and exports NO conan package — it has no conanfile.py / packages.yml. Its dependency-manifest
-    # equivalent is package.json + package-lock.json (both filtered below), so a dep bump still triggers
-    # the gate. Intentionally non-conan: do not add conanfile.py / packages.yml path globs here.
-    paths:
-      - '.github/workflows/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'eslint.config.js'
-      - 'vite.config.ts'
-      - 'tsconfig*.json'
-      - 'tailwind.config.ts'
-      - 'postcss.config.js'
-      - 'index.html'
-      - 'public/**'
-      - 'src/**'
-      - 'technical_docs/**'
   push:
     branches: [ main ]
     tags: [ "v[0-9]+.[0-9]+.[0-9]+" ]
