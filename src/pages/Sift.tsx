@@ -63,15 +63,15 @@ const COMMENT = {
     footer: 'Deterministic — same inputs, same comment. Runs in your CI; your logs never leave it.',
 } as const
 
-// Install blocks (web_copy § 6). The Action is a forward-claim; the CLI line is
-// the honest "download the release binary" state — the nicer one-liner
-// (curl / brew / gh-ext / go) is an OPEN Argos/Founder decision and is left
-// un-faked per the governed copy.
-const ACTION_YAML = `- uses: coderoast/sift-action@v1
+// Install blocks (web_copy § 6). Both reproduce the sift-action README verbatim:
+// the four-line Action (turnkey `target-job` — Sift pulls the finished job's log
+// off the API) and the live `install.sh` CLI one-liner (shipped; the earlier
+// "open installer decision" is resolved).
+const ACTION_YAML = `- uses: CodeRoasted/sift-action@v1
   with:
-    baseline: last-green   # turnkey: the PR base's last green run`
+    target-job: build   # Sift pulls that finished job's log off the API`
 
-const CLI_BLOCK = `# download \`sift\` from the latest release, then:
+const CLI_BLOCK = `curl -fsSL https://raw.githubusercontent.com/CodeRoasted/sift-action/main/install.sh | sh
 sift baseline.log changed.log`
 
 const BADGE_STYLE: Record<string, string> = {
