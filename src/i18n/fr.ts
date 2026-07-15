@@ -253,6 +253,21 @@ const fr: typeof en = {
                     sift: 'une ligne, classée par sévérité',
                 },
             ],
+            ghaStructure: {
+                title: 'Il lit votre run par sa structure — pas seulement ligne à ligne.',
+                body:
+                    'Pointez Sift sur un run GitHub Actions et il lit le squelette job ▸ step : une étape qui disparaît en silence, une nouvelle étape, une régression de couverture quand un contrôle entier cesse de tourner — remonté au grain de la structure, pas noyé dans un diff de lignes. Une cause, une ligne classée, pas cinquante symptômes.',
+            },
+            jenkinsStructure: {
+                title: 'Jenkins, lu par la structure.',
+                body:
+                    'Pointez Sift sur un pipeline Declarative et il lit votre squelette stage ▸ step comme il lit déjà les jobs GitHub Actions — les mêmes Disparu / Nouveau / Remplacé structurels, la même détection de régression de couverture, le même repli par structure des méga-logs. Les jobs freestyle et matrix classiques gardent le diff universel au niveau template ; la profondeur structurelle est cantonnée au Declarative Pipeline, et on le dit.',
+            },
+            jenkinsOutcome: {
+                title: 'Et il sait ce que « terminé » veut dire.',
+                body:
+                    'Jenkins émet quatre verdicts, pas deux — Sift les classe tous (SUCCESS / FAILURE / UNSTABLE / ABORTED) sur n’importe quel job Jenkins. Un build UNSTABLE (des tests ont tourné, certains ont échoué) n’est pas un build vert ; un run ABORTED n’est pas un échec. Mettez une gate dessus : --fail-on outcome casse le build quand le verdict lui-même régresse — SUCCESS → UNSTABLE — même quand chaque ligne de log a l’air normale.',
+            },
         },
         free: {
             title: 'Tout le produit sans état est gratuit. Sans conditions.',
@@ -642,6 +657,11 @@ const fr: typeof en = {
                 },
             ],
         },
+        canonOpen: {
+            title: 'On ouvre le langage — le moat reste intact.',
+            description:
+                'La façon dont Sift lit un log CI ou de compilation — la grammaire, les paquets sémantiques, le contrat que vous étendez pour lui apprendre un nouveau format — est Apache-2.0, publique. Lisez exactement comment on comprend vos logs. Ça n’a jamais été le moat : comprendre un log, ce n’est pas détecter ce qui a changé. On donne le langage, on garde l’intelligence.',
+        },
         closing: 'On tient en interne la discipline qu’on vend en externe. C’est tout l’enjeu.',
         cta: 'Diff de deux logs',
     },
@@ -676,6 +696,8 @@ const fr: typeof en = {
             title: 'Déjà sous OpenTelemetry ?',
             body:
                 'Tant mieux — vos logs sont déjà bien formés, donc il y a encore moins de raison de les exfiltrer quelque part pour leur donner du sens. On les distille là où ils sont, et vous gardez une empreinte souveraine qui vous appartient. Mêmes entrées, même réponse. Gardez vos logs.',
+            depth:
+                'Et si vous émettez des spans, Sift diffe la trace elle-même : un nouveau span, une chaîne parent cassée, une explosion de latence — remontés comme un seul changement structurel classé, de façon déterministe, sur votre infra. Honeycomb et Spectroscope vous montrent la trace en direct et magnifiquement ; nous, on vous dit ce qui a changé entre deux runs, bit pour bit, et on met une gate dessus — la lecture qu’un dashboard ne peut pas donner. (La profondeur trace exige de la télémétrie de spans ; elle est inerte sur des logs CI en texte brut — un axe distinct du diff CI, revendiqué uniquement là où il y a des spans.)',
         },
         cta: 'Diff de deux logs',
     },

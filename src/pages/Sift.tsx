@@ -266,6 +266,33 @@ export default function SiftPage() {
                                 </tbody>
                             </table>
                         </motion.div>
+
+                        {/* Depth callouts — read-by-structure (GHA) + Jenkins structure/outcome */}
+                        <div className="mt-6 space-y-5">
+                            {[
+                                { icon: <Github className="w-5 h-5" />, ...s.catches.ghaStructure },
+                                { icon: <GitBranch className="w-5 h-5" />, ...s.catches.jenkinsStructure },
+                                { icon: <BadgeCheck className="w-5 h-5" />, ...s.catches.jenkinsOutcome },
+                            ].map((callout) => (
+                                <motion.div
+                                    key={callout.title}
+                                    {...fadeUp}
+                                    className="flex items-start gap-4 p-6 sm:p-7 rounded-2xl bg-brand-500/[0.06] border border-brand-700/40"
+                                >
+                                    <div className="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-700/30">
+                                        {callout.icon}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-display font-semibold text-white text-lg mb-2 leading-snug">
+                                            {callout.title}
+                                        </h3>
+                                        <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
+                                            {callout.body}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
                 </section>
 

@@ -123,6 +123,9 @@ export default function HowWeCompare() {
                                 <p className="text-sm sm:text-base text-gray-200 leading-relaxed">
                                     {c.otel.body}
                                 </p>
+                                <p className="mt-4 text-sm sm:text-base text-gray-200 leading-relaxed">
+                                    {c.otel.depth}
+                                </p>
                             </div>
                         </motion.div>
                     </div>

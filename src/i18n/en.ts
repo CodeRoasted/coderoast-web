@@ -256,6 +256,21 @@ const en = {
                     sift: 'one line, ranked by severity',
                 },
             ],
+            ghaStructure: {
+                title: 'It reads your run by structure — not just line by line.',
+                body:
+                    'Point Sift at a GitHub Actions run and it reads the job ▸ step skeleton: a step that silently vanished, a new step, a coverage regression where a whole check stopped running — surfaced at the structure grain, not drowned in a line diff. One cause, one ranked line, not fifty symptoms.',
+            },
+            jenkinsStructure: {
+                title: 'Now reading Jenkins by structure.',
+                body:
+                    'Point Sift at a Jenkins Declarative Pipeline and it reads your stage ▸ step skeleton the way it already reads GitHub Actions jobs — the same structural Disappeared / New / Replaced at the stage ▸ step grain, the same coverage-regression catch, the same mega-log-by-structure collapse. Freestyle and classic matrix jobs still get the universal template-level diff above; structure depth is Declarative-Pipeline-scoped, and we say so.',
+            },
+            jenkinsOutcome: {
+                title: 'And it knows what "done" means.',
+                body:
+                    'Jenkins emits four verdicts, not two — Sift classifies all of them (SUCCESS / FAILURE / UNSTABLE / ABORTED) on any Jenkins job. An UNSTABLE build (tests ran, some failed) is not a green build; an ABORTED run is not a failure. Gate on it: --fail-on outcome fails the build when the verdict itself regresses — SUCCESS → UNSTABLE — even when every log line still looks fine.',
+            },
         },
         free: {
             title: 'The whole stateless product is free. We mean it.',
@@ -657,6 +672,11 @@ const en = {
                 },
             ],
         },
+        canonOpen: {
+            title: 'We open the language — the moat is untouched.',
+            description:
+                'How Sift reads a CI or compiler log — the grammar, the semantic packages, the contract you extend to teach it a new format — is Apache-2.0, public. Read exactly how we understand your logs. That was never the moat: understanding a log is not detecting what changed. We give away the language and keep the intelligence.',
+        },
         closing: 'We hold internally the discipline we sell externally. That’s the whole point.',
         cta: 'Diff two logs',
     },
@@ -691,6 +711,8 @@ const en = {
             title: 'Already on OpenTelemetry?',
             body:
                 'Good — your logs are already well-formed, which means there’s even less reason to ship them somewhere to make sense of them. We distil them where they are, and you keep a sovereign fingerprint you own. Same inputs, same answer. Keep your logs.',
+            depth:
+                'And if you emit spans, Sift diffs the trace itself: a new span, a broken parent chain, a latency blow-up — surfaced as one ranked structural change, deterministically, on your infrastructure. Honeycomb and Spectroscope show you the trace live and beautifully; we tell you what changed between two runs, bit-for-bit, and gate on it — the read a dashboard can’t give you. (Trace depth needs span telemetry; it’s inert on plaintext CI logs — a different axis from the CI-log diff above, claimed only where spans exist.)',
         },
         cta: 'Diff two logs',
     },
