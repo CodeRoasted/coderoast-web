@@ -456,7 +456,6 @@ const en = {
     },
     howItWorks: {
         title: 'Three steps. No collectors, no clusters, no cards.',
-        subtitle: '',
         steps: [
             {
                 title: 'Describe',

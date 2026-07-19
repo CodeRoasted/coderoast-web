@@ -441,7 +441,6 @@ const fr: typeof en = {
     },
     howItWorks: {
         title: 'Trois étapes. Pas de collecteurs, pas de clusters, pas de carte bleue.',
-        subtitle: '',
         steps: [
             {
                 title: 'Décrire',

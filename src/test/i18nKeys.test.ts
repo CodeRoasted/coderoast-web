@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import en from '@/i18n/en'
+import fr from '@/i18n/fr'
 
 /**
  * i18n key hygiene — a GATE, not a script.
@@ -20,7 +21,12 @@ import en from '@/i18n/en'
  *   type until this test still passed. If that annotation is ever removed, THIS
  *   comment is the record that parity lost its gate.
  *
- * So the one thing left uncovered is orphans: keys no source file can reach.
+ * So the two things left uncovered are orphans (keys no source file can reach)
+ * and empty VALUES — tsc enforces the key structure, not that a leaf holds text.
+ * The whole-tree empty-leaf sweep below replaced translations.test.ts's hand-picked
+ * ~12-key truthy allowlist: an allowlist rots (new keys never join it), a tree walk
+ * cannot. Its EN/FR identical-keys blocks were deleted outright — that is the
+ * compile-time parity re-assertion the SCOPE note above warns against.
  */
 
 // vitest runs from the repo root, so cwd is the stable anchor here.
@@ -89,5 +95,27 @@ describe('i18n keys', () => {
         expect(orphans, `${orphans.length} translation key(s) no source file can reach.\n` +
             `Delete them from BOTH src/i18n/en.ts and src/i18n/fr.ts (the compiler enforces parity).\n` +
             orphans.map((key) => `  - ${key}`).join('\n')).toEqual([])
+    })
+
+    // A leaf may be empty ON PURPOSE only if it is declared here, with the reason.
+    // The render site must guard on truthiness for the empty to be sound.
+    const DELIBERATELY_EMPTY = new Set([
+        // Enterprise pricing is 'Custom' — there is no billing period to print, and
+        // Licensing.tsx renders the period behind `{plan.period && …}`.
+        'licensing.enterprise.period',
+    ])
+
+    it('has no empty leaf — every key in every language carries text', () => {
+        const trees = { en, fr }
+        for (const [lang, tree] of Object.entries(trees)) {
+            const empty = leafPaths(tree).filter((path) => {
+                if (DELIBERATELY_EMPTY.has(path)) return false
+                const value = path.split('.').reduce<unknown>(
+                    (node, key) => (node as Record<string, unknown>)[key], tree)
+                return typeof value === 'string' && value.trim() === ''
+            })
+            expect(empty, `${empty.length} empty ${lang} translation value(s):\n` +
+                empty.map((key) => `  - ${lang}.${key}`).join('\n')).toEqual([])
+        }
     })
 })
