@@ -475,15 +475,6 @@ const en = {
             },
         ],
     },
-    pricingTeaser: {
-        title: 'Free for solo. Paid where it gets real.',
-        subtitle:
-            'Starter scenarios are free forever. Pro and Enterprise unlock chaos, cascades and the full output catalogue.',
-        seePlans: 'See full pricing',
-        free: { name: 'Free', price: '$0', tagline: 'Solo & evaluation' },
-        pro: { name: 'Pro', price: 'TBD', tagline: 'The full engine' },
-        enterprise: { name: 'Enterprise', price: 'Custom', tagline: 'Topology & on-prem' },
-    },
     portfolio: {
         title: 'One engine. A surface for every job.',
         subtitle:

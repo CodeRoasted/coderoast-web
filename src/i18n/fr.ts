@@ -460,15 +460,6 @@ const fr: typeof en = {
             },
         ],
     },
-    pricingTeaser: {
-        title: 'Gratuit pour le solo. Payant là où ça devient sérieux.',
-        subtitle:
-            'Les scénarios starter restent gratuits. Pro et Entreprise débloquent le chaos, les pannes en cascade et tout le catalogue de sorties.',
-        seePlans: 'Voir les tarifs détaillés',
-        free: { name: 'Gratuit', price: '0 €', tagline: 'Solo & évaluation' },
-        pro: { name: 'Pro', price: 'TBD', tagline: 'Le moteur complet' },
-        enterprise: { name: 'Entreprise', price: 'Sur mesure', tagline: 'Topologie & on-prem' },
-    },
     portfolio: {
         title: 'Un moteur. Une surface pour chaque usage.',
         subtitle:
