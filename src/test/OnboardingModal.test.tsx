@@ -5,21 +5,6 @@ import { useEngineStore } from '@/store/useEngineStore'
 vi.mock('@/services/api', () => ({
     listScenarios: vi.fn(),
     getScenario: vi.fn(),
-    TierRequiredError: class TierRequiredError extends Error {
-        permission: string
-        userId: string
-        userTier: unknown
-        requiredTier: unknown
-        reason: string
-        constructor(p: { permission: string; userId: string; reason: string }) {
-            super(p.reason)
-            this.permission = p.permission
-            this.userId = p.userId
-            this.userTier = null
-            this.requiredTier = null
-            this.reason = p.reason
-        }
-    },
 }))
 
 import OnboardingModal from '@/components/playground/OnboardingModal'

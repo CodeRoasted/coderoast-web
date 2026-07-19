@@ -1,6 +1,4 @@
 import type {
-    EngineInfo,
-    EngineSnapshot,
     InsightReconfigureRequest,
     InsightReconfigureResponse,
     InsightReportsResponse,
@@ -148,12 +146,6 @@ export class PolicyDenialError extends Error {
         this.reason = params.reason
     }
 }
-
-/**
- * @deprecated Use PolicyDenialError. Alias kept so any stale import compiles
- * during the transition before tests are updated.
- */
-export { PolicyDenialError as TierRequiredError }
 
 // API base URL — can be overridden via VITE_API_BASE environment variable
 // Default: relative path for local dev, production should use api.coderoast.fr subdomain.
@@ -307,9 +299,6 @@ export async function getCapabilityMatrix(): Promise<CapabilityMatrix> {
     return request('/access/profile')
 }
 
-/** @deprecated Use getCapabilityMatrix */
-export const getFeatureMatrix = getCapabilityMatrix
-
 export async function createEngine(yaml: string): Promise<{ engine_id: string; message: string }> {
     return request('/engines', {
         method: 'POST',
@@ -317,31 +306,8 @@ export async function createEngine(yaml: string): Promise<{ engine_id: string; m
     })
 }
 
-export async function listEngines(): Promise<EngineInfo[]> {
-    return request('/engines')
-}
-
-export async function getEngineSnapshot(engineId: string): Promise<EngineSnapshot> {
-    return request(`/engines/${encodeURIComponent(engineId)}`)
-}
-
 export async function deleteEngine(engineId: string): Promise<{ message: string }> {
     return request(`/engines/${encodeURIComponent(engineId)}`, { method: 'DELETE' })
-}
-
-export async function startEngine(engineId: string): Promise<{ success: boolean; message: string }> {
-    return request(`/engines/${encodeURIComponent(engineId)}/start`, { method: 'POST' })
-}
-
-export async function stopEngine(engineId: string): Promise<{ success: boolean; message: string }> {
-    return request(`/engines/${encodeURIComponent(engineId)}/stop`, { method: 'POST' })
-}
-
-export async function loadScenario(engineId: string, yaml: string): Promise<{ message: string }> {
-    return request(`/engines/${encodeURIComponent(engineId)}/scenario`, {
-        method: 'POST',
-        body: JSON.stringify({ yaml }),
-    })
 }
 
 export async function getEngineScenario(engineId: string): Promise<{ yaml: string }> {

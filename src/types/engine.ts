@@ -74,11 +74,6 @@ export interface EngineSnapshot {
     tail: LogTailEntry[]
 }
 
-export interface EngineInfo {
-    id: string
-    running: boolean
-}
-
 export type InsightSeverity =
     | 'Info'
     | 'Low'
