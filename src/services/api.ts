@@ -22,7 +22,7 @@ export interface AuthUser {
     name: string
 }
 
-/** Quota value from an AccessProfile. */
+/** Quota value from a CapabilityProfile. */
 export interface QuotaInfo {
     key: string
     limit: number
@@ -37,8 +37,15 @@ export interface QuotaUsage {
     used: number | null
 }
 
-/** Subject's current access profile as returned by login / whoami / /users. */
-export interface AccessProfile {
+/**
+ * Subject's current capability profile as returned by login / whoami / /users.
+ *
+ * The TYPE is `Capability*` (the collapsed internal vocabulary); the FIELD names
+ * (`access`, `current_access`) and the `/access/profile` route are NOT — those are
+ * the server's wire contract (coderoast-server auth_facade / system_facade emit
+ * exactly those keys), so renaming them here would break deserialization.
+ */
+export interface CapabilityProfile {
     tenant_id: string
     user_id: string
     subject_id: string
@@ -57,7 +64,7 @@ export interface AccessProfile {
 export interface LoginResponse {
     token: string
     user: AuthUser
-    access: AccessProfile | null
+    access: CapabilityProfile | null
 }
 
 /** A selectable visitor user exposed by `GET /users`. */
@@ -66,7 +73,7 @@ export interface SelectableUser {
     name: string
     role: string
     is_visitor: boolean
-    access?: AccessProfile
+    access?: CapabilityProfile
 }
 
 export interface EntitlementInfo {
@@ -100,7 +107,7 @@ export interface CapabilityMatrix {
     roles: RoleInfo[]
     operations: OperationInfo[]
     scenario_capabilities: ScenarioCapabilityInfo[]
-    current_access?: AccessProfile
+    current_access?: CapabilityProfile
 }
 
 /**
@@ -283,7 +290,7 @@ export interface WhoAmIResponse {
     token_presented: boolean
     token_valid: boolean
     user: AuthUser
-    access: AccessProfile | null
+    access: CapabilityProfile | null
 }
 
 /**
