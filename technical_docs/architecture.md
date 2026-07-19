@@ -151,8 +151,8 @@ In LogCraft Playground mode, InSight polling is disabled and the observation col
 - base URL from `VITE_API_BASE` or `/api/v1`;
 - bearer token injection from `useAuthStore`;
 - default request timeout of 15 seconds;
-- `TierRequiredError` for HTTP 403 payloads;
-- typed response helpers for scenarios, engines, auth, tiers, drain snapshots, and InSight status/reports.
+- `PolicyDenialError` for HTTP 403 payloads;
+- typed response helpers for scenarios, engines, auth, capability profiles, drain snapshots, and InSight status/reports.
 
 The authoritative endpoint contract lives in CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md).
 
@@ -178,7 +178,7 @@ The backend is the source of truth for access control. The front end mirrors per
 | live rate/error/burst commands | Pro |
 | cascade evaluation | Enterprise |
 
-When the backend denies a request, `TierRequiredError` carries the required tier and current user tier. UI components should render that detail instead of a generic error.
+When the backend denies a request, `PolicyDenialError` carries the denial detail from the capability profile. UI components should render that detail instead of a generic error.
 
 ## Cookies And Local Storage
 
