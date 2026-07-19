@@ -18,7 +18,6 @@ For a fast pass, read:
 3. [../../coderoast-server/technical_docs/api/server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md)
 4. [../../logcraft/technical_docs/reference/scenario_reference.md](../../logcraft/technical_docs/reference/scenario_reference.md)
 5. [../../technical_docs/product/strategy.md](../../technical_docs/product/strategy.md)
-6. Parent [ROADMAP.md](../../technical_docs/ROADMAP.md#next-step)
 
 That path explains what the site renders, how the Lab talks to CodeRoastServer, what scenario YAML means, and how InSight reports are surfaced.
 
