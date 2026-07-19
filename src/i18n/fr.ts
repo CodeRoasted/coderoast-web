@@ -544,12 +544,6 @@ const fr: typeof en = {
         ctaSupport: 'Soutenir le projet',
         supportNote: 'Un petit merci aide à garder les commits du soir.',
     },
-    donation: {
-        title: 'Soutenir le projet',
-        subtitle:
-            'LogCraft est construit en solo, en open, le soir et le week-end. Si ça vous a sauvé un après-midi de debug, un petit merci aide.',
-        cta: 'Envoyer un merci',
-    },
     licensing: {
         title: 'Plans LogCraft',
         subtitle:

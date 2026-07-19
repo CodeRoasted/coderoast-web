@@ -559,12 +559,6 @@ const en = {
         ctaSupport: 'Support the build',
         supportNote: 'A small thank-you keeps the late-night commits coming.',
     },
-    donation: {
-        title: 'Support the build',
-        subtitle:
-            'LogCraft is built solo, in the open, on nights and weekends. If it saves you a debugging afternoon, a small thank-you helps.',
-        cta: 'Send a tip',
-    },
     licensing: {
         title: 'LogCraft Plans',
         subtitle:
