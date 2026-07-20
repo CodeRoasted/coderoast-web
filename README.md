@@ -85,7 +85,7 @@ CodeRoastWeb/
 - LogCraft docs: [../logcraft/technical_docs/README.md](../logcraft/technical_docs/README.md)
 - CodeRoastServer API contract: [../coderoast-server/technical_docs/api/server_api_contract.md](../coderoast-server/technical_docs/api/server_api_contract.md)
 - InSight docs: [../insight-eidos/technical_docs/README.md](../insight-eidos/technical_docs/README.md)
-- LogCraft Playground: [../logcraft-playground/README.md](../logcraft-playground/README.md)
+- LogCraft Playground: [../coderoast-hub/logcraft-playground/README.md](../coderoast-hub/logcraft-playground/README.md)
 
 ## Deployment
 
