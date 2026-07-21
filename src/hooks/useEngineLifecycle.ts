@@ -21,7 +21,10 @@ interface EngineLifecycleOptions {
  * Owns the entire engine lifecycle for the Lab page:
  *   – validation + creation (handleRun)
  *   – WebSocket wiring + auto-start handshake
- *   – live commands (start / stop / play / pause / set_speed / advance / play_to_target / cascade / set_rate / set_error_rate / burst)
+ *   – the live engine commands (W4/D7: the prose list that used to be spelled out here is
+ *     DELETED, not updated — a hand-maintained copy of the vocabulary has no checker and
+ *     rots. The server's command_catalog.hpp is the vocabulary; commandVocabulary.test.ts
+ *     fails if this client ever sends a token that names no row in it.)
  *   – tear-down on unmount + on "back to scenarios"
  *   – validation/capability/tier errors
  *
