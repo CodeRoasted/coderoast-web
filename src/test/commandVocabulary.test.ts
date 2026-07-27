@@ -41,7 +41,12 @@ function catalogTokens(): string[] {
     const body = source.slice(source.indexOf('kCommandCatalog'))
     const rows = body.slice(0, body.indexOf('}};'))
     // Each row opens `{"token", "permission", …}` — the first string literal is the token.
-    const tokens = [...rows.matchAll(/\{\s*"([a-z_]+)"\s*,/g)].map((m) => m[1])
+    // Group 1 is not optional in the pattern, but `noUncheckedIndexedAccess` types the
+    // indexed read as possibly-undefined, so narrow rather than assert.
+    const tokens: string[] = []
+    for (const [, token] of rows.matchAll(/\{\s*"([a-z_]+)"\s*,/g)) {
+        if (token !== undefined) tokens.push(token)
+    }
     return [...new Set(tokens)]
 }
 
@@ -65,8 +70,8 @@ function sentTokens(): Map<string, string> {
     const found = new Map<string, string>()
     for (const file of productionSources(resolve(__dirname, '..'))) {
         const text = readFileSync(file, 'utf8')
-        for (const match of text.matchAll(/sendCommand\(\{\s*type:\s*'([a-z_]+)'/g)) {
-            if (!found.has(match[1])) found.set(match[1], file)
+        for (const [, token] of text.matchAll(/sendCommand\(\{\s*type:\s*'([a-z_]+)'/g)) {
+            if (token !== undefined && !found.has(token)) found.set(token, file)
         }
     }
     return found
