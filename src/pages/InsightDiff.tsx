@@ -6,7 +6,9 @@ import {
     ArrowRight,
     ArrowUpRight,
     ArrowLeftRight,
+    BadgeCheck,
     Check,
+    FlaskConical,
     GitCompareArrows,
     Loader2,
     Pencil,
@@ -20,7 +22,7 @@ import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import { siftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
-import { diffPresets, type DiffPreset } from '@/data/diffPresets'
+import { diffPresets, type DiffPreset, type DiffProvenance } from '@/data/diffPresets'
 
 // Severity = a neutral→warm HEAT ladder (slate → amber → orange → crimson),
 // deliberately NOT git red/green. Color carries *importance*; change-type
@@ -78,9 +80,39 @@ const KIND_ICON: Record<string, typeof Activity> = {
     emerging_tail: Waves,
 }
 
+// Provenance is a two-value closed set (see t.diff.provenance). Its chrome —
+// icon + colour — is locale-invariant, so it lives here; the two labels are i18n.
+const PROVENANCE: Record<DiffProvenance, { icon: typeof Activity; chip: string; caption: string }> = {
+    'real-ci': {
+        icon: BadgeCheck,
+        chip: 'bg-brand-500/15 text-brand-300 border-brand-500/40',
+        caption: 'text-brand-400/90',
+    },
+    generated: {
+        icon: FlaskConical,
+        chip: 'bg-gray-700/30 text-gray-400 border-gray-600/50',
+        caption: 'text-gray-500',
+    },
+}
+
+/** The i18n shape behind one preset id. `story` is present only where the copy
+ *  carries a narrative; otherwise the one-line description is the narrative. */
+interface PresetCopy {
+    label: string
+    description: string
+    story?: string[]
+}
+
 function countLines(text: string): number {
     if (text.length === 0) return 0
     return text.split('\n').filter((line) => line.trim().length > 0).length
+}
+
+// Thousands grouped with a non-breaking space, in BOTH languages — that is the
+// grouping the authored copy uses, and a headline figure must not read
+// differently from the sentence right beside it. Locale-independent on purpose.
+function groupThousands(value: number): string {
+    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')
 }
 
 // Build lineIndex -> tone for one pane, from all active changes. When two
@@ -253,6 +285,14 @@ export default function InsightDiff() {
     })
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    // Which preset the inputs currently hold, and which one is still being
+    // fetched. The real CI pairs are ~340-440 KB assets pulled on demand, so
+    // choosing one is asynchronous and can fail.
+    const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
+    const [presetLoading, setPresetLoading] = useState<string | null>(null)
+    // Monotonic token: a second click must not be overwritten by a slower first
+    // fetch landing after it.
+    const presetRequest = useRef(0)
 
     const canCompare = useMemo(
         () => baseline.trim().length > 0 && changed.trim().length > 0 && !loading,
@@ -306,6 +346,9 @@ export default function InsightDiff() {
         setBaseline(changed)
         setChanged(baseline)
         setError(null)
+        // A swapped pair is no longer the pair the sample brief describes — its
+        // narrative and its published figures are directional.
+        setSelectedPreset(null)
         if (report) runCompare(changed, baseline)
     }, [baseline, changed, report, runCompare])
 
@@ -317,11 +360,35 @@ export default function InsightDiff() {
     }, [])
 
     // Load a built-in sample pair into the inputs — the visitor then hits Compare.
-    const loadPreset = useCallback((preset: DiffPreset) => {
-        setBaseline(preset.baseline)
-        setChanged(preset.changed)
-        setError(null)
-    }, [])
+    // Generated fixtures resolve on the spot; the real CI pairs fetch their
+    // published logs the first time they are chosen (cached thereafter).
+    const loadPreset = useCallback(
+        async (preset: DiffPreset) => {
+            const token = ++presetRequest.current
+            setError(null)
+            setSelectedPreset(preset.id)
+            setPresetLoading(preset.id)
+            try {
+                const pair = await preset.load()
+                if (presetRequest.current !== token) return // superseded by a later click
+                setBaseline(pair.baseline)
+                setChanged(pair.changed)
+            } catch {
+                if (presetRequest.current !== token) return
+                setSelectedPreset(null)
+                setError(t.diff.error.presetFailed)
+            } finally {
+                if (presetRequest.current === token) setPresetLoading(null)
+            }
+        },
+        [t]
+    )
+
+    const selected = useMemo(
+        () => diffPresets.find((preset) => preset.id === selectedPreset) ?? null,
+        [selectedPreset]
+    )
+    const presetCopy = t.diff.presets as Record<string, PresetCopy | undefined>
 
     // Highlight = every pinned change, plus the one being hovered (preview).
     const activeSet = useMemo(() => {
@@ -388,25 +455,113 @@ export default function InsightDiff() {
                 {/* Input */}
                 {!report && (
                     <>
-                        <div className="mt-8 flex flex-wrap items-center gap-2">
+                        <div className="mt-8">
                             <span className="text-xs text-gray-500">{t.diff.loadSample}</span>
-                            {diffPresets.map((preset) => {
-                                const meta = (
-                                    t.diff.presets as Record<string, { label: string; description: string }>
-                                )[preset.id]
-                                return (
-                                    <button
-                                        key={preset.id}
-                                        type="button"
-                                        onClick={() => loadPreset(preset)}
-                                        title={meta?.description}
-                                        className="px-3 py-1.5 rounded-full border border-gray-700 text-xs text-gray-300 hover:border-brand-500/60 hover:text-brand-300 transition-colors"
-                                    >
-                                        {meta?.label ?? preset.id}
-                                    </button>
-                                )
-                            })}
+                            {/* Every preset states its provenance HERE, at the point of
+                                choosing — not in a tooltip. An unlabelled fixture beside a
+                                labelled real log would let a visitor assume both are real. */}
+                            <div className="mt-2 flex flex-wrap items-stretch gap-2">
+                                {diffPresets.map((preset) => {
+                                    const meta = presetCopy[preset.id]
+                                    const chrome = PROVENANCE[preset.provenance]
+                                    const isLoading = presetLoading === preset.id
+                                    const isSelected = selectedPreset === preset.id
+                                    const Icon = isLoading ? Loader2 : chrome.icon
+                                    return (
+                                        <button
+                                            key={preset.id}
+                                            type="button"
+                                            onClick={() => loadPreset(preset)}
+                                            disabled={presetLoading !== null}
+                                            aria-pressed={isSelected}
+                                            title={meta?.description}
+                                            className={`px-3 py-1.5 rounded-xl border text-left transition-colors disabled:opacity-50 disabled:cursor-wait ${
+                                                isSelected
+                                                    ? 'border-brand-500/60 bg-brand-500/5'
+                                                    : 'border-gray-700 hover:border-brand-500/60'
+                                            }`}
+                                        >
+                                            <span
+                                                className={`flex items-center gap-1.5 text-xs ${
+                                                    isSelected ? 'text-brand-300' : 'text-gray-300'
+                                                }`}
+                                            >
+                                                <Icon
+                                                    className={`w-3.5 h-3.5 shrink-0 ${isLoading ? 'animate-spin' : ''}`}
+                                                />
+                                                {meta?.label ?? preset.id}
+                                            </span>
+                                            <span className={`block mt-0.5 text-[10px] ${chrome.caption}`}>
+                                                {isLoading
+                                                    ? t.diff.loadingSample
+                                                    : preset.provenance === 'real-ci'
+                                                      ? t.diff.provenance.realCi
+                                                      : t.diff.provenance.generated}
+                                            </span>
+                                        </button>
+                                    )
+                                })}
+                            </div>
                         </div>
+
+                        {/* The chosen sample, in full: what it is, where it comes from,
+                            and — for a real pair — the two published figures it headlines. */}
+                        {selected && (
+                            <div className="mt-4 rounded-lg border border-gray-800 bg-gray-900/40 p-4">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span
+                                        className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
+                                            PROVENANCE[selected.provenance].chip
+                                        }`}
+                                    >
+                                        {selected.provenance === 'real-ci'
+                                            ? t.diff.provenance.realCi
+                                            : t.diff.provenance.generated}
+                                    </span>
+                                    <span className="text-sm font-semibold text-gray-100">
+                                        {presetCopy[selected.id]?.label ?? selected.id}
+                                    </span>
+                                </div>
+
+                                {selected.provenance === 'real-ci' && (
+                                    <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-3">
+                                        <div>
+                                            <p className="text-2xl font-bold text-gray-400 leading-none">
+                                                {groupThousands(selected.figures.plainTextDiffLines)}
+                                            </p>
+                                            <p className="text-[11px] text-gray-500 mt-1">
+                                                {t.diff.figures.plainDiff}
+                                            </p>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 text-gray-700 shrink-0" />
+                                        <div>
+                                            <p className="text-2xl font-bold text-brand-400 leading-none">
+                                                {groupThousands(selected.figures.significantChanges)}
+                                            </p>
+                                            <p className="text-[11px] text-gray-500 mt-1">
+                                                {t.diff.figures.sift}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* A narrative where the copy carries one; otherwise the
+                                    one-line description IS the narrative. */}
+                                {(presetCopy[selected.id]?.story ?? [presetCopy[selected.id]?.description])
+                                    .filter((paragraph): paragraph is string => Boolean(paragraph))
+                                    .map((paragraph, idx) => (
+                                        <p key={idx} className="text-sm text-gray-400 mt-3 leading-relaxed">
+                                            {paragraph}
+                                        </p>
+                                    ))}
+
+                                <p className="text-xs text-gray-600 mt-3 italic leading-relaxed">
+                                    {selected.provenance === 'real-ci'
+                                        ? t.diff.provenanceNote.realCi
+                                        : t.diff.provenanceNote.generated}
+                                </p>
+                            </div>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             {(
                                 [
@@ -416,14 +571,25 @@ export default function InsightDiff() {
                             ).map(({ id, label, value, setter }) => (
                                 <div key={id}>
                                     <div className="flex items-center justify-between mb-1">
-                                        <label className="text-sm font-medium text-gray-300">{label}</label>
+                                        <label
+                                            htmlFor={`diff-input-${id}`}
+                                            className="text-sm font-medium text-gray-300"
+                                        >
+                                            {label}
+                                        </label>
                                         <span className="text-xs text-gray-600">
                                             {countLines(value)} {t.diff.lines}
                                         </span>
                                     </div>
                                     <textarea
+                                        id={`diff-input-${id}`}
                                         value={value}
-                                        onChange={(event) => setter(event.target.value)}
+                                        onChange={(event) => {
+                                            setter(event.target.value)
+                                            // The brief below describes a specific pair; the
+                                            // moment the visitor edits, it no longer does.
+                                            setSelectedPreset(null)
+                                        }}
                                         spellCheck={false}
                                         placeholder={t.diff.placeholder}
                                         className="w-full h-64 rounded-lg border border-gray-800 bg-gray-900/60 p-3 font-mono text-xs text-gray-200 placeholder-gray-600 focus:outline-none focus:border-brand-600 resize-y"

@@ -294,6 +294,7 @@ const fr: typeof en = {
         subtitle:
             'Collez deux flux de logs (un run de référence et un run modifié). InSight ingère les deux et classe les changements structurellement significatifs — survolez ou épinglez un changement pour voir exactement les lignes qu’il touche.',
         loadSample: 'Pas de logs sous la main ? Chargez un exemple :',
+        loadingSample: 'Chargement…',
         baselineLog: 'Log de référence',
         changedLog: 'Log modifié',
         placeholder: 'collez des lignes de log…',
@@ -340,8 +341,43 @@ const fr: typeof en = {
                 'Limite gratuite quotidienne atteinte{perDay}. Réessayez demain, ou lancez-le en local avec la CLI.',
             accessDenied: 'Accès refusé.',
             failed: 'La comparaison a échoué.',
+            presetFailed: 'Cet exemple n’a pas pu être chargé. Vérifiez votre connexion et réessayez.',
+        },
+        provenance: {
+            realCi: 'Run CI réel · anonymisé',
+            generated: 'Fixture générée',
+        },
+        provenanceNote: {
+            realCi:
+                'Un run réel de l’un de nos propres dépôts. De vrais octets, dont seules les identités machine et système de fichiers ont été expurgées — rien de reconstruit, rien de regénéré. La sortie du build, elle, est celle du runner, octet pour octet.',
+            generated:
+                'Synthétisée pour isoler un seul scénario — aucun run réel derrière. Référence et modifié partagent les mêmes templates ; seuls les paramètres changent.',
+        },
+        figures: {
+            plainDiff: 'lignes signalées par un diff texte',
+            sift: 'changements signalés par Sift',
         },
         presets: {
+            'real-ci-noise': {
+                label: 'CI réelle · deux builds verts',
+                description:
+                    'Deux runs réussis du même job. Des milliers de lignes diffèrent ; presque rien ne compte.',
+                story: [
+                    'Quelqu’un a ajouté neuf tests. C’est tout le changement.',
+                    'Le runner de tests a renuméroté chaque ligne qu’il affiche — 762 tests sont devenus 771 — et le build a renuméroté chaque étape avec lui, […/700] → […/704]. Un diff texte, timestamps déjà retirés, signale 5 571 lignes modifiées. Rien n’a cassé. Rien ne va mal.',
+                    'Sift signale un seul changement, et ce n’est pas une erreur.',
+                    'C’est le chiffre sur lequel repose tout le reste de la page. N’importe quel outil sait trouver une panne dans un build en échec. La vraie question, c’est ce qu’un outil dit quand rien ne va mal — et un outil qui vous rend cinq mille lignes à lire est un outil que vous désactivez en une semaine.',
+                ],
+            },
+            'real-ci-triage': {
+                label: 'CI réelle · le build qui a cassé',
+                description:
+                    'Le même run réussi face au run en échec. La vraie cause est classée en tête.',
+                story: [
+                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 13, et classe la cause en tête : le paquet dont le build a échoué, et l’erreur qu’il a levée.',
+                    'Pas « on a trouvé le mot ERROR ». La ligne fautive était déjà dans le log — grep vous l’aurait rendue en même temps que des milliers de lignes de bruit de build qui ont bougé au même moment. Ce qu’un diff texte ne peut pas vous dire, c’est laquelle d’entre elles est celle qui compte.',
+                ],
+            },
             'hotfix': {
                 label: 'Vérif. hotfix',
                 description: 'Un run cassé vs son hotfix : les erreurs DB se sont rétablies, un nouveau timeout a régressé.',

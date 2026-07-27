@@ -1,0 +1,187 @@
+{
+  "schema": "coderoast-sift-showcase/1",
+  "license": "CC-BY-4.0",
+  "provenance": "These are real CI job logs \u2014 our own. Three runs of one C++ build job: an earlier passing run, a later passing run, and a failing run of the same job on the same project. Two transformations were applied to the raw bytes, both listed per sample in MANIFEST.json; each sample records the sha256 of the raw log and of the published one, so applying the listed transformations to the raw log yields exactly these bytes. Nothing else was touched. The build's own output \u2014 its compiler and CMake and package-manager chatter, its source file names, its test names, its timings, its errors \u2014 is the runner's verbatim bytes, down to the UTF-8 BOM and the ANSI colour escapes.",
+  "redaction": {
+    "classes": [
+      "home directory path",
+      "machine identity",
+      "runner workspace path"
+    ],
+    "note": "machine identity and filesystem identity only, applied consistently across every sample: one source token always maps to one published token, so no template diversity is invented that was not in the source",
+    "deliberately_not_redacted": "the project, package, source-file, test and commit names in these logs are the real ones. They are what makes the samples real build logs, and they are load-bearing: renaming the project token was measured to move the ranked report, so redacting it would have published a claim the real logs do not support"
+  },
+  "transformations_applied": [
+    "redact-identity",
+    "remove-demonstrated-tool"
+  ],
+  "honesty_gate": "Redacting identity could silently change the result: alter a template and the ranked report changes with it. So the build runs Sift twice \u2014 once on the logs before identity redaction, once on the published logs \u2014 and refuses to publish unless both reports carry the same claim. The same change counts and the same run verdicts. The same ranking curve, position by position, so nothing crosses a rank boundary unseen. The same findings, with the same evidence and the same line references. Template hashes that correspond one-to-one, so the redaction can neither merge two line shapes nor split one. All of it at two significance floors, including floor 0 \u2014 every change the engine detected, not only the significant ones. One tolerance, declared rather than hidden: some findings surface because a BOUNDED reservoir of high-salience lines happened to retain that line, and the reservoir keys on line content \u2014 so redacting the runner path, which is not optional, can swap which of several equally-ranked lines it kept. Those findings must still match on shape, severity, score and step; only which line was sampled is free, and the count is published per pair under `pairs[].declared.honesty_gate`. Here it is 0 for the noise-floor pair and 1 for the regression pair. This is not a formality: it rejected the first redaction map this showcase was built with, which would have published a report the real logs do not support.",
+  "samples": [
+    {
+      "file": "logs/logcraft__ci-build__green-a.log",
+      "role": "an earlier passing run of the job",
+      "run_conclusion": "success",
+      "lines_published": 3609,
+      "sha256_published": "f32705481d330a82275bd66500ea516616613b80e47ad51004181930c697d66b",
+      "source_lines_raw": 3669,
+      "source_sha256_raw": "eb42d213b615019200064c8e739c0aee29a0014f2b1cc17e50db625de153e1ec",
+      "transformations": [
+        {
+          "kind": "remove-demonstrated-tool",
+          "why": "our CI runs Sift on itself; a showcase must not diff a log that already contains Sift's report",
+          "step_region_lines": [
+            3566,
+            3620
+          ],
+          "step_region_line_count": 55,
+          "scattered_lines": [
+            24,
+            36,
+            37,
+            38,
+            39
+          ],
+          "lines_removed": 60
+        },
+        {
+          "kind": "redact-identity",
+          "why": "machine identity and filesystem layout mapped onto the standard hosted-runner shape; the same input token always becomes the same output token, in every sample",
+          "substitutions": 574,
+          "lines_added_or_removed": 0
+        }
+      ]
+    },
+    {
+      "file": "logs/logcraft__ci-build__green-b.log",
+      "role": "a later passing run of the same job",
+      "run_conclusion": "success",
+      "lines_published": 3724,
+      "sha256_published": "c0a7a4cbda1cb0fd600e12a4dd55477f26c84ab848c4275cd4445a1b2c5cfbea",
+      "source_lines_raw": 3784,
+      "source_sha256_raw": "b7ed706a8740b59e058363aa9d83c308c48d89e3971ea5b8a5173beb00602bd4",
+      "transformations": [
+        {
+          "kind": "remove-demonstrated-tool",
+          "why": "our CI runs Sift on itself; a showcase must not diff a log that already contains Sift's report",
+          "step_region_lines": [
+            3653,
+            3707
+          ],
+          "step_region_line_count": 55,
+          "scattered_lines": [
+            24,
+            36,
+            37,
+            38,
+            39
+          ],
+          "lines_removed": 60
+        },
+        {
+          "kind": "redact-identity",
+          "why": "machine identity and filesystem layout mapped onto the standard hosted-runner shape; the same input token always becomes the same output token, in every sample",
+          "substitutions": 578,
+          "lines_added_or_removed": 0
+        }
+      ]
+    },
+    {
+      "file": "logs/logcraft__ci-build__red.log",
+      "role": "a failing run of the same job",
+      "run_conclusion": "failure",
+      "lines_published": 2964,
+      "sha256_published": "7c12fbfaf1aa72307779cc2ec3836ccb7c0939bc3debdebbb82b66402f3b5de4",
+      "source_lines_raw": 3044,
+      "source_sha256_raw": "83c42fd8cdd62e1397b8bb0c0f1e96a1b7127bde32bd314418064d1f0261566e",
+      "transformations": [
+        {
+          "kind": "remove-demonstrated-tool",
+          "why": "our CI runs Sift on itself; a showcase must not diff a log that already contains Sift's report",
+          "step_region_lines": [
+            2951,
+            3025
+          ],
+          "step_region_line_count": 75,
+          "scattered_lines": [
+            24,
+            36,
+            37,
+            38,
+            39
+          ],
+          "lines_removed": 80
+        },
+        {
+          "kind": "redact-identity",
+          "why": "machine identity and filesystem layout mapped onto the standard hosted-runner shape; the same input token always becomes the same output token, in every sample",
+          "substitutions": 409,
+          "lines_added_or_removed": 0
+        }
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "name": "noise-floor",
+      "headline": "Two passing runs of the same job. Thousands of lines differ; almost nothing matters.",
+      "baseline": "logs/logcraft__ci-build__green-a.log",
+      "changed": "logs/logcraft__ci-build__green-b.log",
+      "report_md": "reports/noise-floor.report.md",
+      "report_json": "reports/noise-floor.report.json",
+      "significance_floor": 0.05,
+      "significant_changes": 1,
+      "plain_text_diff_lines": 5571,
+      "declared": {
+        "significant_changes_on_the_raw_pair": 1,
+        "note": "the raw pair's count includes changes that are only our own CI's Sift step reporting on itself; removing that step is the 'remove-demonstrated-tool' transformation above, and this is the count it removed",
+        "honesty_gate": {
+          "0.0": {
+            "significance_floor": 0.0,
+            "templates_pinned_one_to_one": 50,
+            "total_changes": 50,
+            "significant_changes": 50,
+            "reservoir_sampled_changes_not_pinned_to_a_line": 0
+          },
+          "0.05": {
+            "significance_floor": 0.05,
+            "templates_pinned_one_to_one": 1,
+            "total_changes": 1,
+            "significant_changes": 1,
+            "reservoir_sampled_changes_not_pinned_to_a_line": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "regression",
+      "headline": "The same passing run against the failing one. The true cause is ranked at the top.",
+      "baseline": "logs/logcraft__ci-build__green-a.log",
+      "changed": "logs/logcraft__ci-build__red.log",
+      "report_md": "reports/regression.report.md",
+      "report_json": "reports/regression.report.json",
+      "significance_floor": 0.05,
+      "significant_changes": 13,
+      "plain_text_diff_lines": 4889,
+      "declared": {
+        "significant_changes_on_the_raw_pair": 27,
+        "note": "the raw pair's count includes changes that are only our own CI's Sift step reporting on itself; removing that step is the 'remove-demonstrated-tool' transformation above, and this is the count it removed",
+        "honesty_gate": {
+          "0.0": {
+            "significance_floor": 0.0,
+            "templates_pinned_one_to_one": 44,
+            "total_changes": 50,
+            "significant_changes": 50,
+            "reservoir_sampled_changes_not_pinned_to_a_line": 1
+          },
+          "0.05": {
+            "significance_floor": 0.05,
+            "templates_pinned_one_to_one": 7,
+            "total_changes": 13,
+            "significant_changes": 13,
+            "reservoir_sampled_changes_not_pinned_to_a_line": 1
+          }
+        }
+      }
+    }
+  ]
+}

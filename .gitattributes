@@ -13,6 +13,12 @@
 *.yml text eol=lf
 *.sh text eol=lf
 
+# Vendored Sift showcase artifacts — published logs plus the MANIFEST.json that
+# digests them. Their sha256 is what makes drift detectable, and
+# src/test/diffPresets.test.ts recomputes it, so git must not normalise a byte:
+# no eol rewriting, no BOM handling, no text detection at all.
+src/assets/sift-showcase/** -text
+
 # Explicitly binary files
 *.o binary
 *.a binary

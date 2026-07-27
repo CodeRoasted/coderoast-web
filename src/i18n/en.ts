@@ -304,6 +304,7 @@ const en = {
         subtitle:
             'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched.',
         loadSample: 'No logs handy? Load a sample:',
+        loadingSample: 'Loading…', // the real pairs are fetched on demand
         baselineLog: 'Baseline log',
         changedLog: 'Changed log',
         placeholder: 'paste log lines…',
@@ -353,10 +354,53 @@ const en = {
                 'Daily free limit reached{perDay}. Try again tomorrow, or run it locally with the CLI.',
             accessDenied: 'Access denied.',
             failed: 'Comparison failed.',
+            presetFailed: 'That sample could not be loaded. Check your connection and try again.',
         },
-        // Preset-picker labels + tooltips, keyed by diffPresets.ts id (the fixtures
-        // themselves stay in diffPresets.ts, English by design).
+        // Provenance — BINDING, and shown on EVERY preset in the picker, not only
+        // the real ones: an unlabelled fixture sitting beside a labelled real log
+        // invites the visitor to assume the fixture is real too. Two values, no third.
+        provenance: {
+            realCi: 'Real CI run · anonymized',
+            generated: 'Generated fixture',
+        },
+        // The one-line expansion of each provenance value, shown with the selected
+        // preset. States what "anonymized" means precisely enough for a skeptic:
+        // it is a redaction guarantee over real bytes, not a by-construction one.
+        provenanceNote: {
+            realCi:
+                'A real run of one of our own repositories. Real bytes, with machine and filesystem identity redacted — nothing reconstructed, nothing regenerated. The build\'s own output is the runner\'s verbatim bytes.',
+            generated:
+                'Synthesised to isolate one narrative — no real run behind it. Baseline and changed share the same templates; only the parameters differ.',
+        },
+        // Captions for a real pair's two published figures (MANIFEST.json's own).
+        figures: {
+            plainDiff: 'lines a plain text diff reports',
+            sift: 'changes Sift reports',
+        },
+        // Preset-picker labels + tooltips + the narrative shown once a preset is
+        // selected, keyed by diffPresets.ts id (the log text itself stays in
+        // src/assets/ and diffPresets.ts, English by design).
         presets: {
+            'real-ci-noise': {
+                label: 'Real CI · two green builds',
+                description:
+                    'Two passing runs of the same job. Thousands of lines differ; almost nothing matters.',
+                story: [
+                    'Somebody added nine tests. That is the whole change.',
+                    'The test runner renumbered every line it prints — 762 tests became 771 — and the build renumbered every step with it, […/700] → […/704]. A plain text diff, with timestamps already stripped, reports 5 571 changed lines. Nothing broke. Nothing is wrong.',
+                    'Sift reports one change, and it is not an error.',
+                    'This is the number the rest of the page rests on. Every tool can find a failure in a failing build. The question is what a tool says when nothing is wrong — and a tool that hands you five thousand lines to read is one you turn off inside a week.',
+                ],
+            },
+            'real-ci-triage': {
+                label: 'Real CI · the build that broke',
+                description:
+                    'The same passing run against the failing one. The true cause is ranked at the top.',
+                story: [
+                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 13, and ranks the cause at the top: the package that failed to build, and the error it raised.',
+                    'Not “we found the word ERROR.” The failing line was already in the log — grep would have handed it to you along with thousands of lines of build chatter that moved at the same time. What a plain diff cannot tell you is which of them is the one that mattered.',
+                ],
+            },
             'hotfix': {
                 label: 'Hotfix verify',
                 description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
