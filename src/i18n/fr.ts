@@ -316,7 +316,8 @@ const fr: typeof en = {
         hint: 'survolez pour prévisualiser · cliquez pour épingler (cumulables) · couleur = sévérité, pas ajout/suppression',
         emptyResult:
             'Aucun changement structurellement significatif — les {count} changements observés sont dans le bruit.',
-        suppressed: '{count} changements masqués comme bruit (proportionnels / basse fréquence).',
+        suppressed:
+            '{count} des {total} changements observés par Sift ont été masqués comme bruit (proportionnels / basse fréquence). Le nombre de lignes du diff texte ci-dessus compte des lignes, pas des changements.',
         ciCallout: 'Vous le voulez en CI ? Le même moteur tourne en CLI locale et en GitHub Action.',
         severity: {
             critical: 'CRITIQUE',

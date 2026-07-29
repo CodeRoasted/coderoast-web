@@ -326,7 +326,14 @@ const en = {
         hint: 'hover to preview · click to pin (stack multiple) · color = severity, not add/remove',
         emptyResult:
             'No structurally significant changes — all {count} observed changes are within noise.',
-        suppressed: '{count} changes suppressed as noise (proportional / low-frequency).',
+        // Names its own denominator. The frame above this footer counts LINES
+        // ("lines a plain text diff reports"); this counts CHANGES at template
+        // grain. Both were true and neither said which, so 1 + 743 read as an
+        // instrument that cannot add up — the one impression the honest-instrument
+        // position cannot survive. Do not drop {total}: it is the bridging
+        // quantity, and without it the arithmetic is unclosable on screen.
+        suppressed:
+            '{count} of the {total} changes Sift observed were suppressed as noise (proportional / low-frequency). The plain-diff line count above counts lines, not changes.',
         ciCallout: 'Want this in CI? The same engine runs as a local CLI and a GitHub Action.',
         // UI display labels for the engine's severity enum (+ recovery polarity).
         severity: {

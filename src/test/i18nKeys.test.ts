@@ -97,6 +97,44 @@ describe('i18n keys', () => {
             orphans.map((key) => `  - ${key}`).join('\n')).toEqual([])
     })
 
+    // Placeholders are interpolated by hand at the render site — `t.diff.suppressed
+    // .replace('{count}', …).replace('{total}', …)` — so a `{name}` present in one
+    // language and not the other does NOT fail: the render site's .replace() simply
+    // matches nothing, and the reader of the OTHER language gets the literal text
+    // `{total}` on screen where a number belongs. tsc cannot see it (both leaves are
+    // strings), the orphan scan cannot see it (the key is referenced), and the empty
+    // scan cannot see it (the value has text). It is a silent wrong answer on a
+    // published number, which is why it needs its own gate rather than review.
+    it('has the same placeholders in every language — an unmatched {name} renders raw', () => {
+        const placeholders = (value: string) =>
+            [...value.matchAll(/\{[A-Za-z_][\w]*\}/g)].map((match) => match[0]).sort()
+
+        const mismatched: string[] = []
+        for (const path of leafPaths(en)) {
+            const read = (tree: unknown) =>
+                path.split('.').reduce<unknown>(
+                    (node, key) => (node as Record<string, unknown>)[key], tree)
+            const enValue = read(en)
+            const frValue = read(fr)
+            if (typeof enValue !== 'string' || typeof frValue !== 'string') continue
+
+            const enPlaceholders = placeholders(enValue)
+            const frPlaceholders = placeholders(frValue)
+            if (enPlaceholders.join('|') !== frPlaceholders.join('|')) {
+                mismatched.push(
+                    `  - ${path}\n` +
+                        `      en: [${enPlaceholders.join(', ')}]  ${JSON.stringify(enValue)}\n` +
+                        `      fr: [${frPlaceholders.join(', ')}]  ${JSON.stringify(frValue)}`
+                )
+            }
+        }
+
+        expect(mismatched,
+            `${mismatched.length} key(s) whose placeholders differ between en and fr.\n` +
+            `The language missing one will print the literal {name} to its reader.\n` +
+            mismatched.join('\n')).toEqual([])
+    })
+
     // A leaf may be empty ON PURPOSE only if it is declared here, with the reason.
     // The render site must guard on truthiness for the empty to be sound.
     const DELIBERATELY_EMPTY = new Set([

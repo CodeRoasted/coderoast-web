@@ -272,9 +272,14 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 /**
- * Log in as the given user id. Pass `null` (or omit the argument) to obtain
- * an explicit anonymous session — the backend will mint a token mapped to
- * the "anonymous" principal (tier 0).
+ * Log in as the given user id — a passwordless visitor login for the built-in
+ * demo accounts.
+ *
+ * Omitting the id does NOT mint an anonymous session: the backend resolves the
+ * empty id against the credential store, finds nothing, and answers 401. Being
+ * anonymous is the absence of a session, not a session you can ask for — a cold
+ * request with no bearer token resolves to the `anonymous` role on its own, and
+ * the endpoints in the `public.*` family serve it.
  */
 export async function login(userId: string | null = null): Promise<LoginResponse> {
     const body = userId ? JSON.stringify({ user_id: userId }) : undefined
@@ -331,8 +336,11 @@ export async function getInsightReports(engineId: string): Promise<InsightReport
 
 /**
  * insight_diff hosted demo: compare two log blobs into a ranked, noise-suppressed
- * change report. Visitor-accessible + daily-quota'd by IP (a 403 PolicyDenialError
- * with quotaKey `insight.diff.compare.daily` means the daily allowance is spent).
+ * change report. Session-less by design — a shared /diff link must work for a
+ * reader who never bootstrapped, so this call must not be gated on auth state.
+ * Bounded per client IP instead: a 403 PolicyDenialError carrying quotaKey
+ * `insight.diff.compare.daily` means that IP's daily allowance is spent, which is
+ * a different message from a 403 carrying requiredEntitlement.
  */
 export async function runInsightDiff(payload: DiffRequest): Promise<ChangeReportResponse> {
     return request('/insight/diff', {

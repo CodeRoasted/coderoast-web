@@ -742,10 +742,15 @@ export default function InsightDiff() {
                                     </ul>
                                     {suppressed > 0 && (
                                         <p className="text-gray-600 text-xs mt-3 italic">
-                                            {t.diff.suppressed.replace(
-                                                '{count}',
-                                                suppressed.toLocaleString()
-                                            )}
+                                            {t.diff.suppressed
+                                                .replace(
+                                                    '{count}',
+                                                    suppressed.toLocaleString()
+                                                )
+                                                .replace(
+                                                    '{total}',
+                                                    report.summary.total_changes.toLocaleString()
+                                                )}
                                         </p>
                                     )}
                                 </div>
