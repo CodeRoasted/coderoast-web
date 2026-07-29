@@ -339,7 +339,7 @@ const fr: typeof en = {
         },
         error: {
             quotaReached:
-                'Limite gratuite quotidienne atteinte{perDay}. Réessayez demain, ou lancez-le en local avec la CLI.',
+                'Limite gratuite quotidienne atteinte{perDay}. Le plafond est compté par adresse réseau : une adresse partagée ou d’opérateur mobile peut être épuisée par les comparaisons d’autres personnes. Il est réinitialisé demain — ou lancez le même moteur en local avec la CLI, qui n’a aucun plafond.',
             accessDenied: 'Accès refusé.',
             failed: 'La comparaison a échoué.',
             presetFailed: 'Cet exemple n’a pas pu être chargé. Vérifiez votre connexion et réessayez.',

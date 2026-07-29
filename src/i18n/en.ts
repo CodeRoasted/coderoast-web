@@ -357,8 +357,17 @@ const en = {
         },
         error: {
             // {perDay} is replaced with " (N/day)" or "" by the component.
+            //
+            // Names the METER'S AXIS, because /diff is where the provenance claim
+            // stops being an assertion and becomes checkable — and a refusal that
+            // reads as "you are cut off" retracts that claim as effectively as the
+            // 403 did. The cap is per network address, and carriers put thousands
+            // of subscribers behind one IPv4, so a reader can be denied entirely by
+            // other people's runs. Saying so is what lets them tell "I am collateral"
+            // from "I am rate-limited", and the CLI line is the way out that
+            // actually exists.
             quotaReached:
-                'Daily free limit reached{perDay}. Try again tomorrow, or run it locally with the CLI.',
+                'Daily free limit reached{perDay}. The cap counts per network address, so a shared or mobile-carrier address can be used up by other people’s comparisons. It resets tomorrow — or run the same engine locally with the CLI, which has no cap.',
             accessDenied: 'Access denied.',
             failed: 'Comparison failed.',
             presetFailed: 'That sample could not be loaded. Check your connection and try again.',
