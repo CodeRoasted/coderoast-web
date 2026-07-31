@@ -1,5 +1,5 @@
 // commandVocabulary.test.ts — W4/D4: the web client's command tokens are checked against
-// the server's catalog. Design: technical_docs/architecture/server_command_vocabulary.md.
+// the server's catalog. Design record: technical_docs/history/architecture-v1/server_command_vocabulary.md.
 //
 // WHY A TEST AND NOT AN IMPORT (D4). The catalog is C++ in coderoast-server; there is no way
 // for this client to bind to it at compile time, and D2 rejected minting a shared cross-repo
