@@ -1,20 +1,33 @@
-# coderoast-web — CLAUDE.md
+# coderoast-web — website + browser Lab (TypeScript)
 
-> The global C++ / concurrency / determinism rules in the root CLAUDE.md do NOT
-> apply here — this module is TypeScript. Only repo-wide conventions carry over.
+> The root C++ / concurrency / determinism doctrine does NOT apply here — this
+> repo is a React + TypeScript SPA. The repo-wide conventions (docs, git,
+> planning) still do.
 
-## Module: Web Frontend — Control/UI Plane
-Vite + React/Vue + TypeScript. Consumes REST API from coderoast-server.
+The public site and browser Lab: marketing/product pages plus the LogCraft and
+InSight playground UIs, talking REST + WebSocket to `coderoast-server`.
 
-## Constraints
-- No business logic in frontend; only fetch and render
-- Auth: JWT from server; refresh on 401
-- State: React/Vue state only; no persistence without explicit API call
-- UI must reflect server state; no local divergence
+## Arrival
 
-## Build & Run
-```
-npm install && npm run dev
-npm run build && npm run preview
-npm test && npm run lint
-```
+- `npm run dev` (Vite, port 5173; proxies `/api/v1/*` and `/api/v1/ws/*` to a
+  local server on 8080) · `npm test` (Vitest) · `npm run lint` ·
+  `npm run build`.
+- Layout: `src/pages/`, `src/components/`, `src/hooks/`, `src/services/`
+  (REST + WebSocket clients), `src/store/` (Zustand), `src/i18n/` (typed EN/FR
+  bundles), `src/types/` (DTOs).
+- Docs: `technical_docs/README.md` — architecture, deployment (Netlify,
+  `VITE_API_BASE`), i18n, theming.
+
+## Constraints & traps
+
+- The API contract is owned by
+  `../coderoast-server/technical_docs/api/server_api_contract.md` —
+  `src/types/` mirrors it; never invent or fork DTO shapes here.
+- Auth is a bearer token resolved to a server-side session
+  (`src/services/api.ts`) — there is no JWT and no client-side refresh dance.
+  The UI reflects server state; no business logic or local divergence in the
+  frontend.
+- Every user-facing string lands in BOTH typed translation bundles
+  (`src/i18n/`) — the workflow is `technical_docs/i18n.md`.
+- Dark-first Tailwind theming — follow `technical_docs/theming.md`, not ad-hoc
+  colors.

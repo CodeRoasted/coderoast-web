@@ -29,6 +29,9 @@ For the Lab, also run CodeRoastServer on `localhost:8080`; Vite proxies `/api/v1
 | `npm run dev` | Start Vite dev server. |
 | `npm run build` | Type-check and build production assets into `dist/`. |
 | `npm run preview` | Serve the production build locally. |
+| `npm run dev:phone` | Dev server opening the phone test page (`/phone.html`). |
+| `npm run dev:vps` | Dev server proxied to the VPS API (`scripts/dev-vps.sh`). |
+| `npm run preview:vps` | Preview the production build against the production API. |
 | `npm run lint` | Run ESLint. |
 | `npm test` | Run Vitest once. |
 | `npm run test:watch` | Run Vitest in watch mode. |
