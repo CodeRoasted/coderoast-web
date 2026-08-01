@@ -75,7 +75,6 @@ CodeRoastWeb/
 
 | Document | Contents |
 |---|---|
-| [../technical_docs/README.md](../technical_docs/README.md) | Cross-repo status, compatibility, and roadmap entry point. |
 | [technical_docs/README.md](technical_docs/README.md) | Read order and cross-project links. |
 | [technical_docs/architecture.md](technical_docs/architecture.md) | Routes, state, REST/WebSocket flow, Lab lifecycle. |
 | [technical_docs/deployment.md](technical_docs/deployment.md) | Local dev, build, Netlify, `VITE_API_BASE`. |
@@ -84,10 +83,10 @@ CodeRoastWeb/
 
 ## Cross-Project Links
 
-- Parent roadmap: [../technical_docs/ROADMAP.md](../technical_docs/ROADMAP.md)
-- LogCraft docs: [../logcraft/technical_docs/README.md](../logcraft/technical_docs/README.md)
-- CodeRoastServer API contract: [../coderoast-server/technical_docs/api/server_api_contract.md](../coderoast-server/technical_docs/api/server_api_contract.md)
-- InSight docs: [../insight-eidos/technical_docs/README.md](../insight-eidos/technical_docs/README.md)
+The cross-repo product roadmap, the CodeRoastServer API contract, the LogCraft
+engine docs and the InSight docs live in CodeRoast repositories that are not
+published. They are reachable only from a full internal workspace checkout, so
+they are named here rather than linked.
 - LogCraft Playground: [../coderoast-hub/logcraft-playground/README.md](../coderoast-hub/logcraft-playground/README.md)
 
 ## Deployment

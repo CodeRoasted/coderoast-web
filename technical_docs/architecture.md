@@ -154,7 +154,7 @@ In LogCraft Playground mode, InSight polling is disabled and the observation col
 - `PolicyDenialError` for HTTP 403 payloads;
 - typed response helpers for scenarios, engines, auth, capability profiles, drain snapshots, and InSight status/reports.
 
-The authoritative endpoint contract lives in CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md).
+The authoritative endpoint contract lives in CodeRoastServer's `technical_docs/api/server_api_contract.md`; that repository is not published.
 
 ## WebSocket Client
 

@@ -1,6 +1,6 @@
 # CodeRoastWeb Deployment
 
-Cross-product deployment topology and release order live in the parent [deployment_strategy.md](../../technical_docs/operations/deployment_strategy.md). This file is the CodeRoastWeb-specific runbook for local development, Vite/Netlify, API base configuration, and browser deployment checks.
+Cross-product deployment topology and release order live in the internal workspace's `technical_docs/operations/deployment_strategy.md`, which is not published. This file is the CodeRoastWeb-specific runbook for local development, Vite/Netlify, API base configuration, and browser deployment checks.
 
 ## Local Development
 
@@ -114,7 +114,7 @@ The hosted Lab needs a reachable CodeRoastServer instance with:
 - CORS allowing the deployed web origin;
 - scenario roots configured through CodeRoastServer's `CODEROAST_LOGCRAFT_SCENARIO_PATH` and `CODEROAST_INSIGHT_SCENARIO_PATH`.
 
-See CodeRoastServer's [server_api_contract.md](../../coderoast-server/technical_docs/api/server_api_contract.md) and [README.md](../../coderoast-server/README.md#running-the-server).
+See CodeRoastServer's `technical_docs/api/server_api_contract.md` and its README — CodeRoastServer is not a published repository.
 
 ## Deployment Checklist
 

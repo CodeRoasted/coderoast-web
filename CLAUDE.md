@@ -21,7 +21,7 @@ InSight playground UIs, talking REST + WebSocket to `coderoast-server`.
 ## Constraints & traps
 
 - The API contract is owned by
-  `../coderoast-server/technical_docs/api/server_api_contract.md` —
+  the superproject checkout's `coderoast-server/technical_docs/api/server_api_contract.md` —
   `src/types/` mirrors it; never invent or fork DTO shapes here.
 - Auth is a bearer token resolved to a server-side session
   (`src/services/api.ts`) — there is no JWT and no client-side refresh dance.
