@@ -1,6 +1,6 @@
 # CodeRoastWeb Deployment
 
-Cross-product deployment topology and release order live in the internal workspace's `technical_docs/operations/deployment_strategy.md`, which is not published. This file is the CodeRoastWeb-specific runbook for local development, Vite/Netlify, API base configuration, and browser deployment checks.
+Cross-product deployment topology and release order live in the internal workspace's `OPS-3`, which is not published. This file is the CodeRoastWeb-specific runbook for local development, Vite/Netlify, API base configuration, and browser deployment checks.
 
 ## Local Development
 

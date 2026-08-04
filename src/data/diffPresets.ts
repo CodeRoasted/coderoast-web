@@ -17,8 +17,8 @@
 //                 lines while Sift suppresses them all and surfaces only the
 //                 injected STRUCTURAL change.
 //
-// Labelling both kinds is BINDING (technical_docs/product/web_copy.md, § "/diff
-// demo presets — the provenance rule"): an unlabelled fixture sitting beside a
+// Labelling both kinds is BINDING (PRD-6 § "/diff demo presets — the
+// provenance rule"): an unlabelled fixture sitting beside a
 // labelled real log invites the visitor to assume the fixture is real too.
 //
 // BYTE TRACEABILITY. Each real sample pins the sha256 MANIFEST.json publishes for

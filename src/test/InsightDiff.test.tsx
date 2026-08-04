@@ -3,7 +3,7 @@
 //
 // diffPresets.test.ts proves the DATA is labelled and that the vendored bytes are
 // the published ones. This file proves the visitor SEES the label at the point of
-// choosing (web_copy.md makes that binding: not a tooltip, not a footnote), and
+// choosing (PRD-6 makes that binding: not a tooltip, not a footnote), and
 // that the asynchronous load the real pairs now require behaves — spinner while
 // fetching, text in the inputs when it lands, a stated error when it does not.
 //

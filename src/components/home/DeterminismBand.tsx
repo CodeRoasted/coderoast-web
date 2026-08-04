@@ -3,8 +3,8 @@ import { ArrowRight, Fingerprint } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from '@/hooks/useTranslation'
 
-// Funnel-top determinism one-liner (the "tightest" variant from product/web_copy.md
-// § "Snippet: the determinism one-liner"). Reinforces the locked hero tagline; it does
+// Funnel-top determinism one-liner (the "tightest" variant from
+// PRD-6 § "Snippet: the determinism one-liner"). Reinforces the locked hero tagline; it does
 // not replace it. Depth lives on /how-we-build, linked here.
 export default function DeterminismBand() {
     const t = useTranslation()

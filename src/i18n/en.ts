@@ -196,7 +196,7 @@ const en = {
         },
     },
     // Sift product front door (/sift). Copy governed by
-    // technical_docs/product/web_copy.md § "Page: Sift" — final, not paraphrased.
+    // PRD-6 § "Page: Sift" — final, not paraphrased.
     // Engine-output mocks (the sample report rows, PR comment, install blocks)
     // are language-neutral CLI/comment output and live in the page component, not
     // here — only translatable prose is keyed.

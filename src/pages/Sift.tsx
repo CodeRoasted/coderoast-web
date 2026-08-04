@@ -17,7 +17,7 @@ import { siftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 
 // Sift product front door (/sift). Six-section page; copy is governed by
-// technical_docs/product/web_copy.md § "Page: Sift" and surfaced via t.sift.
+// PRD-6 § "Page: Sift" and surfaced via t.sift.
 // The mocks below (hero sample report, PR comment, install blocks) reproduce
 // real engine / CLI / Action output verbatim — language-neutral, so they live
 // here as constants rather than in i18n (the engine emits English regardless of
@@ -30,7 +30,7 @@ const fadeUp = {
     transition: { duration: 0.6 },
 }
 
-// Hero sample — the locked silent-regression-on-green mock (web_copy § 1). Rows
+// Hero sample — the locked silent-regression-on-green mock (PRD-6 § 1). Rows
 // mirror the engine's real `summary` strings (cache-died scenario).
 const HERO = {
     command: 'sift  green-base.log  green-pr.log',
@@ -55,7 +55,7 @@ const HERO = {
     suppressed: '848 changes suppressed as noise (proportional / low-frequency).',
 } as const
 
-// PR comment showcase (web_copy § 2). Frame + the one engine-rendered row.
+// PR comment showcase (PRD-6 § 2). Frame + the one engine-rendered row.
 const COMMENT = {
     header: '🔬 Sift — structural diff of your CI logs',
     verdict: '🚨 Green tests. Real regression. It slipped through:',
@@ -63,7 +63,7 @@ const COMMENT = {
     footer: 'Deterministic — same inputs, same comment. Runs in your CI; your logs never leave it.',
 } as const
 
-// Install blocks (web_copy § 6). Both reproduce the sift-action README verbatim:
+// Install blocks (PRD-6 § 6). Both reproduce the sift-action README verbatim:
 // the four-line Action (turnkey `target-job` — Sift pulls the finished job's log
 // off the API) and the live `install.sh` CLI one-liner (shipped; the earlier
 // "open installer decision" is resolved).

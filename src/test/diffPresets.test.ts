@@ -1,8 +1,8 @@
 // diffPresets.test.ts — the /diff demo presets, and the two things about them
 // that are not allowed to drift silently.
 //
-// 1. PROVENANCE IS BINDING (technical_docs/product/web_copy.md, § "/diff demo
-//    presets — the provenance rule"). Every preset declares whether it is a real
+// 1. PROVENANCE IS BINDING (PRD-6 § "/diff demo presets — the provenance
+//    rule"). Every preset declares whether it is a real
 //    CI run or a generated fixture, and both labels exist in both languages. An
 //    unlabelled fixture beside a labelled real log lets a visitor assume the
 //    fixture is real too, which would mean the generated ones borrowing the real
@@ -115,7 +115,7 @@ describe('diff presets — provenance', () => {
             expect(tree.diff.provenanceNote.realCi.trim(), `${lang}.diff.provenanceNote.realCi`).not.toBe('')
             expect(tree.diff.provenanceNote.generated.trim(), `${lang}.diff.provenanceNote.generated`).not.toBe('')
         }
-        // The EN wording is the one web_copy.md fixes verbatim.
+        // The EN wording is the one PRD-6 fixes verbatim.
         expect(en.diff.provenance.realCi).toBe('Real CI run · anonymized')
         expect(en.diff.provenance.generated).toBe('Generated fixture')
     })
