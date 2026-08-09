@@ -33,7 +33,7 @@ import { join, resolve } from 'node:path'
 // conformance test that silently skips is the vacuous gate this one exists to avoid.
 const CATALOG_PATH =
     process.env.CODEROAST_COMMAND_CATALOG ??
-    resolve(__dirname, '../../../coderoast-server/server/src/core/command_catalog.hpp')
+    resolve(__dirname, '../../../coderoast-server/server-catalogs/include/core/command_catalog.hpp')
 
 /** Every `token` field declared by a catalog row. */
 function catalogTokens(): string[] {
