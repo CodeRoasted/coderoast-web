@@ -335,6 +335,7 @@ const fr: typeof en = {
             frequency_shift: 'décalage',
             entropy_shift: 'ramification',
             emerging_tail: 'émergent en queue',
+            unit_outcome_changed: 'verdict changé',
             fallback: 'modifié',
         },
         error: {

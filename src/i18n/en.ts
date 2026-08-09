@@ -353,6 +353,7 @@ const en = {
             frequency_shift: 'shifted',
             entropy_shift: 'branching',
             emerging_tail: 'emerging in tail',
+            unit_outcome_changed: 'outcome changed',
             fallback: 'changed',
         },
         error: {
