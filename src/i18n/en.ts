@@ -698,7 +698,7 @@ const en = {
                 {
                     title: 'Determinism is a gate, not a claim.',
                     description:
-                        'Every release re-proves that the same logs produce the same fingerprint byte for byte — built three ways: gcc and clang on Linux, MSVC on Windows (three compilers, two operating systems, three C++ standard libraries). One identical result, or the release doesn’t ship. Most “reproducible” tools mean on the same machine; we mean across whatever toolchain you happen to have.',
+                        'Every release re-proves that the same logs produce the same fingerprint byte for byte — built three ways: gcc and clang on Linux, MSVC on Windows (three compilers, two operating systems, three C++ standard libraries — and on both x86-64 and arm64). One identical result, or the release doesn’t ship. Most “reproducible” tools mean on the same machine; we mean across whatever toolchain you happen to have.',
                 },
                 {
                     title: 'Don’t trust us — reproduce us.',

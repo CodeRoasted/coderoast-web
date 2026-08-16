@@ -660,7 +660,7 @@ const fr: typeof en = {
                 {
                     title: 'Le déterminisme, on le teste — on ne se contente pas de le promettre.',
                     description:
-                        'Chaque release re-prouve que les mêmes logs produisent la même empreinte, bit-identique, compilée de trois manières : gcc et clang sous Linux, MSVC sous Windows — trois compilateurs, deux systèmes d’exploitation, trois bibliothèques standard C++. Résultat identique, sinon la release ne part pas. La plupart des outils « reproductibles » sous-entendent sur la même machine ; nous, c’est quelle que soit votre chaîne de compilation.',
+                        'Chaque release re-prouve que les mêmes logs produisent la même empreinte, bit-identique, compilée de trois manières : gcc et clang sous Linux, MSVC sous Windows — trois compilateurs, deux systèmes d’exploitation, trois bibliothèques standard C++, sur x86-64 comme sur arm64. Résultat identique, sinon la release ne part pas. La plupart des outils « reproductibles » sous-entendent sur la même machine ; nous, c’est quelle que soit votre chaîne de compilation.',
                 },
                 {
                     title: 'Ne nous croyez pas sur parole — reproduisez-nous.',
