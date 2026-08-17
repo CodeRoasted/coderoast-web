@@ -19,6 +19,7 @@ import { join } from 'node:path'
 import InsightDiff from '@/pages/InsightDiff'
 import { diffPresets, type RealCiPreset } from '@/data/diffPresets'
 import en from '@/i18n/en'
+import * as api from '@/services/api'
 
 vi.mock('@/services/api', () => ({
     runInsightDiff: vi.fn(),
@@ -212,5 +213,96 @@ describe('/diff preset picker — loading a pair', () => {
 
         await user.type(screen.getByLabelText(en.diff.baselineLog), 'x')
         expect(screen.queryByText(en.diff.provenanceNote.generated)).toBeNull()
+    })
+})
+
+// ── The suppression footer, at the numbers a real report now carries ─────────
+//
+// The footer subtracts `significant_changes` from `total_changes` (InsightDiff.tsx),
+// and until DN-37.D31 that subtraction was widely believed to be a structural zero.
+// It was not, on THIS surface: /diff posts to the server's hosted demo, which runs
+// the COLD spine (`insight::sift::diff_logs`), where `total_changes` has always been
+// the pre-cut census — the restore landed on the ALIGNED spine, which this page never
+// touches. So the branch was live all along, and the live-shaped fixture next door
+// (diffDomSize, 744 observed / 1 significant) has been RENDERING it on every run
+// while asserting DOM element counts. Nothing ever read the sentence.
+//
+// These arms read the sentence. The COPY comes from the bundle — this file does not
+// own the wording and must not red on a reword — and the NUMBERS are literals, so the
+// arithmetic is pinned by something that does not recompute it.
+describe('/diff — the suppression footer reads the census gap', () => {
+    afterEach(() => {
+        vi.clearAllMocks()
+    })
+
+    /** A drift-shaped report at a chosen (total, significant): one ranked row, so the list renders. */
+    const reportAt = (total: number, significant: number) => ({
+        summary: { total_changes: total, significant_changes: significant, stability_score: 0.62 },
+        inputs: { baseline: { lines_observed: 3609 }, changed: { lines_observed: 3724 } },
+        ranked_changes: [
+            {
+                kind: 'frequency_shift',
+                severity: 'high',
+                summary: 'Frequency shift: "Downloading <*> (<*> MB)" 4% → 38%',
+                evidence: ['baseline 4%', 'changed 38%'],
+                baseline_line_refs: [1],
+                changed_line_refs: [1],
+            },
+        ],
+        markdown: '# report',
+    })
+
+    /** The footer sentence for a given pair of already-rendered numbers, wording owned by the bundle. */
+    const footer = (count: string, total: string) =>
+        en.diff.suppressed.replace('{count}', count).replace('{total}', total)
+
+    /** The bundle-owned clause that follows the numbers — present iff the footer rendered at all. */
+    const footerTail = en.diff.suppressed.split('{total}')[1] as string
+
+    async function compare(total: number, significant: number) {
+        vi.mocked(api.runInsightDiff).mockResolvedValue(reportAt(total, significant) as never)
+        const user = userEvent.setup()
+        renderPage()
+        await user.type(screen.getByLabelText(en.diff.baselineLog), 'alpha')
+        await user.type(screen.getByLabelText(en.diff.changedLog), 'beta')
+        const button = screen
+            .getAllByRole('button')
+            .find((candidate) => candidate.textContent?.includes(en.diff.compare))
+        expect(button, 'no compare button on the page').toBeDefined()
+        await user.click(button as HTMLElement)
+        await waitFor(() => expect(api.runInsightDiff).toHaveBeenCalled())
+        // The ranked-list heading renders only once the report is on screen with rows —
+        // waiting on it means the footer's absence below is a MEASURED absence, not a race.
+        await waitFor(() => expect(screen.getByText(en.diff.significantChanges)).toBeTruthy())
+    }
+
+    const footerNodes = () =>
+        screen.queryAllByText((_, node) => (node?.textContent ?? '').includes(footerTail))
+
+    it('renders 951 of the 973 for the measured post-restore pair', async () => {
+        await compare(973, 22)
+        expect(screen.getByText(footer('951', '973'))).toBeTruthy()
+    })
+
+    it('omits the footer entirely when nothing was suppressed', async () => {
+        await compare(22, 22)
+        expect(
+            footerNodes(),
+            'a zero gap must print no footer at all — "0 of the 22 changes were suppressed" is ' +
+                'a sentence about nothing, and it is what this page showed before the census landed ' +
+                'on the spine the CI product uses'
+        ).toHaveLength(0)
+    })
+
+    // The `suppressed > 0` gate is not a defensive clamp — it is a display condition that
+    // happens to make this surface incapable of the failure the two UNSIGNED C++ render
+    // sites are exposed to. A JS number is a double, so a breached `significant <= total`
+    // yields −951 here, never the ~1.8e19 an unsigned wrap produces; and the gate then
+    // drops the paragraph rather than printing the negative. Characterized, not defended:
+    // the invariant stays the engine's (DN-37.D31), asserted where each spine finalizes.
+    it('prints nothing rather than a negative if the engine invariant is ever breached', async () => {
+        await compare(22, 973)
+        expect(footerNodes(), 'a breached invariant reached the page as text').toHaveLength(0)
+        expect(document.body.textContent).not.toMatch(/-9\d\d/)
     })
 })
