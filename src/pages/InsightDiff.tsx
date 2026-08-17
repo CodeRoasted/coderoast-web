@@ -113,9 +113,22 @@ function countLines(text: string): number {
     return text.split('\n').filter((line) => line.trim().length > 0).length
 }
 
-// Thousands grouped with a non-breaking space, in BOTH languages — that is the
-// grouping the authored copy uses, and a headline figure must not read
-// differently from the sentence right beside it. Locale-independent on purpose.
+// EVERY number this page renders goes through here — there is no second formatter on
+// this surface, and `toLocaleString` is not used on it.
+//
+// Thousands grouped with a non-breaking space, in BOTH languages: that is the grouping
+// the authored copy uses, and a headline figure must not read differently from the
+// sentence right beside it.
+//
+// Locale-independent, and the reason is the product, not typography. `toLocaleString()`
+// with no argument reads the VISITOR'S BROWSER, not the bundle that produced the prose
+// around it — so an FR-bundle visitor on an en-US browser read French sentences with US
+// separators, and one report rendered two ways depending on where it was opened. The
+// claim Sift sells is that output is a function of input; a shipped surface whose
+// rendering depends on the viewer's environment contradicts that in the one place a
+// buyer looks. `sift-action` already ruled this way for the PR comment (frame.ts, same
+// regex, ',' because that surface is English-only) — same rule here, so the two shipped
+// surfaces no longer disagree about the policy.
 function groupThousands(value: number): string {
     return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')
 }
@@ -641,9 +654,9 @@ export default function InsightDiff() {
                         <div className="flex items-start justify-between gap-4 rounded-lg border border-gray-800 bg-gray-900/60 p-5">
                             <div>
                                 <p className="text-2xl font-bold text-white">
-                                    {report.summary.total_changes.toLocaleString()} changes,{' '}
+                                    {groupThousands(report.summary.total_changes)} changes,{' '}
                                     <span className="text-brand-400">
-                                        {report.summary.significant_changes}
+                                        {groupThousands(report.summary.significant_changes)}
                                     </span>{' '}
                                     structurally significant
                                 </p>
@@ -651,8 +664,8 @@ export default function InsightDiff() {
                                     {typeof report.summary.stability_score === 'number' && (
                                         <>stability {report.summary.stability_score.toFixed(2)} · </>
                                     )}
-                                    {report.inputs.baseline.lines_observed.toLocaleString()} →{' '}
-                                    {report.inputs.changed.lines_observed.toLocaleString()} lines
+                                    {groupThousands(report.inputs.baseline.lines_observed)} →{' '}
+                                    {groupThousands(report.inputs.changed.lines_observed)} lines
                                 </p>
                             </div>
                             <div className="shrink-0 flex items-center gap-2">
@@ -681,7 +694,7 @@ export default function InsightDiff() {
                             <p className="text-gray-400 text-sm">
                                 {t.diff.emptyResult.replace(
                                     '{count}',
-                                    report.summary.total_changes.toLocaleString()
+                                    groupThousands(report.summary.total_changes)
                                 )}
                             </p>
                         ) : (
@@ -748,13 +761,10 @@ export default function InsightDiff() {
                                     {suppressed > 0 && (
                                         <p className="text-gray-600 text-xs mt-3 italic">
                                             {t.diff.suppressed
-                                                .replace(
-                                                    '{count}',
-                                                    suppressed.toLocaleString()
-                                                )
+                                                .replace('{count}', groupThousands(suppressed))
                                                 .replace(
                                                     '{total}',
-                                                    report.summary.total_changes.toLocaleString()
+                                                    groupThousands(report.summary.total_changes)
                                                 )}
                                         </p>
                                     )}

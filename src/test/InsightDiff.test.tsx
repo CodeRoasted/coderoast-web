@@ -230,26 +230,44 @@ describe('/diff preset picker — loading a pair', () => {
 // These arms read the sentence. The COPY comes from the bundle — this file does not
 // own the wording and must not red on a reword — and the NUMBERS are literals, so the
 // arithmetic is pinned by something that does not recompute it.
+/** A drift-shaped report at a chosen (total, significant): one ranked row, so the list renders. */
+const reportAt = (total: number, significant: number) => ({
+    summary: { total_changes: total, significant_changes: significant, stability_score: 0.62 },
+    inputs: { baseline: { lines_observed: 3609 }, changed: { lines_observed: 3724 } },
+    ranked_changes: [
+        {
+            kind: 'frequency_shift',
+            severity: 'high',
+            summary: 'Frequency shift: "Downloading <*> (<*> MB)" 4% → 38%',
+            evidence: ['baseline 4%', 'changed 38%'],
+            baseline_line_refs: [1],
+            changed_line_refs: [1],
+        },
+    ],
+    markdown: '# report',
+})
+
+/** Render /diff, submit a pair, and wait until the report — heading and rows — is on screen. */
+async function compare(total: number, significant: number) {
+    vi.mocked(api.runInsightDiff).mockResolvedValue(reportAt(total, significant) as never)
+    const user = userEvent.setup()
+    renderPage()
+    await user.type(screen.getByLabelText(en.diff.baselineLog), 'alpha')
+    await user.type(screen.getByLabelText(en.diff.changedLog), 'beta')
+    const button = screen
+        .getAllByRole('button')
+        .find((candidate) => candidate.textContent?.includes(en.diff.compare))
+    expect(button, 'no compare button on the page').toBeDefined()
+    await user.click(button as HTMLElement)
+    await waitFor(() => expect(api.runInsightDiff).toHaveBeenCalled())
+    // The ranked-list heading renders only once the report is on screen with rows —
+    // waiting on it means an absence asserted below is a MEASURED absence, not a race.
+    await waitFor(() => expect(screen.getByText(en.diff.significantChanges)).toBeTruthy())
+}
+
 describe('/diff — the suppression footer reads the census gap', () => {
     afterEach(() => {
         vi.clearAllMocks()
-    })
-
-    /** A drift-shaped report at a chosen (total, significant): one ranked row, so the list renders. */
-    const reportAt = (total: number, significant: number) => ({
-        summary: { total_changes: total, significant_changes: significant, stability_score: 0.62 },
-        inputs: { baseline: { lines_observed: 3609 }, changed: { lines_observed: 3724 } },
-        ranked_changes: [
-            {
-                kind: 'frequency_shift',
-                severity: 'high',
-                summary: 'Frequency shift: "Downloading <*> (<*> MB)" 4% → 38%',
-                evidence: ['baseline 4%', 'changed 38%'],
-                baseline_line_refs: [1],
-                changed_line_refs: [1],
-            },
-        ],
-        markdown: '# report',
     })
 
     /** The footer sentence for a given pair of already-rendered numbers, wording owned by the bundle. */
@@ -258,23 +276,6 @@ describe('/diff — the suppression footer reads the census gap', () => {
 
     /** The bundle-owned clause that follows the numbers — present iff the footer rendered at all. */
     const footerTail = en.diff.suppressed.split('{total}')[1] as string
-
-    async function compare(total: number, significant: number) {
-        vi.mocked(api.runInsightDiff).mockResolvedValue(reportAt(total, significant) as never)
-        const user = userEvent.setup()
-        renderPage()
-        await user.type(screen.getByLabelText(en.diff.baselineLog), 'alpha')
-        await user.type(screen.getByLabelText(en.diff.changedLog), 'beta')
-        const button = screen
-            .getAllByRole('button')
-            .find((candidate) => candidate.textContent?.includes(en.diff.compare))
-        expect(button, 'no compare button on the page').toBeDefined()
-        await user.click(button as HTMLElement)
-        await waitFor(() => expect(api.runInsightDiff).toHaveBeenCalled())
-        // The ranked-list heading renders only once the report is on screen with rows —
-        // waiting on it means the footer's absence below is a MEASURED absence, not a race.
-        await waitFor(() => expect(screen.getByText(en.diff.significantChanges)).toBeTruthy())
-    }
 
     const footerNodes = () =>
         screen.queryAllByText((_, node) => (node?.textContent ?? '').includes(footerTail))
@@ -304,5 +305,67 @@ describe('/diff — the suppression footer reads the census gap', () => {
         await compare(22, 973)
         expect(footerNodes(), 'a breached invariant reached the page as text').toHaveLength(0)
         expect(document.body.textContent).not.toMatch(/-9\d\d/)
+    })
+})
+
+// ── Rendered figures are a function of the REPORT, never of the visitor's browser ──────────
+//
+// `/diff` grouped its census numbers with `toLocaleString()` and no locale argument, which
+// reads the BROWSER — not the i18n bundle that produced the prose around them. An FR-bundle
+// visitor on an en-US browser therefore read French sentences carrying US separators, and one
+// report rendered two ways depending on where it was opened. `sift-action` had already ruled
+// the other way for the PR comment (frame.ts `groupThousands`, "no toLocaleString"), so the
+// two shipped surfaces disagreed on the policy while the product's whole claim is that output
+// is a function of input.
+//
+// The three arms in the footer block above are BLIND to this: every number they render is
+// three digits, where grouped and ungrouped are the same string. These use four-digit values,
+// which is the smallest input where the separator exists at all — and they close the door from
+// both sides: two read the rendered glyph, the third asserts the POLICY, so a revert that
+// happened to pick a locale whose separator is a space still reds.
+describe('/diff — figures are grouped locale-independently', () => {
+    afterEach(() => {
+        vi.clearAllMocks()
+    })
+
+    // Spelled as an ESCAPE, never a pasted literal: a U+00A0 in a source file is invisible
+    // in review, and one editor's whitespace pass would silently turn these arms into a
+    // tautology by collapsing it to an ordinary space.
+    const NBSP = '\u00a0'
+
+    it('groups the census and the line counts with a non-breaking space, not a browser separator', async () => {
+        await compare(9734, 22)
+        const rendered = document.body.textContent ?? ''
+        // The header census, the suppression footer's two numbers, and the input line counts —
+        // every four-digit figure the page puts on screen for this report.
+        for (const value of [`9${NBSP}734`, `9${NBSP}712`, `3${NBSP}609`, `3${NBSP}724`]) {
+            expect(
+                rendered.includes(value),
+                `"${value}" is not on the page — the grouping is not the authored copy's ` +
+                    `non-breaking space. Rendered: ${rendered.slice(0, 400)}`
+            ).toBe(true)
+        }
+        expect(
+            rendered,
+            'a comma-grouped figure reached the page: the separator came from the runtime ' +
+                'environment, not from this surface'
+        ).not.toMatch(/\d,\d{3}/)
+    })
+
+    it('renders the whole report without ever consulting the environment locale', async () => {
+        const localeFormat = vi.spyOn(Number.prototype, 'toLocaleString')
+        try {
+            await compare(9734, 22)
+            expect(
+                localeFormat.mock.calls.length,
+                'a render path called Number#toLocaleString, so at least one figure on this ' +
+                    'surface is formatted by the visitor\'s browser rather than by the page. ' +
+                    'That is the one option ruled off the table: group locale-independently ' +
+                    '(groupThousands, as sift-action does) or drive the locale from the SAME ' +
+                    'i18n bundle that produced the prose.'
+            ).toBe(0)
+        } finally {
+            localeFormat.mockRestore()
+        }
     })
 })
