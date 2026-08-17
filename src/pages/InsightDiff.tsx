@@ -24,6 +24,7 @@ import Footer from '@/components/Footer'
 import { siftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 import { diffPresets, type DiffPreset, type DiffProvenance } from '@/data/diffPresets'
+import { groupThousands } from '@/utils/format'
 
 // Severity = a neutral→warm HEAT ladder (slate → amber → orange → crimson),
 // deliberately NOT git red/green. Color carries *importance*; change-type
@@ -114,24 +115,9 @@ function countLines(text: string): number {
 }
 
 // EVERY number this page renders goes through here — there is no second formatter on
-// this surface, and `toLocaleString` is not used on it.
-//
-// Thousands grouped with a non-breaking space, in BOTH languages: that is the grouping
-// the authored copy uses, and a headline figure must not read differently from the
-// sentence right beside it.
-//
-// Locale-independent, and the reason is the product, not typography. `toLocaleString()`
-// with no argument reads the VISITOR'S BROWSER, not the bundle that produced the prose
-// around it — so an FR-bundle visitor on an en-US browser read French sentences with US
-// separators, and one report rendered two ways depending on where it was opened. The
-// claim Sift sells is that output is a function of input; a shipped surface whose
-// rendering depends on the viewer's environment contradicts that in the one place a
-// buyer looks. `sift-action` already ruled this way for the PR comment (frame.ts, same
-// regex, ',' because that surface is English-only) — same rule here, so the two shipped
-// surfaces no longer disagree about the policy.
-function groupThousands(value: number): string {
-    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')
-}
+// this surface, and `toLocaleString` is not used on it. The grouping policy and the
+// argument for it live with the shared helper (`@/utils/format`), which `/tiers` now
+// renders through as well: one formatter, so two shipped surfaces cannot drift apart.
 
 // Build lineIndex -> tone for one pane, from all active changes. When two
 // changes touch the same line, the higher-ranked tone wins.

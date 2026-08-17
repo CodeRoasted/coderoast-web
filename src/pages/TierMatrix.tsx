@@ -5,6 +5,7 @@ import { getCapabilityMatrix, type CapabilityMatrix, type OperationInfo, type Qu
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import Tooltip from '@/components/Tooltip'
+import { groupThousands } from '@/utils/format'
 
 type GroupedOps = Array<{ category: string; items: OperationInfo[] }>
 
@@ -58,7 +59,7 @@ function formatQuotaValue(
                 ? `${(value / 1_000_000_000).toFixed(1)} GB`
                 : value >= 1_000_000
                   ? `${(value / 1_000_000).toFixed(0)} MB`
-                  : `${value.toLocaleString()} B`
+                  : `${groupThousands(value)} B`
         return { label, className: 'text-gray-200' }
     }
     // Non-bytes: append abbreviated unit
@@ -71,7 +72,7 @@ function formatQuotaValue(
         'req/min': 'req/min',
     }
     const suffix = abbrev[unit] ?? unit
-    return { label: `${value.toLocaleString()} ${suffix}`, className: 'text-gray-200' }
+    return { label: `${groupThousands(value)} ${suffix}`, className: 'text-gray-200' }
 }
 
 export default function TierMatrix() {
