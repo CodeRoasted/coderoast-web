@@ -75,9 +75,18 @@ const en = {
                         'Point it at a raw, uninstrumented stream — CI output, a service, a whole fleet.',
                 },
                 {
-                    step: '4 KB out',
+                    // NO RATIO, and none is coming back without a study behind it. Three places on
+                    // this page carried "~150:1" and this step label implied ~250,000:1 against
+                    // "Gigabytes in" — two public numbers three orders of magnitude apart, neither
+                    // naming its population, neither measured: `technical_docs/studies/` holds 14
+                    // studies and not one measures a compression ratio. Boundedness is an
+                    // architectural property of MetaLog and is claimable; a ratio is a measurement
+                    // and is not ours to state until the benchmark methodology
+                    // `product/002-open-source-strategy.md` calls the single most important
+                    // marketing artefact exists. (Audit 2026-08-18, §5.3 item 11.)
+                    step: 'A bounded fingerprint out',
                     description:
-                        'It distils to a bounded structural fingerprint. ~150:1, and it never leaves your box.',
+                        'It distils to a bounded structural fingerprint, and it never leaves your box.',
                 },
                 {
                     step: 'Catches the regression',
@@ -141,7 +150,7 @@ const en = {
                 },
                 {
                     old: 'Pay to store gigabytes forever — and read under 5% of them.',
-                    new: 'A bounded fingerprint, ~150:1. The small footprint is a side effect of distilling, not the point.',
+                    new: 'A bounded fingerprint. The small footprint is a side effect of distilling, not the point.',
                 },
             ],
             otelNote:
@@ -167,7 +176,7 @@ const en = {
                     name: 'MetaLog forwarding',
                     status: 'Soon',
                     description:
-                        'Forward fingerprints, not raw gigabytes — ~150:1 off your observability bill.',
+                        'Forward fingerprints, not raw gigabytes. Your observability bill follows what you send.',
                 },
                 {
                     name: 'Canary validation',
@@ -411,10 +420,16 @@ const en = {
             },
             'real-ci-triage': {
                 label: 'Real CI · the build that broke',
+                // "Ranks the cause at the top" was ruled an OVERSTATEMENT by PRD-6 (006-web-copy.md,
+                // 2026-07-27) and shipped anyway. The published report in the same directory
+                // (coderoast-hub showcase/sift/reports/regression.report.md:12) ranks at 1 the FACT
+                // of failure — the process-exit-code line — with the package build failure and the
+                // raised error at 2 and 3. Anyone can open it and check, which is exactly why the
+                // copy must not round up. The wording below is PRD-6's ratified replacement.
                 description:
-                    'The same passing run against the failing one. The true cause is ranked at the top.',
+                    'The same passing run against the failing one. The top three are the failure and its cause.',
                 story: [
-                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 13, and ranks the cause at the top: the package that failed to build, and the error it raised.',
+                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 13 — and the top three are the whole story: the step exited non-zero, then why — the package that failed to build, and the error it raised.',
                     'Not “we found the word ERROR.” The failing line was already in the log — grep would have handed it to you along with thousands of lines of build chatter that moved at the same time. What a plain diff cannot tell you is which of them is the one that mattered.',
                 ],
             },
@@ -475,7 +490,10 @@ const en = {
         subtitle:
             'Run a deterministic LogCraft scenario and watch InSight compress the stream into templates, MetaLogs, detector evidence, and a concise explanation a human can act on.',
         yamlLabel: 'scenario.yaml',
-        logsLabel: 'live evidence stream',
+        // NOT 'live': the feed is a fixed array replayed on a timer, and the explain panel
+        // beside it has no data source at all. Both say so on their face.
+        logsLabel: 'sample evidence stream',
+        illustrationBadge: 'Illustration — not live output',
         cta: 'Open the InSight Playground',
     },
     features: {
@@ -569,7 +587,11 @@ const en = {
             status: 'Beta · API live',
             highlights: [
                 'Explain-first insight cards',
-                'Drain-style template mining',
+                // NOT "Drain-style template mining": ADR-16.D5 ripped the Drain-family miner as a
+                // determinism defect at the root of the product — its cluster learning made the
+                // template identity order-dependent across runs. What ships is the stateless
+                // per-line masker that replaced it, and that is the stronger claim anyway.
+                'Stateless per-line template identity',
                 'MetaLog compression layer',
                 'Detector evidence for AI explain',
             ],

@@ -77,9 +77,9 @@ const fr: typeof en = {
                         'Pointez-le sur un flux brut, non instrumenté — sortie CI, un service, une flotte entière.',
                 },
                 {
-                    step: '4 Ko en sortie',
+                    step: 'Une empreinte bornée en sortie',
                     description:
-                        'Il distille en une empreinte structurelle bornée. ~150:1, et elle ne quitte jamais votre infra.',
+                        'Il distille en une empreinte structurelle bornée, et elle ne quitte jamais votre infra.',
                 },
                 {
                     step: 'Attrape la régression',
@@ -143,7 +143,7 @@ const fr: typeof en = {
                 },
                 {
                     old: 'Payer pour stocker des gigaoctets à vie — et en lire moins de 5 %.',
-                    new: 'Une empreinte bornée, ~150:1. La faible empreinte est un effet de bord de la distillation, pas le but.',
+                    new: 'Une empreinte bornée. La faible empreinte est un effet de bord de la distillation, pas le but.',
                 },
             ],
             otelNote:
@@ -169,7 +169,7 @@ const fr: typeof en = {
                     name: 'Forwarding MetaLog',
                     status: 'Bientôt',
                     description:
-                        'Transférez des empreintes, pas des gigaoctets bruts — ~150:1 sur votre facture d’observabilité.',
+                        'Transférez des empreintes, pas des gigaoctets bruts. Votre facture d’observabilité suit ce que vous envoyez.',
                 },
                 {
                     name: 'Validation canary',
@@ -374,9 +374,9 @@ const fr: typeof en = {
             'real-ci-triage': {
                 label: 'CI réelle · le build qui a cassé',
                 description:
-                    'Le même run réussi face au run en échec. La vraie cause est classée en tête.',
+                    'Le même run réussi face au run en échec. Le trio de tête, c’est l’échec et sa cause.',
                 story: [
-                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 13, et classe la cause en tête : le paquet dont le build a échoué, et l’erreur qu’il a levée.',
+                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 13 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis pourquoi — le paquet dont le build a échoué, et l’erreur qu’il a levée.',
                     'Pas « on a trouvé le mot ERROR ». La ligne fautive était déjà dans le log — grep vous l’aurait rendue en même temps que des milliers de lignes de bruit de build qui ont bougé au même moment. Ce qu’un diff texte ne peut pas vous dire, c’est laquelle d’entre elles est celle qui compte.',
                 ],
             },
@@ -437,7 +437,8 @@ const fr: typeof en = {
         subtitle:
             'Lancez un scénario LogCraft déterministe et regardez InSight condenser le flux en templates, MetaLogs, preuves de détection et explication exploitable.',
         yamlLabel: 'scenario.yaml',
-        logsLabel: 'flux de preuves en direct',
+        logsLabel: 'flux de preuves — exemple',
+        illustrationBadge: 'Illustration — pas une sortie réelle',
         cta: 'Ouvrir le Playground InSight',
     },
     features: {
@@ -531,7 +532,7 @@ const fr: typeof en = {
             status: 'Bêta · API live',
             highlights: [
                 'Cartes d’insight explain-first',
-                'Mining de templates type Drain',
+                'Identité de template sans état, ligne à ligne',
                 'Couche de compression MetaLog',
                 'Preuves des détecteurs pour l’IA explain',
             ],

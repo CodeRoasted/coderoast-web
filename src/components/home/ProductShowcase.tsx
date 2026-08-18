@@ -4,6 +4,14 @@ import { Link } from 'react-router-dom'
 import { Activity, AlertTriangle, Brain, CheckCircle, FileText, Layers, Play, Search } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
 
+// EVERY value on this page is authored, not fetched: the component has no data source, no
+// hook and no network call. It illustrates the shape of an InSight explain packet; it is not
+// one. The panel therefore carries an ILLUSTRATION badge, and the badge is the reason the
+// hardcoded verdict, confidence and action hint below are honest rather than fabricated —
+// remove it and they become a served claim with nothing behind them (audit 2026-08-18, §5.3
+// item 9). Detector names must still be real: the page named ADWIN, which exists in zero
+// engine sources.
+//
 // Static, hand-tuned YAML kept short for the visual; not parsed at runtime.
 const YAML_LINES: { text: string; cls: string }[] = [
     { text: 'scenario:', cls: 'text-purple-300' },
@@ -146,8 +154,8 @@ export default function ProductShowcase() {
                                         insight_explain.json
                                     </span>
                                 </div>
-                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/40">
-                                    LIVE API
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-amber-500/15 text-amber-300 border border-amber-500/40 shrink-0">
+                                    {t.showcase.illustrationBadge}
                                 </span>
                             </div>
 
@@ -199,7 +207,7 @@ export default function ProductShowcase() {
                                     <EvidenceBlock title="Affected templates" values={EVIDENCE} />
                                     <EvidenceBlock
                                         title="Explain packet"
-                                        values={['MetaLog window: 5m', 'detectors: ADWIN + CUSUM', 'lines ingested: 4.2k']}
+                                        values={['MetaLog window: 5m', 'detectors: CUSUM drift + volume slope', 'lines ingested: 4.2k']}
                                     />
                                 </div>
                             </div>

@@ -154,7 +154,7 @@
     },
     {
       "name": "regression",
-      "headline": "The same passing run against the failing one. The true cause is ranked at the top.",
+      "headline": "The same passing run against the failing one. The top three are the failure and its cause.",
       "baseline": "logs/logcraft__ci-build__green-a.log",
       "changed": "logs/logcraft__ci-build__red.log",
       "report_md": "reports/regression.report.md",
