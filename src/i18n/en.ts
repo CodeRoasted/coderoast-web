@@ -290,7 +290,7 @@ const en = {
         trust: {
             title: 'A fact you can gate on.',
             body:
-                'Same inputs, same diff — bit for bit, across compilers and operating systems (we build with gcc, clang, and MSVC, on Linux and Windows, and gate on identical output every release — the toolchain is public, so you can reproduce it). That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer, when you turn it on, runs locally by default — nothing leaves; point it at an endpoint you control and only the bounded fingerprint travels there — never raw logs, never the verdict, never anything in the path that decides.',
+                'Same inputs, same diff — bit for bit, across compilers and operating systems (we build with gcc, clang, and MSVC, on Linux and Windows, and gate on identical output every release — the toolchain is public, so you can reproduce it). That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer is opt-in and it never decides: you turn it on, and you name the destination yourself — only the bounded fingerprint travels there, never raw logs, never the verdict, never anything in the path that decides.',
             cta: 'How we build',
         },
         install: {
@@ -861,7 +861,7 @@ const en = {
                 bullets: [
                     'Auto-cascade replays a real outage chain',
                     'Pre-baked scenarios for finance, e-commerce, SaaS',
-                    '100% synthetic — nothing leaves the browser tab',
+                    '100% synthetic — not one log of yours is involved',
                 ],
             },
             train: {
@@ -1252,7 +1252,7 @@ const en = {
         filterClear: 'Clear filters',
         firstVisitTitle: 'Welcome to the InSight Playground',
         firstVisitBody:
-            'This is a live InSight demo powered by synthetic logs. Pick a scenario on the left, run it, and watch InSight turn the stream into explanations. Nothing real is ingested — the data lives only in this browser session.',
+            'This is a live InSight demo powered by synthetic logs. Pick a scenario on the left, run it, and watch InSight turn the stream into explanations. Nothing real is ingested — every line is generated for the demo, and the engine runs on our server, not in your tab. That is the demo; the product runs on your infrastructure.',
         firstVisitDismiss: 'Got it, let\'s go',
         firstVisitLearn: 'Read the LogCraft overview first',
         emptyEngineHint:

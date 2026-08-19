@@ -278,7 +278,7 @@ const fr: typeof en = {
         trust: {
             title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
             body:
-                'Mêmes entrées, même diff — bit-identique, sur plusieurs compilateurs et systèmes d’exploitation (on compile avec gcc, clang et MSVC, sous Linux et Windows, et on vérifie un résultat identique à chaque release — la chaîne de compilation est publique, vous pouvez donc la reproduire). C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration, quand vous l’activez, tourne avec votre clé sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide.',
+                'Mêmes entrées, même diff — bit-identique, sur plusieurs compilateurs et systèmes d’exploitation (on compile avec gcc, clang et MSVC, sous Linux et Windows, et on vérifie un résultat identique à chaque release — la chaîne de compilation est publique, vous pouvez donc la reproduire). C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration est optionnelle et ne décide jamais : vous l’activez, et c’est vous qui nommez la destination — seule l’empreinte bornée y voyage, jamais les logs bruts, jamais le verdict, jamais rien de ce qui décide.',
             cta: 'Comment on construit',
         },
         install: {
@@ -802,7 +802,7 @@ const fr: typeof en = {
                 bullets: [
                     'L’auto-cascade rejoue une vraie chaîne de panne',
                     'Scénarios prêts pour finance, e-commerce, SaaS',
-                    '100 % synthétique — rien ne sort de l’onglet',
+                    '100 % synthétique — aucun log à vous n’entre en jeu',
                 ],
             },
             train: {
@@ -1192,7 +1192,7 @@ const fr: typeof en = {
         filterClear: 'Effacer les filtres',
         firstVisitTitle: 'Bienvenue dans le Playground InSight',
         firstVisitBody:
-            'C\'est une démo InSight live alimentée par des logs synthétiques. Choisissez un scénario à gauche, lancez-le, et regardez InSight transformer le flux en explications. Rien de réel n\'est ingéré — les données restent dans cette session navigateur.',
+            'C\'est une démo InSight live alimentée par des logs synthétiques. Choisissez un scénario à gauche, lancez-le, et regardez InSight transformer le flux en explications. Rien de réel n\'est ingéré — chaque ligne est générée pour la démo, et le moteur tourne sur notre serveur, pas dans votre onglet. Ça, c\'est la démo ; le produit, lui, tourne sur votre infrastructure.',
         firstVisitDismiss: 'OK, c\'est parti',
         firstVisitLearn: 'Lire la présentation de LogCraft d\'abord',
         emptyEngineHint:
