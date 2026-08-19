@@ -80,6 +80,13 @@ export default function Licensing() {
                                 )}
                             </div>
 
+                            {/* Availability sits INSIDE every column by PRD-6.B3: a badge beside one
+                                CTA was measured not to scope its neighbours, so a reader who reads a
+                                single column must still learn whether he can have this today. */}
+                            <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                                {plan.availability}
+                            </p>
+
                             <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6 text-center">
                                 {plan.description}
                             </p>

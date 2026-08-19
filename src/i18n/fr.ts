@@ -585,19 +585,20 @@ const fr: typeof en = {
     licensing: {
         title: 'Plans LogCraft',
         subtitle:
-            'Gratuit pour le solo et l\'apprentissage. Les paliers payants débloquent les scénarios chaos / panne en cascade / production.',
-        badge: 'Tarifs — accès anticipé',
+            'LogCraft n\'est pas encore distribué : le moteur tourne dans le Lab, dans votre navigateur, et nulle part ailleurs. Voici la forme que prendra l\'offre — dites-nous dès maintenant si c\'est la mauvaise.',
+        badge: 'L\'offre envisagée — pas encore en vente',
         free: {
             name: 'Gratuit',
             price: '0 €',
             period: 'pour toujours',
+            availability: 'Disponible maintenant — dans le Lab, dans votre navigateur.',
             description:
-                'Lancez les scénarios starter et les agents basiques. Idéal pour évaluer LogCraft et essayer le Lab.',
+                'Lancez les scénarios starter et les agents basiques. Tout ce qui est ici tourne aujourd\'hui, et vous pouvez vérifier chaque affirmation de cette page en l\'exécutant.',
             features: [
                 'Scénarios à 1–2 agents',
                 'Sortie console & fichier',
                 'Générateurs de champs basiques',
-                'Accès CLI',
+                'La référence complète du DSL de scénarios',
                 'Support communautaire',
             ],
             cta: 'Ouvrir le Lab',
@@ -606,12 +607,14 @@ const fr: typeof en = {
             name: 'Pro',
             price: 'TBD',
             period: '/mois',
+            availability: 'Pas encore en vente — le prix viendra avec la sortie.',
             description:
-                'Le réaliste : incidents chaos, pannes en cascade, tous les formats de sortie, replay déterministe.',
+                'Le réaliste : incidents, pannes en cascade, tous les formats de sortie, replay déterministe — en binaire à vous, sur vos machines.',
             features: [
+                'Binaire CLI, auto-hébergé',
                 'Agents & scénarios illimités',
                 'Tous les sinks (HTTP, ECS, OTLP, Prometheus, StatsD)',
-                'Pannes en cascade & incidents chaos',
+                'Pannes en cascade & scénarios d\'incident',
                 'Distributions de latence (p50/p95/p99)',
                 'Mode replay déterministe',
                 'Templates d\'agents & registre',
@@ -623,11 +626,11 @@ const fr: typeof en = {
             name: 'Entreprise',
             price: 'Sur mesure',
             period: '',
+            availability: 'Pas encore en vente — parlons-en, et façonnez-la.',
             description:
                 'Pour les équipes qui font de LogCraft la colonne vertébrale synthétique de leur stack d\'observabilité.',
             features: [
                 'Tout ce qui est dans Pro',
-                'Simulation de topologie réseau',
                 'Machines d\'état & effets conditionnels',
                 'Sinks de sortie sur mesure',
                 'Support dédié & SLA',

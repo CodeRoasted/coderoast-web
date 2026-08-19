@@ -644,19 +644,20 @@ const en = {
     licensing: {
         title: 'LogCraft Plans',
         subtitle:
-            'Free for solo use and learning. Paid tiers unlock the chaos, cascade and production-shape scenarios.',
-        badge: 'Pricing — early access',
+            'LogCraft is not distributed yet: the engine runs in the Lab, in your browser, and nowhere else. This is the shape the offer will take — tell us now if it is the wrong shape.',
+        badge: 'The intended offer — not on sale yet',
         free: {
             name: 'Free',
             price: '$0',
             period: 'forever',
+            availability: 'Available now — in the Lab, in your browser.',
             description:
-                'Run starter scenarios and basic agents. Perfect to evaluate LogCraft and try the Lab.',
+                'Run starter scenarios and basic agents. Everything here is live today, and you can check every claim on this page by running it.',
             features: [
                 '1–2 agent scenarios',
                 'Console & file output',
                 'Basic field generators',
-                'CLI access',
+                'The full scenario DSL reference',
                 'Community support',
             ],
             cta: 'Open the Lab',
@@ -665,12 +666,14 @@ const en = {
             name: 'Pro',
             price: 'TBD',
             period: '/month',
+            availability: 'Not sold yet — priced when it ships.',
             description:
-                'The realistic stuff: chaos incidents, cascades, all output formats, deterministic replay.',
+                'The realistic stuff: chaos incidents, cascades, all output formats, deterministic replay — as your own binary, on your own machines.',
             features: [
+                'CLI binary, self-hosted',
                 'Unlimited agents & scenarios',
                 'All output sinks (HTTP, ECS, OTLP, Prometheus, StatsD)',
-                'Error cascading & chaos incidents',
+                'Error cascading & incident scenarios',
                 'Latency distributions (p50/p95/p99)',
                 'Deterministic replay mode',
                 'Agent templates & registry',
@@ -682,11 +685,11 @@ const en = {
             name: 'Enterprise',
             price: 'Custom',
             period: '',
+            availability: 'Not sold yet — talk to us and shape it.',
             description:
                 'For teams running LogCraft as the synthetic-data backbone of an observability stack.',
             features: [
                 'Everything in Pro',
-                'Network topology simulation',
                 'State machines & conditional effects',
                 'Custom output sink development',
                 'Dedicated support & SLA',
