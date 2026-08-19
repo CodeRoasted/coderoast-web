@@ -159,6 +159,18 @@ export default function Privacy() {
                                     ephemeral — it is never written to a persistent store and is
                                     discarded when your engine session ends.
                                 </p>
+                                <p>
+                                    <strong>No AI or inference provider is involved.</strong> InSight
+                                    can optionally narrate a finished report through a language model,
+                                    and that option is <strong>not enabled on this Lab</strong>: the
+                                    engine names no destination for it, the control is disabled in the
+                                    panel, and the software refuses to start in a narration mode with
+                                    no destination named. The analysis itself is deterministic and
+                                    never involves a model. If you run InSight on your own
+                                    infrastructure and choose to point narration at a provider, that
+                                    is a destination you name in your own deployment — your
+                                    relationship with that provider, not ours.
+                                </p>
                             </Section>
 
                             <Section title="6. Hosting & Infrastructure">
