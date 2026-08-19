@@ -1152,6 +1152,7 @@ const en = {
             configMinConfidence: 'Min confidence',
             configMaxInsights: 'Max insights',
             configWarmupScale: 'Warmup confidence scale',
+            configLlmUnavailableWhy: 'Narration is off because this deployment names no destination for it. It is not a missing feature: the report is computed here either way, and nothing is sent anywhere until an operator writes an endpoint into the engine config. Turning it on is a deployment decision, not a switch in this panel.',
             configLlmModelLabel: 'LLM model',
             configLlmModelNone: 'None (rules mode)',
             configLlmFull: 'LLM full mode',

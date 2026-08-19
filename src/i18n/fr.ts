@@ -1092,6 +1092,7 @@ const fr: typeof en = {
             configMinConfidence: 'Confiance minimale',
             configMaxInsights: 'Max insights',
             configWarmupScale: 'Échelle de confiance de chauffe',
+            configLlmUnavailableWhy: 'La narration est inactive parce que ce déploiement ne nomme aucune destination pour elle. Ce n\'est pas une fonctionnalité manquante : le rapport est calculé ici dans tous les cas, et rien n\'est envoyé nulle part tant qu\'un opérateur n\'a pas inscrit un endpoint dans la config du moteur. L\'activer est une décision de déploiement, pas un interrupteur de ce panneau.',
             configLlmModelLabel: 'Modèle LLM',
             configLlmModelNone: 'Aucun (mode règles)',
             configLlmFull: 'Mode LLM complet',

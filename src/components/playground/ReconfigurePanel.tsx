@@ -12,10 +12,16 @@ export interface ReconfigurePanelProps {
     currentWindowDuration: number | null
     currentExplainMode: InsightExplainMode | null
     currentLlmModel: string | null
+    /** The narration destination this engine names, empty when it names none. */
+    currentLlmHost: string
     copy: InsightCopy
 }
 
-export function ReconfigurePanel({ engineId, currentWindowDuration, currentExplainMode, currentLlmModel, copy }: ReconfigurePanelProps) {
+export function ReconfigurePanel({ engineId, currentWindowDuration, currentExplainMode, currentLlmModel, currentLlmHost, copy }: ReconfigurePanelProps) {
+    // Narration needs a destination a human named in the deployment; there is no reconfigure key
+    // for the endpoint, so a mode switch on an engine without one can only ever be refused (422).
+    // A control that can only refuse is worse than no control: it reads as a capability.
+    const narrationAvailable = currentLlmHost.length > 0
     const kDefaultWindowDuration = 25
     const [windowDuration, setWindowDuration] = useState<string>(
         String(currentWindowDuration ?? kDefaultWindowDuration)
@@ -122,7 +128,9 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
                     <select
                         value={llmModel}
                         onChange={(e) => handleModelChange(e.target.value)}
-                        className={fieldCls}
+                        disabled={!narrationAvailable}
+                        title={narrationAvailable ? undefined : copy.configLlmUnavailableWhy}
+                        className={`${fieldCls} disabled:cursor-not-allowed disabled:opacity-50`}
                     >
                         <option value="">{copy.configLlmModelNone}</option>
                         <option value="gpt-4o-mini">gpt-4o-mini</option>
@@ -131,6 +139,11 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
                         <option value="raptor-mini">raptor-mini</option>
                     </select>
                 </div>
+                {!narrationAvailable && (
+                    <p className="col-span-2 text-[10px] leading-snug text-gray-500">
+                        {copy.configLlmUnavailableWhy}
+                    </p>
+                )}
                 {llmModel && (
                     <div className="col-span-2 flex items-center gap-2">
                         <input

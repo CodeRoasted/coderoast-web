@@ -389,6 +389,7 @@ export function renderCapability({
                     currentWindowDuration={windowDuration}
                     currentExplainMode={explainMode}
                     currentLlmModel={llmModel}
+                    currentLlmHost={llmHost ?? ''}
                     copy={copy}
                 />
             </div>
