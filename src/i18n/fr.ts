@@ -135,7 +135,7 @@ const fr: typeof en = {
                 },
                 {
                     old: 'Vos logs vivent sur leurs serveurs ; leur IA les lit bruts.',
-                    new: 'On-prem et souverain — gardez vos logs. Le LLM ne voit qu’un brief borné et assaini.',
+                    new: 'On-prem et souverain — gardez vos logs. Le LLM voit une empreinte bornée : des gabarits masqués et des nombres, jamais vos lignes de logs brutes.',
                 },
                 {
                     old: 'Un « pourquoi ça a cassé » probabiliste que vous ne pouvez pas reproduire.',

@@ -142,7 +142,7 @@ const en = {
                 },
                 {
                     old: 'Your logs live on their servers; their AI reads them raw.',
-                    new: 'On-prem and sovereign — keep your logs. The LLM only ever sees a bounded, sanitized brief.',
+                    new: 'On-prem and sovereign — keep your logs. The LLM sees a bounded fingerprint: masked templates and numbers, never your raw log lines.',
                 },
                 {
                     old: 'A probabilistic “why it failed” you can’t reproduce.',
