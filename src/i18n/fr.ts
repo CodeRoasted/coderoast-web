@@ -1052,6 +1052,7 @@ const fr: typeof en = {
             configPyramidMaturity: 'Maturité pyramide',
             configExplainMode: 'Mode explain',
             configLlmModel: 'Modèle LLM',
+            configLlmHost: 'Narration envoyée à',
             configLlmEnabled: 'LLM activé',
             configLlmDisabled: 'LLM désactivé',
             configLlmNotSet: 'non configuré',

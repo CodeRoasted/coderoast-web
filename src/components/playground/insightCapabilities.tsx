@@ -285,6 +285,9 @@ export function renderCapability({
         const explainMode = status?.explain_mode ?? latestReport?.explain_mode ?? null
         const llmEnabled = status?.llm_enabled ?? latestReport?.llm_enabled ?? null
         const llmModel = status?.llm_model ?? latestReport?.llm_model ?? null
+        // WHERE narration goes. Absent means nothing is sent — the server omits the key rather
+        // than emitting an empty one, so absence is a fact and not a formatting accident.
+        const llmHost = status?.llm_host ?? latestReport?.llm_host ?? null
         const pyramidMaturity = status?.pyramid_maturity ?? null
         const windowsSeen = status?.windows_seen ?? null
         const warmupTarget = status?.pyramid_warmup_windows ?? null
@@ -372,6 +375,13 @@ export function renderCapability({
                             {llmEnabled ? copy.configLlmEnabled : copy.configLlmDisabled}
                         </span>
                     </ConfigRow>
+                    {llmHost && (
+                        <ConfigRow label={copy.configLlmHost}>
+                            <span className="font-mono text-[11px] text-amber-300 truncate max-w-[10rem]" title={llmHost}>
+                                {llmHost}
+                            </span>
+                        </ConfigRow>
+                    )}
                 </div>
                 {/* Live reconfigure */}
                 <ReconfigurePanel

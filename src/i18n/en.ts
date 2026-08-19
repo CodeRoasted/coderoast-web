@@ -1112,6 +1112,7 @@ const en = {
             configPyramidMaturity: 'Pyramid maturity',
             configExplainMode: 'Explain mode',
             configLlmModel: 'LLM model',
+            configLlmHost: 'Narration sent to',
             configLlmEnabled: 'LLM enabled',
             configLlmDisabled: 'LLM disabled',
             configLlmNotSet: 'not configured',

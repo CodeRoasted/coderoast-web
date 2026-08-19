@@ -95,6 +95,8 @@ export interface InsightReport {
     supporting_evidence: string[]
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
+    /** Narration destination, HOST only — absent when nothing is sent. */
+    llm_host?: string
     llm_model?: string
     window_count?: number
     configured_window_duration_seconds?: number
@@ -124,6 +126,8 @@ export interface InsightStatus {
     llm_running?: boolean
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
+    /** Narration destination, HOST only — absent when nothing is sent. */
+    llm_host?: string
     llm_model?: string
     configured_window_duration_seconds?: number
     window_count?: number
@@ -145,6 +149,8 @@ export interface InsightReportsResponse {
     llm_running?: boolean
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
+    /** Narration destination, HOST only — absent when nothing is sent. */
+    llm_host?: string
     llm_model?: string
     latest_metalog?: MetaLogSummary | null
     latest_acute_diff?: AcuteDiffSummary | null
