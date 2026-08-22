@@ -938,7 +938,7 @@ const en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'An agent is a fake service. You give it a name, a type ("web_server", "database"…), a rate, a message template and some fields. The engine spins it up on its own thread and starts emitting structured records at the rate you asked for. Wire several together with `interactions` to model a topology.',
+                    'An agent is a fake service. You give it a name, a type ("web_server", "database"…), a rate, a message template and some fields. The engine spins it up on its own thread and starts emitting structured records at the rate you asked for. Wire several together with `flows` to model a topology.',
             },
             outputs: {
                 title: 'Sinks (outputs)',

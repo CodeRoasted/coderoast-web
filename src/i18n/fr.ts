@@ -879,7 +879,7 @@ const fr: typeof en = {
             agents: {
                 title: 'Agents',
                 body:
-                    'Un agent est un service factice. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `interactions` pour modéliser une topologie.',
+                    'Un agent est un service factice. Vous lui donnez un nom, un type ("web_server", "database"…), une cadence, un template de message et des champs. Le moteur le lance sur son propre thread et émet des records structurés au rythme demandé. Reliez-en plusieurs avec `flows` pour modéliser une topologie.',
             },
             outputs: {
                 title: 'Sinks (sorties)',
