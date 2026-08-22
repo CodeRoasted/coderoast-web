@@ -170,7 +170,7 @@ const en = {
                     name: 'Streaming detection',
                     status: 'Beta',
                     description:
-                        'Continuous, precision-first anomaly detection — one alert, one real incident.',
+                        'Continuous, precision-first anomaly detection — no alert fires without a real incident behind it.',
                 },
                 {
                     name: 'MetaLog forwarding',
@@ -583,7 +583,7 @@ const en = {
         insight: {
             name: 'InSight',
             description:
-                'The streaming analysis pipeline behind it all: noisy logs become templates, MetaLogs, detector evidence, and explanation packets — precision-first, so one alert means one real incident. Try it live in the Lab.',
+                'The streaming analysis pipeline behind it all: noisy logs become templates, MetaLogs, detector evidence, and explanation packets — precision-first: no alert fires without a real incident behind it. Try it live in the Lab.',
             status: 'Beta · API live',
             highlights: [
                 'Explain-first insight cards',

@@ -163,7 +163,7 @@ const fr: typeof en = {
                     name: 'Détection streaming',
                     status: 'Beta',
                     description:
-                        'Détection d’anomalies continue, la précision avant tout — une alerte, un vrai incident.',
+                        'Détection d’anomalies continue, la précision avant tout — aucune alerte sans un vrai incident derrière.',
                 },
                 {
                     name: 'Forwarding MetaLog',
@@ -528,7 +528,7 @@ const fr: typeof en = {
         insight: {
             name: 'InSight',
             description:
-                'Le pipeline d’analyse en streaming derrière tout ça : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — la précision avant tout : une alerte = un vrai incident. À essayer en live dans le Lab.',
+                'Le pipeline d’analyse en streaming derrière tout ça : les logs bruyants deviennent templates, MetaLogs, preuves de détection et paquets d’explication — la précision avant tout : aucune alerte sans un vrai incident derrière. À essayer en live dans le Lab.',
             status: 'Bêta · API live',
             highlights: [
                 'Cartes d’insight explain-first',
