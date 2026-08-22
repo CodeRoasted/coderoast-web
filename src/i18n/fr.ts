@@ -1139,7 +1139,8 @@ const fr: typeof en = {
         playToTarget: 'Jouer jusqu\'à la cible',
         playingToTarget: 'En train de jouer jusqu\'à la cible…',
         targetSeconds: 'Secondes cible',
-        websocketNotConnected: 'Le WebSocket n\'est pas encore connecté.',
+        commandNotSent:
+            'Commande non envoyée : aucune connexion active au moteur. La reconnexion est automatique — réessayez une fois le moteur reconnecté.',
         mode: 'Mode',
         clock: 'Horloge',
         playback: 'Lecture',

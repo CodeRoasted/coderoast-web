@@ -1199,7 +1199,8 @@ const en = {
         playToTarget: 'Play to target',
         playingToTarget: 'Playing to target…',
         targetSeconds: 'Target seconds',
-        websocketNotConnected: 'WebSocket is not connected yet.',
+        commandNotSent:
+            'Command not sent: no live connection to the engine. Reconnection is automatic — retry once the engine reconnects.',
         mode: 'Mode',
         clock: 'Clock',
         playback: 'Playback',

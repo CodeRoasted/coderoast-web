@@ -221,6 +221,14 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                     setStatusMessage(`${success ? '✓' : '✗'} ${message}`)
                     setTimeout(() => setStatusMessage(null), 4000)
                 },
+                // The connection predicate, told ONCE for all command paths. It is not the
+                // permission predicate: `EngineControls` disables a button the caller may not
+                // press (`hasOperation`), which is a different question from whether a press
+                // reached the engine. Merging them would hide one behind the other.
+                onCommandRefused: () => {
+                    setStatusMessage(`✗ ${t.lab.commandNotSent}`)
+                    setTimeout(() => setStatusMessage(null), 4000)
+                },
                 onError: (err) => setStatusMessage(err),
                 onFatalError: (err) => {
                     // Server explicitly rejected our engine ID (e.g. after a
@@ -244,7 +252,10 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 },
             })
         },
-        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities, setReplayPending],
+        // `t.lab.commandNotSent` is a real dependency (the refusal text). Re-creating this
+        // callback on a language change costs nothing: its only caller is `handleRun`, on a
+        // click — no effect depends on it, so nothing reconnects when the locale flips.
+        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities, setReplayPending, t.lab.commandNotSent],
     )
 
     const handleRun = useCallback(async () => {
@@ -302,13 +313,20 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
     )
     const handlePlayToTarget = useCallback(
         (targetElapsedNs: number) => {
-            if (!engineWs.connected) {
-                setStatusMessage(t.lab.websocketNotConnected)
+            // Reads the send's own answer rather than `connected` beforehand: the optimistic
+            // UI below is a claim that the engine is seeking, and only a command that reached
+            // the wire earns it. A prior liveness check would also be a different fact by the
+            // time the send ran. The refusal itself is announced by `onCommandRefused`.
+            if (
+                !engineWs.sendCommand({
+                    type: 'play_to_target',
+                    target_elapsed_ns: targetElapsedNs,
+                })
+            ) {
                 return
             }
             setReplayPending(true)
             setStatusMessage(t.lab.playingToTarget)
-            engineWs.sendCommand({ type: 'play_to_target', target_elapsed_ns: targetElapsedNs })
         },
         [setReplayPending, setStatusMessage, t],
     )

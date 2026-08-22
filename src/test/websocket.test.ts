@@ -134,28 +134,56 @@ describe('EngineWebSocket', () => {
         ws.disconnect()
     })
 
-    it('sendCommand serialises only when the socket is open', () => {
+    // A command on a closed socket used to return quietly: the operator clicked, nothing
+    // travelled, and nothing said so. Of done / failed / vanished, only the third leaves
+    // them with no next move — so the refusal is now REPORTED, and this pins that.
+    // Both arms matter: dropping the send is correct, staying silent about it is the bug.
+    it('sendCommand reports a refusal instead of dropping the command', () => {
+        const refused: Record<string, unknown>[] = []
         const ws = new EngineWebSocket()
-        ws.connect('eng-1', {})
+        ws.connect('eng-1', { onCommandRefused: (command) => refused.push(command) })
         const sock = lastSocket()
 
-        ws.sendCommand({ type: 'pause' })
+        // Open: on the wire, answered true, and NOT reported as refused.
+        expect(ws.sendCommand({ type: 'pause' })).toBe(true)
         expect(sock.sent).toEqual(['{"type":"pause"}'])
+        expect(refused).toEqual([])
 
+        // Closed: not on the wire, answered false, and reported with the command itself,
+        // so a caller can say WHICH press was lost rather than that one was.
         sock.readyState = MockWebSocket.CLOSED
-        ws.sendCommand({ type: 'resume' })
-        expect(sock.sent).toHaveLength(1) // unchanged
+        expect(ws.sendCommand({ type: 'play', channel: 'eng-1' })).toBe(false)
+        expect(sock.sent, `nothing may be sent on a closed socket, got ${sock.sent.join(' | ')}`)
+            .toHaveLength(1)
+        expect(refused).toEqual([{ type: 'play', channel: 'eng-1' }])
 
         ws.disconnect()
     })
 
-    it('connected reports OPEN status', () => {
-        const ws = new EngineWebSocket()
-        expect(ws.connected).toBe(false)
-        ws.connect('eng-1', {})
-        expect(ws.connected).toBe(true)
-        ws.disconnect()
-        expect(ws.connected).toBe(false)
+    // The refusal rides the handler set given at connect(), so a socket that closes and
+    // reconnects keeps reporting — the failure mode being ruled out is a callback captured
+    // once and lost on the next doConnect().
+    it('keeps reporting refusals after a reconnect', () => {
+        vi.useFakeTimers()
+        try {
+            const refused: Record<string, unknown>[] = []
+            const ws = new EngineWebSocket()
+            ws.connect('eng-1', { onCommandRefused: (command) => refused.push(command) })
+
+            lastSocket().triggerClose()
+            vi.advanceTimersByTime(1000) // first backoff step -> doConnect()
+            const reconnected = lastSocket()
+            reconnected.readyState = MockWebSocket.CLOSED
+
+            expect(ws.sendCommand({ type: 'stop' })).toBe(false)
+            expect(refused, 'a reconnect must not silence the refusal channel').toEqual([
+                { type: 'stop' },
+            ])
+
+            ws.disconnect()
+        } finally {
+            vi.useRealTimers()
+        }
     })
 
     it('disconnect closes the socket and prevents reconnection', () => {

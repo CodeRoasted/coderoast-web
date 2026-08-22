@@ -359,16 +359,6 @@ export async function reconfigureInsight(
     })
 }
 
-export async function sendCommand(
-    engineId: string,
-    command: Record<string, unknown>
-): Promise<{ success: boolean; message: string }> {
-    return request(`/engines/${encodeURIComponent(engineId)}/command`, {
-        method: 'POST',
-        body: JSON.stringify(command),
-    })
-}
-
 export async function listScenarios(
     playground?: PlaygroundMode,
     signal?: AbortSignal,

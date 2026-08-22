@@ -13,6 +13,16 @@ export type WsMessageHandler = {
      * rejected the connection.
      */
     onFatalError?: (error: string) => void
+    /**
+     * A command was NOT put on the wire, because the socket was not open. The
+     * transport reports the refusal rather than returning quietly: of the three
+     * outcomes a click can have — done, failed, vanished — only the third leaves
+     * the operator with nothing to act on, and it is the one this callback exists
+     * to make impossible. Wiring it is therefore not optional in a UI that sends
+     * commands. The reason is not passed as text: the transport knows the fact,
+     * the view layer owns the words (`src/i18n/`).
+     */
+    onCommandRefused?: (command: Record<string, unknown>) => void
     onClose?: () => void
 }
 
@@ -54,14 +64,15 @@ export class EngineWebSocket {
         this.engineId = null
     }
 
-    sendCommand(command: Record<string, unknown>) {
-        if (this.ws?.readyState === WebSocket.OPEN) {
-            this.ws.send(JSON.stringify(command))
+    /** @returns whether the command reached the wire. A refusal is also reported on
+     *  `onCommandRefused`, so a caller that ignores this value still cannot drop it. */
+    sendCommand(command: Record<string, unknown>): boolean {
+        if (this.ws?.readyState !== WebSocket.OPEN) {
+            this.handlers.onCommandRefused?.(command)
+            return false
         }
-    }
-
-    get connected(): boolean {
-        return this.ws?.readyState === WebSocket.OPEN
+        this.ws.send(JSON.stringify(command))
+        return true
     }
 
     private nextBackoffMs(): number {
