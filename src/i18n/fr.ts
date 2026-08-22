@@ -266,7 +266,7 @@ const fr: typeof en = {
             jenkinsOutcome: {
                 title: 'Et il sait ce que « terminé » veut dire.',
                 body:
-                    'Jenkins émet quatre verdicts, pas deux — Sift les classe tous (SUCCESS / FAILURE / UNSTABLE / ABORTED) sur n’importe quel job Jenkins. Un build UNSTABLE (des tests ont tourné, certains ont échoué) n’est pas un build vert ; un run ABORTED n’est pas un échec. Mettez une gate dessus : --fail-on outcome casse le build quand le verdict lui-même régresse — SUCCESS → UNSTABLE — même quand chaque ligne de log a l’air normale.',
+                    'Jenkins émet quatre verdicts, pas deux — Sift les classe tous (SUCCESS / FAILURE / UNSTABLE / ABORTED) sur n’importe quel job Jenkins. Un build UNSTABLE (des tests ont tourné, certains ont échoué) n’est pas un build vert ; un run ABORTED n’est pas un échec. Mettez une gate dessus : --fail-on regression casse le build sur une régression structurelle, et le rapport porte outcome_regressed: true quand le verdict lui-même glisse — SUCCESS → UNSTABLE — même quand chaque ligne de log a l’air normale.',
             },
         },
         free: {

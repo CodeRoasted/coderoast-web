@@ -278,7 +278,7 @@ const en = {
             jenkinsOutcome: {
                 title: 'And it knows what "done" means.',
                 body:
-                    'Jenkins emits four verdicts, not two — Sift classifies all of them (SUCCESS / FAILURE / UNSTABLE / ABORTED) on any Jenkins job. An UNSTABLE build (tests ran, some failed) is not a green build; an ABORTED run is not a failure. Gate on it: --fail-on outcome fails the build when the verdict itself regresses — SUCCESS → UNSTABLE — even when every log line still looks fine.',
+                    'Jenkins emits four verdicts, not two — Sift classifies all of them (SUCCESS / FAILURE / UNSTABLE / ABORTED) on any Jenkins job. An UNSTABLE build (tests ran, some failed) is not a green build; an ABORTED run is not a failure. Gate on it: --fail-on regression fails the build on a structural regression, and the report carries outcome_regressed: true when the verdict itself slips — SUCCESS → UNSTABLE — even when every log line still looks fine.',
             },
         },
         free: {
