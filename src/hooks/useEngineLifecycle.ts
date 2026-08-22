@@ -23,8 +23,13 @@ interface EngineLifecycleOptions {
  *   – WebSocket wiring + auto-start handshake
  *   – the live engine commands (W4/D7: the prose list that used to be spelled out here is
  *     DELETED, not updated — a hand-maintained copy of the vocabulary has no checker and
- *     rots. The server's command_catalog.hpp is the vocabulary; commandVocabulary.test.ts
- *     fails if this client ever sends a token that names no row in it.)
+ *     rots. The server's command_catalog.hpp is the vocabulary, and the superproject's
+ *     scripts/command_vocabulary_lint.py reds if this client sends a token naming no row
+ *     in it, or if the set it sends stops equalling that catalog's own kWebUiCommands.
+ *     The gate is NOT in this repo's suite, and that is deliberate: a vitest arm here
+ *     reached the catalog by relative path, this repo's CI checks out one repo, and it
+ *     threw ENOENT on every run for a month while the pipeline reported green. Only the
+ *     superproject checkout holds both sides of the seam.)
  *   – tear-down on unmount + on "back to scenarios"
  *   – validation/capability/tier errors
  *
