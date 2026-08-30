@@ -1,0 +1,25 @@
+CodeRoast Web — Proprietary, All Rights Reserved
+
+Copyright (c) 2026 Emmanuel Prunet (CodeRoast)
+
+This repository is PUBLIC but it is NOT open source. No licence to use,
+copy, modify, merge, publish, distribute, sublicense or sell this software
+or any part of it is granted to anyone. All rights are reserved.
+
+Viewing this repository, and forking it within GitHub, are permitted solely
+by the GitHub Terms of Service (Section D.5) — not by any grant from the
+copyright holder. Nothing here waives, limits or extends those Terms.
+
+WHY THIS REPOSITORY IS PUBLIC. Nothing in it is secret. It is the frontend
+of coderoast.fr: the shipped JavaScript bundle is already served to every
+visitor, and the backend surface it talks to (routes, entitlement keys and
+quota limits) is returned by the public API to unauthenticated callers by
+design. Publishing the source therefore discloses nothing the running site
+does not, while keeping the repository's CI free and its history open to
+inspection. The CodeRoast moat — the validation harness, the production
+scenario library, and the detection engine — is not in this repository.
+
+Third-party dependencies keep their own licences; see package.json and the
+NOTICE of each dependency.
+
+For any use beyond reading: contact emmanuel.prunet@coderoast.fr
