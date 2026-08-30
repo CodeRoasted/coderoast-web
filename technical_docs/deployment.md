@@ -105,16 +105,17 @@ Static asset headers:
 
 ## Backend Expectations
 
-The hosted Lab needs a reachable CodeRoastServer instance with:
+The hosted Lab needs a reachable CodeRoastServer instance, with **CORS allowing the deployed web
+origin** and its scenario roots configured (`CODEROAST_LOGCRAFT_SCENARIO_PATH`,
+`CODEROAST_INSIGHT_SCENARIO_PATH`).
 
-- `/api/v1/login`, `/whoami`, `/users`, `/tiers`;
-- scenario listing and validation routes;
-- engine lifecycle routes;
-- WebSocket snapshots at `/api/v1/ws/engine`;
-- CORS allowing the deployed web origin;
-- scenario roots configured through CodeRoastServer's `CODEROAST_LOGCRAFT_SCENARIO_PATH` and `CODEROAST_INSIGHT_SCENARIO_PATH`.
-
-See CodeRoastServer's `technical_docs/api/server_api_contract.md` and its README — CodeRoastServer is not a published repository.
+**The route set is NOT enumerated here.** CodeRoastServer's `technical_docs/api/server_api_contract.md`
+owns it, and the registrations in its `server/src/**/*_controller.hpp` are the ground truth beneath
+that. **This list used to be mirrored here and it rotted:** it named `/api/v1/users` and
+`/api/v1/tiers`, and both **404 in production** — `/tiers` is a page on this site, never an API route,
+and `/users` was absorbed into `/whoami`. A mirror of someone else's enumeration goes stale silently,
+and a route inventory that is wrong anywhere is untrustworthy everywhere. *(CodeRoastServer is not a
+published repository.)*
 
 ## Deployment Checklist
 

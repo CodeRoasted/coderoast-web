@@ -38,7 +38,7 @@ export interface QuotaUsage {
 }
 
 /**
- * Subject's current capability profile as returned by login / whoami / /users.
+ * Subject's current capability profile as returned by login / whoami / /access/profile.
  *
  * The TYPE is `Capability*` (the collapsed internal vocabulary); the FIELD names
  * (`access`, `current_access`) and the `/access/profile` route are NOT — those are
@@ -65,15 +65,6 @@ export interface LoginResponse {
     token: string
     user: AuthUser
     access: CapabilityProfile | null
-}
-
-/** A selectable visitor user exposed by `GET /users`. */
-export interface SelectableUser {
-    id: string
-    name: string
-    role: string
-    is_visitor: boolean
-    access?: CapabilityProfile
 }
 
 export interface EntitlementInfo {
