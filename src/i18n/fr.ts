@@ -193,7 +193,7 @@ const fr: typeof en = {
         closing: {
             title: 'La vision, c’est le MetaLog. Le chemin d’entrée, c’est Sift.',
             subtitle:
-                'Comparez deux runs CI en environ 90 secondes — sans agent, sans installation, logs jamais stockés. Le même artefact alimente tout ce qui précède.',
+                'Comparez deux runs CI pour environ trois secondes de temps CI — sans agent, sans installation, logs jamais stockés. Le même artefact alimente tout ce qui précède.',
             cta: 'Diff de deux logs',
         },
     },
@@ -202,7 +202,7 @@ const fr: typeof en = {
         hero: {
             title: 'Vos tests passent. Vos logs disent le contraire.',
             subtitle:
-                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent à installer, sans compte utilisateur, ~90 secondes.',
+                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent à installer, sans compte utilisateur, environ trois secondes de temps CI.',
             ctaPrimary: 'Ajoutez l’Action',
             ctaSecondary: 'Essayez dans votre navigateur',
             trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne quittent jamais votre infra.',
@@ -505,7 +505,7 @@ const fr: typeof en = {
         sift: {
             name: 'Sift',
             description:
-                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, ~90 secondes.',
+                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, rien n’est stocké.',
             status: 'Live · démo gratuite',
             highlights: [
                 '« Ce qui a changé » classé par pertinence, bruit supprimé',

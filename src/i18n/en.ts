@@ -200,7 +200,7 @@ const en = {
         closing: {
             title: 'The vision is the MetaLog. The way in is Sift.',
             subtitle:
-                'Diff two CI runs in about 90 seconds — no agent, no setup, logs never stored. The same artifact powers everything above.',
+                'Diff two CI runs for about three seconds of CI time — no agent, no setup, logs never stored. The same artifact powers everything above.',
             cta: 'Diff two logs',
         },
     },
@@ -214,7 +214,7 @@ const en = {
         hero: {
             title: 'Your tests pass. Your logs say otherwise.',
             subtitle:
-                'Pass/fail is one bit; grep needs to know what to look for. Sift reads the structure of two runs and ranks what actually changed — a success line that silently vanished, an error you fixed, a pattern that took over the run — then mutes the hundreds of diffs that don\'t matter. Two log files in, a ranked report out. No agent, no account, ~90 seconds.',
+                'Pass/fail is one bit; grep needs to know what to look for. Sift reads the structure of two runs and ranks what actually changed — a success line that silently vanished, an error you fixed, a pattern that took over the run — then mutes the hundreds of diffs that don\'t matter. Two log files in, a ranked report out. No agent, no account, about three seconds of CI time.',
             ctaPrimary: 'Add the Action',
             ctaSecondary: 'Try it in your browser',
             trust: 'Free, forever · runs in your CI · your logs never leave it.',
@@ -560,7 +560,7 @@ const en = {
         sift: {
             name: 'Sift',
             description:
-                'Paste a baseline run and a changed run. Sift ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, ~90 seconds.',
+                'Paste a baseline run and a changed run. Sift ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, nothing stored.',
             status: 'Live · free demo',
             highlights: [
                 'Ranked “what changed”, noise suppressed',
