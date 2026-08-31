@@ -15,7 +15,7 @@
     "redact-identity",
     "remove-demonstrated-tool"
   ],
-  "honesty_gate": "Redacting identity could silently change the result: alter a template and the ranked report changes with it. So the build runs Sift twice \u2014 once on the logs before identity redaction, once on the published logs \u2014 and refuses to publish unless both reports carry the same claim. The same change counts and the same run verdicts. The same ranking curve, position by position, so nothing crosses a rank boundary unseen. The same findings, with the same evidence and the same line references. Template hashes that correspond one-to-one, so the redaction can neither merge two line shapes nor split one. All of it at two significance floors, including floor 0 \u2014 every change the engine detected, not only the significant ones. One tolerance, declared rather than hidden: some findings surface because a BOUNDED reservoir of high-salience lines happened to retain that line, and the reservoir keys on line content \u2014 so redacting the runner path, which is not optional, can swap which of several equally-ranked lines it kept. Those findings must still match on shape, severity, score and step; only which line was sampled is free, and the count is published per pair under `pairs[].declared.honesty_gate`. Here it is 0 for the noise-floor pair and 1 for the regression pair. This is not a formality: it rejected the first redaction map this showcase was built with, which would have published a report the real logs do not support.",
+  "honesty_gate": "Redacting identity could silently change the result: alter a template and the ranked report changes with it. So the build runs Sift twice \u2014 once on the logs before identity redaction, once on the published logs \u2014 and refuses to publish unless both reports carry the same claim. The same change counts and the same run verdicts. The same ranking curve, position by position, so nothing crosses a rank boundary unseen. The same findings, with the same evidence and the same line references. Template hashes that correspond one-to-one, so the redaction can neither merge two line shapes nor split one. All of it at two significance floors \u2014 the shipped one, and floor 0, which admits every change the engine RANKED rather than only the significant ones. What floor 0 does NOT do is compare every change the engine DETECTED, and an earlier wording said it did. The ranked set is capped at 50, so the floor-0 arm compares the top 50 against the top 50; on these pairs the engine detects roughly 940 and 1 070 changes, and the suppressed tail below the ranking is outside the comparison. The figure published per floor under `pairs[].declared.honesty_gate` is named `ranked_total_changes` for that reason: at floor 0 it saturates at the cap and is not a population. One tolerance, declared rather than hidden: some findings surface because a BOUNDED reservoir of high-salience lines happened to retain that line, and the reservoir keys on line content \u2014 so redacting the runner path, which is not optional, can swap which of several equally-ranked lines it kept. Those findings must still match on shape, severity, score and step; only which line was sampled is free, and the count is published per pair under `pairs[].declared.honesty_gate`. Here it is 0 for the noise-floor pair and 1 for the regression pair. This is not a formality: it rejected the first redaction map this showcase was built with, which would have published a report the real logs do not support.",
   "samples": [
     {
       "file": "logs/logcraft__ci-build__green-a.log",
@@ -138,14 +138,16 @@
           "0.0": {
             "significance_floor": 0.0,
             "templates_pinned_one_to_one": 50,
-            "total_changes": 50,
+            "ranked_total_changes": 50,
+            "ranked_total_changes_is_not_a_population": "the engine's summary counts RANKED rows and the ranking is capped at 50, so at significance floor 0.0 this number saturates at that cap. It is a statement about the cap, never about how many changes the engine detected: on these pairs that is roughly 940 and 1 070, and the suppressed tail below the ranking is outside this comparison.",
             "significant_changes": 50,
             "reservoir_sampled_changes_not_pinned_to_a_line": 0
           },
           "0.05": {
             "significance_floor": 0.05,
             "templates_pinned_one_to_one": 1,
-            "total_changes": 1,
+            "ranked_total_changes": 1,
+            "ranked_total_changes_is_not_a_population": "the engine's summary counts RANKED rows and the ranking is capped at 50, so at significance floor 0.0 this number saturates at that cap. It is a statement about the cap, never about how many changes the engine detected: on these pairs that is roughly 940 and 1 070, and the suppressed tail below the ranking is outside this comparison.",
             "significant_changes": 1,
             "reservoir_sampled_changes_not_pinned_to_a_line": 0
           }
@@ -169,14 +171,16 @@
           "0.0": {
             "significance_floor": 0.0,
             "templates_pinned_one_to_one": 44,
-            "total_changes": 50,
+            "ranked_total_changes": 50,
+            "ranked_total_changes_is_not_a_population": "the engine's summary counts RANKED rows and the ranking is capped at 50, so at significance floor 0.0 this number saturates at that cap. It is a statement about the cap, never about how many changes the engine detected: on these pairs that is roughly 940 and 1 070, and the suppressed tail below the ranking is outside this comparison.",
             "significant_changes": 50,
             "reservoir_sampled_changes_not_pinned_to_a_line": 1
           },
           "0.05": {
             "significance_floor": 0.05,
             "templates_pinned_one_to_one": 7,
-            "total_changes": 13,
+            "ranked_total_changes": 13,
+            "ranked_total_changes_is_not_a_population": "the engine's summary counts RANKED rows and the ranking is capped at 50, so at significance floor 0.0 this number saturates at that cap. It is a statement about the cap, never about how many changes the engine detected: on these pairs that is roughly 940 and 1 070, and the suppressed tail below the ranking is outside this comparison.",
             "significant_changes": 13,
             "reservoir_sampled_changes_not_pinned_to_a_line": 1
           }
