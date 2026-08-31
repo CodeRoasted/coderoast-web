@@ -422,7 +422,7 @@ const en = {
                 label: 'Real CI · the build that broke',
                 // "Ranks the cause at the top" was ruled an OVERSTATEMENT by PRD-6 (006-web-copy.md,
                 // 2026-07-27) and shipped anyway. The published report in the same directory
-                // (coderoast-hub showcase/sift/reports/regression.report.md:12) ranks at 1 the FACT
+                // (`F-SRC-coderoast-hub:regression.report.md`) ranks at 1 the FACT
                 // of failure — the process-exit-code line — with the package build failure and the
                 // raised error at 2 and 3. Anyone can open it and check, which is exactly why the
                 // copy must not round up. The wording below is PRD-6's ratified replacement.
