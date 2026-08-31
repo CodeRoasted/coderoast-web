@@ -276,6 +276,7 @@ describe('services/api', () => {
                             action_hint: 'Throttle retries',
                             affected_templates: ['T42'],
                             supporting_evidence: ['checkout retry'],
+                            dedup_id: 'd:4317e93af798dcad59c9e90eaa84da08',
                         },
                     ],
                 }),

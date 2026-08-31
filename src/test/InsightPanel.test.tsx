@@ -17,6 +17,7 @@ const report: InsightReport = {
     action_hint: 'Isolate the postgres write path.',
     affected_templates: ['T17', 'T42'],
     supporting_evidence: ['postgres slow query 412ms', 'checkout retry 1/3'],
+    dedup_id: 'd:4317e93af798dcad59c9e90eaa84da08',
 }
 
 const llmReport: InsightReport = {

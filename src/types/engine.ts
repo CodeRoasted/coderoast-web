@@ -93,6 +93,14 @@ export interface InsightReport {
     action_hint: string
     affected_templates: string[]
     supporting_evidence: string[]
+    /**
+     * Cross-window incident identity: every alert about one incident carries the same id, in any
+     * window. This is the key a consumer folds on.
+     *
+     * An EMPTY string is a declared state, not a missing field — a window-level incident has no
+     * cross-window subject and therefore no identity, so never group on the empty value.
+     */
+    dedup_id: string
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
     /** Narration destination, HOST only — absent when nothing is sent. */
