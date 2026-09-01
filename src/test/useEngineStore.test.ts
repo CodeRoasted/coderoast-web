@@ -23,7 +23,6 @@ describe('useEngineStore', () => {
             liveTailKeys: new Set(),
             insightStatus: null,
             insightReports: [],
-            insightReportKeys: new Set(),
             insightLoading: false,
             insightError: null,
             insightLastLinesIngested: 0,

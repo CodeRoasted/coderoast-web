@@ -19,16 +19,6 @@ function tailKey(entry: LogTailEntry): string {
     return `${entry.timestamp}|${entry.agent}|${entry.level}|${entry.message}`
 }
 
-function insightKey(report: InsightReport): string {
-    return [
-        report.severity,
-        report.headline,
-        report.body,
-        report.action_hint,
-        report.affected_templates.join(','),
-    ].join('|')
-}
-
 interface EngineState {
     engineId: string | null
     snapshot: EngineSnapshot | null
@@ -42,7 +32,6 @@ interface EngineState {
     liveTailKeys: Set<string>
     insightStatus: InsightStatus | null
     insightReports: InsightReport[]
-    insightReportKeys: Set<string>
     insightLoading: boolean
     insightError: string | null
     insightLastLinesIngested: number
@@ -76,7 +65,6 @@ export const useEngineStore = create<EngineState>((set) => ({
     liveTailKeys: new Set<string>(),
     insightStatus: null,
     insightReports: [],
-    insightReportKeys: new Set<string>(),
     insightLoading: false,
     insightError: null,
     insightLastLinesIngested: 0,
@@ -129,7 +117,6 @@ export const useEngineStore = create<EngineState>((set) => ({
             const trimmed = reports.slice(-kInsightReportCapacity)
             return {
                 insightReports: trimmed,
-                insightReportKeys: new Set(trimmed.map(insightKey)),
                 insightError: null,
                 insightLastLinesIngested: linesIngested,
             }
@@ -141,7 +128,6 @@ export const useEngineStore = create<EngineState>((set) => ({
         set({
             insightStatus: null,
             insightReports: [],
-            insightReportKeys: new Set<string>(),
             insightLoading: false,
             insightError: null,
             insightLastLinesIngested: 0,
@@ -159,7 +145,6 @@ export const useEngineStore = create<EngineState>((set) => ({
             liveTailKeys: new Set<string>(),
             insightStatus: null,
             insightReports: [],
-            insightReportKeys: new Set<string>(),
             insightLoading: false,
             insightError: null,
             insightLastLinesIngested: 0,
