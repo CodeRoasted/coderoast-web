@@ -342,7 +342,7 @@ export const diffPresets: DiffPreset[] = [
     {
         id: 'real-ci-triage',
         provenance: 'real-ci',
-        figures: { plainTextDiffLines: 4889, significantChanges: 13 },
+        figures: { plainTextDiffLines: 4889, significantChanges: 11 },
         samples: { baseline: GREEN_A, changed: RED },
         load: realPair(GREEN_A, RED),
     },

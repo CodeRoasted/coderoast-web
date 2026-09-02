@@ -376,7 +376,7 @@ const fr: typeof en = {
                 description:
                     'Le même run réussi face au run en échec. Le trio de tête, c’est l’échec et sa cause.',
                 story: [
-                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 13 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis pourquoi — le paquet dont le build a échoué, et l’erreur qu’il a levée.',
+                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 11 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis l’erreur qu’elle a levée.',
                     'Pas « on a trouvé le mot ERROR ». La ligne fautive était déjà dans le log — grep vous l’aurait rendue en même temps que des milliers de lignes de bruit de build qui ont bougé au même moment. Ce qu’un diff texte ne peut pas vous dire, c’est laquelle d’entre elles est celle qui compte.',
                 ],
             },

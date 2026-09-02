@@ -423,13 +423,17 @@ const en = {
                 // "Ranks the cause at the top" was ruled an OVERSTATEMENT by PRD-6 (006-web-copy.md,
                 // 2026-07-27) and shipped anyway. The published report in the same directory
                 // (`F-SRC-coderoast-hub:regression.report.md`) ranks at 1 the FACT
-                // of failure — the process-exit-code line — with the package build failure and the
-                // raised error at 2 and 3. Anyone can open it and check, which is exactly why the
-                // copy must not round up. The wording below is PRD-6's ratified replacement.
+                // of failure — the process-exit-code line — with the errors it raised at 2 and 3.
+                // Anyone can open it and check, which is exactly why the copy must not round up.
+                // The wording below is PRD-6's ratified replacement, RE-RATIFIED 2026-09-02 when
+                // the showcase was republished at engine v1.10.3: the count fell 13 -> 11 (fewer
+                // alerts, same signal), and `Package '<hash>' build failed` — the old rank 2, the
+                // old "the package that failed to build" — is masked to `Package '<*>' build
+                // failed` at 0.80 and now sits at rank 6, so it is no longer in the top three.
                 description:
                     'The same passing run against the failing one. The top three are the failure and its cause.',
                 story: [
-                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 13 — and the top three are the whole story: the step exited non-zero, then why — the package that failed to build, and the error it raised.',
+                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 11 — and the top three are the whole story: the step exited non-zero, then the error it raised.',
                     'Not “we found the word ERROR.” The failing line was already in the log — grep would have handed it to you along with thousands of lines of build chatter that moved at the same time. What a plain diff cannot tell you is which of them is the one that mattered.',
                 ],
             },
