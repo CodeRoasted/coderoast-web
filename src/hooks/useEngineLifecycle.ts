@@ -11,6 +11,7 @@ import {
 import { engineWs } from '@/services/websocket'
 import { useEngineStore } from '@/store/useEngineStore'
 import { useTranslation } from '@/hooks/useTranslation'
+import { commandLabel } from '@/i18n/commandLabels'
 import type { InsightReport, InsightReportsResponse } from '@/types/engine'
 
 interface EngineLifecycleOptions {
@@ -225,8 +226,16 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 // permission predicate: `EngineControls` disables a button the caller may not
                 // press (`hasOperation`), which is a different question from whether a press
                 // reached the engine. Merging them would hide one behind the other.
-                onCommandRefused: () => {
-                    setStatusMessage(`✗ ${t.lab.commandNotSent}`)
+                //
+                // Told once, but never anonymously: the refused command is named by the label
+                // of the control that sent it, so the operator reads "Pause not sent" rather
+                // than "a command was not sent". One shared sentence, one attributable subject.
+                onCommandRefused: (command) => {
+                    const named = t.lab.commandNotSent.replace(
+                        '{command}',
+                        commandLabel(t.lab, command.type),
+                    )
+                    setStatusMessage(`✗ ${named}`)
                     setTimeout(() => setStatusMessage(null), 4000)
                 },
                 onError: (err) => setStatusMessage(err),
@@ -252,10 +261,11 @@ export function useEngineLifecycle({ insightEnabled = true }: EngineLifecycleOpt
                 },
             })
         },
-        // `t.lab.commandNotSent` is a real dependency (the refusal text). Re-creating this
-        // callback on a language change costs nothing: its only caller is `handleRun`, on a
-        // click — no effect depends on it, so nothing reconnects when the locale flips.
-        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities, setReplayPending, t.lab.commandNotSent],
+        // `t.lab` is a real dependency: the refusal renders BOTH the sentence and the refused
+        // control's label out of it. Re-creating this callback on a language change costs
+        // nothing — its only caller is `handleRun`, on a click, and no effect depends on it,
+        // so nothing reconnects when the locale flips.
+        [setSnapshot, appendToLiveTail, setConnected, setStatusMessage, setValidationErrors, setUnavailableCapabilities, setReplayPending, t.lab],
     )
 
     const handleRun = useCallback(async () => {

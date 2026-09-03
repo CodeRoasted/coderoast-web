@@ -74,6 +74,41 @@ export interface EngineSnapshot {
     tail: LogTailEntry[]
 }
 
+/**
+ * Every command this client can put on the engine WebSocket, one arm per wire token.
+ *
+ * CLOSED ON PURPOSE. The vocabulary is declared once, in `coderoast-server`'s
+ * `command_catalog.hpp` (`kWebUiCommands` is the subset this client is allowed to send),
+ * and the superproject's `scripts/command_vocabulary_lint.py` asserts set equality in both
+ * directions across the language gap. This union is the TypeScript side of that seam: it
+ * does not re-declare the vocabulary's FACTS (permission key, deterministic-mode
+ * eligibility, routing class — those stay in the catalog), only the shapes this client
+ * spells, so that anything consuming a command exhaustively — the refusal label map in
+ * `src/i18n/commandLabels.ts` — fails to COMPILE when an arm is added without one.
+ * `Record<string, unknown>`, which this replaced, made that impossible: an open type over a
+ * closed vocabulary can only be handled with a fallback, and a fallback is exactly the
+ * silent hole the label map exists to close.
+ *
+ * Field names are the wire's, not the UI's (`duration_ns`, `rps`), because these objects
+ * are `JSON.stringify`d straight onto the socket — `engine_ws_messages.cpp` reads these
+ * exact keys.
+ */
+export type EngineCommand =
+    | { type: 'start' }
+    | { type: 'stop' }
+    | { type: 'play' }
+    | { type: 'pause' }
+    | { type: 'set_speed'; multiplier: number }
+    | { type: 'advance'; duration_ns: number }
+    | { type: 'play_to_target'; target_elapsed_ns: number }
+    | { type: 'set_rate'; agent: string; rps: number }
+    | { type: 'set_error_rate'; agent: string; rate: number }
+    | { type: 'burst'; agent: string; count: number }
+    | { type: 'cascade' }
+
+/** The wire tokens alone — the discriminant of `EngineCommand`. */
+export type EngineCommandType = EngineCommand['type']
+
 export type InsightSeverity =
     | 'Info'
     | 'Low'

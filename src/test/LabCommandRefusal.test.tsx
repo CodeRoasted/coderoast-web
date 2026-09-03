@@ -28,11 +28,19 @@ import type { EngineSnapshot } from '@/types/engine'
  * first grain wearing a different hat — it would stay green if `Lab` stopped
  * rendering `LabStatusToast` altogether.
  *
+ * THE THIRD GRAIN, added once the refusal became attributable: the sentence names
+ * WHICH control was lost, and names it by that control's own label — never by the
+ * wire token, which is a protocol identifier the operator has never seen. So the
+ * arms below drive TWO differently-shaped commands (`pause`, which carries no
+ * payload, and `set_speed`, which carries a multiplier) and require the two
+ * sentences to DIFFER: a fixed sentence, the defect this closes, passes neither.
+ *
  * WHY THE WHOLE `Lab` PAGE — the fixture must CONTROL the socket's readyState and
  * the operator's click, and must OWN NONE of the wiring under test. Three links
  * carry the refusal and each can break silently on its own:
  *   1. `useEngineLifecycle.connectToEngine` wiring `onCommandRefused` at all;
- *   2. that handler writing the localized text to `statusMessage`;
+ *   2. that handler writing the localized text — with the refused control's own
+ *      localized label interpolated into it — to `statusMessage`;
  *   3. `Lab` passing `statusMessage` into `LabStatusToast`.
  * A bespoke harness component would re-implement link 3 and therefore prove it
  * against itself. Mounting `Lab` is the cheapest fixture that holds all three.
@@ -173,6 +181,24 @@ function transportButton(label: string): HTMLElement {
     return matches[0] as HTMLElement
 }
 
+/**
+ * The face of the speed preset this suite clicks. The button's own text is the VALUE it
+ * applies ("2x"); the control it belongs to is named "Speed" / "Vitesse", and that name is
+ * what the refusal must show. Clicking it sends `set_speed`, a command that carries a
+ * payload — the second shape this suite exercises, next to the payload-less `pause`.
+ */
+const kSpeedPresetFace = '2x'
+
+/**
+ * The refusal exactly as the operator should read it for `control`, assembled from the two
+ * bundle entries the producer reads: the sentence and the control's label. It is their
+ * WIRING that is under test, not the wording of either — a hard-coded golden of the whole
+ * sentence would turn a copy edit into a red without holding anything more.
+ */
+function expectedRefusal(bundle: typeof en, control: string): string {
+    return `✗ ${bundle.lab.commandNotSent.replace('{command}', control)}`
+}
+
 function socketCount(): number {
     return MockWebSocket.instances.length
 }
@@ -286,7 +312,7 @@ describe('Lab — a refused command is VISIBLE to the operator', () => {
 
     it('puts the refusal sentence on screen when a click cannot reach the engine', async () => {
         const opened = await launchEngine()
-        const refusal = `✗ ${en.lab.commandNotSent}`
+        const refusal = expectedRefusal(en, en.lab.pause)
 
         // ── Control arm ───────────────────────────────────────────────────────
         // Same click, live socket. It must travel AND leave the screen clean of a
@@ -370,11 +396,75 @@ describe('Lab — a refused command is VISIBLE to the operator', () => {
         expect(rendered, `the refusal must say WHAT TO DO, read "${rendered}"`).toMatch(
             /reconnect/i,
         )
+        // …and WHICH press was lost. Without this the operator is told something vanished
+        // and left to guess what; attribution is the difference between a refusal they can
+        // act on and one they can only worry about.
+        expect(
+            rendered,
+            `the refusal must name the control that was refused ("${en.lab.pause}"), read "${rendered}"`,
+        ).toContain(en.lab.pause)
+    })
+
+    it('names the control that was refused, by its label and not by its wire token', async () => {
+        const opened = await launchEngine()
+
+        await act(async () => {
+            opened.triggerClose()
+        })
+        await act(async () => {
+            vi.advanceTimersByTime(1000) // first backoff step -> a CONNECTING socket
+        })
+        const reconnecting = socketAt(1)
+        expect(
+            reconnecting.readyState,
+            'the reconnecting socket must still be CONNECTING for this arm to mean anything',
+        ).toBe(MockWebSocket.CONNECTING)
+
+        // ── A payload-less command: `pause` ───────────────────────────────────
+        await act(async () => {
+            fireEvent.click(transportButton(en.lab.pause))
+        })
+        const afterPause = screen.getByText(expectedRefusal(en, en.lab.pause)).textContent ?? ''
+
+        // ── A command carrying a payload: `set_speed`, sent by a preset button ─
+        // Same refusal path, a different command SHAPE, so the label lookup is exercised on
+        // more than one branch of the vocabulary.
+        await act(async () => {
+            fireEvent.click(transportButton(kSpeedPresetFace))
+        })
+        const afterSpeed = screen.getByText(expectedRefusal(en, en.lab.speed)).textContent ?? ''
+
+        expect(
+            reconnecting.sent,
+            `a half-open socket must carry nothing; wire carried [${reconnecting.sent.join(' | ')}]`,
+        ).toHaveLength(0)
+
+        // THE POINT: two presses, two different sentences. A fixed sentence — the defect
+        // this closes — would make these two strings equal and pass everything above.
+        expect(
+            afterSpeed,
+            `refusing two different controls must produce two different sentences; both read "${afterPause}"`,
+        ).not.toBe(afterPause)
+
+        // Named by the CONTROL's label, never by the protocol token. `set_speed` is the
+        // wire's word for a button the page calls Speed; showing the token would name the
+        // system's internals to someone who has never seen them, which is worse than the
+        // anonymous sentence it replaced. This pair is why the second command is `set_speed`
+        // and not another payload-less one: for `pause` the token and the label differ only
+        // in case, so neither direction can be told apart.
+        expect(
+            afterSpeed,
+            `the refusal must name the control "${en.lab.speed}", read "${afterSpeed}"`,
+        ).toContain(en.lab.speed)
+        expect(
+            afterSpeed,
+            `the refusal must not leak the wire token "set_speed", read "${afterSpeed}"`,
+        ).not.toContain('set_speed')
     })
 
     it('clears the refusal from the screen after 4 s, so it cannot outlive its truth', async () => {
         const opened = await launchEngine()
-        const refusal = `✗ ${en.lab.commandNotSent}`
+        const refusal = expectedRefusal(en, en.lab.pause)
 
         await act(async () => {
             opened.triggerClose()
@@ -407,7 +497,7 @@ describe('Lab — a refused command is VISIBLE to the operator', () => {
         ).toBeNull()
     })
 
-    it('speaks the operator language — a French session reads the French refusal', async () => {
+    it('speaks the operator language — a French session reads the French refusal, control name included', async () => {
         useStore.setState({ language: 'fr' })
         const opened = await launchEngine()
 
@@ -421,11 +511,33 @@ describe('Lab — a refused command is VISIBLE to the operator', () => {
             fireEvent.click(transportButton(fr.lab.pause))
         })
 
-        expect(screen.getByText(`✗ ${fr.lab.commandNotSent}`)).toBeInTheDocument()
+        expect(screen.getByText(expectedRefusal(fr, fr.lab.pause))).toBeInTheDocument()
         expect(
-            screen.queryByText(`✗ ${en.lab.commandNotSent}`),
+            screen.queryByText(expectedRefusal(en, en.lab.pause)),
             'a French session must not be shown the English refusal',
         ).toBeNull()
         expect(fr.lab.commandNotSent).not.toBe(en.lab.commandNotSent)
+
+        // The NAME must cross the locale too, not just the sentence around it. Pause is
+        // spelled the same in both bundles, so it cannot show that; Speed / Vitesse can, and
+        // an untranslated label inside a translated sentence is exactly the half-localized
+        // state a shared-sentence-plus-lookup design can fall into.
+        await act(async () => {
+            fireEvent.click(transportButton(kSpeedPresetFace))
+        })
+        const rendered =
+            screen.getByText(expectedRefusal(fr, fr.lab.speed)).textContent ?? ''
+        expect(
+            rendered,
+            `a French session must be shown the French control name "${fr.lab.speed}", read "${rendered}"`,
+        ).toContain(fr.lab.speed)
+        expect(
+            rendered,
+            `a French session must not be shown the English control name "${en.lab.speed}", read "${rendered}"`,
+        ).not.toContain(en.lab.speed)
+        expect(
+            fr.lab.speed,
+            'this arm only means something while the two bundles spell Speed differently',
+        ).not.toBe(en.lab.speed)
     })
 })

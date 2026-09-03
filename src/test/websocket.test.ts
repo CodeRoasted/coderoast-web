@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { EngineWebSocket } from '@/services/websocket'
+import type { EngineCommand } from '@/types/engine'
 import { useAuthStore } from '@/store/useAuthStore'
 
 /**
@@ -139,7 +140,7 @@ describe('EngineWebSocket', () => {
     // them with no next move — so the refusal is now REPORTED, and this pins that.
     // Both arms matter: dropping the send is correct, staying silent about it is the bug.
     it('sendCommand reports a refusal instead of dropping the command', () => {
-        const refused: Record<string, unknown>[] = []
+        const refused: EngineCommand[] = []
         const ws = new EngineWebSocket()
         ws.connect('eng-1', { onCommandRefused: (command) => refused.push(command) })
         const sock = lastSocket()
@@ -150,12 +151,15 @@ describe('EngineWebSocket', () => {
         expect(refused).toEqual([])
 
         // Closed: not on the wire, answered false, and reported with the command itself,
-        // so a caller can say WHICH press was lost rather than that one was.
+        // so a caller can say WHICH press was lost rather than that one was. The refused
+        // command carries a PAYLOAD here on purpose: the object is handed back whole, not
+        // reduced to its discriminant, which is what lets the view layer say more than
+        // "a command" if it ever needs to.
         sock.readyState = MockWebSocket.CLOSED
-        expect(ws.sendCommand({ type: 'play', channel: 'eng-1' })).toBe(false)
+        expect(ws.sendCommand({ type: 'set_speed', multiplier: 4 })).toBe(false)
         expect(sock.sent, `nothing may be sent on a closed socket, got ${sock.sent.join(' | ')}`)
             .toHaveLength(1)
-        expect(refused).toEqual([{ type: 'play', channel: 'eng-1' }])
+        expect(refused).toEqual([{ type: 'set_speed', multiplier: 4 }])
 
         ws.disconnect()
     })
@@ -166,7 +170,7 @@ describe('EngineWebSocket', () => {
     it('keeps reporting refusals after a reconnect', () => {
         vi.useFakeTimers()
         try {
-            const refused: Record<string, unknown>[] = []
+            const refused: EngineCommand[] = []
             const ws = new EngineWebSocket()
             ws.connect('eng-1', { onCommandRefused: (command) => refused.push(command) })
 

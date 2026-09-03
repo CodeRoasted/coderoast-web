@@ -1140,7 +1140,7 @@ const fr: typeof en = {
         playingToTarget: 'En train de jouer jusqu\'à la cible…',
         targetSeconds: 'Secondes cible',
         commandNotSent:
-            'Commande non envoyée : aucune connexion active au moteur. La reconnexion est automatique — réessayez une fois le moteur reconnecté.',
+            'Commande « {command} » non envoyée : aucune connexion active au moteur. La reconnexion est automatique — réessayez une fois le moteur reconnecté.',
         mode: 'Mode',
         clock: 'Horloge',
         playback: 'Lecture',

@@ -1,4 +1,4 @@
-import type { EngineSnapshot } from '@/types/engine'
+import type { EngineCommand, EngineSnapshot } from '@/types/engine'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export type WsMessageHandler = {
@@ -21,8 +21,13 @@ export type WsMessageHandler = {
      * to make impossible. Wiring it is therefore not optional in a UI that sends
      * commands. The reason is not passed as text: the transport knows the fact,
      * the view layer owns the words (`src/i18n/`).
+     *
+     * The refused command is passed WHOLE, and it is typed rather than a bag, so the view
+     * layer can name the control the operator actually pressed instead of reporting that
+     * "a command" was lost. A refusal nobody can attribute is only marginally better than
+     * silence.
      */
-    onCommandRefused?: (command: Record<string, unknown>) => void
+    onCommandRefused?: (command: EngineCommand) => void
     onClose?: () => void
 }
 
@@ -66,7 +71,7 @@ export class EngineWebSocket {
 
     /** @returns whether the command reached the wire. A refusal is also reported on
      *  `onCommandRefused`, so a caller that ignores this value still cannot drop it. */
-    sendCommand(command: Record<string, unknown>): boolean {
+    sendCommand(command: EngineCommand): boolean {
         if (this.ws?.readyState !== WebSocket.OPEN) {
             this.handlers.onCommandRefused?.(command)
             return false

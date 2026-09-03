@@ -1204,7 +1204,7 @@ const en = {
         playingToTarget: 'Playing to target…',
         targetSeconds: 'Target seconds',
         commandNotSent:
-            'Command not sent: no live connection to the engine. Reconnection is automatic — retry once the engine reconnects.',
+            'Command "{command}" not sent: no live connection to the engine. Reconnection is automatic — retry once the engine reconnects.',
         mode: 'Mode',
         clock: 'Clock',
         playback: 'Playback',
