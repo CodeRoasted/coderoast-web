@@ -192,7 +192,6 @@ export default function EngineControls({
                         <button
                             onClick={handlePlayToTarget}
                             disabled={!canAdvance || !onPlayToTarget || !hasValidReplayTarget || playToTargetPending}
-                            aria-label={t.lab.playToTarget}
                             className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-gray-300 hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                             {playToTargetPending ? (

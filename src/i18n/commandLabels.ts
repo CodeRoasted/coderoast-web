@@ -20,11 +20,12 @@ type LabLabelKey = {
  * system's internals to someone who never saw them, which is worse than the anonymous
  * refusal it replaced — a wrong name costs more than a missing one.
  *
- * WHICH label, when a control has two. Uniformly the control's NAME (its tooltip /
- * aria-label), never the transient value on its face: the time-advance buttons read "+1s"
- * and "+10s" but are the Advance control, the speed presets read "0.5x…5x" but are the
- * Speed control, and the seek button reads "Replay" while its aria-label — the name the
- * page itself gives it — is "Play to target". One rule, applied to all eleven.
+ * WHICH label, when a control has two. The label the operator READ on the control, falling
+ * back to its tooltip only where the face carries a transient VALUE rather than a name: the
+ * time-advance buttons read "+1s" and "+10s" but are the Advance control, and the speed
+ * presets read "0.5x…5x" but are the Speed control. The seek button's face reads "Replay",
+ * which IS a name, so that is what the toast says — a refusal has to be recognisable to
+ * someone recalling the press, and what they recall is the word they clicked.
  *
  * TOTAL BY CONSTRUCTION. `Record<EngineCommandType, …>` means an arm added to
  * `EngineCommand` without a row here does not compile. That is the whole reason the
@@ -40,7 +41,7 @@ const kCommandLabelKeys: Record<EngineCommandType, LabLabelKey> = {
     pause: 'pause',
     set_speed: 'speed',
     advance: 'advance',
-    play_to_target: 'playToTarget',
+    play_to_target: 'replay',
     set_rate: 'rate',
     set_error_rate: 'errorRate',
     burst: 'burst',

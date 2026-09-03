@@ -54,7 +54,7 @@ describe('EngineControls', () => {
         expect(targetInput).toHaveAttribute('type', 'text')
 
         fireEvent.change(targetInput, { target: { value: '7.25' } })
-        fireEvent.click(screen.getByRole('button', { name: 'Play to target' }))
+        fireEvent.click(screen.getByRole('button', { name: 'Replay' }))
 
         expect(onPlayToTarget).toHaveBeenCalledWith(7_250_000_000)
     })
@@ -76,7 +76,7 @@ describe('EngineControls', () => {
         )
 
         expect(screen.queryByLabelText('Target seconds')).not.toBeInTheDocument()
-        expect(screen.queryByRole('button', { name: 'Play to target' })).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: 'Replay' })).not.toBeInTheDocument()
     })
 
     it('shows play-to-target progress while the command is pending', () => {
@@ -97,7 +97,7 @@ describe('EngineControls', () => {
         )
 
         expect(screen.getByText('Replaying')).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: 'Play to target' })).toBeDisabled()
+        expect(screen.getByRole('button', { name: 'Replaying' })).toBeDisabled()
         expect(screen.getByLabelText('Target seconds')).toBeDisabled()
     })
 })
