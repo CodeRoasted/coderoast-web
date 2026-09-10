@@ -219,7 +219,7 @@ describe('/diff preset picker — loading a pair', () => {
 // ── The suppression footer, at the numbers a real report now carries ─────────
 //
 // The footer subtracts `significant_changes` from `total_changes` (InsightDiff.tsx),
-// and until DN-37.D31 that subtraction was widely believed to be a structural zero.
+// and until ADR-20.D15 that subtraction was widely believed to be a structural zero.
 // It was not, on THIS surface: /diff posts to the server's hosted demo, which runs
 // the COLD spine (`insight::sift::diff_logs`), where `total_changes` has always been
 // the pre-cut census — the restore landed on the ALIGNED spine, which this page never
@@ -300,7 +300,7 @@ describe('/diff — the suppression footer reads the census gap', () => {
     // sites are exposed to. A JS number is a double, so a breached `significant <= total`
     // yields −951 here, never the ~1.8e19 an unsigned wrap produces; and the gate then
     // drops the paragraph rather than printing the negative. Characterized, not defended:
-    // the invariant stays the engine's (DN-37.D31), asserted where each spine finalizes.
+    // the invariant stays the engine's (ADR-20.D15), asserted where each spine finalizes.
     it('prints nothing rather than a negative if the engine invariant is ever breached', async () => {
         await compare(22, 973)
         expect(footerNodes(), 'a breached invariant reached the page as text').toHaveLength(0)
