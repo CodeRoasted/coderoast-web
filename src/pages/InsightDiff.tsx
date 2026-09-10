@@ -80,7 +80,7 @@ const KIND_ICON: Record<string, typeof Activity> = {
     frequency_shift: ArrowLeftRight,
     entropy_shift: Activity,
     emerging_tail: Waves,
-    // DN-31.D9 — the roll-up row: a unit of work that changed outcome. Flag, not
+    // ADR-20.D11 — the roll-up row: a unit of work that changed outcome. Flag, not
     // AlertTriangle: this row is the headline regardless of DIRECTION (a unit can flip
     // red→green too), so it must not borrow the error glyph.
     unit_outcome_changed: Flag,
