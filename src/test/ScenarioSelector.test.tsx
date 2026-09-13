@@ -13,11 +13,10 @@ vi.mock('@/services/api', () => ({
         quotaKey: string
         quotaLimit: number | null
         userId: string
-        subject: string
         role: string
         identityKind: string
         deploymentContext: string
-        constructor(p: { operation: string; requiredEntitlement: string; quotaKey: string; quotaLimit: number | null; userId: string; subject: string; role: string; identityKind: string; deploymentContext: string; reason: string }) {
+        constructor(p: { operation: string; requiredEntitlement: string; quotaKey: string; quotaLimit: number | null; userId: string; role: string; identityKind: string; deploymentContext: string; reason: string }) {
             super(p.reason || 'Access denied')
             this.name = 'PolicyDenialError'
             this.operation = p.operation
@@ -25,7 +24,6 @@ vi.mock('@/services/api', () => ({
             this.quotaKey = p.quotaKey
             this.quotaLimit = p.quotaLimit
             this.userId = p.userId
-            this.subject = p.subject
             this.role = p.role
             this.identityKind = p.identityKind
             this.deploymentContext = p.deploymentContext
@@ -115,7 +113,6 @@ describe('ScenarioSelector', () => {
                     quotaKey: '',
                     quotaLimit: null,
                     userId: 'visitor',
-                    subject: 'session-abc',
                     role: 'visitor',
                     identityKind: 'visitor',
                     deploymentContext: 'public_demo',

@@ -48,7 +48,6 @@ export interface QuotaUsage {
 export interface CapabilityProfile {
     tenant_id: string
     user_id: string
-    subject_id: string
     name: string
     role: string
     identity_kind: string
@@ -112,7 +111,6 @@ export class PolicyDenialError extends Error {
     readonly quotaKey: string
     readonly quotaLimit: number | null
     readonly userId: string
-    readonly subject: string
     readonly role: string
     readonly identityKind: string
     readonly deploymentContext: string
@@ -124,7 +122,6 @@ export class PolicyDenialError extends Error {
         quotaKey: string
         quotaLimit: number | null
         userId: string
-        subject: string
         role: string
         identityKind: string
         deploymentContext: string
@@ -137,7 +134,6 @@ export class PolicyDenialError extends Error {
         this.quotaKey = params.quotaKey
         this.quotaLimit = params.quotaLimit
         this.userId = params.userId
-        this.subject = params.subject
         this.role = params.role
         this.identityKind = params.identityKind
         this.deploymentContext = params.deploymentContext
@@ -225,7 +221,6 @@ async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DE
                 quotaKey: body.quota && typeof body.quota.key === 'string' ? body.quota.key : '',
                 quotaLimit: body.quota && typeof body.quota.limit === 'number' ? body.quota.limit : null,
                 userId: typeof body.user === 'string' ? body.user : '',
-                subject: typeof body.subject === 'string' ? body.subject : '',
                 role: typeof body.role === 'string' ? body.role : '',
                 identityKind: typeof body.identity_kind === 'string' ? body.identity_kind : '',
                 deploymentContext: typeof body.deployment_context === 'string' ? body.deployment_context : '',
