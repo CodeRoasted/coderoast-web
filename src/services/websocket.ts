@@ -1,4 +1,5 @@
 import type { EngineCommand, EngineSnapshot } from '@/types/engine'
+import { HttpError, PolicyDenialError, mintWsTicket } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export type WsMessageHandler = {
@@ -7,10 +8,11 @@ export type WsMessageHandler = {
     onConnected?: (engineId: string) => void
     onError?: (error: string) => void
     /**
-     * Called when the server sends a fatal error message (e.g. "engine not
-     * found") before closing the socket. Unlike `onError` (network faults),
-     * this will NOT trigger a reconnect attempt — the server has explicitly
-     * rejected the connection.
+     * Called when the server refuses the connection outright — a fatal error
+     * frame sent before closing the socket (e.g. "engine not found"), or a
+     * refused ticket request. Unlike `onError` (network faults), this will NOT
+     * trigger a reconnect attempt: the server has explicitly rejected the
+     * connection, and asking again would earn the same answer.
      */
     onFatalError?: (error: string) => void
     /**
@@ -31,6 +33,15 @@ export type WsMessageHandler = {
     onClose?: () => void
 }
 
+/**
+ * A ticket request the server ANSWERED with a refusal (the engine is gone, the
+ * session may not watch it, or there is no session). A 5xx, a timeout or a
+ * network failure is a fault of the path instead, and is retried.
+ */
+function isRefusal(error: unknown): error is Error {
+    return error instanceof PolicyDenialError || (error instanceof HttpError && error.status < 500)
+}
+
 export class EngineWebSocket {
     private ws: WebSocket | null = null
     private handlers: WsMessageHandler = {}
@@ -38,6 +49,11 @@ export class EngineWebSocket {
     private engineId: string | null = null
     private shouldReconnect = false
     private reconnectAttempt = 0
+    /**
+     * Bumped by every open attempt and every disconnect, so the answer to a
+     * ticket request that lands after the caller moved on opens nothing.
+     */
+    private openGeneration = 0
 
     /**
      * Backoff schedule for reconnect (ms). After the last entry we keep
@@ -58,6 +74,7 @@ export class EngineWebSocket {
     disconnect() {
         this.shouldReconnect = false
         this.reconnectAttempt = 0
+        this.openGeneration += 1
         if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer)
             this.reconnectTimer = null
@@ -87,17 +104,53 @@ export class EngineWebSocket {
         return schedule[idx] ?? schedule[schedule.length - 1] ?? 1000
     }
 
-    private doConnect() {
-        if (!this.engineId) return
+    private scheduleReconnect() {
+        if (!this.shouldReconnect) return
+        const delay = this.nextBackoffMs()
+        this.reconnectAttempt += 1
+        this.reconnectTimer = setTimeout(() => this.doConnect(), delay)
+    }
 
-        // Browsers can't add headers to a WebSocket upgrade, so the bearer
-        // token (when present) rides along as a query parameter. The
-        // backend's resolve_ws_principal() honours both Authorization
-        // header and ?token=…
-        const token = useAuthStore.getState().token
-        const params = new URLSearchParams({ id: this.engineId })
-        if (token) {
-            params.set('token', token)
+    /**
+     * A browser cannot set headers on a WebSocket upgrade, so the bearer never
+     * travels to the socket: it is spent on an authenticated `POST /ws/ticket`,
+     * and the URL carries only the single-use ticket that answers it. A ticket
+     * is dead after one open, so every connect and every reconnect mints its
+     * own. With no session there is nothing to spend, and the socket opens
+     * session-less.
+     */
+    private doConnect() {
+        const engineId = this.engineId
+        if (!engineId) return
+        const generation = ++this.openGeneration
+
+        if (!useAuthStore.getState().token) {
+            this.open(engineId, null)
+            return
+        }
+
+        mintWsTicket(engineId).then(
+            (ticket) => {
+                if (generation !== this.openGeneration || !this.shouldReconnect) return
+                this.open(engineId, ticket)
+            },
+            (error: unknown) => {
+                if (generation !== this.openGeneration || !this.shouldReconnect) return
+                if (isRefusal(error)) {
+                    this.shouldReconnect = false
+                    this.handlers.onFatalError?.(error.message)
+                    return
+                }
+                this.handlers.onError?.('WebSocket ticket request failed')
+                this.scheduleReconnect()
+            },
+        )
+    }
+
+    private open(engineId: string, ticket: string | null) {
+        const params = new URLSearchParams({ id: engineId })
+        if (ticket) {
+            params.set('ticket', ticket)
         }
         const query = params.toString()
 
@@ -154,11 +207,7 @@ export class EngineWebSocket {
 
         this.ws.onclose = () => {
             this.handlers.onClose?.()
-            if (this.shouldReconnect) {
-                const delay = this.nextBackoffMs()
-                this.reconnectAttempt += 1
-                this.reconnectTimer = setTimeout(() => this.doConnect(), delay)
-            }
+            this.scheduleReconnect()
         }
 
         this.ws.onerror = () => {

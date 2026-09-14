@@ -151,7 +151,7 @@ In LogCraft Playground mode, InSight polling is disabled and the observation col
 - base URL from `VITE_API_BASE` or `/api/v1`;
 - bearer token injection from `useAuthStore`;
 - default request timeout of 15 seconds;
-- `PolicyDenialError` for HTTP 403 payloads;
+- `PolicyDenialError` for HTTP 403 payloads, and `HttpError`, carrying the status, for every other non-2xx answer;
 - typed response helpers for scenarios, engines, auth, capability profiles, drain snapshots, and InSight status/reports.
 
 The authoritative endpoint contract lives in CodeRoastServer's `technical_docs/api/server_api_contract.md`; that repository is not published.
@@ -160,7 +160,8 @@ The authoritative endpoint contract lives in CodeRoastServer's `technical_docs/a
 
 `src/services/websocket.ts` owns a singleton `EngineWebSocket`:
 
-- uses `?token=` because browsers cannot attach custom headers to WebSocket upgrades;
+- spends the bearer on a single-use ticket (`mintWsTicket`: `POST /ws/ticket` with the bearer in `Authorization`) before every connect and every reconnect, and opens `/ws/engine?id=...&ticket=...`, because browsers cannot attach headers to a WebSocket upgrade; the bearer never enters a URL, and with no session the socket opens without a ticket;
+- stops reconnecting on a refused ticket (a 4xx answer) and retries on the backoff schedule when the ticket request fails in transit;
 - derives a production `wss://` URL from `VITE_API_BASE` when configured;
 - uses the Vite proxied `/api/v1/ws/engine` path in development;
 - reconnects with capped backoff `[1s, 2s, 4s, 8s, 15s]`;

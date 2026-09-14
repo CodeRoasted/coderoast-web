@@ -227,7 +227,7 @@ async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DE
                 reason: typeof body.reason === 'string' ? body.reason : 'Access denied',
             })
         }
-        throw new Error(body.error || body.reason || `HTTP ${resp.status}`)
+        throw new HttpError(resp.status, body.error || body.reason || `HTTP ${resp.status}`)
     }
     return resp.json()
 }
@@ -274,6 +274,38 @@ export async function login(userId: string | null = null): Promise<LoginResponse
 
 export async function logout(): Promise<void> {
     await request('/logout', { method: 'POST' })
+}
+
+/**
+ * Raised for every non-2xx answer other than a 403 (which is a `PolicyDenialError`).
+ * It carries the status, so a caller can tell a refusal the server ANSWERED (4xx)
+ * from a fault of the path (5xx) without parsing the message.
+ */
+export class HttpError extends Error {
+    readonly status: number
+
+    constructor(status: number, message: string) {
+        super(message)
+        this.name = 'HttpError'
+        this.status = status
+    }
+}
+
+/**
+ * Spend the session's bearer on a single-use ticket for one engine's WebSocket.
+ * The bearer travels only in this request's `Authorization` header; the socket URL
+ * carries the ticket, which the server accepts once and for 30 s. Every connect and
+ * every reconnect calls this again, because a used ticket is refused.
+ */
+export async function mintWsTicket(engineId: string): Promise<string> {
+    const body = await request<{ ticket?: unknown }>('/ws/ticket', {
+        method: 'POST',
+        body: JSON.stringify({ engine_id: engineId }),
+    })
+    if (typeof body.ticket !== 'string' || body.ticket === '') {
+        throw new Error('The ticket reply carried no ticket')
+    }
+    return body.ticket
 }
 
 export interface WhoAmIResponse {

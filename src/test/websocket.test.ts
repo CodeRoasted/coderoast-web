@@ -51,8 +51,19 @@ class MockWebSocket {
     }
 }
 
+function jsonResponse(body: unknown, status = 200): Response {
+    return new Response(JSON.stringify(body), {
+        status,
+        headers: { 'Content-Type': 'application/json' },
+    })
+}
+
+/** The bearer every session-holding arm signs in with. It must never appear in a socket URL. */
+const kBearer = 'sekrit-bearer-0c7e'
+
 describe('EngineWebSocket', () => {
     let originalWebSocket: typeof WebSocket
+    let fetchMock: ReturnType<typeof vi.fn>
 
     beforeEach(() => {
         MockWebSocket.instances = []
@@ -61,6 +72,8 @@ describe('EngineWebSocket', () => {
         // EngineWebSocket actually touches.
         ; (globalThis as unknown as { WebSocket: unknown }).WebSocket =
             MockWebSocket as unknown
+        fetchMock = vi.fn()
+        vi.stubGlobal('fetch', fetchMock)
         useAuthStore.setState({
             token: null,
             user: null,
@@ -73,6 +86,7 @@ describe('EngineWebSocket', () => {
     afterEach(() => {
         ; (globalThis as unknown as { WebSocket: typeof WebSocket }).WebSocket =
             originalWebSocket
+        vi.unstubAllGlobals()
         vi.useRealTimers()
     })
 
@@ -80,6 +94,20 @@ describe('EngineWebSocket', () => {
         const s = MockWebSocket.instances[MockWebSocket.instances.length - 1]
         if (!s) throw new Error('no socket created')
         return s
+    }
+
+    /** Every socket URL opened so far, for a failure message. */
+    function urls(): string {
+        return MockWebSocket.instances.map((s) => s.url).join(' | ') || '<no socket>'
+    }
+
+    /** Every ticket request made so far, as `METHOD url body`, for a failure message. */
+    function ticketCalls(): string {
+        return (
+            fetchMock.mock.calls
+                .map(([url, init]) => `${(init as RequestInit | undefined)?.method ?? 'GET'} ${String(url)} ${String((init as RequestInit | undefined)?.body ?? '')}`)
+                .join(' | ') || '<no request>'
+        )
     }
 
     it('opens a socket scoped to the engineId', () => {
@@ -90,11 +118,142 @@ describe('EngineWebSocket', () => {
         ws.disconnect()
     })
 
-    it('appends bearer token as a query parameter when present', () => {
-        useAuthStore.setState({ token: 'sekrit' })
+    // A browser cannot set headers on an upgrade, so the bearer used to ride the URL as
+    // `?token=`, where every proxy and error log that records a request line keeps it. The
+    // client now spends the bearer on an authenticated POST and puts only a single-use ticket
+    // in the URL; the parent put the bearer itself there and made no request at all.
+    it('mints a ticket with the bearer and opens the socket with the ticket, never the bearer', async () => {
+        vi.useFakeTimers()
+        useAuthStore.setState({ token: kBearer })
+        fetchMock.mockResolvedValueOnce(jsonResponse({ ticket: 'ticket-one' }))
+
         const ws = new EngineWebSocket()
         ws.connect('eng-1', {})
-        expect(lastSocket().url).toContain('token=sekrit')
+        await vi.advanceTimersByTimeAsync(0)
+
+        expect(fetchMock, `expected one ticket request, got: ${ticketCalls()}`).toHaveBeenCalledTimes(1)
+        const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+        expect(url).toBe('/api/v1/ws/ticket')
+        expect(init.method).toBe('POST')
+        expect((init.headers as Record<string, string>)['Authorization']).toBe(`Bearer ${kBearer}`)
+        expect(JSON.parse(String(init.body))).toEqual({ engine_id: 'eng-1' })
+
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(1)
+        const opened = new URL(lastSocket().url)
+        expect(opened.pathname).toBe('/api/v1/ws/engine')
+        expect(opened.searchParams.get('id')).toBe('eng-1')
+        expect(opened.searchParams.get('ticket')).toBe('ticket-one')
+        expect(opened.searchParams.has('token'), `socket URL: ${lastSocket().url}`).toBe(false)
+        expect(lastSocket().url, 'the bearer reached a socket URL').not.toContain(kBearer)
+
+        ws.disconnect()
+    })
+
+    // A ticket is single-use, so a reconnect that reused the first one would be refused; every
+    // open therefore spends a fresh request, and no URL across the whole run carries the bearer.
+    it('mints a fresh ticket for every reconnect', async () => {
+        vi.useFakeTimers()
+        useAuthStore.setState({ token: kBearer })
+        fetchMock
+            .mockResolvedValueOnce(jsonResponse({ ticket: 'ticket-one' }))
+            .mockResolvedValueOnce(jsonResponse({ ticket: 'ticket-two' }))
+
+        const ws = new EngineWebSocket()
+        ws.connect('eng-1', {})
+        await vi.advanceTimersByTimeAsync(0)
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(1)
+
+        lastSocket().triggerClose()
+        await vi.advanceTimersByTimeAsync(1000)
+
+        expect(fetchMock, `ticket requests: ${ticketCalls()}`).toHaveBeenCalledTimes(2)
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(2)
+        const tickets = MockWebSocket.instances.map((s) => new URL(s.url).searchParams.get('ticket'))
+        expect(tickets).toEqual(['ticket-one', 'ticket-two'])
+        for (const socket of MockWebSocket.instances) {
+            expect(socket.url, 'the bearer reached a socket URL').not.toContain(kBearer)
+        }
+
+        ws.disconnect()
+    })
+
+    // The server refusing the ticket (the engine is gone, or the session may not watch it) is an
+    // answer, not a fault: retrying would earn the same refusal, so the loop stops and says why.
+    it('stops reconnecting and reports a fatal error when the ticket is refused', async () => {
+        vi.useFakeTimers()
+        useAuthStore.setState({ token: kBearer })
+        fetchMock.mockResolvedValue(jsonResponse({ error: "Engine 'eng-9' not found" }, 404))
+        const onFatalError = vi.fn()
+
+        const ws = new EngineWebSocket()
+        ws.connect('eng-9', { onFatalError })
+        await vi.advanceTimersByTimeAsync(0)
+
+        expect(onFatalError).toHaveBeenCalledWith("Engine 'eng-9' not found")
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(0)
+
+        await vi.advanceTimersByTimeAsync(60_000)
+        expect(fetchMock, `ticket requests: ${ticketCalls()}`).toHaveBeenCalledTimes(1)
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(0)
+    })
+
+    // A request that never got an answer is a fault of the path, exactly like a dropped socket,
+    // so it takes the same backoff and tries again with a fresh ticket.
+    it('retries on the backoff schedule when the ticket request fails in transit', async () => {
+        vi.useFakeTimers()
+        useAuthStore.setState({ token: kBearer })
+        fetchMock
+            .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+            .mockResolvedValueOnce(jsonResponse({ ticket: 'ticket-after-retry' }))
+        const onError = vi.fn()
+
+        const ws = new EngineWebSocket()
+        ws.connect('eng-1', { onError })
+        await vi.advanceTimersByTimeAsync(0)
+        expect(onError).toHaveBeenCalledTimes(1)
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(0)
+
+        await vi.advanceTimersByTimeAsync(999)
+        expect(fetchMock, `ticket requests: ${ticketCalls()}`).toHaveBeenCalledTimes(1)
+        await vi.advanceTimersByTimeAsync(1)
+
+        expect(fetchMock, `ticket requests: ${ticketCalls()}`).toHaveBeenCalledTimes(2)
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(1)
+        expect(new URL(lastSocket().url).searchParams.get('ticket')).toBe('ticket-after-retry')
+
+        ws.disconnect()
+    })
+
+    // The answer to a ticket request can land after the caller has moved on; a socket opened
+    // then would attach a lease to an engine nobody is watching.
+    it('opens no socket when disconnected while the ticket is in flight', async () => {
+        vi.useFakeTimers()
+        useAuthStore.setState({ token: kBearer })
+        let answer: (response: Response) => void = () => { }
+        fetchMock.mockReturnValueOnce(new Promise<Response>((resolve) => { answer = resolve }))
+
+        const ws = new EngineWebSocket()
+        ws.connect('eng-1', {})
+        await vi.advanceTimersByTimeAsync(0)
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+
+        ws.disconnect()
+        answer(jsonResponse({ ticket: 'ticket-too-late' }))
+        await vi.advanceTimersByTimeAsync(60_000)
+
+        expect(MockWebSocket.instances, `sockets: ${urls()}`).toHaveLength(0)
+    })
+
+    // With no session there is nothing to spend on a ticket: the socket opens session-less,
+    // exactly as a connection without a credential always has.
+    it('connects without a ticket and makes no request when no session is held', () => {
+        const ws = new EngineWebSocket()
+        ws.connect('eng-1', {})
+        expect(fetchMock, `ticket requests: ${ticketCalls()}`).not.toHaveBeenCalled()
+        expect(MockWebSocket.instances).toHaveLength(1)
+        const opened = new URL(lastSocket().url)
+        expect(opened.searchParams.has('ticket')).toBe(false)
+        expect(opened.searchParams.has('token')).toBe(false)
         ws.disconnect()
     })
 

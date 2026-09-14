@@ -158,6 +158,8 @@ vi.mock('@/services/api', async (importOriginal) => {
         createEngine: vi.fn(async () => ({ engine_id: kEngineId, message: 'created' })),
         getEngineScenario: vi.fn(async () => ({ yaml: kScenarioYaml })),
         deleteEngine: vi.fn(async () => ({ message: 'deleted' })),
+        // The signed-in client spends its bearer on a ticket before every open.
+        mintWsTicket: vi.fn(async () => 'test-ticket'),
     }
 })
 
