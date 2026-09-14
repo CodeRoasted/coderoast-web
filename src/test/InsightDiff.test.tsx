@@ -289,7 +289,7 @@ describe('/diff — the suppression footer reads the census gap', () => {
         await compare(22, 22)
         expect(
             footerNodes(),
-            'a zero gap must print no footer at all — "0 of the 22 changes were suppressed" is ' +
+            'a zero gap must print no footer at all — "0 of 22 observed changes not listed" is ' +
                 'a sentence about nothing, and it is what this page showed before the census landed ' +
                 'on the spine the CI product uses'
         ).toHaveLength(0)

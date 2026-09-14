@@ -333,8 +333,10 @@ const en = {
         significantChanges: 'Significant changes',
         clearPinned: 'clear {count} pinned',
         hint: 'hover to preview · click to pin (stack multiple) · color = severity, not add/remove',
-        emptyResult:
-            'No structurally significant changes — all {count} observed changes are within noise.',
+        // The gap between observed and significant changes is never called noise (PRD-6,
+        // web copy): it mixes merged rows, withheld rows and rows below significance, and
+        // only the last is noise. Both strings state the observed total and no cause.
+        emptyResult: 'No structurally significant changes among {count} observed changes.',
         // Names its own denominator. The frame above this footer counts LINES
         // ("lines a plain text diff reports"); this counts CHANGES at template
         // grain. Both were true and neither said which, so 1 + 743 read as an
@@ -342,7 +344,7 @@ const en = {
         // position cannot survive. Do not drop {total}: it is the bridging
         // quantity, and without it the arithmetic is unclosable on screen.
         suppressed:
-            '{count} of the {total} changes Sift observed were suppressed as noise (proportional / low-frequency). The plain-diff line count above counts lines, not changes.',
+            '{count} of {total} observed changes not listed. The plain-diff line count above counts lines, not changes.',
         ciCallout: 'Want this in CI? The same engine runs as a local CLI and a GitHub Action.',
         // UI display labels for the engine's severity enum (+ recovery polarity).
         severity: {

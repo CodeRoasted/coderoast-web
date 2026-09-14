@@ -52,7 +52,7 @@ const HERO = {
             text: 'Frequency shift: "Restore dependencies completed in <*>s" — 6.2× slower.',
         },
     ],
-    suppressed: '848 changes suppressed as noise (proportional / low-frequency).',
+    suppressed: '848 of 851 observed changes not listed — full delta in --format json',
 } as const
 
 // PR comment showcase (PRD-6 § 2). Frame + the one engine-rendered row.
