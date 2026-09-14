@@ -152,7 +152,6 @@ export interface InsightReconfigureRequest {
     explain_mode?: InsightExplainMode
     min_confidence?: number
     max_insights?: number
-    llm_model?: string
     window_duration_seconds?: number
 }
 

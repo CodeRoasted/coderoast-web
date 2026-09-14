@@ -388,7 +388,6 @@ export function renderCapability({
                     engineId={engineId}
                     currentWindowDuration={windowDuration}
                     currentExplainMode={explainMode}
-                    currentLlmModel={llmModel}
                     currentLlmHost={llmHost ?? ''}
                     copy={copy}
                 />

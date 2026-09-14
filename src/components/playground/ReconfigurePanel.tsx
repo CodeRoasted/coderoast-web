@@ -11,16 +11,15 @@ export interface ReconfigurePanelProps {
     engineId: string | null
     currentWindowDuration: number | null
     currentExplainMode: InsightExplainMode | null
-    currentLlmModel: string | null
-    /** The narration destination this engine names, empty when it names none. */
+    /** The narration destination the deployment declares, empty when it declares none. */
     currentLlmHost: string
     copy: InsightCopy
 }
 
-export function ReconfigurePanel({ engineId, currentWindowDuration, currentExplainMode, currentLlmModel, currentLlmHost, copy }: ReconfigurePanelProps) {
-    // Narration needs a destination a human named in the deployment; there is no reconfigure key
-    // for the endpoint, so a mode switch on an engine without one can only ever be refused (422).
-    // A control that can only refuse is worse than no control: it reads as a capability.
+export function ReconfigurePanel({ engineId, currentWindowDuration, currentExplainMode, currentLlmHost, copy }: ReconfigurePanelProps) {
+    // Narration goes where the DEPLOYMENT says (CODEROAST_LLM_ENDPOINT on the server): no request
+    // names an endpoint or a model, so a mode switch on a deployment without one can only ever be
+    // refused (422). A control that can only refuse is worse than no control: it reads as a capability.
     const narrationAvailable = currentLlmHost.length > 0
     const kDefaultWindowDuration = 25
     const [windowDuration, setWindowDuration] = useState<string>(
@@ -28,19 +27,10 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
     )
     const [minConfidence, setMinConfidence] = useState<string>('')
     const [maxInsights, setMaxInsights] = useState<string>('')
-    // LLM model: empty string = 'None' (no LLM / rules mode)
-    const [llmModel, setLlmModel] = useState<string>(currentLlmModel ?? '')
-    // LLM full: true = llm_full, false = llm_augmented (only relevant when model != '')
-    const [llmFull, setLlmFull] = useState<boolean>(currentExplainMode === 'llm_full')
+    // The explain mode is the one narration choice a caller keeps; the model is the deployment's.
+    const [explainMode, setExplainMode] = useState<InsightExplainMode>(currentExplainMode ?? 'rules')
     const [status, setStatus] = useState<'idle' | 'applying' | 'applied' | 'error'>('idle')
     const [errorMsg, setErrorMsg] = useState<string | null>(null)
-
-    // When model changes, if switching from None to a model, keep llmFull as-is.
-    // If switching to None, clear llmFull.
-    function handleModelChange(model: string) {
-        setLlmModel(model)
-        if (!model) setLlmFull(false)
-    }
 
     async function handleApply() {
         if (!engineId) return
@@ -51,14 +41,7 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
         if (minConfidence.trim() && !isNaN(conf)) params.min_confidence = conf
         const maxI = parseInt(maxInsights, 10)
         if (maxInsights.trim() && !isNaN(maxI) && maxI > 0) params.max_insights = maxI
-        if (llmModel) {
-            // A model is selected — derive explain_mode from the full checkbox
-            params.llm_model = llmModel
-            params.explain_mode = llmFull ? 'llm_full' : 'llm_augmented'
-        } else {
-            // None selected — switch to rules mode
-            params.explain_mode = 'rules'
-        }
+        params.explain_mode = explainMode
         if (Object.keys(params).length === 0) return
         setStatus('applying')
         setErrorMsg(null)
@@ -124,39 +107,23 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
                     />
                 </div>
                 <div className="col-span-2 space-y-1">
-                    <label className={labelCls}>{copy.configLlmModelLabel}</label>
+                    <label className={labelCls}>{copy.configNarrationLabel}</label>
                     <select
-                        value={llmModel}
-                        onChange={(e) => handleModelChange(e.target.value)}
+                        value={explainMode}
+                        onChange={(e) => setExplainMode(e.target.value as InsightExplainMode)}
                         disabled={!narrationAvailable}
                         title={narrationAvailable ? undefined : copy.configLlmUnavailableWhy}
                         className={`${fieldCls} disabled:cursor-not-allowed disabled:opacity-50`}
                     >
-                        <option value="">{copy.configLlmModelNone}</option>
-                        <option value="gpt-4o-mini">gpt-4o-mini</option>
-                        <option value="gpt-4.1">gpt-4.1</option>
-                        <option value="gpt-5-mini">gpt-5-mini</option>
-                        <option value="raptor-mini">raptor-mini</option>
+                        <option value="rules">{copy.configNarrationRules}</option>
+                        <option value="llm_augmented">{copy.configNarrationAugmented}</option>
+                        <option value="llm_full">{copy.configNarrationFull}</option>
                     </select>
                 </div>
                 {!narrationAvailable && (
                     <p className="col-span-2 text-[10px] leading-snug text-gray-500">
                         {copy.configLlmUnavailableWhy}
                     </p>
-                )}
-                {llmModel && (
-                    <div className="col-span-2 flex items-center gap-2">
-                        <input
-                            id="llm-full-checkbox"
-                            type="checkbox"
-                            checked={llmFull}
-                            onChange={(e) => setLlmFull(e.target.checked)}
-                            className="h-3 w-3 rounded border-gray-600 bg-gray-900 accent-brand-500"
-                        />
-                        <label htmlFor="llm-full-checkbox" className="text-[11px] text-gray-400 cursor-pointer select-none">
-                            {copy.configLlmFull}
-                        </label>
-                    </div>
                 )}
             </div>
             <div className="flex items-center justify-between gap-2">
