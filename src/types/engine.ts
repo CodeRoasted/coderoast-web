@@ -79,8 +79,8 @@ export interface EngineSnapshot {
  *
  * CLOSED ON PURPOSE. The vocabulary is declared once, in `coderoast-server`'s
  * `command_catalog.hpp` (`kWebUiCommands` is the subset this client is allowed to send),
- * and the superproject's `scripts/command_vocabulary_lint.py` asserts set equality in both
- * directions across the language gap. This union is the TypeScript side of that seam: it
+ * and the superproject's `command_vocabulary` check module (`pharos check --module
+ * command_vocabulary`) asserts set equality in both directions across the language gap. This union is the TypeScript side of that seam: it
  * does not re-declare the vocabulary's FACTS (permission key, deterministic-mode
  * eligibility, routing class — those stay in the catalog), only the shapes this client
  * spells, so that anything consuming a command exhaustively — the refusal label map in
