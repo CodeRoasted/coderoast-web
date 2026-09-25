@@ -26,7 +26,6 @@ describe('ReconfigurePanel', () => {
         render(
             <ReconfigurePanel
                 engineId="eng-1"
-                currentWindowDuration={25}
                 currentExplainMode="rules"
                 currentLlmHost="models.example.test"
                 copy={copy}
@@ -41,11 +40,30 @@ describe('ReconfigurePanel', () => {
         expect(vi.mocked(reconfigureInsight).mock.calls[0]?.[1]).not.toHaveProperty('llm_model')
     })
 
+    // The window length is the scenario's shm_window_seal_interval_seconds, fixed when the engine is
+    // built, and the server answers 422 to a reconfigure naming it (DN-110.D2): the panel offers no
+    // window field and never sends one.
+    it('offers no window length and never sends one', async () => {
+        render(
+            <ReconfigurePanel
+                engineId="eng-1"
+                currentExplainMode="rules"
+                currentLlmHost="models.example.test"
+                copy={copy}
+            />,
+        )
+
+        expect(screen.queryByText(copy.configWindowDuration)).toBeNull()
+        fireEvent.click(screen.getByRole('button', { name: copy.configReconfigureApply }))
+
+        await waitFor(() => expect(reconfigureInsight).toHaveBeenCalledTimes(1))
+        expect(vi.mocked(reconfigureInsight).mock.calls[0]?.[1]).not.toHaveProperty('window_duration_seconds')
+    })
+
     it('offers no model to choose and disables narration on a deployment declaring no destination', () => {
         render(
             <ReconfigurePanel
                 engineId="eng-1"
-                currentWindowDuration={25}
                 currentExplainMode="rules"
                 currentLlmHost=""
                 copy={copy}

@@ -1096,7 +1096,7 @@ const fr: typeof en = {
             configNarrationRules: 'Aucune (mode règles)',
             configNarrationAugmented: 'LLM augmentée',
             configNarrationFull: 'LLM complète',
-            configReconfigureHint: 'Les modifications des réglages explain prennent effet immédiatement. La modification de la durée de fenêtre réinitialise le chauffage de la pyramide.',
+            configReconfigureHint: 'Les modifications des réglages explain prennent effet immédiatement.',
             templatesTitle: 'Focus templates',
             templatesEmptyTitle: 'Aucun focus template',
             templatesEmptyBody: 'Les templates affectés apparaissent quand une explication nomme les patterns de logs impliqués.',

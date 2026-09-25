@@ -142,7 +142,6 @@ export interface InsightReport {
     llm_host?: string
     llm_model?: string
     window_count?: number
-    configured_window_duration_seconds?: number
     lines_ingested?: number
     insight_revision?: number
     updated_unix_ms?: number
@@ -152,12 +151,11 @@ export interface InsightReconfigureRequest {
     explain_mode?: InsightExplainMode
     min_confidence?: number
     max_insights?: number
-    window_duration_seconds?: number
 }
 
 export interface InsightReconfigureResponse {
     engine_id: string
-    applied: Partial<InsightReconfigureRequest & { pyramid_reset: boolean }>
+    applied: Partial<InsightReconfigureRequest>
 }
 
 export interface InsightStatus {
@@ -171,7 +169,11 @@ export interface InsightStatus {
     /** Narration destination, HOST only — absent when nothing is sent. */
     llm_host?: string
     llm_model?: string
-    configured_window_duration_seconds?: number
+    /**
+     * The length of every window the pipeline analyzes, in seconds: the scenario's
+     * shm_window_seal_interval_seconds, because the server cuts a window at the producer's seal.
+     */
+    window_duration_seconds?: number
     window_count?: number
     pyramid_maturity?: string
     windows_seen?: number

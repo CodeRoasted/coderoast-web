@@ -9,22 +9,19 @@ import type { InsightCopy } from './insightFormat'
 
 export interface ReconfigurePanelProps {
     engineId: string | null
-    currentWindowDuration: number | null
     currentExplainMode: InsightExplainMode | null
     /** The narration destination the deployment declares, empty when it declares none. */
     currentLlmHost: string
     copy: InsightCopy
 }
 
-export function ReconfigurePanel({ engineId, currentWindowDuration, currentExplainMode, currentLlmHost, copy }: ReconfigurePanelProps) {
+export function ReconfigurePanel({ engineId, currentExplainMode, currentLlmHost, copy }: ReconfigurePanelProps) {
     // Narration goes where the DEPLOYMENT says (CODEROAST_LLM_ENDPOINT on the server): no request
     // names an endpoint or a model, so a mode switch on a deployment without one can only ever be
     // refused (422). A control that can only refuse is worse than no control: it reads as a capability.
     const narrationAvailable = currentLlmHost.length > 0
-    const kDefaultWindowDuration = 25
-    const [windowDuration, setWindowDuration] = useState<string>(
-        String(currentWindowDuration ?? kDefaultWindowDuration)
-    )
+    // The window length is not offered: it is the scenario's shm_window_seal_interval_seconds, fixed
+    // when the engine is built, and the server answers 422 to a reconfigure naming it.
     const [minConfidence, setMinConfidence] = useState<string>('')
     const [maxInsights, setMaxInsights] = useState<string>('')
     // The explain mode is the one narration choice a caller keeps; the model is the deployment's.
@@ -35,8 +32,6 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
     async function handleApply() {
         if (!engineId) return
         const params: InsightReconfigureRequest = {}
-        const dur = parseInt(windowDuration, 10)
-        if (windowDuration.trim() && !isNaN(dur) && dur > 0) params.window_duration_seconds = dur
         const conf = parseFloat(minConfidence)
         if (minConfidence.trim() && !isNaN(conf)) params.min_confidence = conf
         const maxI = parseInt(maxInsights, 10)
@@ -70,21 +65,7 @@ export function ReconfigurePanel({ engineId, currentWindowDuration, currentExpla
                 )}
             </div>
             <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                    <label className={labelCls}>{copy.configWindowDuration}</label>
-                    <div className="flex items-center gap-1">
-                        <input
-                            type="number"
-                            min={1}
-                            placeholder={String(currentWindowDuration ?? kDefaultWindowDuration)}
-                            value={windowDuration}
-                            onChange={(e) => setWindowDuration(e.target.value)}
-                            className={fieldCls}
-                        />
-                        <span className="text-[10px] text-gray-600 shrink-0">s</span>
-                    </div>
-                </div>
-                <div className="space-y-1">
+                <div className="col-span-2 space-y-1">
                     <label className={labelCls}>{copy.configMinConfidence}</label>
                     <input
                         type="number"

@@ -278,9 +278,7 @@ export function renderCapability({
     }
 
     if (activeCapability === 'config') {
-        const windowDuration = status?.configured_window_duration_seconds
-            ?? latestReport?.configured_window_duration_seconds
-            ?? null
+        const windowDuration = status?.window_duration_seconds ?? null
         const windowCount = status?.window_count ?? latestReport?.window_count ?? null
         const explainMode = status?.explain_mode ?? latestReport?.explain_mode ?? null
         const llmEnabled = status?.llm_enabled ?? latestReport?.llm_enabled ?? null
@@ -304,7 +302,7 @@ export function renderCapability({
             ? Math.min(100, Math.round((effectiveWindowsSeen / effectiveWarmupTarget) * 100))
             : 0
         const windowsRemaining = Math.max(0, effectiveWarmupTarget - effectiveWindowsSeen)
-        // Use configured duration, fall back to actual metalog window duration
+        // Use the reported window length, fall back to the actual metalog window duration
         const durationForEta = windowDuration ?? latestWindow?.metalog?.window.duration_seconds ?? null
         const timeToMaturity = showWarmupBar && windowsRemaining > 0 && durationForEta != null
             ? formatDuration(windowsRemaining * durationForEta)
@@ -386,7 +384,6 @@ export function renderCapability({
                 {/* Live reconfigure */}
                 <ReconfigurePanel
                     engineId={engineId}
-                    currentWindowDuration={windowDuration}
                     currentExplainMode={explainMode}
                     currentLlmHost={llmHost ?? ''}
                     copy={copy}

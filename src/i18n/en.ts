@@ -1163,7 +1163,7 @@ const en = {
             configNarrationRules: 'None (rules mode)',
             configNarrationAugmented: 'LLM augmented',
             configNarrationFull: 'LLM full',
-            configReconfigureHint: 'Changes to explain settings take effect immediately. Changing window duration resets pyramid warmup.',
+            configReconfigureHint: 'Changes to explain settings take effect immediately.',
             templatesTitle: 'Template focus',
             templatesEmptyTitle: 'No template focus yet',
             templatesEmptyBody: 'Affected templates appear when an explanation names the log patterns involved.',
