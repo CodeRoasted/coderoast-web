@@ -76,10 +76,10 @@ function stubVendoredFetch() {
     )
 }
 
-/** Shaped like the live report for this pair: 744 observed, 1 significant. */
+/** Shaped like the live report for this pair: 941 observed, 1 significant. */
 function noisePairReport() {
     return {
-        summary: { total_changes: 744, significant_changes: 1, stability_score: 0.62 },
+        summary: { total_changes: 941, significant_changes: 1, stability_score: 0.62 },
         inputs: {
             baseline: { lines_observed: 3609 },
             changed: { lines_observed: 3724 },

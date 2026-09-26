@@ -1,5 +1,6 @@
 // Types for the insight_diff hosted demo (POST /api/v1/insight/diff).
-// Mirrors insight::diff::to_json (the ChangeReport schema) + the markdown field.
+// Mirrors insight::sift::to_json_with_markdown: the ChangeReport schema plus the markdown field,
+// produced by the same aligned entry the sift CLI runs (ADR-14.D7).
 
 export interface DiffRequest {
     baseline: string
@@ -35,7 +36,10 @@ export interface DiffRankedChange {
 export interface DiffInputProvenance {
     label: string
     lines_observed: number
-    unique_templates: number
+    // Omitted when the producing path did not measure it — the aligned entry never does
+    // (ADR-14.D3's omission rule) — so no consumer may treat it as present.
+    unique_templates?: number
+    // '' when the entry carries no event-time window, as the aligned entry's never does.
     window_start_iso: string
     window_end_iso: string
 }

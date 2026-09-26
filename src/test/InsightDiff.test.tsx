@@ -220,12 +220,10 @@ describe('/diff preset picker — loading a pair', () => {
 //
 // The footer subtracts `significant_changes` from `total_changes` (InsightDiff.tsx),
 // and until ADR-20.D15 that subtraction was widely believed to be a structural zero.
-// It was not, on THIS surface: /diff posts to the server's hosted demo, which runs
-// the COLD spine (`insight::sift::diff_logs`), where `total_changes` has always been
-// the pre-cut census — the restore landed on the ALIGNED spine, which this page never
-// touches. So the branch was live all along, and the live-shaped fixture next door
-// (diffDomSize, 744 observed / 1 significant) has been RENDERING it on every run
-// while asserting DOM element counts. Nothing ever read the sentence.
+// It is not: `total_changes` is the pre-cut census on the ALIGNED spine, which /diff's
+// hosted demo runs exactly as the CLI does (ADR-14.D7), so the branch is live, and the
+// live-shaped fixture next door (diffDomSize, 941 observed / 1 significant) RENDERS it
+// on every run while asserting DOM element counts. Nothing there reads the sentence.
 //
 // These arms read the sentence. The COPY comes from the bundle — this file does not
 // own the wording and must not red on a reword — and the NUMBERS are literals, so the
