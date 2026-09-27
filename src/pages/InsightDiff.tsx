@@ -7,13 +7,25 @@ import {
     ArrowUpRight,
     ArrowLeftRight,
     BadgeCheck,
+    BarChart3,
     Check,
+    Files,
     Flag,
     FlaskConical,
+    FolderMinus,
+    FolderPlus,
+    Gauge,
     GitCompareArrows,
+    Link,
     Loader2,
+    Network,
     Pencil,
     Pin,
+    Replace,
+    Route,
+    SquareMinus,
+    SquarePlus,
+    ToggleRight,
     TrendingUp,
     Waves,
 } from 'lucide-react'
@@ -23,6 +35,7 @@ import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import { siftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
+import type { TranslationKey } from '@/i18n/translations'
 import { diffPresets, type DiffPreset, type DiffProvenance } from '@/data/diffPresets'
 import { groupThousands } from '@/utils/format'
 
@@ -71,7 +84,14 @@ const toneOf = (change: DiffRankedChange): Tone =>
 
 // Change-type: a neutral (uncolored) icon, decoupled from severity. The label is
 // i18n (t.diff.kind[change.kind] ?? t.diff.kind.fallback).
-const KIND_ICON: Record<string, typeof Activity> = {
+//
+// ONE LIST ON THIS SIDE: the kinds are the keys of the English `diff.kind` bundle, and this
+// map is typed over them, so a kind named there without a glyph here — or a glyph for a kind
+// the bundle does not name — fails `tsc`. `fr: typeof en` binds the French bundle the same
+// way. The fallback glyph and label remain for a kind a newer engine emits before this
+// client names it (`DiffRankedChange.kind` is a wire string, never this union).
+type ChangeKindName = Exclude<keyof TranslationKey['diff']['kind'], 'fallback'>
+const KIND_ICON: Record<ChangeKindName, typeof Activity> = {
     new_error_pattern: AlertTriangle,
     escalated_pattern: TrendingUp,
     resolved_pattern: Check,
@@ -84,6 +104,28 @@ const KIND_ICON: Record<string, typeof Activity> = {
     // AlertTriangle: this row is the headline regardless of DIRECTION (a unit can flip
     // red→green too), so it must not borrow the error glyph.
     unit_outcome_changed: Flag,
+    // A masked parameter's value distribution moved (a status or latency mix).
+    field_shift: BarChart3,
+    // A whole announced phase (a `##[group]` span) inserted or removed: the folder mirrors
+    // the group, as the arrows mirror a single template.
+    new_phase: FolderPlus,
+    vanished_phase: FolderMinus,
+    // An ordinal field (latency, duration, bytes) drifted along its ladder, with direction.
+    ordinal_drift: Gauge,
+    // A recurring line's level crossed the error boundary, either way: a switch flipped.
+    value_regime_shift: ToggleRight,
+    // The set of test files a step reports vanished or reshaped.
+    coverage_shift: Files,
+    // One job/step instance dropped and another inserted in its place (ESLint v6 → v7).
+    replaced_intent: Replace,
+    new_span: SquarePlus,
+    vanished_span: SquareMinus,
+    // An observed parent→child span edge appeared or vanished.
+    span_path_changed: Route,
+    // A caller→callee service dependency emerged or vanished.
+    service_edge_changed: Network,
+    // A degradation propagating along service edges, folded to one incident at its sink.
+    causal_chain: Link,
 }
 
 // Provenance is a two-value closed set (see t.diff.provenance). Its chrome —
@@ -229,7 +271,7 @@ function ChangeRow({
     const t = useTranslation()
     const tone = toneOf(change)
     const style = TONE[tone]
-    const Icon = KIND_ICON[change.kind] ?? Activity
+    const Icon = (KIND_ICON as Record<string, typeof Activity>)[change.kind] ?? Activity
     const kindLabel = (t.diff.kind as Record<string, string>)[change.kind] ?? t.diff.kind.fallback
     const refCount = (change.baseline_line_refs?.length ?? 0) + (change.changed_line_refs?.length ?? 0)
     return (
