@@ -65,7 +65,8 @@ CodeRoastWeb/
 │   ├── types/                  # DTOs shared by services and UI
 │   └── utils/                  # permissions and cookie helpers
 ├── technical_docs/             # Canonical technical documentation
-├── public/                     # Static assets
+├── public/                     # Static assets, copied whole into every build
+├── phone.html                  # Dev-server-only phone frame (`npm run dev:phone`), never built
 ├── netlify.toml                # Static hosting config
 ├── vite.config.ts              # Vite aliases, proxy, Vitest config
 └── package.json

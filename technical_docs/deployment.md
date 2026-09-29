@@ -20,6 +20,8 @@ Default URL: `http://localhost:5173`.
 
 When developing the Lab, run CodeRoastServer on `localhost:8080`. Vite proxies API and WebSocket traffic to it.
 
+`npm run dev:phone` opens `phone.html`, a phone-sized frame around the running dev server. It sits at the repo root beside `index.html`, not in `public/`: the production build copies `public/` whole and has one HTML entry, `index.html`, so a page at the root is served by the dev server and never shipped.
+
 ## Scripts
 
 | Command | Purpose |
