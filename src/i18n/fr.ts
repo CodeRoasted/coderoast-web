@@ -1087,6 +1087,7 @@ const fr: typeof en = {
             pyramidTimeToMaturity: '~{time} avant maturité',
             pyramidFinalising: 'finalisation…',
             windowLabel: 'Fenêtre',
+            windowObserved: 'observé',
             insightCatchingUp: 'Rattrapage…',
             detectSignalsTitle: 'Signaux détecteur',
             detectSeveritySource: 'depuis le moteur explain',

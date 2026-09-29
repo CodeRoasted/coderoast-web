@@ -61,14 +61,11 @@ export function renderCapability({
             )
         }
         const windowNum = latestReport.window_count ?? status?.window_count
-        const windowTimeRange = latestWindow?.metalog
-            ? `${formatSimTime(latestWindow.metalog.window.start)} → ${formatSimTime(latestWindow.metalog.window.end)}`
-            : null
         return (
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <SectionTitle title={copy.latest} />
-                    <WindowStamp windowNum={windowNum} timeRange={windowTimeRange} windowLabel={copy.windowLabel} />
+                    <WindowStamp windowNum={windowNum} observed={latestWindow?.metalog?.window} copy={copy} />
                 </div>
                 <InsightCard report={latestReport} featured />
                 {orderedReports.length > 1 && (
@@ -86,16 +83,13 @@ export function renderCapability({
     if (activeCapability === 'detect') {
         const detectionReports = latestWindow?.detectionReports ?? []
         const windowNum = latestReport?.window_count ?? status?.window_count
-        const windowTimeRange = latestWindow?.metalog
-            ? `${formatSimTime(latestWindow.metalog.window.start)} → ${formatSimTime(latestWindow.metalog.window.end)}`
-            : null
         return (
             <div className="space-y-3">
                 {detectionReports.length > 0 ? (
                     <>
                         <div className="flex items-center justify-between">
                             <SectionTitle title={copy.detectSignalsTitle} />
-                            <WindowStamp windowNum={windowNum} timeRange={windowTimeRange} windowLabel={copy.windowLabel} />
+                            <WindowStamp windowNum={windowNum} observed={latestWindow?.metalog?.window} copy={copy} />
                         </div>
                         <div className="space-y-1.5">
                             {detectionReports.map((dr, i) => {
@@ -158,15 +152,12 @@ export function renderCapability({
     if (activeCapability === 'metalog') {
         const metalog = latestWindow?.metalog ?? null
         const acuteDiff = latestWindow?.acuteDiff ?? null
-        const windowTimeRange = metalog
-            ? `${formatSimTime(metalog.window.start)} → ${formatSimTime(metalog.window.end)}`
-            : null
         const windowNum = status?.window_count
         return (
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <SectionTitle title={copy.metalogWindowTitle} />
-                    <WindowStamp windowNum={windowNum} timeRange={windowTimeRange} windowLabel={copy.windowLabel} />
+                    <WindowStamp windowNum={windowNum} observed={latestWindow?.metalog?.window} copy={copy} />
                 </div>
                 {!metalog ? (
                     <>
@@ -403,14 +394,11 @@ export function renderCapability({
 
     if (activeCapability === 'evidence') {
         const packets = latestWindow?.contextPackets ?? []
-        const windowTimeRange = latestWindow?.metalog
-            ? `${formatSimTime(latestWindow.metalog.window.start)} \u2192 ${formatSimTime(latestWindow.metalog.window.end)}`
-            : null
         return (
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <SectionTitle title={copy.evidenceTitle} />
-                    <WindowStamp windowNum={windowCount} timeRange={windowTimeRange} windowLabel={copy.windowLabel} />
+                    <WindowStamp windowNum={windowCount} observed={latestWindow?.metalog?.window} copy={copy} />
                 </div>
                 {packets.length === 0 ? (
                     <EmptyState

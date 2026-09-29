@@ -1154,6 +1154,7 @@ const en = {
             pyramidTimeToMaturity: '~{time} to maturity',
             pyramidFinalising: 'finalising…',
             windowLabel: 'Window',
+            windowObserved: 'observed',
             insightCatchingUp: 'Catching up…',
             detectSignalsTitle: 'Detection signals',
             detectSeveritySource: 'from explain engine',

@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import { AlertTriangle, Brain, CheckCircle, Clock, FileText, Loader2 } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
-import { explainModeLabel } from './insightFormat'
+import { explainModeLabel, formatSimTime } from './insightFormat'
 import type { InsightCopy } from './insightFormat'
+import type { MetaLogWindowInfo } from '@/types/engine'
 
 // Small presentational atoms shared by every capability tab of the InSight panel.
 // All are stateless. Copy reaches them two ways, and the split is deliberate:
@@ -97,23 +98,31 @@ export function PyramidMaturityBadge({
     return <span className="text-[11px] text-gray-500">{copy.pyramidUninitialized}</span>
 }
 
+/**
+ * The stamp at the top right of a tab header: "Window #N" over the latest MetaLog's range. That range
+ * is the window's first and last event times, never its boundaries (DN-110.D5), so it reads
+ * "observed HH:MM:SS → HH:MM:SS" with the observed-span hint as its title: a word, because the
+ * misreading happens at a glance (DN-110.D6).
+ */
 export function WindowStamp({
     windowNum,
-    timeRange,
-    windowLabel,
+    observed,
+    copy,
 }: {
     windowNum: number | null | undefined
-    timeRange: string | null
-    windowLabel: string
+    observed: MetaLogWindowInfo | null | undefined
+    copy: InsightCopy
 }) {
-    if (windowNum == null && !timeRange) return null
+    if (windowNum == null && !observed) return null
     return (
         <div className="flex flex-col items-end gap-0.5 shrink-0 ml-2">
             {windowNum != null && (
-                <span className="font-mono text-[10px] text-gray-600 leading-none">{windowLabel} #{windowNum}</span>
+                <span className="font-mono text-[10px] text-gray-600 leading-none">{copy.windowLabel} #{windowNum}</span>
             )}
-            {timeRange && (
-                <span className="font-mono text-[10px] text-gray-700 leading-none">{timeRange}</span>
+            {observed && (
+                <span className="font-mono text-[10px] text-gray-700 leading-none" title={copy.metalogObservedSpanHint}>
+                    {`${copy.windowObserved} ${formatSimTime(observed.start)} → ${formatSimTime(observed.end)}`}
+                </span>
             )}
         </div>
     )

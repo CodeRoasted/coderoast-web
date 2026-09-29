@@ -102,5 +102,3 @@ export function formatDuration(seconds: number): string {
     const mRem = m % 60
     return mRem > 0 ? `${h}h ${mRem}m` : `${h}h`
 }
-
-/** Small stamp showing Window #N and/or HH:MM:SS → HH:MM:SS, shown top-right of tab headers. */
