@@ -161,7 +161,9 @@ const router = createBrowserRouter([
 export default function App() {
     const setAuth = useAuthStore((state) => state.setAuth)
     const clearAuth = useAuthStore((state) => state.clearAuth)
+    const forgetRefusedToken = useAuthStore((state) => state.forgetRefusedToken)
     const setLoading = useAuthStore((state) => state.setLoading)
+    const setSelectedUserId = useAuthStore((state) => state.setSelectedUserId)
 
     useEffect(() => {
         document.documentElement.classList.add('dark')
@@ -174,10 +176,11 @@ export default function App() {
         //
         // Policy:
         //   • Persisted token → confirm with /whoami; if the backend says it
-        //     is no longer valid (server restart, manual revoke), try to
-        //     re-login with the persisted user id, or clear auth.
+        //     is no longer valid (expired, server restart, manual revoke),
+        //     forget it at once (ADR-40.D2, row J), then re-login with the
+        //     persisted user id, or clear auth.
         //   • Persisted selection but no token → re-login as that user.
-        //   • Nothing persisted → clear auth (stay anonymous).
+        //   • Nothing persisted → auto-login as visitor, or clear auth.
         let cancelled = false
 
         const { token: persistedToken, selectedUserId: persistedUserId } =
@@ -194,15 +197,20 @@ export default function App() {
                     if (info.token_valid) {
                         setAuth(persistedToken, info.user, info.access?.operations ?? [])
                     } else {
-                        // Token is stale — re-login with the persisted user id
+                        // Token is refused — forget it before anything else, so
+                        // it neither stays in localStorage nor rides the re-login
+                        // as a bearer. Then re-login with the persisted user id
                         // when available, otherwise fall back to the visitor
                         // auto-login so the app stays usable after a Redis
-                        // restart without requiring a manual page reload.
+                        // restart without requiring a manual page reload. The
+                        // operator's selection is restored with the new session.
+                        forgetRefusedToken(persistedToken)
                         const reloginAs = persistedUserId ?? 'visitor'
                         return login(reloginAs)
                             .then(({ token: fresh, user, access }) => {
                                 if (cancelled) return
                                 setAuth(fresh, user, access?.operations ?? [])
+                                if (persistedUserId) setSelectedUserId(persistedUserId)
                             })
                             .catch(() => {
                                 if (!cancelled) clearAuth()

@@ -146,14 +146,19 @@ export class PolicyDenialError extends Error {
 // Versioned since V1 so future breaking changes can ship as /api/v2 in parallel.
 const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1'
 
-function authHeaders(): Record<string, string> {
-    const { token } = useAuthStore.getState()
+function authHeaders(bearer: string | null): Record<string, string> {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+    if (bearer) {
+        headers['Authorization'] = `Bearer ${bearer}`
     }
     return headers
 }
+
+/**
+ * The route that exchanges a credential for a session. Its 401 refuses the credential in its BODY
+ * ("Invalid credentials"), never the bearer, so it is the one 401 that keeps the sign-in state.
+ */
+const LOGIN_ROUTE = '/login'
 
 /**
  * Default timeout (ms) applied to every request that does not pass its own
@@ -194,10 +199,11 @@ async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DE
         signal = controller.signal
     }
 
+    const bearer = useAuthStore.getState().token
     let resp: Response
     try {
         resp = await fetch(`${API_BASE}${url}`, {
-            headers: authHeaders(),
+            headers: authHeaders(bearer),
             ...options,
             signal: signal ?? undefined,
         })
@@ -213,6 +219,11 @@ async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DE
     if (timer !== null) clearTimeout(timer)
 
     if (!resp.ok) {
+        // A 401 to a request that carried a bearer is the server refusing that bearer: the browser
+        // keeps the sign-in state until logout or a refused token (ADR-40.D2, row J).
+        if (resp.status === 401 && bearer && url !== LOGIN_ROUTE) {
+            useAuthStore.getState().forgetRefusedToken(bearer)
+        }
         const body = await resp.json().catch(() => ({}))
         if (resp.status === 403) {
             throw new PolicyDenialError({
@@ -269,11 +280,20 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
  */
 export async function login(userId: string | null = null): Promise<LoginResponse> {
     const body = userId ? JSON.stringify({ user_id: userId }) : undefined
-    return request('/login', { method: 'POST', body })
+    return request(LOGIN_ROUTE, { method: 'POST', body })
 }
 
+/**
+ * End the session on the server, then forget it in the browser whatever the server answered:
+ * the sign-in state lives until logout (ADR-40.D2, row J), and an unreachable server must not keep
+ * it. The request goes first because it is the bearer that names the session to end.
+ */
 export async function logout(): Promise<void> {
-    await request('/logout', { method: 'POST' })
+    try {
+        await request('/logout', { method: 'POST' })
+    } finally {
+        useAuthStore.getState().clearAuth()
+    }
 }
 
 /**

@@ -93,7 +93,7 @@ The Lab page is a thin orchestrator. State and commands live in hooks/stores:
 | Store | Persistence | Contents |
 |---|---|---|
 | `useStore` | memory only | `language`, dark-only `theme` placeholder. |
-| `useAuthStore` | `localStorage` key `coderoast.auth` | bearer token, current user, tier, selected demo user. |
+| `useAuthStore` | `localStorage` key `coderoast.auth`, present only while there is sign-in state | bearer token, current user, permitted operations, selected demo user. |
 | `useEngineStore` | memory only | engine id, latest snapshot, scenario YAML, status toast, bounded live tail, InSight status/reports. |
 
 The app forces `document.documentElement.classList.add('dark')` on mount. `toggleTheme` is a no-op because light mode has been removed from the product surface even though Tailwind still uses class-based dark mode.
@@ -185,7 +185,12 @@ When the backend denies a request, `PolicyDenialError` carries the denial detail
 
 The product currently sets one functional cookie: `logcraft_onboarding_dismissed`. It stores whether the Lab onboarding wizard has already been dismissed.
 
-Auth state is persisted in local storage, not cookies. On app bootstrap, `App` calls `/whoami`; if the token is invalid but a selected demo user remains, it re-logins as that user.
+Auth state is persisted in local storage, not cookies, and it stays there until logout or a refused token (ADR-40.D2, row J):
+
+- `logout()` ends the session on the server, then removes the key whatever the server answered.
+- A `401` to a request that carried a bearer removes the key, unless that bearer was already replaced by a newer session. The one exception is `/login`, whose `401` refuses the credential in its body, not the bearer. A `403` refuses an operation and keeps the session.
+- On app bootstrap, `App` calls `/whoami`; if the token is invalid, it removes the key at once, then re-logins without the refused bearer, as the selected demo user when one was persisted (the selection is restored with the new session) or as `visitor`.
+- A signed-out store writes nothing: the key is removed rather than left holding nulls, so no later write brings it back.
 
 ## Testing Surface
 
