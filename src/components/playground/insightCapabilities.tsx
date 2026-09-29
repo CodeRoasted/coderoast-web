@@ -345,10 +345,12 @@ export function renderCapability({
                                 />
                             </div>
                             <p className="text-[10px] text-gray-600">
-                                {effectiveWindowsSeen} / {effectiveWarmupTarget} windows
+                                {copy.pyramidWarmupWindows
+                                    .replace('{seen}', String(effectiveWindowsSeen))
+                                    .replace('{target}', String(effectiveWarmupTarget))}
                                 {timeToMaturity
-                                    ? <> · <span className="text-amber-500/80">~{timeToMaturity} to maturity</span></>
-                                    : windowsRemaining === 0 && <> · <span className="text-amber-500/60">finalising…</span></>}
+                                    ? <> · <span className="text-amber-500/80">{copy.pyramidTimeToMaturity.replace('{time}', timeToMaturity)}</span></>
+                                    : windowsRemaining === 0 && <> · <span className="text-amber-500/60">{copy.pyramidFinalising}</span></>}
                             </p>
                         </div>
                     )}
