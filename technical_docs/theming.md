@@ -38,6 +38,8 @@ Use brand sparingly against the gray shell. Most surfaces use `gray-950`, `gray-
 | `font-sans` | Inter, system-ui, sans-serif | Body text and dense UI. |
 | `font-display` | Space Grotesk, system-ui, sans-serif | Headings, product names, major labels. |
 
+Both families are served from the site's own origin: `src/assets/fonts/fonts.css` (imported by `src/main.tsx`) declares the faces, and the woff2 files sit beside it with each family's SIL OFL 1.1 `OFL.txt`. No page loads a font, stylesheet or preconnect from a third-party host — a font CDN would receive every visitor's IP address on every page view. The shipped set is Inter weights 300–700 and Space Grotesk weights 400–700, upright only (an `italic` class renders as the browser's synthesized oblique), in every unicode-range subset the families publish; a browser fetches a subset only when the page's text uses it. A new weight or style is added as a new face block and file, never by linking a hosted stylesheet.
+
 Keep dashboard and Lab text compact. Reserve large display type for marketing sections and product pages.
 
 ## Motion
