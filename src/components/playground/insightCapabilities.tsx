@@ -182,7 +182,7 @@ export function renderCapability({
                     <div className="space-y-3">
                         <p className="text-xs leading-relaxed text-gray-400">{copy.metalogBody}</p>
                         <div className="grid grid-cols-2 gap-2">
-                            <Metric label={copy.metalogWindowDuration} value={`${metalog.window.duration_seconds.toFixed(1)}${copy.configWindowSeconds}`} large />
+                            <Metric label={copy.metalogObservedSpan} hint={copy.metalogObservedSpanHint} value={`${metalog.window.duration_seconds.toFixed(1)}${copy.configWindowSeconds}`} large />
                             <Metric label={copy.metalogUniqueTemplates} value={String(metalog.stats.unique_templates)} large />
                             {metalog.stats.entropy_bits != null && (
                                 <Metric label={copy.metalogEntropy} value={`${metalog.stats.entropy_bits.toFixed(2)} bits`} large />
@@ -278,7 +278,7 @@ export function renderCapability({
     }
 
     if (activeCapability === 'config') {
-        const windowDuration = status?.window_duration_seconds ?? null
+        const windowLength = status?.window_duration_seconds ?? null
         const windowCount = status?.window_count ?? latestReport?.window_count ?? null
         const explainMode = status?.explain_mode ?? latestReport?.explain_mode ?? null
         const llmEnabled = status?.llm_enabled ?? latestReport?.llm_enabled ?? null
@@ -302,18 +302,19 @@ export function renderCapability({
             ? Math.min(100, Math.round((effectiveWindowsSeen / effectiveWarmupTarget) * 100))
             : 0
         const windowsRemaining = Math.max(0, effectiveWarmupTarget - effectiveWindowsSeen)
-        // Use the reported window length, fall back to the actual metalog window duration
-        const durationForEta = windowDuration ?? latestWindow?.metalog?.window.duration_seconds ?? null
-        const timeToMaturity = showWarmupBar && windowsRemaining > 0 && durationForEta != null
-            ? formatDuration(windowsRemaining * durationForEta)
+        // Counted in window LENGTHS only: a MetaLog's observed span is not a length, so without a
+        // reported length there is no estimate (DN-110.D5).
+        const timeToMaturity = showWarmupBar && windowsRemaining > 0 && windowLength != null
+            ? formatDuration(windowsRemaining * windowLength)
             : null
         return (
             <div className="space-y-3">
                 <SectionTitle title={copy.configTitle} />
                 <div className="grid grid-cols-2 gap-2">
                     <Metric
-                        label={copy.configWindowDuration}
-                        value={windowDuration != null ? `${windowDuration}${copy.configWindowSeconds}` : copy.configNotAvailable}
+                        label={copy.configWindowLength}
+                        hint={copy.configWindowLengthHint}
+                        value={windowLength != null ? `${windowLength}${copy.configWindowSeconds}` : copy.configNotAvailable}
                         large
                     />
                     <Metric

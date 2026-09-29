@@ -119,7 +119,8 @@ export function WindowStamp({
     )
 }
 
-export function Metric({ label, value, large = false }: { label: string; value: string; large?: boolean }) {
+/** A figure and its name. `hint` says what the figure measures when the name alone could be misread. */
+export function Metric({ label, value, hint, large = false }: { label: string; value: string; hint?: string; large?: boolean }) {
     return (
         <div className={`rounded-lg border border-gray-800 bg-gray-950/60 ${large ? 'p-3' : 'px-2 py-1.5'}`}>
             <div className={`font-mono font-semibold text-gray-100 ${large ? 'text-lg' : 'text-xs'}`}>
@@ -128,6 +129,11 @@ export function Metric({ label, value, large = false }: { label: string; value: 
             <div className="mt-0.5 truncate text-[10px] uppercase tracking-wide text-gray-600">
                 {label}
             </div>
+            {hint && (
+                <div className="mt-0.5 text-[10px] leading-snug text-gray-500">
+                    {hint}
+                </div>
+            )}
         </div>
     )
 }

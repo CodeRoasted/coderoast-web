@@ -216,6 +216,11 @@ export interface DetectionReport {
     evidence: string[]
 }
 
+/**
+ * The window's OBSERVED SPAN, never its length (DN-110.D5): `start` and `end` are the event times of
+ * the first and last lines the window observed, and `duration_seconds` is `end - start` rounded to the
+ * second. The length is the status field `window_duration_seconds`.
+ */
 export interface MetaLogWindowInfo {
     start: string
     end: string

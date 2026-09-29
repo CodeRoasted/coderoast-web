@@ -53,7 +53,7 @@ describe('ReconfigurePanel', () => {
             />,
         )
 
-        expect(screen.queryByText(copy.configWindowDuration)).toBeNull()
+        expect(screen.queryByText(copy.configWindowLength)).toBeNull()
         fireEvent.click(screen.getByRole('button', { name: copy.configReconfigureApply }))
 
         await waitFor(() => expect(reconfigureInsight).toHaveBeenCalledTimes(1))
