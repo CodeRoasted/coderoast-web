@@ -1,5 +1,6 @@
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
+import { JSDOM } from 'jsdom'
 import ts from 'typescript'
 
 /**
@@ -8,6 +9,9 @@ import ts from 'typescript'
  * TypeScript parser for bundles. A URL is read only where the browser would FETCH or CONTACT it;
  * a navigation (<a href>, <form action>) is recorded separately and never judged, and the prose a
  * bundle carries (log samples, YAML examples, error texts) is not a load position at all.
+ *
+ * Two callers read the build through this one file: the test suite, and the deploy's own build
+ * (`siteGate` in vitePlugin.ts), which refuses to finish on a third-party load.
  *
  * Why the admission list has exactly one host: DN-120.D8 removes the one independent recipient the
  * site had (Google Fonts) and admits only recipients CodeRoast contracts with. The site's own
@@ -206,8 +210,18 @@ function elementLoads(file: string, prefix: string, rawTag: string, attribute: (
 
 export type MarkupType = 'text/html' | 'image/svg+xml'
 
+// jsdom's parser, named rather than taken from the environment: the build runs in plain Node,
+// which has no DOMParser, and the suite's jsdom environment must not be the reason the two
+// callers parse alike.
+let parser: DOMParser | undefined
+
+export function parseMarkup(text: string, type: MarkupType): Document {
+    parser ??= new (new JSDOM('').window.DOMParser)()
+    return parser.parseFromString(text, type)
+}
+
 export function markupLoads(file: string, text: string, type: MarkupType): Load[] {
-    const document = new DOMParser().parseFromString(text, type)
+    const document = parseMarkup(text, type)
     if (type === 'image/svg+xml' && document.getElementsByTagName('parsererror').length > 0) {
         throw new Error(`${file}: not well-formed SVG, so its loads cannot be read`)
     }

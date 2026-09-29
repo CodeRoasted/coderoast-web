@@ -27,7 +27,7 @@ When developing the Lab, run CodeRoastServer on `localhost:8080`. Vite proxies A
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Vite dev server with HMR. |
-| `npm run build` | TypeScript project build plus Vite production bundle. |
+| `npm run build` | TypeScript project build, Vite production bundle, then the site checks over `dist/`. |
 | `npm run preview` | Serve `dist/` locally for production preview. |
 | `npm run lint` | ESLint over the repo. |
 | `npm test` | Vitest test suite once. |
@@ -71,6 +71,16 @@ npm run build
 ```
 
 Build output lands in `dist/`. The build command runs `tsc -b` before Vite bundling, so type errors fail deployment.
+
+The build then judges its own output before it reports success: the `siteGate` Vite plugin (`src/siteChecks/vitePlugin.ts`) runs the same verdict `src/test/firstPartyAssets.test.ts` asserts (`src/siteChecks/builtSite.ts`). Its nine arms: every emitted file is readable by the scanner, and the scanner still reaches every construct the build carries; no load names an origin but the site's own and `api.coderoast.fr`; every own-origin resource is an emitted file; the self-hosted fonts are complete and emitted byte-identical; the bundle carries the declared API base; every emitted showcase log is a sample `src/assets/sift-showcase/MANIFEST.json` digests; and `index.html` carries the build identity. A fault in any arm fails `npm run build`, and with it the Netlify deploy, and removes `dist/`, so a refused build leaves nothing to upload. The error names each offending file, URL or digest. A clean build logs `coderoast-site-gate: 9/9 arms clean`.
+
+### Build Identity
+
+`dist/index.html` carries `<meta name="coderoast-web-build" content="…">`: the 40-hex commit the build was made from, suffixed `-dirty` when a tracked file differs from that commit or the build read a file git does not track (`src/siteChecks/buildIdentity.ts`). The build log prints the identity and, when it is dirty, every path that made it so. To read what coderoast.fr serves:
+
+```sh
+curl -s https://coderoast.fr/ | grep -o '<meta name="coderoast-web-build" content="[^"]*"'
+```
 
 ## Preview
 

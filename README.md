@@ -60,6 +60,7 @@ CodeRoastWeb/
 │   ├── hooks/                  # Translation, engine lifecycle, onboarding
 │   ├── i18n/                   # en/fr translation bundles
 │   ├── services/               # REST and WebSocket clients
+│   ├── siteChecks/             # The built-site checks `npm run build` enforces, and the build identity
 │   ├── store/                  # Zustand stores
 │   ├── test/                   # Vitest suites
 │   ├── types/                  # DTOs shared by services and UI
@@ -68,7 +69,7 @@ CodeRoastWeb/
 ├── public/                     # Static assets, copied whole into every build
 ├── phone.html                  # Dev-server-only phone frame (`npm run dev:phone`), never built
 ├── netlify.toml                # Static hosting config
-├── vite.config.ts              # Vite aliases, proxy, Vitest config
+├── vite.config.ts              # Vite aliases, proxy, the site gate, Vitest config
 └── package.json
 ```
 
@@ -92,7 +93,7 @@ they are named here rather than linked.
 
 ## Deployment
 
-The app is a static SPA. Netlify uses `npm run build` and publishes `dist/`. Production API routing is configured with `VITE_API_BASE`, currently `https://api.coderoast.fr/api/v1` in `netlify.toml`.
+The app is a static SPA. Netlify uses `npm run build` and publishes `dist/`. The build judges its own output and fails on a third-party load, an incomplete font set or a showcase log whose digest changed, and stamps `index.html` with the commit it was built from ([technical_docs/deployment.md](technical_docs/deployment.md#production-build)). Production API routing is configured with `VITE_API_BASE`, currently `https://api.coderoast.fr/api/v1` in `netlify.toml`.
 
 Before deploying:
 

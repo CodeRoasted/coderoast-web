@@ -23,42 +23,32 @@
 // record under `significant_changes_on_the_raw_pair`, and the website does not.
 
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { basename, join } from 'node:path'
 import { diffPresets, type RealCiPreset } from '@/data/diffPresets'
 import en from '@/i18n/en'
 import fr from '@/i18n/fr'
+import {
+    SHOWCASE_DIR,
+    type ShowcasePair,
+    manifestSample,
+    readShowcaseManifest,
+    sha256Hex,
+} from '@/siteChecks/showcaseDigests'
 
 // vitest runs from the repo root, so cwd is the stable anchor here.
-const VENDORED = join(process.cwd(), 'src/assets/sift-showcase')
+const VENDORED = join(process.cwd(), SHOWCASE_DIR)
 
-interface ManifestSample {
-    file: string
-    sha256_published: string
-    lines_published: number
-}
-interface ManifestPair {
-    name: string
-    baseline: string
-    changed: string
-    significant_changes: number
-    plain_text_diff_lines: number
-    declared: { significant_changes_on_the_raw_pair: number }
-}
-interface Manifest {
-    samples: ManifestSample[]
-    pairs: ManifestPair[]
-}
-
-const manifest: Manifest = JSON.parse(readFileSync(join(VENDORED, 'MANIFEST.json'), 'utf8'))
+// The same manifest reader and digest the deploy's build re-derives over the EMITTED logs
+// (src/siteChecks/showcaseDigests.ts); this suite holds the vendored sources and the pins to it.
+const manifest = readShowcaseManifest(VENDORED)
 
 const realPresets = diffPresets.filter(
     (preset): preset is RealCiPreset => preset.provenance === 'real-ci'
 )
 
 /** The manifest pair whose two logs are exactly this preset's two logs. */
-function manifestPairFor(preset: RealCiPreset): ManifestPair {
+function manifestPairFor(preset: RealCiPreset): ShowcasePair {
     const pair = manifest.pairs.find(
         (candidate) =>
             basename(candidate.baseline) === preset.samples.baseline.file &&
@@ -72,7 +62,7 @@ function manifestPairFor(preset: RealCiPreset): ManifestPair {
                 .map((p) => `${p.name} (${basename(p.baseline)} → ${basename(p.changed)})`)
                 .join(', ')}`
     ).toBeDefined()
-    return pair as ManifestPair
+    return pair as ShowcasePair
 }
 
 /** Everything a preset says in one language, as one blob to scan. */
@@ -147,9 +137,8 @@ describe('diff presets — the real samples are the published bytes', () => {
     it('each vendored log hashes to the sha256 the preset pins AND the manifest publishes', () => {
         for (const preset of realPresets) {
             for (const [side, sample] of Object.entries(preset.samples)) {
-                const bytes = readFileSync(join(VENDORED, sample.file))
-                const actual = createHash('sha256').update(bytes).digest('hex')
-                const declared = manifest.samples.find((entry) => basename(entry.file) === sample.file)
+                const actual = sha256Hex(readFileSync(join(VENDORED, sample.file)))
+                const declared = manifestSample(manifest, sample.file)
 
                 expect(
                     declared,

@@ -1,49 +1,40 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { execFile } from 'node:child_process'
-import { createHash } from 'node:crypto'
-import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import {
-    ADMITTED_API_HOST,
     type Load,
     classify,
     cssLoads,
-    describeLoad,
     dispositionOf,
-    filesUnder,
     isAdmitted,
-    loadsOf,
     markupLoads,
     scriptLoads,
-} from './assetLoads'
+} from '../siteChecks/assetLoads'
+import { ARMS, ARM_NAMES, type SiteVerdict, judgeBuiltSite } from '../siteChecks/builtSite'
+import { GATE_NAME } from '../siteChecks/vitePlugin'
 
 /**
- * A visitor's browser contacts no third-party origin for the site's own assets (DN-120.D8).
+ * A visitor's browser contacts no third-party origin for the site's own assets (DN-120.D8), and
+ * the build the deploy runs is what refuses otherwise.
  *
  * The subject is the production build, because that is what the browser receives: a dependency's
  * stylesheet, a component's <img> or a bundle's fetch() reaches the visitor only through it, and
  * a scan of index.html alone would be blind to all three. So this file builds the site once,
- * with the repo's own Vite config in production mode, into a scratch directory, and reads every
- * file the build emitted. It runs Vite in a child process: esbuild refuses to start inside the
- * jsdom environment the suite uses.
- *
- * Declared limits, which no arm here reaches: a URL the code assembles at runtime from
- * non-literal parts, a src/href written imperatively on a DOM node, an element a dependency
- * creates without jsx(), and response headers set by the host (netlify.toml).
+ * with the repo's own Vite config in production mode, into a scratch directory, and judges every
+ * file the build emitted with the same verdict the build itself enforces (src/siteChecks/
+ * builtSite.ts). It runs Vite in a child process: esbuild refuses to start inside the jsdom
+ * environment the suite uses.
  */
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const VITE_BIN = join(ROOT, 'node_modules', 'vite', 'bin', 'vite.js')
 const BUILD_TIMEOUT_MS = 240_000
-const FONTS_DIR = join(ROOT, 'src', 'assets', 'fonts')
-const SITE = 'https://own-origin.invalid/'
 
 const run = promisify(execFile)
-
-const sha256 = (path: string): string => createHash('sha256').update(readFileSync(path)).digest('hex')
 
 // The deploy builds with no test-runner state: NODE_ENV=test would change React's build, and an
 // inherited VITE_* variable would override .env.production.
@@ -53,109 +44,41 @@ function productionEnv(): NodeJS.ProcessEnv {
     )
 }
 
-async function buildProduction(outDir: string): Promise<void> {
-    const args = [VITE_BIN, 'build', '--mode', 'production', '--outDir', outDir, '--emptyOutDir', '--logLevel', 'warn']
+// Logged at info level, so the gate's own report is on stdout for the wiring arm to read.
+async function buildProduction(outDir: string): Promise<string> {
+    const args = [VITE_BIN, 'build', '--mode', 'production', '--outDir', outDir, '--emptyOutDir', '--logLevel', 'info']
     try {
-        await run(process.execPath, args, { cwd: ROOT, env: productionEnv(), maxBuffer: 16 * 1024 * 1024 })
+        const { stdout } = await run(process.execPath, args, { cwd: ROOT, env: productionEnv(), maxBuffer: 16 * 1024 * 1024 })
+        return stdout
     } catch (error) {
         const failed = error as { stdout?: string; stderr?: string; message: string }
         throw new Error(`vite build failed: ${failed.message}\n--- stdout\n${failed.stdout ?? ''}\n--- stderr\n${failed.stderr ?? ''}`)
     }
 }
 
-function declaredApiBase(file: string, pattern: RegExp): string | undefined {
-    return pattern.exec(readFileSync(join(ROOT, file), 'utf8'))?.[1]
-}
-
 describe('the production build', () => {
     let dist = ''
-    let emitted: string[] = []
-    let loads: Load[] = []
+    let stdout = ''
+    let verdict: SiteVerdict | undefined
 
     beforeAll(async () => {
         dist = mkdtempSync(join(tmpdir(), 'coderoast-web-dist-'))
-        await buildProduction(dist)
-        emitted = filesUnder(dist).sort()
-        loads = emitted.flatMap((path) => {
-            const disposition = dispositionOf(path)
-            return disposition === undefined ? [] : loadsOf(`dist/${path}`, readFileSync(join(dist, path), 'utf8'), disposition)
-        })
+        stdout = await buildProduction(dist)
+        verdict = judgeBuiltSite(ROOT, dist)
     }, BUILD_TIMEOUT_MS)
 
     afterAll(() => {
         if (dist !== '') rmSync(dist, { recursive: true, force: true })
     })
 
-    it('gives every emitted file a disposition, so none ships unread', () => {
-        const unread = emitted.filter((path) => dispositionOf(path) === undefined).map((path) => `dist/${path}`)
-        expect(unread, 'give each a disposition in assetLoads.ts DISPOSITIONS: can this file type name an origin?').toEqual([])
+    it.each(ARM_NAMES)('passes the %s arm', (arm) => {
+        expect(verdict?.faults[arm], `${ARMS[arm]}; ${verdict?.emitted.length ?? 0} files emitted, ${verdict?.loads.length ?? 0} loads read`).toEqual([])
     })
 
-    it('names no origin but its own and the admitted API host, in any load or contact', () => {
-        const judged = loads.filter((load) => load.kind === 'load')
-        // The stylesheets' url() reach is witnessed by the font arm below, which needs them to name every font.
-        const reach = {
-            htmlScript: judged.some((load) => load.file === 'dist/index.html' && load.construct === '<script> src'),
-            htmlStylesheet: judged.some((load) => load.file === 'dist/index.html' && load.construct === '<link rel="stylesheet"> href'),
-            jsxElement: judged.some((load) => load.construct.startsWith('jsx <')),
-            dynamicImport: judged.some((load) => load.construct === 'import()'),
-            foreignNavigation: loads.some((load) => load.kind === 'navigation' && classify(load.url) === 'third-party'),
-        }
-        expect(reach, 'a false here means the scanner went blind to that construct, so a clean verdict would be vacuous').toEqual({
-            htmlScript: true,
-            htmlStylesheet: true,
-            jsxElement: true,
-            dynamicImport: true,
-            foreignNavigation: true,
-        })
-        const offending = judged.filter((load) => !isAdmitted(classify(load.url))).map(describeLoad)
-        expect(offending, `admitted: the site's own origin (relative references) and ${ADMITTED_API_HOST}; ${judged.length} loads read`).toEqual([])
-    })
-
-    it('resolves every own-origin resource its markup and stylesheets reference to an emitted file', () => {
-        const ownResources = loads.filter((load) => load.kind === 'load' && load.fetchesResource && classify(load.url) === 'own-origin')
-        expect(ownResources.length, 'no own-origin resource read at all').toBeGreaterThan(0)
-        const unresolved = ownResources.filter((load) => {
-            const pathname = decodeURIComponent(new URL(load.url, SITE + load.file.slice('dist/'.length)).pathname)
-            const path = join(dist, pathname.endsWith('/') ? `${pathname}index.html` : pathname)
-            return !existsSync(path) || !statSync(path).isFile()
-        })
-        expect(unresolved.map(describeLoad), 'each names a file the build did not emit, so the browser gets the SPA fallback page').toEqual([])
-    })
-
-    it('emits every self-hosted font byte-identical, and its stylesheets name exactly those fonts', () => {
-        const sourceFonts = filesUnder(FONTS_DIR).filter((path) => dispositionOf(path) === 'font')
-        const emittedFonts = emitted.filter((path) => dispositionOf(path) === 'font')
-        const emittedByHash = new Map(emittedFonts.map((path) => [sha256(join(dist, path)), path]))
-        const sourceHashes = new Set(sourceFonts.map((path) => sha256(join(FONTS_DIR, path))))
-        expect(sourceFonts.length, 'no font under src/assets/fonts').toBeGreaterThan(0)
-        expect({
-            notEmitted: sourceFonts.filter((path) => !emittedByHash.has(sha256(join(FONTS_DIR, path)))).sort(),
-            emittedFromNoSource: emittedFonts.filter((path) => !sourceHashes.has(sha256(join(dist, path)))).sort(),
-        }, 'source fonts with no byte-identical emitted twin, and emitted fonts with no source').toEqual({ notEmitted: [], emittedFromNoSource: [] })
-        const namedByStylesheets = new Set(
-            loads
-                .filter((load) => load.file.endsWith('.css') && classify(load.url) === 'own-origin')
-                .map((load) => new URL(load.url, SITE + load.file.slice('dist/'.length)).pathname.slice(1))
-                .filter((path) => dispositionOf(path) === 'font'),
-        )
-        expect([...namedByStylesheets].sort(), 'font files the built stylesheets name, against the font files the build emitted')
-            .toEqual([...emittedFonts].sort())
-    })
-
-    it('carries the production API base the deploy declares, on the admitted API host', () => {
-        const declared = {
-            envProduction: declaredApiBase('.env.production', /^VITE_API_BASE=(\S+)$/m),
-            netlifyToml: declaredApiBase('netlify.toml', /^\s*VITE_API_BASE\s*=\s*"([^"]+)"/m),
-        }
-        expect(declared.envProduction, 'VITE_API_BASE not declared in .env.production').toBeDefined()
-        expect(declared.netlifyToml, 'the deploy (netlify.toml) and the local production build (.env.production) must agree').toBe(declared.envProduction)
-        const base = declared.envProduction ?? ''
-        expect(classify(base), `${base} is a new recipient: DN-120.D8 decides, not this test`).toBe('admitted-api')
-        const shipsIt = emitted
-            .filter((path) => dispositionOf(path) === 'js')
-            .some((path) => readFileSync(join(dist, path), 'utf8').includes(JSON.stringify(base)))
-        expect(shipsIt, `no emitted script carries ${base}: the build under test is not the one the deploy runs`).toBe(true)
+    it('judged itself inside the build: the deploy\'s own build ran every arm and reported them clean', () => {
+        const report = stdout.split('\n').find((line) => line.includes(`${GATE_NAME}: `))
+        expect(report, `no ${GATE_NAME} line in the build's stdout, so vite.config.ts no longer runs the gate and a deploy checks nothing:\n${stdout}`)
+            .toMatch(new RegExp(`${GATE_NAME}: ${ARM_NAMES.length}/${ARM_NAMES.length} arms clean`))
     })
 })
 

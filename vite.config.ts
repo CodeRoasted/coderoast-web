@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import http from 'node:http'
 import https from 'node:https'
+import { siteGate } from './src/siteChecks/vitePlugin'
 
 // Allow the proxy target to be overridden at dev/preview time without
 // touching the config. Set PROXY_TARGET to point at a remote server:
@@ -35,7 +36,9 @@ const proxy = {
 
 export default mergeConfig(
     defineConfig({
-        plugins: [react()],
+        // siteGate: the build judges its own output and fails on a fault, because the deploy
+        // runs `npm run build` and never `npm test` (src/siteChecks/vitePlugin.ts).
+        plugins: [react(), siteGate()],
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
