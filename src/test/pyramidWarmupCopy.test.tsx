@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import InsightPanel from '@/components/playground/InsightPanel'
 import { useStore } from '@/store/useStore'
 import type { InsightStatus } from '@/types/engine'
@@ -7,8 +7,10 @@ import type { InsightStatus } from '@/types/engine'
 /**
  * The pyramid warm-up bar speaks the operator's language: its window count, its time to maturity
  * and its "finalising" state come from the translation bundles, so a French session reads no
- * English there. The wording is asserted literally, since a test built from the bundles would
- * pass on any string they hold, English included.
+ * English there. The "Pyramid maturity" row's counter carries no unit either: its label already
+ * says what is counted, and a "w" for "windows" was English in every language. The wording is
+ * asserted literally, since a test built from the bundles would pass on any string they hold,
+ * English included.
  */
 
 const kWarmingUp: InsightStatus = {
@@ -37,6 +39,40 @@ function warmupBarText(heading: string, status: InsightStatus): string {
     expect(bar, `no warm-up bar under the heading "${heading}"`).toBeTruthy()
     return bar!.textContent ?? ''
 }
+
+/** The "Pyramid maturity" row, found by its label: the label, the counter and the badge. */
+function maturityRow(label: string, status: InsightStatus): HTMLElement {
+    render(
+        <InsightPanel engineId={null} status={status} reports={[]} loading={false} error={null} />,
+    )
+    fireEvent.click(screen.getByRole('tab', { name: /Config/ }))
+    const row = screen.getByText(label).parentElement
+    expect(row, `no row under the label "${label}"`).toBeTruthy()
+    return row!
+}
+
+describe('the pyramid maturity counter', () => {
+    afterEach(() => {
+        useStore.setState({ language: 'en' })
+    })
+
+    for (const [language, label] of [['fr', 'Maturité pyramide'], ['en', 'Pyramid maturity']] as const) {
+        it(`reads seen/target with no unit suffix (${language})`, () => {
+            useStore.setState({ language })
+            const row = maturityRow(label, kWarmingUp)
+
+            expect(within(row).queryByText('3/13'), `the row read "${row.textContent}"`).not.toBeNull()
+            expect(row.textContent?.match(/\d+w/) ?? null, `a unit suffix in "${row.textContent}"`).toBeNull()
+        })
+    }
+
+    it('reads the seen count alone when the status reports no target', () => {
+        const row = maturityRow('Pyramid maturity', { ...kWarmingUp, pyramid_warmup_windows: undefined })
+
+        expect(within(row).queryByText('3'), `the row read "${row.textContent}"`).not.toBeNull()
+        expect(row.textContent?.match(/\d+w/) ?? null, `a unit suffix in "${row.textContent}"`).toBeNull()
+    })
+})
 
 describe('the pyramid warm-up bar', () => {
     afterEach(() => {

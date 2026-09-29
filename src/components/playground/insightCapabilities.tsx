@@ -327,7 +327,13 @@ export function renderCapability({
                     <ConfigRow label={copy.configPyramidMaturity}>
                         <div className="flex items-center gap-2">
                             {windowsSeen != null && (
-                                <span className="font-mono text-[10px] text-gray-500">{windowsSeen}{warmupTarget != null ? `/${warmupTarget}` : ''}w</span>
+                                <span className="font-mono text-[10px] text-gray-500">
+                                    {warmupTarget != null
+                                        ? copy.pyramidMaturityCount
+                                            .replace('{seen}', String(windowsSeen))
+                                            .replace('{target}', String(warmupTarget))
+                                        : windowsSeen}
+                                </span>
                             )}
                             <PyramidMaturityBadge maturity={pyramidMaturity} copy={copy} />
                         </div>

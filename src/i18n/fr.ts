@@ -1082,6 +1082,7 @@ const fr: typeof en = {
             streamLastWindow: 'Dernière fenêtre',
             streamJustNow: 'à l\'instant',
             pyramidWarmingUpProgress: 'en chauffe',
+            pyramidMaturityCount: '{seen}/{target}',
             pyramidWarmupWindows: '{seen} / {target} fenêtres',
             pyramidTimeToMaturity: '~{time} avant maturité',
             pyramidFinalising: 'finalisation…',

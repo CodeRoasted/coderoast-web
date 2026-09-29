@@ -1149,6 +1149,7 @@ const en = {
             streamLastWindow: 'Last window',
             streamJustNow: 'just now',
             pyramidWarmingUpProgress: 'warming up',
+            pyramidMaturityCount: '{seen}/{target}',
             pyramidWarmupWindows: '{seen} / {target} windows',
             pyramidTimeToMaturity: '~{time} to maturity',
             pyramidFinalising: 'finalising…',
