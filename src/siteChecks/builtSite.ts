@@ -28,7 +28,7 @@ import { SHOWCASE_DIR, judgeEmittedShowcase, readShowcaseManifest, sha256Hex } f
 export const ARMS = {
     unread: 'every emitted file has a disposition in assetLoads.ts DISPOSITIONS, so none ships unread',
     scannerReach: 'the load scanner still reaches every construct this build is known to carry; a miss means it went blind, and a clean verdict would be vacuous',
-    thirdPartyLoads: `no load or contact names an origin but the site's own (relative references) and ${ADMITTED_API_HOST} (DN-120.D8)`,
+    thirdPartyLoads: `no load or contact names an origin but the site's own (relative references) and ${ADMITTED_API_HOST} (ADR-40.D3)`,
     unresolvedResources: 'every own-origin resource the markup and stylesheets reference is a file the build emitted, not the SPA fallback page',
     fontParity: 'every self-hosted font is emitted byte-identical, and the built stylesheets name exactly the emitted fonts',
     fontInventory: 'src/assets/fonts is complete: every file fonts.css names exists, every font file is named, and none is fetched from elsewhere',
@@ -144,7 +144,7 @@ function apiBaseFaults(root: string, dist: string, emitted: string[]): string[] 
         faults.push(`the deploy (netlify.toml: ${netlifyToml ?? 'undeclared'}) and the local production build (.env.production: ${envProduction}) disagree`)
     }
     if (classify(envProduction) !== 'admitted-api') {
-        faults.push(`${envProduction} is a new recipient: DN-120.D8 decides, not this check`)
+        faults.push(`${envProduction} is a new recipient: ADR-40.D3 decides, not this check`)
     }
     const shipsIt = emitted
         .filter((path) => dispositionOf(path) === 'js')

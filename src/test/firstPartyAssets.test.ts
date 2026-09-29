@@ -18,7 +18,7 @@ import { ARMS, ARM_NAMES, type SiteVerdict, judgeBuiltSite } from '../siteChecks
 import { GATE_NAME } from '../siteChecks/vitePlugin'
 
 /**
- * A visitor's browser contacts no third-party origin for the site's own assets (DN-120.D8), and
+ * A visitor's browser contacts no third-party origin for the site's own assets (ADR-40.D3), and
  * the build the deploy runs is what refuses otherwise.
  *
  * The subject is the production build, because that is what the browser receives: a dependency's

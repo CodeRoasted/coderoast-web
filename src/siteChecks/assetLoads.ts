@@ -13,12 +13,12 @@ import ts from 'typescript'
  * Two callers read the build through this one file: the test suite, and the deploy's own build
  * (`siteGate` in vitePlugin.ts), which refuses to finish on a third-party load.
  *
- * Why the admission list has exactly one host: DN-120.D8 removes the one independent recipient the
+ * Why the admission list has exactly one host: ADR-40.D3 removes the one independent recipient the
  * site had (Google Fonts) and admits only recipients CodeRoast contracts with. The site's own
  * origin is spelled by relative references. `api.coderoast.fr` is CodeRoast's own server, fetched
  * at runtime by design as the production VITE_API_BASE; its host is a processor in that slot's
  * register, not an independent recipient. Admitting a second host is a new recipient, so it is a
- * decision against DN-120.D8, never an edit to make this file green.
+ * decision against ADR-40.D3, never an edit to make this file green.
  */
 export const ADMITTED_API_HOST = 'api.coderoast.fr'
 
