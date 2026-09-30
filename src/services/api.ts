@@ -418,7 +418,6 @@ export async function getScenario(
 export interface ValidationResult {
     valid: boolean
     errors: string[]
-    warnings?: string[]
     notices?: string[]
     unavailable_capabilities?: string[]
 }
