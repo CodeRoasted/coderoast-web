@@ -136,6 +136,11 @@ export interface InsightReport {
      * cross-window subject and therefore no identity, so never group on the empty value.
      */
     dedup_id: string
+    /**
+     * Who wrote `body` and `action_hint`: the model, or the rule backend with the reason the
+     * model did not. `cause` is empty for `llm`.
+     */
+    narration?: { source: 'llm' | 'rule-based'; cause: string }
     explain_mode?: InsightExplainMode
     llm_enabled?: boolean
     /** Narration destination, HOST only — absent when nothing is sent. */
