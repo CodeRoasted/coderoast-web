@@ -39,9 +39,6 @@ export interface DiffInputProvenance {
     // Omitted when the producing path did not measure it — the aligned entry never does
     // (ADR-14.D3's omission rule) — so no consumer may treat it as present.
     unique_templates?: number
-    // '' when the entry carries no event-time window, as the aligned entry's never does.
-    window_start_iso: string
-    window_end_iso: string
 }
 
 export interface ChangeReportResponse {
