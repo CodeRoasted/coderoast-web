@@ -428,7 +428,7 @@ const en = {
                 story: [
                     'Somebody added nine tests. That is the whole change.',
                     'The test runner renumbered every line it prints — 762 tests became 771 — and the build renumbered every step with it, […/700] → […/704]. A plain text diff, with timestamps already stripped, reports 5 571 changed lines. Nothing broke. Nothing is wrong.',
-                    'Sift reports one change, and it is not an error.',
+                    'On this pair, Sift reports no significant change.',
                     'This is the number the rest of the page rests on. Every tool can find a failure in a failing build. The question is what a tool says when nothing is wrong — and a tool that hands you five thousand lines to read is one you turn off inside a week.',
                 ],
             },
@@ -444,10 +444,12 @@ const en = {
                 // alerts, same signal), and `Package '<hash>' build failed` — the old rank 2, the
                 // old "the package that failed to build" — is masked to `Package '<*>' build
                 // failed` at 0.80 and now sits at rank 6, so it is no longer in the top three.
+                // RE-RATIFIED again 2026-10-07 at Sift 1.10.6: 11 -> 10, the false HIGH
+                // `<*> tests passed, <*> tests failed out of <*>` row left; ranks 1-3 unchanged.
                 description:
                     'The same passing run against the failing one. The top three are the failure and its cause.',
                 story: [
-                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 11 — and the top three are the whole story: the step exited non-zero, then the error it raised.',
+                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 10 — and the top three are the whole story: the step exited non-zero, then the error it raised.',
                     'Not “we found the word ERROR.” The failing line was already in the log — grep would have handed it to you along with thousands of lines of build chatter that moved at the same time. What a plain diff cannot tell you is which of them is the one that mattered.',
                 ],
             },

@@ -378,7 +378,7 @@ const fr: typeof en = {
                 story: [
                     'Quelqu’un a ajouté neuf tests. C’est tout le changement.',
                     'Le runner de tests a renuméroté chaque ligne qu’il affiche — 762 tests sont devenus 771 — et le build a renuméroté chaque étape avec lui, […/700] → […/704]. Un diff texte, timestamps déjà retirés, signale 5 571 lignes modifiées. Rien n’a cassé. Rien ne va mal.',
-                    'Sift signale un seul changement, et ce n’est pas une erreur.',
+                    'Sur cette paire, Sift ne signale aucun changement significatif.',
                     'C’est le chiffre sur lequel repose tout le reste de la page. N’importe quel outil sait trouver une panne dans un build en échec. La vraie question, c’est ce qu’un outil dit quand rien ne va mal — et un outil qui vous rend cinq mille lignes à lire est un outil que vous désactivez en une semaine.',
                 ],
             },
@@ -387,7 +387,7 @@ const fr: typeof en = {
                 description:
                     'Le même run réussi face au run en échec. Le trio de tête, c’est l’échec et sa cause.',
                 story: [
-                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 11 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis l’erreur qu’elle a levée.',
+                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 10 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis l’erreur qu’elle a levée.',
                     'Pas « on a trouvé le mot ERROR ». La ligne fautive était déjà dans le log — grep vous l’aurait rendue en même temps que des milliers de lignes de bruit de build qui ont bougé au même moment. Ce qu’un diff texte ne peut pas vous dire, c’est laquelle d’entre elles est celle qui compte.',
                 ],
             },

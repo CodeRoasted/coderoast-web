@@ -15,7 +15,7 @@
     "redact-identity",
     "remove-demonstrated-tool"
   ],
-  "honesty_gate": "Redacting identity could silently change the result: alter a template and the ranked report changes with it. So the build runs Sift twice \u2014 once on the logs before identity redaction, once on the published logs \u2014 and refuses to publish unless both reports carry the same claim. The same run verdicts and the same line totals. The same ranking curve for the significant changes, position by position, so nothing crosses a rank boundary unseen. The same findings, with the same evidence and the same line references. Template hashes that correspond one-to-one, so the redaction can neither merge two line shapes nor split one. The engine's raw per-step MetaLogDiff documents, held to the same rule: every count, frequency, divergence, verdict, n-gram and cube cell pinned; only the template hashes are free, and they must still correspond one-to-one. That the redaction changed NOTHING ABOUT WHAT WAS OBSERVED: per step, the number of line occurrences the engine attributed to templates is identical on both sides. Regrouping lines into different templates cannot move that number; inventing, dropping or rewording a line is the only thing that can. All of it at two significance floors, 0.05 and 0.0, so the raw tier is exercised twice over and the sub-significance tail is surfaced even when the published report is a single line. How many ranked rows each arm actually compared position by position is published per arm and reads: the noise-floor pair 1 of 1 at floor 0.05, 1 of 50 at floor 0; the regression pair 10 of 11 at floor 0.05, 10 of 50 at floor 0. Floor 0 compares no more of them than the shipped floor does: at floor 0 the engine's ranked list is a capped slice of the whole detected population, most of it below the shipped floor, and a row below that floor is tail, declared rather than compared. Comparing an arbitrary slice row by row is not a claim; the raw tier below it is. WHAT IS COMPARED IS THE SIGNIFICANT SET, and the tail is declared instead. The changes at or above the shipped significance floor \u2014 the ones these reports headline \u2014 are held to every check above. Below that floor the redaction genuinely does move something, and pretending otherwise would be the dishonest choice: the runner path MUST be redacted, redacting it shortens the path by one segment, and the tokenizer then groups the lines carrying it into different templates. So the tail's grouping is not a claim this showcase makes. What holds it instead is the observation check above \u2014 regrouping cannot change how many lines were seen \u2014 plus a published count of exactly how many templates it reached: 50 and 55 for the noise-floor pair and 57 and 51 for the regression pair respectively, under `pairs[].declared.honesty_gate[].raw_tail_templates_repartitioned_by_the_redaction`. The population it moves is published on both sides too, as `detected_changes`: 936 against 941 for the noise-floor pair and 1072 against 1066 for the regression pair. And no template in the significant set may be one of them \u2014 if the redaction ever reached a change these reports publish, the build stops. One tolerance on which line was kept, declared rather than hidden: some findings surface because a BOUNDED store of high-salience lines happened to hold that line, and both such stores key on line content \u2014 so redacting the runner path can swap which of several equally-ranked lines was kept. Those findings must still match on shape, severity, score and step; only which line was sampled is free, and the count is published per pair. At the shipped floor it is 0 for the noise-floor pair and 0 for the regression pair; in the raw tier, where the same swap shows as a row whose template and count changed, it is 0 for the noise-floor pair and 0 for the regression pair. One tolerance on whether such a line is reported at all: the same stores are bounded, so changing a line's template can change its MEMBERSHIP and not merely its identity. A finding may therefore appear on one side and not the other \u2014 but only if it is a plain line appearing or disappearing, only if the store is why it surfaced, and only if it ranks strictly below every finding the failure lexicon or the statistics produced. The findings this showcase is about can never move that way. The count is published per pair: at the shipped floor it is 0 for the noise-floor pair and 1 for the regression pair. This is not a formality: it rejected the first redaction map this showcase was built with, which would have published a report the real logs do not support.",
+  "honesty_gate": "Redacting identity could silently change the result: alter a template and the ranked report changes with it. So the build runs Sift twice \u2014 once on the logs before identity redaction, once on the published logs \u2014 and refuses to publish unless both reports carry the same claim. The same run verdicts and the same line totals. The same ranking curve for the significant changes, position by position, so nothing crosses a rank boundary unseen. The same findings, with the same evidence and the same line references. Template hashes that correspond one-to-one, so the redaction can neither merge two line shapes nor split one. The engine's raw per-step MetaLogDiff documents, held to the same rule: every count, frequency, divergence, verdict, n-gram and cube cell pinned; only the template hashes are free, and they must still correspond one-to-one. That the redaction changed NOTHING ABOUT WHAT WAS OBSERVED: per step, the number of line occurrences the engine attributed to templates is identical on both sides. Regrouping lines into different templates cannot move that number; inventing, dropping or rewording a line is the only thing that can. All of it at two significance floors, 0.05 and 0.0, so the raw tier is exercised twice over and the sub-significance tail is surfaced however few rows the published report carries \u2014 at the shipped floor, 0 ranked rows for the noise-floor pair and 10 ranked rows for the regression pair. How many ranked rows each arm actually compared position by position is published per arm and reads: the noise-floor pair 0 of 0 at floor 0.05, 0 of 50 at floor 0; the regression pair 9 of 10 at floor 0.05, 9 of 50 at floor 0. Floor 0 compares no more of them than the shipped floor does: at floor 0 the engine's ranked list is a capped slice of the whole detected population, most of it below the shipped floor, and a row below that floor is tail, declared rather than compared. Comparing an arbitrary slice row by row is not a claim; the raw tier below it is. WHAT IS COMPARED IS THE SIGNIFICANT SET, and the tail is declared instead. The changes at or above the shipped significance floor \u2014 the ones these reports headline \u2014 are held to every check above. Below that floor the redaction genuinely does move something, and pretending otherwise would be the dishonest choice: the runner path MUST be redacted, redacting it shortens the path by one segment, and the tokenizer then groups the lines carrying it into different templates. So the tail's grouping is not a claim this showcase makes. What holds it instead is the observation check above \u2014 regrouping cannot change how many lines were seen \u2014 plus a published count of exactly how many templates it reached: 38 and 41 for the noise-floor pair and 51 and 44 for the regression pair respectively, under `pairs[].declared.honesty_gate[].raw_tail_templates_repartitioned_by_the_redaction`. The population it moves is published on both sides too, as `detected_changes`: 796 against 799 for the noise-floor pair and 943 against 936 for the regression pair. And no template in the significant set may be one of them \u2014 if the redaction ever reached a change these reports publish, the build stops. One tolerance on which line was kept, declared rather than hidden: some findings surface because a BOUNDED store of high-salience lines happened to hold that line, and both such stores key on line content \u2014 so redacting the runner path can swap which of several equally-ranked lines was kept. Those findings must still match on shape, severity, score and step; only which line was sampled is free, and the count is published per pair. At the shipped floor it is 0 for the noise-floor pair and 0 for the regression pair; in the raw tier, where the same swap shows as a row whose template and count changed, it is 0 for the noise-floor pair and 0 for the regression pair. One tolerance on whether such a line is reported at all: the same stores are bounded, so changing a line's template can change its MEMBERSHIP and not merely its identity. A finding may therefore appear on one side and not the other \u2014 but only if it is a plain line appearing or disappearing, only if the store is why it surfaced, and only if it ranks strictly below every finding the failure lexicon or the statistics produced. The findings this showcase is about can never move that way. The count is published per pair: at the shipped floor it is 0 for the noise-floor pair and 1 for the regression pair. This is not a formality: it rejected the first redaction map this showcase was built with, which would have published a report the real logs do not support.",
   "samples": [
     {
       "file": "logs/logcraft__ci-build__green-a.log",
@@ -129,31 +129,31 @@
       "report_md": "reports/noise-floor.report.md",
       "report_json": "reports/noise-floor.report.json",
       "significance_floor": 0.05,
-      "significant_changes": 1,
+      "significant_changes": 0,
       "plain_text_diff_lines": 5571,
       "declared": {
-        "significant_changes_on_the_raw_pair": 1,
+        "significant_changes_on_the_raw_pair": 0,
         "note": "the raw pair's count includes changes that are only our own CI's Sift step reporting on itself; removing that step is the 'remove-demonstrated-tool' transformation above, and this is the count it removed",
         "honesty_gate": {
           "0.0": {
             "significance_floor": 0.0,
-            "significant_changes": 898,
+            "significant_changes": 796,
             "ranked_changes_published": 50,
-            "ranked_changes_compared_position_by_position": 1,
+            "ranked_changes_compared_position_by_position": 0,
             "ranked_changes_below_the_shipped_floor_not_compared": {
-              "real_logs": 49,
-              "published_samples": 49
+              "real_logs": 50,
+              "published_samples": 50
             },
-            "templates_pinned_one_to_one": 1,
+            "templates_pinned_one_to_one": 0,
             "detected_changes": {
-              "real_logs": 936,
-              "published_samples": 941
+              "real_logs": 796,
+              "published_samples": 799
             },
             "detected_changes_is_a_population": "every change the engine detected on this pair, significant or not \u2014 a population, not a count of reported rows. Almost all of it is the suppressed tail, which is why the two sides can differ: the runner-path redaction changes how the tail's lines group into templates. The figure beside this one, `raw_tail_templates_repartitioned_by_the_redaction`, is how many templates that reached, and the gate refuses a population that moved further than that.",
-            "raw_templates_pinned_one_to_one": 1104,
+            "raw_templates_pinned_one_to_one": 1041,
             "raw_tail_templates_repartitioned_by_the_redaction": {
-              "real_logs": 50,
-              "published_samples": 55
+              "real_logs": 38,
+              "published_samples": 41
             },
             "reservoir_sampled_changes_not_pinned_to_a_line": 0,
             "raw_reservoir_rows_not_pinned_to_a_template": 0,
@@ -161,23 +161,23 @@
           },
           "0.05": {
             "significance_floor": 0.05,
-            "significant_changes": 1,
-            "ranked_changes_published": 1,
-            "ranked_changes_compared_position_by_position": 1,
+            "significant_changes": 0,
+            "ranked_changes_published": 0,
+            "ranked_changes_compared_position_by_position": 0,
             "ranked_changes_below_the_shipped_floor_not_compared": {
               "real_logs": 0,
               "published_samples": 0
             },
-            "templates_pinned_one_to_one": 1,
+            "templates_pinned_one_to_one": 0,
             "detected_changes": {
-              "real_logs": 936,
-              "published_samples": 941
+              "real_logs": 796,
+              "published_samples": 799
             },
             "detected_changes_is_a_population": "every change the engine detected on this pair, significant or not \u2014 a population, not a count of reported rows. Almost all of it is the suppressed tail, which is why the two sides can differ: the runner-path redaction changes how the tail's lines group into templates. The figure beside this one, `raw_tail_templates_repartitioned_by_the_redaction`, is how many templates that reached, and the gate refuses a population that moved further than that.",
-            "raw_templates_pinned_one_to_one": 1104,
+            "raw_templates_pinned_one_to_one": 1041,
             "raw_tail_templates_repartitioned_by_the_redaction": {
-              "real_logs": 50,
-              "published_samples": 55
+              "real_logs": 38,
+              "published_samples": 41
             },
             "reservoir_sampled_changes_not_pinned_to_a_line": 0,
             "raw_reservoir_rows_not_pinned_to_a_template": 0,
@@ -194,31 +194,31 @@
       "report_md": "reports/regression.report.md",
       "report_json": "reports/regression.report.json",
       "significance_floor": 0.05,
-      "significant_changes": 11,
+      "significant_changes": 10,
       "plain_text_diff_lines": 4889,
       "declared": {
-        "significant_changes_on_the_raw_pair": 12,
+        "significant_changes_on_the_raw_pair": 11,
         "note": "the raw pair's count includes changes that are only our own CI's Sift step reporting on itself; removing that step is the 'remove-demonstrated-tool' transformation above, and this is the count it removed",
         "honesty_gate": {
           "0.0": {
             "significance_floor": 0.0,
-            "significant_changes": 971,
+            "significant_changes": 890,
             "ranked_changes_published": 50,
-            "ranked_changes_compared_position_by_position": 10,
+            "ranked_changes_compared_position_by_position": 9,
             "ranked_changes_below_the_shipped_floor_not_compared": {
-              "real_logs": 40,
-              "published_samples": 39
+              "real_logs": 41,
+              "published_samples": 40
             },
-            "templates_pinned_one_to_one": 7,
+            "templates_pinned_one_to_one": 6,
             "detected_changes": {
-              "real_logs": 1072,
-              "published_samples": 1066
+              "real_logs": 943,
+              "published_samples": 936
             },
             "detected_changes_is_a_population": "every change the engine detected on this pair, significant or not \u2014 a population, not a count of reported rows. Almost all of it is the suppressed tail, which is why the two sides can differ: the runner-path redaction changes how the tail's lines group into templates. The figure beside this one, `raw_tail_templates_repartitioned_by_the_redaction`, is how many templates that reached, and the gate refuses a population that moved further than that.",
-            "raw_templates_pinned_one_to_one": 1154,
+            "raw_templates_pinned_one_to_one": 1090,
             "raw_tail_templates_repartitioned_by_the_redaction": {
-              "real_logs": 57,
-              "published_samples": 51
+              "real_logs": 51,
+              "published_samples": 44
             },
             "reservoir_sampled_changes_not_pinned_to_a_line": 0,
             "raw_reservoir_rows_not_pinned_to_a_template": 0,
@@ -226,23 +226,23 @@
           },
           "0.05": {
             "significance_floor": 0.05,
-            "significant_changes": 11,
-            "ranked_changes_published": 11,
-            "ranked_changes_compared_position_by_position": 10,
+            "significant_changes": 10,
+            "ranked_changes_published": 10,
+            "ranked_changes_compared_position_by_position": 9,
             "ranked_changes_below_the_shipped_floor_not_compared": {
               "real_logs": 0,
               "published_samples": 0
             },
-            "templates_pinned_one_to_one": 7,
+            "templates_pinned_one_to_one": 6,
             "detected_changes": {
-              "real_logs": 1072,
-              "published_samples": 1066
+              "real_logs": 943,
+              "published_samples": 936
             },
             "detected_changes_is_a_population": "every change the engine detected on this pair, significant or not \u2014 a population, not a count of reported rows. Almost all of it is the suppressed tail, which is why the two sides can differ: the runner-path redaction changes how the tail's lines group into templates. The figure beside this one, `raw_tail_templates_repartitioned_by_the_redaction`, is how many templates that reached, and the gate refuses a population that moved further than that.",
-            "raw_templates_pinned_one_to_one": 1154,
+            "raw_templates_pinned_one_to_one": 1090,
             "raw_tail_templates_repartitioned_by_the_redaction": {
-              "real_logs": 57,
-              "published_samples": 51
+              "real_logs": 51,
+              "published_samples": 44
             },
             "reservoir_sampled_changes_not_pinned_to_a_line": 0,
             "raw_reservoir_rows_not_pinned_to_a_template": 0,

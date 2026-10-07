@@ -335,14 +335,14 @@ export const diffPresets: DiffPreset[] = [
     {
         id: 'real-ci-noise',
         provenance: 'real-ci',
-        figures: { plainTextDiffLines: 5571, significantChanges: 1 },
+        figures: { plainTextDiffLines: 5571, significantChanges: 0 },
         samples: { baseline: GREEN_A, changed: GREEN_B },
         load: realPair(GREEN_A, GREEN_B),
     },
     {
         id: 'real-ci-triage',
         provenance: 'real-ci',
-        figures: { plainTextDiffLines: 4889, significantChanges: 11 },
+        figures: { plainTextDiffLines: 4889, significantChanges: 10 },
         samples: { baseline: GREEN_A, changed: RED },
         load: realPair(GREEN_A, RED),
     },
