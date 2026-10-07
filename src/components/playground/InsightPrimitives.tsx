@@ -100,9 +100,9 @@ export function PyramidMaturityBadge({
 
 /**
  * The stamp at the top right of a tab header: "Window #N" over the latest MetaLog's range. That range
- * is the window's first and last event times, never its boundaries (DN-110.D5), so it reads
+ * is the window's first and last event times, never its boundaries (ADR-34.D13), so it reads
  * "observed HH:MM:SS → HH:MM:SS" with the observed-span hint as its title: a word, because the
- * misreading happens at a glance (DN-110.D6).
+ * misreading happens at a glance (ADR-34.D13).
  */
 export function WindowStamp({
     windowNum,

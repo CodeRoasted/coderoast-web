@@ -41,7 +41,7 @@ describe('ReconfigurePanel', () => {
     })
 
     // The window length is the scenario's shm_window_seal_interval_seconds, fixed when the engine is
-    // built, and the server answers 422 to a reconfigure naming it (DN-110.D2): the panel offers no
+    // built, and the server answers 422 to a reconfigure naming it (ADR-34.D11): the panel offers no
     // window field and never sends one.
     it('offers no window length and never sends one', async () => {
         render(

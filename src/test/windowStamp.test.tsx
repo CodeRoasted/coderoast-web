@@ -6,9 +6,9 @@ import type { InsightLatestWindow, InsightReport, InsightStatus } from '@/types/
 
 /**
  * The stamp at the top right of four InSight tabs prints a MetaLog's `window.start → window.end`,
- * the window's first and last event times (DN-110.D5), never its boundaries. So the range carries
+ * the window's first and last event times (ADR-34.D13), never its boundaries. So the range carries
  * a visible word, "observed" ("observé"), because the misreading happens at a glance, and the
- * observed-span hint as its title (DN-110.D6). The wording is asserted literally, as the ruling
+ * observed-span hint as its title (ADR-34.D13). The wording is asserted literally, as the ruling
  * gives it.
  */
 
@@ -70,7 +70,7 @@ const wording = {
 
 const tabs = [/Explain/, /Detect/, /MetaLog/, /Evidence/]
 
-describe('the window stamp names its range the observed span (DN-110.D6)', () => {
+describe('the window stamp names its range the observed span (ADR-34.D13)', () => {
     afterEach(() => {
         useStore.setState({ language: 'en' })
     })

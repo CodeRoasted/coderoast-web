@@ -294,7 +294,7 @@ export function renderCapability({
             : 0
         const windowsRemaining = Math.max(0, effectiveWarmupTarget - effectiveWindowsSeen)
         // Counted in window LENGTHS only: a MetaLog's observed span is not a length, so without a
-        // reported length there is no estimate (DN-110.D5).
+        // reported length there is no estimate (ADR-34.D13).
         const timeToMaturity = showWarmupBar && windowsRemaining > 0 && windowLength != null
             ? formatDuration(windowsRemaining * windowLength)
             : null

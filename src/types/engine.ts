@@ -222,7 +222,7 @@ export interface DetectionReport {
 }
 
 /**
- * The window's OBSERVED SPAN, never its length (DN-110.D5): `start` and `end` are the event times of
+ * The window's OBSERVED SPAN, never its length (ADR-34.D13): `start` and `end` are the event times of
  * the first and last lines the window observed, and `duration_seconds` is `end - start` rounded to the
  * second. The length is the status field `window_duration_seconds`.
  */

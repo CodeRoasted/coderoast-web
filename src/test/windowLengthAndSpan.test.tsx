@@ -8,7 +8,7 @@ import type { InsightLatestWindow, InsightStatus } from '@/types/engine'
 
 /**
  * A window has a LENGTH and an OBSERVED SPAN, and neither is labelled with the other's name
- * (DN-110.D5). The length is the producer's seal interval, reported by the status field
+ * (ADR-34.D13). The length is the producer's seal interval, reported by the status field
  * `window_duration_seconds`; the span is a published MetaLog's `window.duration_seconds`, from the
  * window's first event to its last. A window cut every 25 s whose last line came 1 s before its
  * seal reads a span of 24 and a length of 25, and one label for both reads as a 24 s window.
@@ -99,7 +99,7 @@ function leaves(node: unknown, path: string[] = [], out: [string, string][] = []
     return out
 }
 
-describe('a window LENGTH and an OBSERVED SPAN (DN-110.D5)', () => {
+describe('a window LENGTH and an OBSERVED SPAN (ADR-34.D13)', () => {
     afterEach(() => {
         useStore.setState({ language: 'en' })
     })
@@ -140,7 +140,7 @@ describe('a window LENGTH and an OBSERVED SPAN (DN-110.D5)', () => {
         expect(ambiguous).toEqual([])
     })
 
-    // No surface derives one quantity from the other (DN-110.D5): the time to maturity is counted in
+    // No surface derives one quantity from the other (ADR-34.D13): the time to maturity is counted in
     // window LENGTHS, and a status that reports none has no length to count in, whatever span the
     // latest MetaLog saw.
     it('counts the time to maturity in window lengths, never in the observed span', () => {
