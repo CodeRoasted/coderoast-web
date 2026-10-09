@@ -205,7 +205,7 @@ const fr: typeof en = {
                 'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent à installer, sans compte utilisateur, environ trois secondes de temps CI.',
             ctaPrimary: 'Ajoutez l’Action',
             ctaSecondary: 'Essayez dans votre navigateur',
-            trust: 'Gratuit, pour toujours · tourne dans votre CI · vos logs ne quittent jamais votre infra.',
+            trust: 'Gratuit, pour toujours · l’Action tourne dans votre CI · vos logs n’en sortent jamais.',
             samplePassed: 'les deux runs sont passés',
             kicker:
                 'Les deux runs sont au vert. Ni le statut du build ni grep n’y voient quoi que ce soit — il n’y a aucune erreur à chercher. Sift, lui, voit que votre cache a cessé de fonctionner en silence.',
@@ -292,7 +292,7 @@ const fr: typeof en = {
         eyebrow: 'SIFT',
         title: 'Ce qui a changé entre deux logs — et ce qui n’est que du bruit',
         subtitle:
-            'Collez deux flux de logs (un run de référence et un run modifié). InSight ingère les deux et classe les changements structurellement significatifs — survolez ou épinglez un changement pour voir exactement les lignes qu’il touche.',
+            'Collez deux flux de logs (un run de référence et un run modifié). InSight ingère les deux et classe les changements structurellement significatifs — survolez ou épinglez un changement pour voir exactement les lignes qu’il touche. Ce que vous collez ici part sur le serveur de CodeRoast pour être comparé : ne collez pas de logs que vous ne pouvez pas partager. Installées, la CLI et l’Action font tourner le même moteur dans votre CI, et vos logs n’en sortent jamais.',
         loadSample: 'Pas de logs sous la main ? Chargez un exemple :',
         loadingSample: 'Chargement…',
         baselineLog: 'Log de référence',
@@ -305,7 +305,7 @@ const fr: typeof en = {
         comparing: 'Comparaison…',
         swap: 'Inverser',
         swapTitle: 'Inverser référence ⇄ modifié',
-        trust: 'Gratuit · quota quotidien · les logs ne sont pas stockés',
+        trust: 'Gratuit · quota quotidien · comparés sur notre serveur, pas stockés',
         paneBaseline: 'Référence',
         paneChanged: 'Modifié',
         swapSides: 'Inverser les côtés',
@@ -521,7 +521,7 @@ const fr: typeof en = {
             highlights: [
                 '« Ce qui a changé » classé par pertinence, bruit supprimé',
                 'Surlignage de provenance ligne à ligne',
-                'Tourne en local — les logs ne sortent pas (CLI / Action)',
+                'CLI / Action : tourne dans votre CI — les logs n’en sortent pas',
             ],
         },
         logcraft: {
@@ -666,7 +666,7 @@ const fr: typeof en = {
             {
                 title: 'Le produit hérite de la même ligne.',
                 body:
-                    'C’est pour ça qu’InSight est déterministe. Un modèle ne décide jamais si votre incident est réel, si un changement de log est significatif, ni ce qui appartient à une fenêtre — ce sont des faits structurels que notre moteur calcule et reproduit. Dans notre produit, l’IA ne fait jamais que raconter ce que le moteur déterministe a déjà classé : sur votre infra, en opt-in, avec votre propre clé, sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide. Les autres « analyses de logs par IA » hallucinent le résultat. Nous, on classe de façon déterministe et on raconte en option. La frontière est nette, volontairement.',
+                    'C’est pour ça qu’InSight est déterministe. Un modèle ne décide jamais si votre incident est réel, si un changement de log est significatif, ni ce qui appartient à une fenêtre — ce sont des faits structurels que notre moteur calcule et reproduit. Dans notre produit, l’IA ne fait jamais que raconter ce que le moteur déterministe a déjà classé : en opt-in, avec un modèle que vous faites tourner ou une clé qui vous appartient, sur une empreinte bornée — jamais les logs bruts, jamais dans le chemin qui décide. Les autres « analyses de logs par IA » hallucinent le résultat. Nous, on classe de façon déterministe et on raconte en option. La frontière est nette, volontairement.',
             },
         ],
         commit: {
@@ -690,7 +690,7 @@ const fr: typeof en = {
                 {
                     title: 'Vos logs ne quittent jamais votre infra.',
                     description:
-                        'La CLI et l’Action tournent dans votre CI ; rien ne nous est envoyé. Quand la narration IA est activée, elle tourne avec votre clé, sur votre machine, sur une empreinte bornée — pas les logs bruts.',
+                        'La CLI et l’Action tournent dans votre CI, un déploiement InSight sur votre propre infra ; rien ne nous est envoyé. Activez la narration IA et elle part vers un modèle que vous faites tourner ou une clé qui vous appartient, sur une empreinte bornée — jamais les logs bruts. Le playground de ce site est l’autre côté de cette ligne : ce que vous y collez, vous nous l’envoyez.',
                 },
             ],
         },

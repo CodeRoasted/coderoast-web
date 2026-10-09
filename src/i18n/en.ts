@@ -217,7 +217,7 @@ const en = {
                 'Pass/fail is one bit; grep needs to know what to look for. Sift reads the structure of two runs and ranks what actually changed — a success line that silently vanished, an error you fixed, a pattern that took over the run — then mutes the hundreds of diffs that don\'t matter. Two log files in, a ranked report out. No agent, no account, about three seconds of CI time.',
             ctaPrimary: 'Add the Action',
             ctaSecondary: 'Try it in your browser',
-            trust: 'Free, forever · runs in your CI · your logs never leave it.',
+            trust: 'Free, forever · the Action runs in your CI · your logs never leave it.',
             samplePassed: 'both runs passed',
             kicker:
                 'Both runs are green. Pass/fail sees nothing. Grep sees nothing — there\'s no error to search for. Sift sees your cache silently stopped working.',
@@ -311,7 +311,7 @@ const en = {
         eyebrow: 'SIFT',
         title: 'What changed between two logs — and what\'s just noise',
         subtitle:
-            'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched.',
+            'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched. What you paste here goes to CodeRoast’s server to be compared, so don’t paste logs you can’t share. Installed, the CLI and the Action run the same engine in your CI, and your logs never leave it.',
         loadSample: 'No logs handy? Load a sample:',
         loadingSample: 'Loading…', // the real pairs are fetched on demand
         baselineLog: 'Baseline log',
@@ -324,7 +324,7 @@ const en = {
         comparing: 'Comparing…',
         swap: 'Swap',
         swapTitle: 'Swap baseline ⇄ changed',
-        trust: 'Free · metered per day · logs are not stored',
+        trust: 'Free · metered per day · compared on our server, not stored',
         paneBaseline: 'Baseline', // result view: the left log-pane title
         paneChanged: 'Changed', // result view: the right log-pane title
         swapSides: 'Swap sides',
@@ -585,7 +585,7 @@ const en = {
             highlights: [
                 'Ranked “what changed”, noise suppressed',
                 'Line-level provenance highlighting',
-                'Runs locally — logs never leave (CLI / Action)',
+                'CLI / Action: runs in your CI — logs never leave it',
             ],
         },
         logcraft: {
@@ -734,7 +734,7 @@ const en = {
             {
                 title: 'The product inherits the same line.',
                 body:
-                    'This is why InSight is deterministic. A model never decides whether your incident is real, whether a log change is significant, or what belongs in a window — those are structural facts our engine computes and reproduces. In our product, AI only ever narrates what the deterministic engine has already ranked: on your infrastructure, opt-in, your own key, over a bounded fingerprint — never raw logs, never in the path that decides. Other “AI log analysis” hallucinates the finding. We rank deterministically and narrate optionally. The boundary is bright on purpose.',
+                    'This is why InSight is deterministic. A model never decides whether your incident is real, whether a log change is significant, or what belongs in a window — those are structural facts our engine computes and reproduces. In our product, AI only ever narrates what the deterministic engine has already ranked: opt-in, with a model you run or a key you own, over a bounded fingerprint — never raw logs, never in the path that decides. Other “AI log analysis” hallucinates the finding. We rank deterministically and narrate optionally. The boundary is bright on purpose.',
             },
         ],
         commit: {
@@ -758,7 +758,7 @@ const en = {
                 {
                     title: 'Your logs never leave your infrastructure.',
                     description:
-                        'The CLI and Action run in your CI; nothing is shipped to us. When AI narration is enabled, it runs on your key and your machine, over a bounded fingerprint — not raw logs.',
+                        'The CLI and the Action run in your CI, an InSight deployment on your own infrastructure; nothing is shipped to us. Turn AI narration on and it goes to a model you run or a key you own, over a bounded fingerprint — never raw logs. This site’s playground is the other side of that line: what you paste there, you send to us.',
                 },
             ],
         },
