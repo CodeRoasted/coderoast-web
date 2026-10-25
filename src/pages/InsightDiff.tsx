@@ -181,16 +181,37 @@ function buildHighlights(
     return map
 }
 
+// The changed-pane lines an active FAILING row cites as INFERRED cause lines (N398, RUL-164):
+// canon read them as error-level, the CI never declared them. A ref any active row cites as
+// declared is not inferred; any token other than `declared` reads inferred, the report reader's
+// own rule. Cause lines index the changed run only, so the baseline pane takes no such set.
+function inferredCauseLines(changes: DiffRankedChange[], active: Set<number>): Set<number> {
+    const inferred = new Set<number>()
+    const declared = new Set<number>()
+    for (const idx of active) {
+        for (const line of changes[idx]?.cause_lines ?? []) {
+            if (line.established === 'declared') declared.add(line.ref)
+            else inferred.add(line.ref)
+        }
+    }
+    for (const ref of declared) inferred.delete(ref)
+    return inferred
+}
+
+const NO_INFERRED_LINES: ReadonlySet<number> = new Set()
+
 function LogPane({
     title,
     text,
     highlights,
+    inferred = NO_INFERRED_LINES,
     focusLine,
     focusNonce,
 }: {
     title: string
     text: string
     highlights: Map<number, Tone>
+    inferred?: ReadonlySet<number>
     focusLine: number
     focusNonce: number // bumped on every hover/click so re-focusing the same line re-scrolls
 }) {
@@ -227,19 +248,34 @@ function LogPane({
             </div>
             <div
                 ref={containerRef}
+                role="region"
+                aria-label={title}
                 className="h-80 overflow-auto rounded-lg border border-gray-800 bg-gray-900/60 font-mono text-[11px] leading-relaxed py-1"
             >
                 {lines.map((line, idx) => {
                     const tone = highlights.get(idx)
+                    // An inferred cause line keeps its row's tone and reads as inferred twice over:
+                    // a dashed edge, and the word itself with the report's wording on hover.
+                    const isInferred = tone !== undefined && inferred.has(idx)
                     return (
                         <div
                             key={idx}
                             data-line={idx}
-                            className={`flex border-l-2 ${tone ? TONE[tone].line : 'border-transparent'}`}
+                            className={`flex border-l-2 ${tone ? TONE[tone].line : 'border-transparent'} ${
+                                isInferred ? 'border-dashed' : ''
+                            }`}
                         >
                             <span className="select-none w-10 shrink-0 px-2 text-right text-gray-700">
                                 {idx + 1}
                             </span>
+                            {isInferred && (
+                                <span
+                                    title={t.diff.inferredLineTitle}
+                                    className="select-none shrink-0 self-start mt-px px-1 rounded border border-dashed border-gray-600 text-[9px] uppercase tracking-wide text-gray-400"
+                                >
+                                    {t.diff.inferredLine}
+                                </span>
+                            )}
                             <span
                                 className={`px-2 whitespace-pre-wrap break-all ${tone ? 'text-gray-100' : 'text-gray-500'}`}
                             >
@@ -459,6 +495,7 @@ export default function InsightDiff() {
         () => buildHighlights(changes, activeSet, 'changed_line_refs'),
         [changes, activeSet]
     )
+    const changedInferred = useMemo(() => inferredCauseLines(changes, activeSet), [changes, activeSet])
     // Re-aim the panes at a change's first line in each, bumping the nonce so an
     // identical target (e.g. re-hovering a pinned change) still re-scrolls.
     const focusOn = useCallback(
@@ -740,6 +777,7 @@ export default function InsightDiff() {
                                         title={t.diff.paneChanged}
                                         text={submitted.changed}
                                         highlights={changedHl}
+                                        inferred={changedInferred}
                                         focusLine={focus.changed}
                                         focusNonce={focus.nonce}
                                     />

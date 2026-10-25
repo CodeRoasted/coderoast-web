@@ -308,6 +308,8 @@ const fr: typeof en = {
         trust: 'Gratuit · quota quotidien · comparés sur notre serveur, pas stockés',
         paneBaseline: 'Référence',
         paneChanged: 'Modifié',
+        inferredLine: 'inférée',
+        inferredLineTitle: 'lue comme de niveau erreur par inférence, non déclarée',
         swapSides: 'Inverser les côtés',
         swapSidesTitle: 'Inverser référence ⇄ modifié et recomparer',
         newComparison: 'Nouvelle comparaison',

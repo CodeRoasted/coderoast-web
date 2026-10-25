@@ -327,6 +327,10 @@ const en = {
         trust: 'Free · metered per day · compared on our server, not stored',
         paneBaseline: 'Baseline', // result view: the left log-pane title
         paneChanged: 'Changed', // result view: the right log-pane title
+        // A FAILING row's cause line canon inferred rather than the CI declared (N398, RUL-164).
+        // The title is the report's own wording (the engine's `cited first:` evidence line).
+        inferredLine: 'inferred',
+        inferredLineTitle: 'read as error-level by inference, not declared',
         swapSides: 'Swap sides',
         swapSidesTitle: 'Swap baseline ⇄ changed and re-compare',
         newComparison: 'New comparison',

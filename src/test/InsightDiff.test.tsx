@@ -247,11 +247,16 @@ const reportAt = (total: number, significant: number) => ({
 
 /** Render /diff, submit a pair, and wait until the report — heading and rows — is on screen. */
 async function compare(total: number, significant: number) {
-    vi.mocked(api.runInsightDiff).mockResolvedValue(reportAt(total, significant) as never)
+    await submitReport(reportAt(total, significant), 'alpha', 'beta')
+}
+
+/** Render /diff, type the two inputs, compare, and wait until `report` is on screen with its rows. */
+async function submitReport(report: unknown, baselineText: string, changedText: string) {
+    vi.mocked(api.runInsightDiff).mockResolvedValue(report as never)
     const user = userEvent.setup()
     renderPage()
-    await user.type(screen.getByLabelText(en.diff.baselineLog), 'alpha')
-    await user.type(screen.getByLabelText(en.diff.changedLog), 'beta')
+    await user.type(screen.getByLabelText(en.diff.baselineLog), baselineText)
+    await user.type(screen.getByLabelText(en.diff.changedLog), changedText)
     const button = screen
         .getAllByRole('button')
         .find((candidate) => candidate.textContent?.includes(en.diff.compare))
@@ -365,5 +370,110 @@ describe('/diff — figures are grouped locale-independently', () => {
         } finally {
             localeFormat.mockRestore()
         }
+    })
+})
+
+// ── An inferred cause line reads as inferred (ROADMAP N398, RUL-164) ─────────────────────
+//
+// Since report 0.14.0 a FAILING row carries `cause_lines`: each cited line's 0-based ref in the
+// changed run and how it was established — `declared` (the CI said so) or `inferred` (canon read
+// the line as error-level). Its refs also lead `changed_line_refs`, which the pane highlights
+// alike, so before this view read `cause_lines` an inferred line looked exactly as declared as a
+// `##[error]` line beside it. The engine's reader treats every token other than `declared` as
+// inferred, so a re-read never shows a line as declared that its writer did not; the page keeps
+// the same rule. The wording is the bundle's, which mirrors the report's own evidence line.
+describe('/diff — an inferred cause line reads as inferred', () => {
+    afterEach(() => {
+        vi.clearAllMocks()
+    })
+
+    /** A red pair's report: one FAILING row citing line 1 inferred, line 2 declared, line 3 plain. */
+    const failingReport = (causeLines: { ref: number; established: string }[]) => ({
+        report_version: '0.14.0',
+        summary: { total_changes: 4, significant_changes: 1 },
+        inputs: { baseline: { lines_observed: 2 }, changed: { lines_observed: 4 } },
+        ranked_changes: [
+            {
+                kind: 'unit_outcome_changed',
+                severity: 'critical',
+                polarity: 'regression',
+                significance: 1,
+                summary: 'Failing: "build" — this unit of work changed outcome',
+                evidence: [
+                    'cited first: 1 line of step "Run tests" read as error-level by inference, not declared, then its first declared error line',
+                ],
+                changed_line_refs: [1, 2, 3],
+                cause_lines: causeLines,
+            },
+        ],
+        markdown: '# report',
+    })
+
+    const BASELINE = 'start{Enter}done'
+    const CHANGED = 'start{Enter}FAILED: test_cache{Enter}##[error]Process completed with exit code 1.{Enter}done'
+
+    /** The changed run's pane, asserted unique: role + name alone is not a unique selector. */
+    function changedPane(): HTMLElement {
+        const panes = screen.getAllByRole('region', { name: en.diff.paneChanged })
+        expect(panes, 'expected exactly one log pane named for the changed run').toHaveLength(1)
+        return panes[0] as HTMLElement
+    }
+
+    /** The inferred markers inside one rendered line of a pane. */
+    const inferredMarks = (pane: HTMLElement, line: number) => {
+        const row = pane.querySelector<HTMLElement>(`[data-line="${line}"]`)
+        expect(row, `the pane rendered no line ${line}`).not.toBeNull()
+        return within(row as HTMLElement).queryAllByText(en.diff.inferredLine)
+    }
+
+    it('marks the inferred line, and neither the declared line nor a plain changed ref', async () => {
+        await submitReport(
+            failingReport([
+                { ref: 1, established: 'inferred' },
+                { ref: 2, established: 'declared' },
+            ]),
+            BASELINE,
+            CHANGED
+        )
+        const pane = changedPane()
+        const marks = inferredMarks(pane, 1)
+        expect(
+            marks,
+            `line 1 is cited "inferred" and renders ${marks.length} inferred markers; ` +
+                `line text: ${pane.querySelector('[data-line="1"]')?.textContent}`
+        ).toHaveLength(1)
+        expect(marks[0]?.getAttribute('title')).toBe(en.diff.inferredLineTitle)
+        expect(inferredMarks(pane, 2), 'line 2 is cited "declared" and must not read inferred').toHaveLength(0)
+        expect(inferredMarks(pane, 3), 'line 3 is a plain changed ref, not a cause line').toHaveLength(0)
+        const baselinePanes = screen.getAllByRole('region', { name: en.diff.paneBaseline })
+        expect(baselinePanes).toHaveLength(1)
+        expect(
+            within(baselinePanes[0] as HTMLElement).queryAllByText(en.diff.inferredLine),
+            'cause lines index the changed run; the baseline pane carries none'
+        ).toHaveLength(0)
+    })
+
+    it('reads a token other than "declared" as inferred, as the report reader does', async () => {
+        await submitReport(failingReport([{ ref: 2, established: 'asserted' }]), BASELINE, CHANGED)
+        expect(
+            inferredMarks(changedPane(), 2),
+            'an unknown establishment token must never render as declared'
+        ).toHaveLength(1)
+    })
+
+    it('drops the marker when the row is unpinned, with the rest of its highlight', async () => {
+        await submitReport(failingReport([{ ref: 1, established: 'inferred' }]), BASELINE, CHANGED)
+        expect(inferredMarks(changedPane(), 1)).toHaveLength(1)
+        const user = userEvent.setup()
+        const clear = screen
+            .getAllByRole('button')
+            .filter((candidate) => candidate.textContent === en.diff.clearPinned.replace('{count}', '1'))
+        expect(clear, 'expected exactly one "clear pinned" control').toHaveLength(1)
+        await user.click(clear[0] as HTMLElement)
+        await user.unhover(changedPane())
+        expect(
+            inferredMarks(changedPane(), 1),
+            'an inactive row lights no line, so it marks none inferred either'
+        ).toHaveLength(0)
     })
 })

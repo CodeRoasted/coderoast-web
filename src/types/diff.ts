@@ -31,6 +31,17 @@ export interface DiffRankedChange {
     // lines as split for ingest). new_template → changed only; vanished → baseline.
     baseline_line_refs?: number[]
     changed_line_refs?: number[]
+    // Written only on a FAILING unit row (report 0.14.0+, DN-89.D48): the lines it cites as the
+    // failure's cause, which also lead `changed_line_refs`, so every ref indexes the changed pane.
+    cause_lines?: DiffCauseLine[]
+}
+
+// One cited cause line: its 0-based ref in the changed run and how it was established. The wire
+// carries `declared` or `inferred`; the report's own reader takes every token other than
+// `declared` as inferred, so a consumer never shows a line as declared that its writer did not.
+export interface DiffCauseLine {
+    ref: number
+    established: string
 }
 
 export interface DiffInputProvenance {
