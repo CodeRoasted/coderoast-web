@@ -210,94 +210,70 @@ const en = {
     // are language-neutral CLI/comment output and live in the page component, not
     // here — only translatable prose is keyed.
     sift: {
-        eyebrow: 'Sift',
+        eyebrow: 'Sift · design-partner beta',
+        // The page leads with the red build (RUL-171) and states only what a committed record
+        // backs (the Sift study of 2026-10-22, § 4.2). No string here carries a digit: every
+        // number reaches the page through the figures table in Sift.tsx, beside its record.
         hero: {
-            title: 'Your tests pass. Your logs say otherwise.',
+            title: 'Your build went red. Read what changed, not the whole log.',
             subtitle:
-                'Pass/fail is one bit; grep needs to know what to look for. Sift reads the structure of two runs and ranks what actually changed — a success line that silently vanished, an error you fixed, a pattern that took over the run — then mutes the hundreds of diffs that don\'t matter. Two log files in, a ranked report out. No agent, no account, about three seconds of CI time.',
+                'Sift diffs a failed job’s log against the same job’s last green run and ranks what changed in its structure, the job that failed included, each row citing the log lines behind it. It runs inside your CI, on logs of any length, and the same inputs give the same report, bit for bit. No agent, no account.',
             ctaPrimary: 'Add the Action',
             ctaSecondary: 'Try it in your browser',
-            trust: 'Free, forever · the Action runs in your CI · your logs never leave it.',
-            samplePassed: 'both runs passed',
-            kicker:
-                'Both runs are green. Pass/fail sees nothing. Grep sees nothing — there\'s no error to search for. Sift sees your cache silently stopped working.',
+            trust: 'Free · the Action runs in your CI, and your logs never leave it.',
+        },
+        figures: {
+            title: 'What the records say',
+            lead: 'Committed measurements of the released engine, on GitHub Actions logs. Each number links to its record.',
+            recordLink: 'record',
+            recall: 'failing jobs, on public red GitHub Actions runs, get a High or Critical row',
+            falseAlarm: 'green-to-green pairs get a High or Critical row — at most {ceiling} once the row cap is counted',
+            determinism: 'reports byte-identical between a source build and the released binary',
+            wallTime: 'median time of the whole Action step on a GitHub-hosted runner; nine runs in ten finish within {slow}',
         },
         comment: {
             title: 'It lives where you already work.',
             body:
-                'Wire Sift in once and every PR gets a structural diff as a comment — advisory by default, a hard gate when you want one. One sticky comment, updated in place, deterministic. The loudest thing it ever says is the thing no green checkmark will:',
+                'Wire Sift in once and every PR gets a structural diff as a comment — advisory by default, a hard gate when you want one. One sticky comment, updated in place, the same comment for the same inputs. On a red build it names what failed:',
         },
-        catches: {
-            title: 'Built for the changes that don\'t look like changes.',
-            colChange: 'What changed',
-            colTextDiff: 'Text diff',
-            colPassFail: 'Pass/fail',
-            colSift: 'Sift',
-            rows: [
-                {
-                    change: 'A success line silently vanished (cache, retry, a code path)',
-                    textDiff: 'buried',
-                    passFail: 'invisible',
-                    sift: 'Disappeared: "…" — one ranked line',
-                },
-                {
-                    change: 'A pattern\'s share of the run moved (4% → 38%)',
-                    textDiff: 'invisible',
-                    passFail: 'invisible',
-                    sift: 'Frequency shift',
-                },
-                {
-                    change: 'An error you fixed actually cleared',
-                    textDiff: 'invisible',
-                    passFail: 'invisible',
-                    sift: 'Recovery — green: "your fix worked"',
-                },
-                {
-                    change: 'Same errors as before, but a real change underneath (decoy)',
-                    textDiff: 'drowned',
-                    passFail: 'invisible',
-                    sift: 'the noise muted, the real change surfaced',
-                },
-                {
-                    change: 'A brand-new error pattern',
-                    textDiff: 'buried in noise',
-                    passFail: 'invisible if tests pass',
-                    sift: 'one line, ranked by severity',
-                },
-            ],
-            ghaStructure: {
-                title: 'It reads your run by structure — not just line by line.',
-                body:
-                    'Point Sift at a GitHub Actions run and it reads the job ▸ step skeleton: a step that silently vanished, a new step, a coverage regression where a whole check stopped running — surfaced at the structure grain, not drowned in a line diff. One cause, one ranked line, not fifty symptoms.',
-            },
-            jenkinsStructure: {
-                title: 'Now reading Jenkins by structure.',
-                body:
-                    'Point Sift at a Jenkins Declarative Pipeline and it reads your stage ▸ step skeleton the way it already reads GitHub Actions jobs — the same structural Disappeared / New / Replaced at the stage ▸ step grain, the same coverage-regression catch, the same mega-log-by-structure collapse. Freestyle and classic matrix jobs still get the universal template-level diff above; structure depth is Declarative-Pipeline-scoped, and we say so.',
-            },
-            jenkinsOutcome: {
-                title: 'And it knows what "done" means.',
-                body:
-                    'Jenkins emits four verdicts, not two — Sift classifies all of them (SUCCESS / FAILURE / UNSTABLE / ABORTED) on any Jenkins job. An UNSTABLE build (tests ran, some failed) is not a green build; an ABORTED run is not a failure. Gate on it: --fail-on regression fails the build on a structural regression, and the report carries outcome_regressed: true when the verdict itself slips — SUCCESS → UNSTABLE — even when every log line still looks fine.',
-            },
+        green: {
+            title: 'On a green build, it lists what moved.',
+            body:
+                'When both runs pass, Sift still reports what changed in their structure: a line that stopped appearing, a pattern whose share of the run moved, an error that cleared. Those rows are changes for you to read, not verdicts — Sift does not yet grade whether a change on a green build is a regression.',
         },
         free: {
             title: 'The whole stateless product is free. We mean it.',
             body:
-                'The CLI, the GitHub Action, the PR comment, the hard-fail gate — on any repo, public or private. We don\'t meter it and we never will. The gate is not a paywall: a team that trusts the comment just adds exit 1 itself — charging for an if statement would be insulting. What\'s paid is scale and memory — spanning an org (multi-repo, seats, SSO) and a deterministic history of your CI over time. A one-off diff is substitutable; a structural record of how your builds drift is not.',
+                'The CLI, the GitHub Action, the PR comment, the hard-fail gate — on any repo, public or private. We don’t meter it and we never will. The gate is not a paywall: a team that trusts the comment can fail the build on it itself — charging for an if statement would be insulting. What’s paid is the team tier: scale across an org (multi-repo, seats, SSO), deployment on your own infrastructure, and a deterministic history of your CI over time. A one-off diff is substitutable; a structural record of how your builds drift is not.',
             cta: 'See the tiers',
         },
         trust: {
             title: 'A fact you can gate on.',
             body:
-                'Same inputs, same diff — bit for bit, across compilers and operating systems (we build with gcc, clang, and MSVC, on Linux and Windows, and gate on identical output every release — the toolchain is public, so you can reproduce it). That\'s what lets you put Sift behind a hard CI gate; a flaky gate gets disabled within a day, and "our AI thinks this looks concerning" is not a gate. Nothing is uploaded, no account, no agent — it runs in your CI and your logs stay on your infrastructure. The narration layer is opt-in and it never decides: you turn it on, and you name the destination yourself — only the bounded fingerprint travels there, never raw logs, never the verdict, never anything in the path that decides.',
+                'Same inputs, same report, bit for bit — the record above measures it between a source build and the released binary. That is what lets you put Sift behind a hard CI gate: a flaky gate gets disabled within a day, and “our AI thinks this looks concerning” is not a gate. Nothing is uploaded, no account, no agent — the Action and the CLI run in your CI, and your logs stay on your infrastructure.',
             cta: 'How we build',
         },
         install: {
             title: 'Two log files in. A ranked report out.',
+            beta: 'Sift is in a design-partner beta. The Action and the CLI are free to install today.',
             actionLabel: 'The Action',
             cliLabel: 'The CLI',
             cliLead: 'one static binary, no runtime —',
+        },
+        // The records the figures cite. Digits are allowed here and only here: this is where a
+        // number states its population, engine, date and record name.
+        records: {
+            title: 'The records behind the figures',
+            lead: 'Each figure is a committed measurement, naming the engine binary that ran, the bank it ran on, and the date. The banks hold third-party CI logs and stay private.',
+            recall:
+                'sift 1.10.6, the engine the @v2 Action runs (released binary engine-v1.10.6). Bank gr-v3: 160 failed GitHub Actions runs from 34 public repositories, each paired with an earlier green run, holding 239 jobs the platform declared failed. A job counts when at least one High or Critical row names it. Measured 2026-10-08, record declared-failure-recall-job-gr-v3. sift 1.10.7 gives the same 233 of 239 (measured 2026-10-16).',
+            falseAlarm:
+                'sift 1.10.6 (released binary engine-v1.10.6). Bank gg-v3: 21 264 pairs of green runs from 47 repositories. A pair counts when at least one row is High or Critical: 275 pairs, 1.3 %. 323 pairs reached the 50-row cap, so 275 is a floor; the cap allows at most 570, 2.7 %. Measured 2026-10-08, record false-alarm-gg-v3.',
+            determinism:
+                'Builds from source at tags v1.10.5 and v1.10.6 wrote reports byte-identical to the released binaries’ reports on 21 264 of 21 264 gg-v3 pairs each. Measured 2026-10-10, record recall_dip_bisect_n371 (its method controls).',
+            wallTime:
+                'The whole Sift Action step — Node start-up, engine download, the diff and the report — timed over 113 runs of the Action’s own CI step on GitHub-hosted ubuntu-latest runners: median 2.68 s, 90th percentile 3.83 s, maximum 22 s; the diff itself is 0.6 % of the step. Engine pin 1.10.2. Study STU-16, Sift’s wall time and what the Action costs a CI run, 2026-08-30.',
+            scope: 'Every figure on this page is measured on GitHub Actions logs. Sift also reads GitLab and Jenkins logs; no figure here is claimed for them.',
         },
     },
     // The /diff (in-browser Sift) page chrome (InsightDiff.tsx). Only translatable

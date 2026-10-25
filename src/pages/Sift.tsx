@@ -15,13 +15,14 @@ import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import { siftChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
+import { groupThousands } from '@/utils/format'
 
-// Sift product front door (/sift). Six-section page; copy is governed by
-// PRD-6 § "Page: Sift" and surfaced via t.sift.
-// The mocks below (hero sample report, PR comment, install blocks) reproduce
-// real engine / CLI / Action output verbatim — language-neutral, so they live
-// here as constants rather than in i18n (the engine emits English regardless of
-// the visitor's locale, same convention as the prior showcase).
+// Sift product front door (/sift). Copy is surfaced via t.sift and bounded by the Sift study of
+// 2026-10-22, § 4.2 (what a committed record backs): the page leads with the red build (RUL-171),
+// the green-run reveal is demoted, and every number on it comes from FIGURES below, which links
+// each one to its record in the page's records section. The mocks (PR comment, install blocks)
+// reproduce real engine / Action output verbatim — language-neutral, so they live here as
+// constants rather than in i18n (the engine emits English regardless of the visitor's locale).
 
 const fadeUp = {
     initial: { opacity: 0, y: 20 },
@@ -30,55 +31,57 @@ const fadeUp = {
     transition: { duration: 0.6 },
 }
 
-// Hero sample — the locked silent-regression-on-green mock (PRD-6 § 1). Rows
-// mirror the engine's real `summary` strings (cache-died scenario).
-const HERO = {
-    command: 'sift  green-base.log  green-pr.log',
-    stat: '851 changes, 3 structurally significant · stability 0.62 · 12,040 → 12,058 lines',
-    rows: [
-        {
-            severity: 'high',
-            badge: 'HIGH',
-            text: 'Disappeared: "Cache restored from key <*>" — every prior run logged it; this one didn\'t.',
-        },
-        {
-            severity: 'high',
-            badge: 'HIGH',
-            text: 'Frequency shift: "Downloading <*> (<*> MB)" 4% → 38% — fetching from source, not cache.',
-        },
-        {
-            severity: 'medium',
-            badge: 'MEDIUM',
-            text: 'Frequency shift: "Restore dependencies completed in <*>s" — 6.2× slower.',
-        },
-    ],
-    suppressed: '848 of 851 observed changes not listed — full delta in --format json',
-} as const
+type Translation = ReturnType<typeof useTranslation>
 
-// PR comment showcase (PRD-6 § 2). Frame + the one engine-rendered row.
+// The record each figure cites, in footnote order. The texts live in t.sift.records.
+const RECORDS = ['recall', 'falseAlarm', 'determinism', 'wallTime'] as const
+type RecordId = (typeof RECORDS)[number]
+const recordAnchor = (id: RecordId) => `sift-record-${id}`
+
+// The page's numbers, each beside the record that measured it (t.sift.records names engine, bank,
+// date and record). The Action's floating @v2 runs sift 1.10.6, so the figures are 1.10.6's.
+const FIGURES: { id: RecordId; value: string; label: (t: Translation) => string }[] = [
+    {
+        id: 'recall',
+        value: `${groupThousands(233)} / ${groupThousands(239)}`,
+        label: (t) => t.sift.figures.recall,
+    },
+    {
+        id: 'falseAlarm',
+        value: `${groupThousands(275)} / ${groupThousands(21264)}`,
+        label: (t) => t.sift.figures.falseAlarm.replace('{ceiling}', groupThousands(570)),
+    },
+    {
+        id: 'determinism',
+        value: `${groupThousands(21264)} / ${groupThousands(21264)}`,
+        label: (t) => t.sift.figures.determinism,
+    },
+    {
+        id: 'wallTime',
+        value: `${groupThousands(2680)} ms`,
+        label: (t) => t.sift.figures.wallTime.replace('{slow}', `${groupThousands(3830)} ms`),
+    },
+]
+
+// PR comment showcase: the Action's red-build frame (sift-action frame.ts, the run-verdict
+// regression headline and its severity section) around the engine's FAILING unit row.
 const COMMENT = {
     header: '🔬 Sift — structural diff of your CI logs',
-    verdict: '🚨 Green tests. Real regression. It slipped through:',
-    row: '1. [HIGH · regression] New error: "Connection refused to <*> after <*> retries" — 0 → 214 occurrences.',
+    verdict: '🚨 Run verdict regressed: SUCCESS → FAILURE.',
+    section: '🟥 CRITICAL — 1 change',
+    row: '1. [regression] Failing: "build" — this unit of work changed outcome',
     footer: 'Deterministic — same inputs, same comment. Runs in your CI; your logs never leave it.',
 } as const
 
-// Install blocks (PRD-6 § 6). Both reproduce the sift-action README verbatim:
-// the four-line Action (turnkey `target-job` — Sift pulls the finished job's log
-// off the API) and the live `install.sh` CLI one-liner (shipped; the earlier
-// "open installer decision" is resolved).
-const ACTION_YAML = `- uses: CodeRoasted/sift-action@v1
+// Install blocks. Both reproduce the sift-action README: the Action on its published major
+// (`v2`, turnkey `target-job` — Sift pulls the finished job's log off the API) and the
+// `install.sh` CLI one-liner.
+const ACTION_YAML = `- uses: CodeRoasted/sift-action@v2
   with:
     target-job: build   # Sift pulls that finished job's log off the API`
 
 const CLI_BLOCK = `curl -fsSL https://raw.githubusercontent.com/CodeRoasted/sift-action/main/install.sh | sh
 sift baseline.log changed.log`
-
-const BADGE_STYLE: Record<string, string> = {
-    high: 'bg-orange-500/15 text-orange-300 border-orange-500/40',
-    medium: 'bg-yellow-500/15 text-yellow-300 border-yellow-500/40',
-    low: 'bg-gray-500/15 text-gray-300 border-gray-500/40',
-}
 
 // macOS-style report card chrome, shared by the hero sample and the PR comment.
 function CardChrome({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
@@ -95,35 +98,38 @@ function CardChrome({ label, children }: { label: React.ReactNode; children: Rea
     )
 }
 
-function HeroSample() {
+function RecordLink({ id }: { id: RecordId }) {
+    const t = useTranslation()
+    const number = RECORDS.indexOf(id) + 1
+    return (
+        <a
+            href={`#${recordAnchor(id)}`}
+            aria-label={`${t.sift.figures.recordLink} ${number}`}
+            className="ml-1 align-super text-[10px] font-semibold text-brand-400 hover:text-brand-300"
+        >
+            [{number}]
+        </a>
+    )
+}
+
+function FiguresCard() {
     const t = useTranslation()
     return (
-        <CardChrome label={HERO.command}>
-            <div className="p-5">
-                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 mb-3 rounded-full bg-green-500/10 border border-green-500/30 text-green-300 text-[11px] font-semibold">
-                    <BadgeCheck className="w-3.5 h-3.5" />
-                    {t.sift.hero.samplePassed}
-                </div>
-                <p className="font-mono text-xs text-gray-500">{HERO.stat}</p>
-                <ul className="mt-4 space-y-3">
-                    {HERO.rows.map((row) => (
-                        <li key={row.text} className="flex gap-2.5">
-                            <span
-                                className={`mt-0.5 px-1.5 py-0.5 h-fit rounded text-[10px] font-semibold border ${BADGE_STYLE[row.severity]}`}
-                            >
-                                {row.badge}
-                            </span>
-                            <p className="min-w-0 text-sm text-gray-100 leading-snug break-words font-mono">
-                                {row.text}
-                            </p>
-                        </li>
-                    ))}
-                </ul>
-                <p className="mt-4 pt-3 border-t border-gray-800 text-xs text-gray-600 italic">
-                    {HERO.suppressed}
-                </p>
-            </div>
-        </CardChrome>
+        <div className="rounded-2xl border border-gray-800 bg-gray-900/70 shadow-xl shadow-black/30 p-5 sm:p-6">
+            <p className="font-display font-semibold text-white">{t.sift.figures.title}</p>
+            <p className="mt-1 text-xs text-gray-500 leading-relaxed">{t.sift.figures.lead}</p>
+            <ul className="mt-5 space-y-4">
+                {FIGURES.map((figure) => (
+                    <li key={figure.id} data-figure={figure.id} className="flex flex-col gap-0.5">
+                        <span className="font-mono text-xl font-bold text-brand-300 whitespace-nowrap">
+                            {figure.value}
+                            <RecordLink id={figure.id} />
+                        </span>
+                        <span className="text-sm text-gray-300 leading-snug">{figure.label(t)}</span>
+                    </li>
+                ))}
+            </ul>
+        </div>
     )
 }
 
@@ -132,7 +138,8 @@ function PrComment() {
         <CardChrome label="github.com · pull request #128">
             <div className="p-5 font-mono text-sm leading-relaxed">
                 <p className="text-gray-200 font-semibold">{COMMENT.header}</p>
-                <p className="mt-4 text-orange-300 font-semibold break-words">{COMMENT.verdict}</p>
+                <p className="mt-4 text-rose-300 font-semibold break-words">{COMMENT.verdict}</p>
+                <p className="mt-3 text-gray-300 font-semibold break-words">{COMMENT.section}</p>
                 <p className="mt-2 text-gray-100 break-words">{COMMENT.row}</p>
                 <p className="mt-4 pt-3 border-t border-gray-800 text-xs text-gray-500 not-italic break-words">
                     {COMMENT.footer}
@@ -194,10 +201,7 @@ export default function SiftPage() {
                         </motion.div>
 
                         <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }}>
-                            <HeroSample />
-                            <p className="mt-4 text-sm text-gray-400 italic leading-relaxed">
-                                {s.hero.kicker}
-                            </p>
+                            <FiguresCard />
                         </motion.div>
                     </div>
                 </section>
@@ -222,77 +226,18 @@ export default function SiftPage() {
                     </div>
                 </section>
 
-                {/* § 3 — What it catches that nothing else does */}
-                <section className="relative py-24 sm:py-28 border-b border-gray-800/60">
-                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div {...fadeUp} className="mb-10">
-                            <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-700/30 mb-4">
+                {/* § 3 — On a green build: demoted until graded drift exists (RUL-171, RUL-137) */}
+                <section className="relative py-16 sm:py-20 border-b border-gray-800/60">
+                    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <motion.div {...fadeUp}>
+                            <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-800/60 text-gray-400 border border-gray-700/60 mb-4">
                                 <Search className="w-5 h-5" />
                             </div>
-                            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white leading-tight max-w-2xl">
-                                {s.catches.title}
+                            <h2 className="text-2xl sm:text-3xl font-display font-bold text-white leading-tight mb-4">
+                                {s.green.title}
                             </h2>
+                            <p className="text-base text-gray-400 leading-relaxed">{s.green.body}</p>
                         </motion.div>
-                        <motion.div {...fadeUp} className="overflow-x-auto rounded-2xl border border-gray-800">
-                            <table className="w-full text-left border-collapse min-w-[640px]">
-                                <thead>
-                                    <tr className="bg-gray-900/70 text-xs uppercase tracking-wide text-gray-500">
-                                        <th className="px-4 py-3 font-semibold">{s.catches.colChange}</th>
-                                        <th className="px-4 py-3 font-semibold">{s.catches.colTextDiff}</th>
-                                        <th className="px-4 py-3 font-semibold">{s.catches.colPassFail}</th>
-                                        <th className="px-4 py-3 font-semibold text-brand-300">{s.catches.colSift}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {s.catches.rows.map((row, i) => (
-                                        <tr
-                                            key={row.change}
-                                            className={i % 2 === 0 ? 'bg-gray-900/30' : 'bg-gray-900/10'}
-                                        >
-                                            <td className="px-4 py-4 text-sm text-gray-100 align-top leading-snug">
-                                                {row.change}
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-gray-600 align-top">
-                                                {row.textDiff}
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-gray-600 align-top">
-                                                {row.passFail}
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-brand-200 align-top leading-snug">
-                                                {row.sift}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </motion.div>
-
-                        {/* Depth callouts — read-by-structure (GHA) + Jenkins structure/outcome */}
-                        <div className="mt-6 space-y-5">
-                            {[
-                                { icon: <Github className="w-5 h-5" />, ...s.catches.ghaStructure },
-                                { icon: <GitBranch className="w-5 h-5" />, ...s.catches.jenkinsStructure },
-                                { icon: <BadgeCheck className="w-5 h-5" />, ...s.catches.jenkinsOutcome },
-                            ].map((callout) => (
-                                <motion.div
-                                    key={callout.title}
-                                    {...fadeUp}
-                                    className="flex items-start gap-4 p-6 sm:p-7 rounded-2xl bg-brand-500/[0.06] border border-brand-700/40"
-                                >
-                                    <div className="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-700/30">
-                                        {callout.icon}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-display font-semibold text-white text-lg mb-2 leading-snug">
-                                            {callout.title}
-                                        </h3>
-                                        <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
-                                            {callout.body}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
                     </div>
                 </section>
 
@@ -345,15 +290,16 @@ export default function SiftPage() {
                 </section>
 
                 {/* § 6 — Install */}
-                <section id="install" className="relative py-24 sm:py-28 scroll-mt-20">
+                <section id="install" className="relative py-24 sm:py-28 scroll-mt-20 border-b border-gray-800/60">
                     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                         <motion.div {...fadeUp}>
                             <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-700/30 mb-4">
                                 <Zap className="w-5 h-5" />
                             </div>
-                            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white leading-tight mb-10">
+                            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white leading-tight mb-4">
                                 {s.install.title}
                             </h2>
+                            <p className="text-sm text-gray-400 mb-10">{s.install.beta}</p>
                         </motion.div>
 
                         <motion.div {...fadeUp} className="space-y-8">
@@ -377,6 +323,27 @@ export default function SiftPage() {
                                 <CodeBlock code={CLI_BLOCK} />
                             </div>
                         </motion.div>
+                    </div>
+                </section>
+
+                {/* § 7 — The records every figure on the page cites */}
+                <section id="records" className="relative py-16 sm:py-20 scroll-mt-20">
+                    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h2 className="text-xl font-display font-semibold text-white mb-2">{s.records.title}</h2>
+                        <p className="text-sm text-gray-500 leading-relaxed mb-6">{s.records.lead}</p>
+                        <ol className="space-y-3">
+                            {RECORDS.map((id, index) => (
+                                <li
+                                    key={id}
+                                    id={recordAnchor(id)}
+                                    className="flex gap-3 scroll-mt-24 text-sm text-gray-400 leading-relaxed"
+                                >
+                                    <span className="shrink-0 font-semibold text-brand-400">[{index + 1}]</span>
+                                    <span>{s.records[id]}</span>
+                                </li>
+                            ))}
+                        </ol>
+                        <p className="mt-6 text-sm text-gray-500 leading-relaxed">{s.records.scope}</p>
                     </div>
                 </section>
             </main>

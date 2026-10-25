@@ -198,94 +198,65 @@ const fr: typeof en = {
         },
     },
     sift: {
-        eyebrow: 'Sift',
+        eyebrow: 'Sift · bêta design partners',
         hero: {
-            title: 'Vos tests passent. Vos logs disent le contraire.',
+            title: 'Votre build est rouge. Lisez ce qui a changé, pas tout le log.',
             subtitle:
-                'Pass/fail, c’est un bit. grep, lui, doit savoir quoi chercher. Sift lit la structure de deux runs et classe ce qui a vraiment changé — une ligne de succès disparue en silence, une erreur que vous avez corrigée, un pattern qui a pris le dessus sur le run — puis fait taire les centaines de diffs inutiles. Deux fichiers de logs en entrée, un rapport classé en sortie. Sans agent à installer, sans compte utilisateur, environ trois secondes de temps CI.',
+                'Sift compare le log d’un job en échec au dernier run vert du même job et classe ce qui a changé dans sa structure, job en échec compris, chaque ligne du rapport citant les lignes de log qui la fondent. Il tourne dans votre CI, sur des logs de n’importe quelle longueur, et les mêmes entrées donnent le même rapport, bit pour bit. Sans agent, sans compte.',
             ctaPrimary: 'Ajoutez l’Action',
             ctaSecondary: 'Essayez dans votre navigateur',
-            trust: 'Gratuit, pour toujours · l’Action tourne dans votre CI · vos logs n’en sortent jamais.',
-            samplePassed: 'les deux runs sont passés',
-            kicker:
-                'Les deux runs sont au vert. Ni le statut du build ni grep n’y voient quoi que ce soit — il n’y a aucune erreur à chercher. Sift, lui, voit que votre cache a cessé de fonctionner en silence.',
+            trust: 'Gratuit · l’Action tourne dans votre CI, et vos logs n’en sortent jamais.',
+        },
+        figures: {
+            title: 'Ce que disent les relevés',
+            lead: 'Des mesures versionnées du moteur publié, sur des logs GitHub Actions. Chaque chiffre renvoie à son relevé.',
+            recordLink: 'relevé',
+            recall: 'jobs en échec, sur des runs GitHub Actions rouges publics, reçoivent une ligne High ou Critical',
+            falseAlarm: 'paires vert-vert reçoivent une ligne High ou Critical — au plus {ceiling} en comptant le plafond de lignes',
+            determinism: 'rapports identiques à l’octet entre un build depuis les sources et le binaire publié',
+            wallTime: 'durée médiane de toute l’étape de l’Action sur un runner hébergé par GitHub ; neuf runs sur dix finissent en moins de {slow}',
         },
         comment: {
             title: 'Il vit là où vous bossez déjà.',
             body:
-                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante au besoin. Un seul commentaire épinglé à votre PR, mis à jour à chaque push, déterministe. Même avec une coche verte rassurante, Sift voit le problème là où tout semble validé :',
+                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante au besoin. Un seul commentaire épinglé, mis à jour à chaque push, le même commentaire pour les mêmes entrées. Sur un build rouge, il nomme ce qui a échoué :',
         },
-        catches: {
-            title: 'Conçu pour les changements qui ne ressemblent pas à des changements.',
-            colChange: 'Ce qui a changé',
-            colTextDiff: 'Diff texte',
-            colPassFail: 'Pass/fail',
-            colSift: 'Sift',
-            rows: [
-                {
-                    change: 'Une ligne de succès disparue en silence (cache, retry, un chemin de code)',
-                    textDiff: 'noyée',
-                    passFail: 'invisible',
-                    sift: 'Disappeared : "…" — une ligne classée',
-                },
-                {
-                    change: 'La part d’un pattern dans le run a bougé (4 % → 38 %)',
-                    textDiff: 'invisible',
-                    passFail: 'invisible',
-                    sift: 'Frequency shift',
-                },
-                {
-                    change: 'Une erreur que vous avez corrigée a vraiment disparu',
-                    textDiff: 'invisible',
-                    passFail: 'invisible',
-                    sift: 'Recovery — green: "your fix worked"',
-                },
-                {
-                    change: 'Les mêmes erreurs qu’avant, mais un vrai changement dessous (leurre)',
-                    textDiff: 'noyé',
-                    passFail: 'invisible',
-                    sift: 'le bruit masqué, le vrai changement remonté',
-                },
-                {
-                    change: 'Un tout nouveau pattern d’erreur',
-                    textDiff: 'noyé dans le bruit',
-                    passFail: 'invisible si les tests passent',
-                    sift: 'une ligne, classée par sévérité',
-                },
-            ],
-            ghaStructure: {
-                title: 'Il lit votre run par sa structure — pas seulement ligne à ligne.',
-                body:
-                    'Pointez Sift sur un run GitHub Actions et il lit le squelette job ▸ step : une étape qui disparaît en silence, une nouvelle étape, une régression de couverture quand un contrôle entier cesse de tourner — remonté au grain de la structure, pas noyé dans un diff de lignes. Une cause, une ligne classée, pas cinquante symptômes.',
-            },
-            jenkinsStructure: {
-                title: 'Jenkins, lu par la structure.',
-                body:
-                    'Pointez Sift sur un pipeline Declarative et il lit votre squelette stage ▸ step comme il lit déjà les jobs GitHub Actions — les mêmes Disparu / Nouveau / Remplacé structurels, la même détection de régression de couverture, le même repli par structure des méga-logs. Les jobs freestyle et matrix classiques gardent le diff universel au niveau template ; la profondeur structurelle est cantonnée au Declarative Pipeline, et on le dit.',
-            },
-            jenkinsOutcome: {
-                title: 'Et il sait ce que « terminé » veut dire.',
-                body:
-                    'Jenkins émet quatre verdicts, pas deux — Sift les classe tous (SUCCESS / FAILURE / UNSTABLE / ABORTED) sur n’importe quel job Jenkins. Un build UNSTABLE (des tests ont tourné, certains ont échoué) n’est pas un build vert ; un run ABORTED n’est pas un échec. Mettez une gate dessus : --fail-on regression casse le build sur une régression structurelle, et le rapport porte outcome_regressed: true quand le verdict lui-même glisse — SUCCESS → UNSTABLE — même quand chaque ligne de log a l’air normale.',
-            },
+        green: {
+            title: 'Sur un build vert, il liste ce qui a bougé.',
+            body:
+                'Quand les deux runs passent, Sift rapporte quand même ce qui a changé dans leur structure : une ligne qui n’apparaît plus, un pattern dont la part dans le run a bougé, une erreur qui a disparu. Ces lignes sont des changements à lire, pas des verdicts — Sift ne juge pas encore si un changement sur un build vert est une régression.',
         },
         free: {
             title: 'Tout le produit sans état est gratuit. Sans conditions.',
             body:
-                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur. Jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire ajoute elle-même un exit 1 — facturer un simple if serait insultant. Ce qui est payant, c’est l’échelle et la mémoire — couvrir une organisation (multi-dépôts, sièges, SSO) et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds ne l’est pas.',
+                'La CLI, la GitHub Action, le commentaire de PR, la gate bloquante — sur n’importe quel dépôt, public ou privé. On ne le facture pas au compteur. Jamais. La gate n’est pas un péage : une équipe qui fait confiance au commentaire peut elle-même faire échouer le build dessus — facturer un simple if serait insultant. Ce qui est payant, c’est le palier équipe : l’échelle d’une organisation (multi-dépôts, sièges, SSO), le déploiement sur votre propre infrastructure, et un historique déterministe de votre CI dans le temps. Un diff ponctuel est substituable ; un relevé structurel de la dérive de vos builds ne l’est pas.',
             cta: 'Voir les paliers',
         },
         trust: {
             title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
             body:
-                'Mêmes entrées, même diff — bit-identique, sur plusieurs compilateurs et systèmes d’exploitation (on compile avec gcc, clang et MSVC, sous Linux et Windows, et on vérifie un résultat identique à chaque release — la chaîne de compilation est publique, vous pouvez donc la reproduire). C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante ; une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — ça tourne dans votre CI et vos logs restent sur votre infra. La couche de narration est optionnelle et ne décide jamais : vous l’activez, et c’est vous qui nommez la destination — seule l’empreinte bornée y voyage, jamais les logs bruts, jamais le verdict, jamais rien de ce qui décide.',
+                'Mêmes entrées, même rapport, bit pour bit — le relevé ci-dessus le mesure entre un build depuis les sources et le binaire publié. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante : une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — l’Action et la CLI tournent dans votre CI, et vos logs restent sur votre infra.',
             cta: 'Comment on construit',
         },
         install: {
             title: 'Deux fichiers de logs en entrée. Un rapport classé en sortie.',
+            beta: 'Sift est en bêta avec des design partners. L’Action et la CLI s’installent gratuitement dès aujourd’hui.',
             actionLabel: 'L’Action',
             cliLabel: 'La CLI',
             cliLead: 'un seul binaire statique, aucun runtime —',
+        },
+        records: {
+            title: 'Les relevés derrière les chiffres',
+            lead: 'Chaque chiffre est une mesure versionnée qui nomme le binaire du moteur exécuté, la banque de logs sur laquelle il a tourné et la date. Les banques contiennent des logs CI de tiers et restent privées.',
+            recall:
+                'sift 1.10.6, le moteur que fait tourner l’Action @v2 (binaire publié engine-v1.10.6). Banque gr-v3 : 160 runs GitHub Actions en échec issus de 34 dépôts publics, chacun apparié à un run vert antérieur, soit 239 jobs déclarés en échec par la plateforme. Un job compte quand au moins une ligne High ou Critical le nomme. Mesuré le 2026-10-08, relevé declared-failure-recall-job-gr-v3. sift 1.10.7 donne les mêmes 233 sur 239 (mesuré le 2026-10-16).',
+            falseAlarm:
+                'sift 1.10.6 (binaire publié engine-v1.10.6). Banque gg-v3 : 21 264 paires de runs verts issues de 47 dépôts. Une paire compte quand au moins une ligne est High ou Critical : 275 paires, 1,3 %. 323 paires ont atteint le plafond de 50 lignes, donc 275 est un plancher ; le plafond permet au plus 570, 2,7 %. Mesuré le 2026-10-08, relevé false-alarm-gg-v3.',
+            determinism:
+                'Des builds depuis les sources aux tags v1.10.5 et v1.10.6 ont écrit des rapports identiques à l’octet à ceux des binaires publiés, sur 21 264 des 21 264 paires gg-v3 chacun. Mesuré le 2026-10-10, relevé recall_dip_bisect_n371 (ses contrôles de méthode).',
+            wallTime:
+                'Toute l’étape de l’Action Sift — démarrage de Node, téléchargement du moteur, le diff et le rapport — chronométrée sur 113 runs de l’étape CI de l’Action elle-même, sur des runners ubuntu-latest hébergés par GitHub : médiane 2,68 s, 90e centile 3,83 s, maximum 22 s ; le diff lui-même pèse 0,6 % de l’étape. Moteur épinglé 1.10.2. Étude STU-16, le temps d’exécution de Sift et ce que l’Action coûte à un run CI, 2026-08-30.',
+            scope: 'Chaque chiffre de cette page est mesuré sur des logs GitHub Actions. Sift lit aussi les logs GitLab et Jenkins ; aucun chiffre ici n’est revendiqué pour eux.',
         },
     },
     diff: {
