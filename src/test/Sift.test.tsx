@@ -12,6 +12,7 @@ import { MemoryRouter } from 'react-router-dom'
 import SiftPage from '@/pages/Sift'
 import en from '@/i18n/en'
 import fr from '@/i18n/fr'
+import { products } from '@/config/products'
 
 function renderPage() {
     return render(
@@ -69,5 +70,38 @@ describe('/sift — the install snippet', () => {
         expect(uses, `install blocks: ${JSON.stringify(blocks.map((block) => block.textContent))}`).toHaveLength(1)
         expect(uses[0]).toContain('uses: CodeRoasted/sift-action@v2')
         expect(document.body.textContent, 'a stale @v1 reference is still on the page').not.toContain('sift-action@v1')
+    })
+})
+
+// Off /sift, Sift is named in three more places: the home portfolio card, the products menu's
+// maturity dot (both from the product registry) and the /vision lens grid. None of them carries a
+// records section, so none may carry a number, and each must state the maturity /sift states — a
+// design-partner beta (RUL-173), not a live product.
+describe('Sift off /sift — no unrecorded number, the same maturity', () => {
+    it.each([
+        ['en', en, 'beta'],
+        ['fr', fr, 'bêta'],
+    ])('the %s portfolio card, vision lens and vision closing', (_language, bundle, betaWord) => {
+        const lens = bundle.vision.hub.lenses.find((entry) => entry.name === 'Sift')
+        expect(lens, 'the vision lens grid names no Sift lens').toBeDefined()
+        const surfaces: [string, unknown][] = [
+            ['portfolio.sift', bundle.portfolio.sift],
+            ['vision.hub.lenses[Sift]', lens],
+            ['vision.closing', bundle.vision.closing],
+        ]
+        const offenders = surfaces
+            .flatMap(([path, node]) => leaves(node, [path]))
+            .filter(([, value]) => /\d/.test(value))
+        expect(
+            offenders,
+            'a number in off-page Sift copy names no record:\n' +
+                offenders.map(([path, value]) => `  ${path}: ${value}`).join('\n')
+        ).toEqual([])
+        expect(bundle.portfolio.sift.status.toLowerCase()).toContain(betaWord)
+        expect(lens?.status.toLowerCase()).toContain(betaWord)
+    })
+
+    it('the product registry gives Sift the beta tier', () => {
+        expect(products.find((product) => product.slug === 'sift')?.tier).toBe('beta')
     })
 })

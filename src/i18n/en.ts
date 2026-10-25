@@ -163,7 +163,7 @@ const en = {
             lenses: [
                 {
                     name: 'Sift',
-                    status: 'Live',
+                    status: 'Design-partner beta',
                     description: 'Structural CI diff. Two runs in, a ranked “what changed” out.',
                 },
                 {
@@ -200,7 +200,7 @@ const en = {
         closing: {
             title: 'The vision is the MetaLog. The way in is Sift.',
             subtitle:
-                'Diff two CI runs for about three seconds of CI time — no agent, no setup, logs never stored. The same artifact powers everything above.',
+                'Diff two CI runs in your browser — no agent, no setup, compared on our server and never stored. Installed, the same engine runs inside your CI. The same artifact powers everything above.',
             cta: 'Diff two logs',
         },
     },
@@ -438,16 +438,16 @@ const en = {
                 description: 'A broken run vs its hotfix: the DB errors recovered, a new timeout regressed.',
             },
             'silent-regression': {
-                label: 'Silent regression',
-                description: 'No new error at all — a success line vanished and a retry surged. grep finds nothing.',
+                label: 'A success line vanishes',
+                description: 'Neither run logs an error. In the changed run, the checkout-completed line is gone and a payment-retry line is far more frequent.',
             },
             'error-decoy': {
                 label: 'Same errors, real change',
-                description: 'Both runs have the IDENTICAL errors (the decoy) — but orders silently stopped completing. Sift mutes the unchanged errors and shows what really moved.',
+                description: 'Both runs carry the identical payment-timeout errors (the decoy). In the changed run, the order-completed line has stopped appearing.',
             },
             'cache-degradation': {
-                label: 'Cache silently died',
-                description: 'Zero errors, still all 200s — but the cache stopped serving and origin fetches surged. A latent p99 cliff a filter is blind to.',
+                label: 'Cache hits collapse',
+                description: 'Every request still returns 200 and neither run logs an error. In the changed run, most cache hits have become origin fetches.',
             },
             'canary-deploy': {
                 label: 'Canary vs stable',
@@ -455,11 +455,11 @@ const en = {
             },
             'hot-key': {
                 label: 'Throttling takes over',
-                description: 'No errors — but a new throttling line appears and takes over a third of the run. A text diff shows the new lines exist; Sift ranks the one template now dominating the stream.',
+                description: 'Neither run logs an error. In the changed run, a new rate-limit line appears and makes up about a third of the run.',
             },
             'escalating-warning': {
                 label: 'Escalating warning',
-                description: 'A pool-pressure WARN goes from rare to pervasive — the pre-incident creep, minutes before it pages. Not a new error, so a filter stays quiet.',
+                description: 'The same pool-pressure WARN line, rare in the baseline run, appears on every fourth request in the changed run. No new error.',
             },
         },
     },
@@ -561,7 +561,7 @@ const en = {
             name: 'Sift',
             description:
                 'Paste a baseline run and a changed run. Sift ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, nothing stored.',
-            status: 'Live · free demo',
+            status: 'Design-partner beta · free demo',
             highlights: [
                 'Ranked “what changed”, noise suppressed',
                 'Line-level provenance highlighting',

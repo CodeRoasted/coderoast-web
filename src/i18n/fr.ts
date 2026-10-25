@@ -156,7 +156,7 @@ const fr: typeof en = {
             lenses: [
                 {
                     name: 'Sift',
-                    status: 'Live',
+                    status: 'Bêta design partners',
                     description: 'Diff structurel de CI. Deux runs en entrée, un « ce qui a changé » classé en sortie.',
                 },
                 {
@@ -193,7 +193,7 @@ const fr: typeof en = {
         closing: {
             title: 'La vision, c’est le MetaLog. Le chemin d’entrée, c’est Sift.',
             subtitle:
-                'Comparez deux runs CI pour environ trois secondes de temps CI — sans agent, sans installation, logs jamais stockés. Le même artefact alimente tout ce qui précède.',
+                'Comparez deux runs CI dans votre navigateur — sans agent, sans installation, comparés sur notre serveur et jamais stockés. Installé, le même moteur tourne dans votre CI. Le même artefact alimente tout ce qui précède.',
             cta: 'Diff de deux logs',
         },
     },
@@ -369,16 +369,16 @@ const fr: typeof en = {
                 description: 'Un run cassé vs son hotfix : les erreurs DB se sont rétablies, un nouveau timeout a régressé.',
             },
             'silent-regression': {
-                label: 'Régression silencieuse',
-                description: 'Aucune nouvelle erreur — une ligne de succès a disparu et les retries ont explosé. grep ne trouve rien.',
+                label: 'Une ligne de succès disparaît',
+                description: 'Aucun des deux runs ne journalise d’erreur. Dans le run modifié, la ligne « checkout completed » a disparu et une ligne de retry de paiement est bien plus fréquente.',
             },
             'error-decoy': {
                 label: 'Mêmes erreurs, vrai changement',
-                description: 'Les deux runs ont les MÊMES erreurs (le leurre) — mais les commandes ont cessé d’aboutir en silence. Sift masque les erreurs inchangées et montre ce qui a vraiment bougé.',
+                description: 'Les deux runs portent les mêmes erreurs de timeout de paiement (le leurre). Dans le run modifié, la ligne « order completed » n’apparaît plus.',
             },
             'cache-degradation': {
-                label: 'Le cache meurt en silence',
-                description: 'Zéro erreur, toujours des 200 — mais le cache ne sert plus et les appels à l’origine ont explosé. Une falaise p99 latente, invisible à un filtre.',
+                label: 'Les hits de cache s’effondrent',
+                description: 'Chaque requête renvoie toujours 200 et aucun des deux runs ne journalise d’erreur. Dans le run modifié, la plupart des hits de cache sont devenus des appels à l’origine.',
             },
             'canary-deploy': {
                 label: 'Canary vs stable',
@@ -386,11 +386,11 @@ const fr: typeof en = {
             },
             'hot-key': {
                 label: 'Le throttling prend le dessus',
-                description: 'Aucune erreur — mais une nouvelle ligne de throttling apparaît et accapare un tiers du run. Un diff texte montre que les lignes existent ; Sift classe le template qui domine désormais le flux.',
+                description: 'Aucun des deux runs ne journalise d’erreur. Dans le run modifié, une nouvelle ligne de rate limit apparaît et représente environ un tiers du run.',
             },
             'escalating-warning': {
                 label: 'Avertissement qui s’aggrave',
-                description: 'Un WARN de pression sur le pool passe de rare à omniprésent — la dérive pré-incident, quelques minutes avant que ça ne page. Pas une nouvelle erreur, donc un filtre reste muet.',
+                description: 'La même ligne WARN de pression sur le pool, rare dans le run de référence, apparaît toutes les quatre requêtes dans le run modifié. Aucune nouvelle erreur.',
             },
         },
     },
@@ -490,7 +490,7 @@ const fr: typeof en = {
             name: 'Sift',
             description:
                 'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, rien n’est stocké.',
-            status: 'Live · démo gratuite',
+            status: 'Bêta design partners · démo gratuite',
             highlights: [
                 '« Ce qui a changé » classé par pertinence, bruit supprimé',
                 'Surlignage de provenance ligne à ligne',

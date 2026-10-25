@@ -182,10 +182,10 @@ function hotfix(): DiffPair {
     return { baseline: run(31, false), changed: run(43, true) }
 }
 
-// ── Silent regression: NO error keyword anywhere ────────────────────────────
-// The "checkout completed" success marker VANISHED (checkouts silently stopped
-// succeeding) and a benign "retrying payment" line SPIKED 2 → 27. `grep ERROR`
-// finds nothing; Sift flags the vanished success and the frequency surge.
+// ── A success line vanishes: NO error keyword anywhere ──────────────────────
+// The "checkout completed" success marker VANISHED and a benign "retrying payment"
+// line went from 2 to 27 occurrences. The picker copy describes this injected change
+// and never the engine's verdict on it: the report on screen speaks for itself.
 function silentRegression(): DiffPair {
     const endpoints = [
         'GET  /api/orders', 'GET  /api/products', 'GET  /api/cart', 'GET  /api/user/profile',
@@ -236,9 +236,9 @@ function errorDecoy(): DiffPair {
     return { baseline: run(201, false), changed: run(211, true) }
 }
 
-// ── Cache silently died: zero errors, but the cache stopped serving ──────────
+// ── Cache hits collapse: zero errors, but the cache stopped serving ──────────
 // Service still returns 200s; no ERROR or WARN anywhere. But "served from cache"
-// collapsed and origin fetches surged — a latent p99 cliff. A filter sees nothing.
+// collapsed and origin fetches took its place.
 function cacheDegradation(): DiffPair {
     const routes = [
         'GET  /api/product', 'GET  /api/listing', 'GET  /api/feed', 'GET  /api/profile',

@@ -38,9 +38,9 @@ const painIcons = [
 ]
 
 // Index-aligned with t.vision.hub.lenses.
-type LensMeta = { Icon: ComponentType<{ className?: string }>; tone: 'live' | 'beta' | 'soon' }
+type LensMeta = { Icon: ComponentType<{ className?: string }>; tone: 'beta' | 'soon' }
 const lensMeta: LensMeta[] = [
-    { Icon: GitCompareArrows, tone: 'live' },
+    { Icon: GitCompareArrows, tone: 'beta' },
     { Icon: Radar, tone: 'beta' },
     { Icon: Layers, tone: 'soon' },
     { Icon: Bird, tone: 'soon' },
@@ -49,7 +49,6 @@ const lensMeta: LensMeta[] = [
 ]
 
 const statusTone: Record<LensMeta['tone'], string> = {
-    live: 'bg-emerald-500/10 text-emerald-400 border-emerald-700/30',
     beta: 'bg-blue-500/10 text-blue-400 border-blue-700/30',
     soon: 'bg-gray-700/30 text-gray-400 border-gray-700/50',
 }

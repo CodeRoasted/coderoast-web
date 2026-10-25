@@ -20,13 +20,15 @@ export interface ProductDef {
     tool?: string // interactive surface (Lab / tool) route
 }
 
-// Order = portfolio display order (live → beta → soon). Cards link to `page`
+// Order = portfolio display order: Sift first as the way in, then live → beta → soon.
+// A tier states maturity and must match the product page's own claim (Sift: a design-partner
+// beta, RUL-173). Cards link to `page`
 // when a dedicated product page exists, else fall back to the `tool` surface;
 // a `soon` entry with neither is a non-clickable teaser of the slate to come.
 export const products: ProductDef[] = [
     {
         slug: 'sift',
-        tier: 'live',
+        tier: 'beta',
         accent: 'from-brand-500 to-orange-500',
         Icon: GitCompareArrows,
         page: '/sift',
