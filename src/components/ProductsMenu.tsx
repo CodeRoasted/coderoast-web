@@ -5,9 +5,8 @@ import { ChevronDown } from 'lucide-react'
 import { products, type ProductDef } from '@/config/products'
 import { useTranslation } from '@/hooks/useTranslation'
 
-// Maturity dot — the slate's live/beta/soon status at a glance.
+// Maturity dot — the slate's beta/soon status at a glance.
 const TIER_DOT: Record<ProductDef['tier'], string> = {
-    live: 'bg-emerald-400',
     beta: 'bg-amber-400',
     soon: 'bg-gray-600',
 }

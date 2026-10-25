@@ -9,7 +9,7 @@ import { Bird, Eye, GitCompareArrows, Layers, ScrollText } from 'lucide-react'
 
 export type ProductSlug = 'sift' | 'logcraft' | 'insight' | 'metalogForwarding' | 'canary'
 
-export type ProductTier = 'live' | 'beta' | 'soon'
+export type ProductTier = 'beta' | 'soon'
 
 export interface ProductDef {
     slug: ProductSlug
@@ -20,9 +20,10 @@ export interface ProductDef {
     tool?: string // interactive surface (Lab / tool) route
 }
 
-// Order = portfolio display order: Sift first as the way in, then live → beta → soon.
-// A tier states maturity and must match the product page's own claim (Sift: a design-partner
-// beta, RUL-173). Cards link to `page`
+// Order = portfolio display order: Sift first as the way in, then beta → soon.
+// A tier states maturity and must match the product's card and page (Sift: a design-partner
+// beta, RUL-173; LogCraft: a beta, free to try in the Lab; productTiers.test.ts holds it).
+// No product is generally available, so there is no `live` tier. Cards link to `page`
 // when a dedicated product page exists, else fall back to the `tool` surface;
 // a `soon` entry with neither is a non-clickable teaser of the slate to come.
 export const products: ProductDef[] = [
@@ -36,7 +37,7 @@ export const products: ProductDef[] = [
     },
     {
         slug: 'logcraft',
-        tier: 'live',
+        tier: 'beta',
         accent: 'from-amber-500 to-orange-600',
         Icon: ScrollText,
         page: '/logcraft',
