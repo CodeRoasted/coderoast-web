@@ -23,7 +23,7 @@ jobs:
       contents: write        # Sift dogfood: the commit comment on a regression
       pull-requests: write   # Sift dogfood: comment on same-repo PRs + seed on push; fork PRs skipped (read-only token anyway)
       actions: write         # Sift dogfood: upload the baseline-log artifact (+ read for last-green resolution)
-    uses: CodeRoasted/malf-toolchain/.github/workflows/coderoast-node-ci.yml@24ffa84620d552a8b1d8e5094e011cf71fa8a500
+    uses: CodeRoasted/malf-toolchain/.github/workflows/coderoast-node-ci.yml@35b521c2ee0705435237d4dba507e90e1a0eef08
     with:
       node-version: '22'
       logged: |
