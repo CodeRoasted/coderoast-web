@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
-import { PolicyDenialError, createEngine, login, logout, mintWsTicket } from '@/services/api'
+import { PolicyDenialError, createEngine, listScenarios, login, logout, mintWsTicket } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 import App from '@/App'
 
@@ -41,6 +41,23 @@ function json(body: unknown, status = 200): Response {
         headers: { 'Content-Type': 'application/json' },
     })
 }
+
+/**
+ * The server's answer to a bearer that names no live session, on every route that resolves a
+ * principal but /login and /whoami (DN-104.D4): 401, the RFC 6750 challenge, one body whatever the
+ * reason.
+ */
+function refusedBearer(): Response {
+    return new Response(
+        JSON.stringify({ error: 'Invalid token', reason: 'The session this bearer token named is not live' }),
+        {
+            status: 401,
+            headers: { 'Content-Type': 'application/json', 'WWW-Authenticate': 'Bearer error="invalid_token"' },
+        },
+    )
+}
+
+const kVisitorLogin = { token: 'bearer-fresh', user: kVisitor, access: { operations: ['engine.create'] } }
 
 const kRefusedByWhoami = {
     authenticated: false,
@@ -125,16 +142,89 @@ describe('the persisted sign-in state (ADR-40.D2, row J)', () => {
     })
 
     describe('a 401 answering the bearer', () => {
-        it('removes the key, once, and sends nothing more', async () => {
+        it('removes the key, once, and signs the open tab back in as visitor with no bearer', async () => {
             signIn('bearer-a')
             expect(stored()).toContain('bearer-a')
-            serve({ '/ws/ticket': () => json({ error: 'A ticket requires a live session' }, 401) })
+            serve({ '/ws/ticket': refusedBearer, '/login': () => json(kVisitorLogin) })
 
             await expect(mintWsTicket('eng-1')).rejects.toMatchObject({ name: 'HttpError', status: 401 })
+            await waitFor(() => expect(useAuthStore.getState().token).toBe('bearer-fresh'))
 
+            expect(sent()).toEqual(['POST /ws/ticket Bearer bearer-a', 'POST /login -'])
+            expect(stored()).not.toContain('bearer-a')
+            expect(stored()).toContain('bearer-fresh')
+            expect(useAuthStore.getState()).toMatchObject({
+                user: kVisitor,
+                operations: ['engine.create'],
+                selectedUserId: 'visitor',
+            })
+        })
+
+        // B5 (DN-104.D4): the server refuses a dead bearer on every route, so the browser forgets it
+        // whichever route answered — one the visitor is refused on and one it is served on.
+        it.each([
+            ['protected', 'POST', '/engines', () => createEngine('name: refused')],
+            ['public', 'GET', '/scenarios?playground=logcraft', () => listScenarios('logcraft')],
+        ])('B5: a 401 from a %s route (%s %s) forgets the refused bearer once', async (_kind, method, path, call) => {
+            signIn('bearer-a')
+            expect(stored()).toContain('bearer-a')
+            serve({ [path]: refusedBearer, '/login': () => json(kVisitorLogin) })
+
+            await expect(call()).rejects.toMatchObject({ name: 'HttpError', status: 401 })
+            await waitFor(() => expect(useAuthStore.getState().token).toBe('bearer-fresh'))
+
+            expect(sent()).toEqual([`${method} ${path} Bearer bearer-a`, 'POST /login -'])
+            expect(stored()).not.toContain('bearer-a')
+        })
+
+        it('signs back in once when two requests carrying the refused bearer both answer 401', async () => {
+            signIn('bearer-a')
+            serve({
+                '/engines': refusedBearer,
+                '/scenarios?playground=logcraft': refusedBearer,
+                '/login': () => json(kVisitorLogin),
+            })
+
+            await Promise.allSettled([createEngine('name: refused'), listScenarios('logcraft')])
+            await waitFor(() => expect(useAuthStore.getState().token).toBe('bearer-fresh'))
+
+            expect(sent().filter((line) => line.startsWith('POST /login'))).toEqual(['POST /login -'])
+        })
+
+        it('keeps a sign-in made while the visitor sign-in was in flight', async () => {
+            signIn('bearer-a')
+            let answerLogin: (response: Response) => void = () => {
+                throw new Error('the visitor sign-in was never sent')
+            }
+            fetchMock.mockImplementation(async (url: string) =>
+                url.endsWith('/login')
+                    ? new Promise<Response>((resolve) => {
+                          answerLogin = resolve
+                      })
+                    : refusedBearer(),
+            )
+
+            await expect(createEngine('name: refused')).rejects.toMatchObject({ status: 401 })
+            await waitFor(() => expect(sent()).toEqual(['POST /engines Bearer bearer-a', 'POST /login -']))
+            useAuthStore.getState().setAuth('bearer-chosen', { id: 'admin', name: 'Admin' }, ['engine.delete'])
+            answerLogin(json(kVisitorLogin))
+            await new Promise((resolve) => setTimeout(resolve, 0))
+
+            expect(useAuthStore.getState()).toMatchObject({ token: 'bearer-chosen', user: { id: 'admin' } })
+            expect(stored()).toContain('bearer-chosen')
+        })
+
+        it('stays signed out, with no key and no retry, when the visitor sign-in is refused too', async () => {
+            signIn('bearer-a')
+            serve({ '/engines': refusedBearer, '/login': () => json({ error: 'Login unavailable' }, 503) })
+
+            await expect(createEngine('name: refused')).rejects.toMatchObject({ status: 401 })
+            await waitFor(() => expect(sent()).toHaveLength(2))
+            await new Promise((resolve) => setTimeout(resolve, 0))
+
+            expect(sent()).toEqual(['POST /engines Bearer bearer-a', 'POST /login -'])
             expectNoStoredState()
             expect(useAuthStore.getState().token).toBeNull()
-            expect(sent()).toEqual(['POST /ws/ticket Bearer bearer-a'])
         })
 
         it('leaves the session that replaced the refused bearer while the answer was in flight', async () => {

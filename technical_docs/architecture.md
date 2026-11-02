@@ -189,6 +189,7 @@ Auth state is persisted in local storage, not cookies, and it stays there until 
 
 - `logout()` ends the session on the server, then removes the key whatever the server answered.
 - A `401` to a request that carried a bearer removes the key, unless that bearer was already replaced by a newer session. The one exception is `/login`, whose `401` refuses the credential in its body, not the bearer. A `403` refuses an operation and keeps the session.
+- The server answers that `401` (with `WWW-Authenticate: Bearer error="invalid_token"`) on every route but `/login` and `/whoami` once the bearer's session has ended (`DN-104.D4`). Outside the bootstrap the open tab then signs back in as `visitor`, once and without a bearer, so an ended session does not leave every control locked until a reload; a sign-in made while that one is in flight wins, and a refused visitor sign-in leaves the tab signed out with nothing retried.
 - On app bootstrap, `App` calls `/whoami`; if the token is invalid, it removes the key at once, then re-logins without the refused bearer, as the selected demo user when one was persisted (the selection is restored with the new session) or as `visitor`.
 - A signed-out store writes nothing: the key is removed rather than left holding nulls, so no later write brings it back.
 

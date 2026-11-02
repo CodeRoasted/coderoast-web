@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage, type PersistStorage } from 'zustand/middleware'
+import { login } from '@/services/api'
 
 interface AuthUser {
     id: string
@@ -27,6 +28,10 @@ interface AuthState {
      * answering an older bearer leaves the session that replaced it, and a second refusal of the same
      * bearer finds nothing left to clear, so the clearing happens once. `loading` is left as it is:
      * a refusal met during the bootstrap does not end the bootstrap.
+     *
+     * Outside the bootstrap, the open tab then signs back in as visitor, once, so a session that
+     * ended under it does not leave every control locked until a reload. The bootstrap signs in on
+     * its own (with the persisted selection), so a refusal met during it starts no second sign-in.
      */
     forgetRefusedToken: (token: string) => void
     setLoading: (loading: boolean) => void
@@ -92,7 +97,18 @@ export const useAuthStore = create<AuthState>()(
             setOperations: (operations) => set({ operations }),
             clearAuth: () => set({ ...signedOut(), loading: false }),
             forgetRefusedToken: (token) => {
-                if (get().token === token) set(signedOut())
+                if (get().token !== token) return
+                set(signedOut())
+                if (get().loading) return
+                login('visitor')
+                    .then(({ token: fresh, user, access }) => {
+                        // A sign-in made while this one was in flight is the visitor's newer choice.
+                        if (get().token !== null) return
+                        set({ token: fresh, user, operations: access?.operations ?? [], selectedUserId: 'visitor' })
+                    })
+                    .catch(() => {
+                        // Refused or unreachable: the tab stays signed out, as before, and retries nothing.
+                    })
             },
             setLoading: (loading) => set({ loading }),
             setSelectedUserId: (userId) => set({ selectedUserId: userId }),
