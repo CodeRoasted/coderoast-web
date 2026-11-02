@@ -735,6 +735,7 @@ const fr: typeof en = {
             terms: 'Conditions d’utilisation',
             privacy: 'Politique de confidentialité',
             trademark: 'Politique des marques',
+            notice: 'Mentions légales',
             cookiePrefs: 'Vos préférences cookies',
         },
     },

@@ -18,6 +18,7 @@ const HowWeComparePage = lazy(() => import('@/pages/HowWeCompare'))
 const Terms = lazy(() => import('@/pages/legal/Terms'))
 const Privacy = lazy(() => import('@/pages/legal/Privacy'))
 const Trademark = lazy(() => import('@/pages/legal/Trademark'))
+const Notice = lazy(() => import('@/pages/legal/Notice'))
 
 function SpinnerFallback() {
     return (
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
             {
                 path: 'legal/privacy',
                 element: <Suspense fallback={<SpinnerFallback />}><Privacy /></Suspense>,
+            },
+            {
+                path: 'legal/notice',
+                element: <Suspense fallback={<SpinnerFallback />}><Notice /></Suspense>,
             },
             {
                 path: 'legal/trademark',

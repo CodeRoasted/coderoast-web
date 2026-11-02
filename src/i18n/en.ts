@@ -810,6 +810,7 @@ const en = {
             terms: 'Terms of Service',
             privacy: 'Privacy Policy',
             trademark: 'Trademark Policy',
+            notice: 'Legal notice',
             cookiePrefs: 'Your cookie preferences',
         },
     },

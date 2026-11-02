@@ -178,6 +178,13 @@ export default function Footer() {
                                     {t.footer.links.trademark}
                                 </Link>
                                 <span className="text-gray-700" aria-hidden="true">·</span>
+                                <Link
+                                    to="/legal/notice"
+                                    className="hover:text-gray-300 transition-colors"
+                                >
+                                    {t.footer.links.notice}
+                                </Link>
+                                <span className="text-gray-700" aria-hidden="true">·</span>
                                 <button
                                     onClick={() => setShowCookiePrefs(true)}
                                     className="hover:text-gray-300 transition-colors"
