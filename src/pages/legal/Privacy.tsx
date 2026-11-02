@@ -8,6 +8,8 @@ import { LEGAL_LAST_UPDATED } from './legalDate'
 import { Rich, Section } from './LegalText'
 
 interface PrivacyCopy {
+    back: string
+    section: string
     title: string
     lastUpdated: string
     inShortTitle: string
@@ -34,11 +36,13 @@ interface PrivacyCopy {
 
 const COPY: Record<'en' | 'fr', PrivacyCopy> = {
     en: {
+        back: 'Back to CodeRoast',
+        section: 'Legal & Security',
         title: 'Privacy policy',
         lastUpdated: `Last updated: ${LEGAL_LAST_UPDATED}`,
         inShortTitle: 'In short',
         inShort:
-            'CodeRoast has no analytics, no advertising and no third-party scripts, and sells no data. There are no user accounts today. The site keeps what it needs to run and to stay secure, and every store deletes it by age, on the periods below.',
+            'CodeRoast has no analytics, no advertising and no third-party scripts, and sells no data. No one can create an account today. The site keeps what it needs to run and to stay secure, and every store deletes it by age, on the periods below.',
         responsibleTitle: 'Who is responsible',
         responsible:
             'Emmanuel Prunet, entrepreneur individuel, trading as CodeRoast, Tour 6 La Galice, 30 allée Granados, 13008 Marseille, France. Contact for any privacy request: contact@coderoast.fr. See the [legal notice](/legal/notice).',
@@ -58,8 +62,8 @@ const COPY: Record<'en' | 'fr', PrivacyCopy> = {
             'The scenarios you run in the Lab and the logs they generate are held in memory for your session. They are never written to a persistent store, and they are discarded when your session ends.',
         cookiesTitle: 'Cookies and browser storage',
         cookies: [
-            '`logcraft_onboarding_dismissed`, a cookie kept for 12 months, remembers that you have seen the Lab onboarding.',
-            "If you sign in, your sign-in state stays in your browser's local storage until you log out or your token is refused.",
+            '`logcraft_onboarding_dismissed`, a cookie kept for 365 days, remembers that you have seen the Lab onboarding.',
+            "The Lab's sign-in, used today only by the shared visitor identity, keeps its state in your browser's local storage until you log out or your token is refused.",
         ],
         cookiesAfter:
             'Both are strictly necessary for what you asked for, so no consent banner is required. We set no marketing, analytics or tracking cookies. You can reset the cookie through the preferences link in the footer, or clear both in your browser.',
@@ -81,11 +85,13 @@ const COPY: Record<'en' | 'fr', PrivacyCopy> = {
             'If we add accounts, analytics or any new collection, we will update this page before it takes effect.',
     },
     fr: {
+        back: 'Retour à CodeRoast',
+        section: 'Juridique et sécurité',
         title: 'Politique de confidentialité',
         lastUpdated: `Dernière mise à jour : ${LEGAL_LAST_UPDATED}`,
         inShortTitle: 'En bref',
         inShort:
-            "CodeRoast n'utilise ni outil d'analyse, ni publicité, ni script tiers, et ne vend aucune donnée. Il n'existe aucun compte utilisateur à ce jour. Le site conserve ce qui lui sert à fonctionner et à rester sûr, et chaque stockage supprime ces données selon les durées ci-dessous.",
+            "CodeRoast n'utilise ni outil d'analyse, ni publicité, ni script tiers, et ne vend aucune donnée. Personne ne peut créer de compte à ce jour. Le site conserve ce qui lui sert à fonctionner et à rester sûr, et chaque stockage supprime ces données selon les durées ci-dessous.",
         responsibleTitle: 'Responsable du traitement',
         responsible:
             'Emmanuel Prunet, entrepreneur individuel, exerçant sous le nom CodeRoast, Tour 6 La Galice, 30 allée Granados, 13008 Marseille, France. Contact pour toute demande : contact@coderoast.fr. Voir les [mentions légales](/legal/notice).',
@@ -105,8 +111,8 @@ const COPY: Record<'en' | 'fr', PrivacyCopy> = {
             "Les scénarios que vous exécutez dans le Lab et les journaux qu'ils génèrent restent en mémoire le temps de votre session. Ils ne sont jamais écrits dans un stockage persistant, et ils disparaissent à la fin de votre session.",
         cookiesTitle: 'Cookies et stockage du navigateur',
         cookies: [
-            '`logcraft_onboarding_dismissed`, un cookie conservé 12 mois, retient que vous avez vu le tutoriel du Lab.',
-            "Si vous vous connectez, l'état de connexion reste dans le stockage local de votre navigateur jusqu'à la déconnexion ou au refus du jeton.",
+            '`logcraft_onboarding_dismissed`, un cookie conservé 365 jours, retient que vous avez vu le tutoriel du Lab.',
+            "La connexion du Lab, utilisée aujourd'hui par la seule identité visiteur partagée, garde son état dans le stockage local de votre navigateur jusqu'à la déconnexion ou au refus du jeton.",
         ],
         cookiesAfter:
             "Ces deux éléments sont strictement nécessaires au service demandé, aucune bannière de consentement n'est donc requise. Nous ne déposons aucun cookie publicitaire, d'analyse ou de suivi. Vous pouvez réinitialiser le cookie par le lien des préférences en pied de page, ou effacer les deux dans votre navigateur.",
@@ -147,7 +153,7 @@ export default function Privacy() {
                             className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-300 transition-colors mb-8"
                         >
                             <ArrowLeft className="w-3.5 h-3.5" />
-                            Back to CodeRoast
+                            {copy.back}
                         </Link>
 
                         <div className="flex items-center gap-3 mb-2">
@@ -155,7 +161,7 @@ export default function Privacy() {
                                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
-                                Legal & Security
+                                {copy.section}
                             </span>
                         </div>
                         <h1 className="text-3xl sm:text-4xl font-display font-bold text-white mb-2">

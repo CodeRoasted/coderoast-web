@@ -24,6 +24,8 @@ describe('legal pages follow the language switch', () => {
         expect(screen.getByRole('heading', { level: 1, name: 'Politique de confidentialité' })).toBeTruthy()
         expect(screen.getByText('Dernière mise à jour : <DATE>')).toBeTruthy()
         expect(screen.getByRole('link', { name: 'mentions légales' }).getAttribute('href')).toBe('/legal/notice')
+        expect(screen.getByRole('link', { name: /Retour à CodeRoast/ })).toBeTruthy()
+        expect(screen.getByText('Juridique et sécurité')).toBeTruthy()
     })
 
     it('the legal notice shows the English copy on en and the French on fr', () => {
@@ -34,5 +36,7 @@ describe('legal pages follow the language switch', () => {
         expect(screen.getByRole('heading', { level: 1, name: 'Mentions légales' })).toBeTruthy()
         expect(screen.getByRole('heading', { level: 2, name: 'Directeur de la publication' })).toBeTruthy()
         expect(screen.queryByRole('heading', { level: 2, name: 'Publication director' })).toBeNull()
+        expect(screen.getByRole('link', { name: /Retour à CodeRoast/ })).toBeTruthy()
+        expect(screen.queryByText('Legal & Security')).toBeNull()
     })
 })

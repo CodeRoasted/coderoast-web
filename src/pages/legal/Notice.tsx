@@ -7,12 +7,16 @@ import { useStore } from '@/store/useStore'
 import { Rich, Section } from './LegalText'
 
 interface NoticeCopy {
+    back: string
+    section: string
     title: string
     blocks: { title: string; lines: string[] }[]
 }
 
 const COPY: Record<'en' | 'fr', NoticeCopy> = {
     en: {
+        back: 'Back to CodeRoast',
+        section: 'Legal & Security',
         title: 'Legal notice',
         blocks: [
             {
@@ -51,6 +55,8 @@ const COPY: Record<'en' | 'fr', NoticeCopy> = {
         ],
     },
     fr: {
+        back: 'Retour à CodeRoast',
+        section: 'Juridique et sécurité',
         title: 'Mentions légales',
         blocks: [
             {
@@ -108,7 +114,7 @@ export default function Notice() {
                             className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-300 transition-colors mb-8"
                         >
                             <ArrowLeft className="w-3.5 h-3.5" />
-                            Back to CodeRoast
+                            {copy.back}
                         </Link>
 
                         <div className="flex items-center gap-3 mb-2">
@@ -116,7 +122,7 @@ export default function Notice() {
                                 <Building2 className="w-5 h-5 text-emerald-400" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-widest text-gray-500">
-                                Legal & Security
+                                {copy.section}
                             </span>
                         </div>
                         <h1 className="text-3xl sm:text-4xl font-display font-bold text-white mb-12">
