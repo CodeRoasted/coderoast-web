@@ -44,7 +44,7 @@ function json(body: unknown, status = 200): Response {
 
 /**
  * The server's answer to a bearer that names no live session, on every route that resolves a
- * principal but /login and /whoami (DN-104.D4): 401, the RFC 6750 challenge, one body whatever the
+ * principal but /login and /whoami (ADR-39.D4): 401, the RFC 6750 challenge, one body whatever the
  * reason.
  */
 function refusedBearer(): Response {
@@ -160,7 +160,7 @@ describe('the persisted sign-in state (ADR-40.D2, row J)', () => {
             })
         })
 
-        // B5 (DN-104.D4): the server refuses a dead bearer on every route, so the browser forgets it
+        // B5 (ADR-39.D4): the server refuses a dead bearer on every route, so the browser forgets it
         // whichever route answered — one the visitor is refused on and one it is served on.
         it.each([
             ['protected', 'POST', '/engines', () => createEngine('name: refused')],
