@@ -117,6 +117,7 @@ describe('ScenarioSelector', () => {
                     identityKind: 'visitor',
                     deploymentContext: 'public_demo',
                     reason: 'entitlement insight.showcase required',
+                    cause: 'missing_entitlement',
                 }),
             )
             .mockResolvedValueOnce({ id: 'insight_only', yaml: 'agents:\n  - name: x' })

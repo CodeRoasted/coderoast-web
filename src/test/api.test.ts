@@ -34,6 +34,7 @@ describe('services/api', () => {
             operations: [],
             loading: false,
             selectedUserId: null,
+            publicAccessClosed: false,
         })
     })
 
@@ -54,6 +55,7 @@ describe('services/api', () => {
                 identityKind: 'visitor',
                 deploymentContext: 'public_demo',
                 reason: 'entitlement required',
+                cause: 'missing_entitlement',
             })
             expect(err).toBeInstanceOf(Error)
             expect(err.name).toBe('PolicyDenialError')
@@ -73,6 +75,7 @@ describe('services/api', () => {
                 identityKind: '',
                 deploymentContext: '',
                 reason: '',
+                cause: '',
             })
             expect(err.message).toBe('Access denied')
         })
@@ -114,6 +117,7 @@ describe('services/api', () => {
                         identity_kind: 'visitor',
                         deployment_context: 'public_demo',
                         reason: 'entitlement required',
+                        cause: 'missing_entitlement',
                     },
                     { status: 403 },
                 ),
@@ -123,7 +127,10 @@ describe('services/api', () => {
                 name: 'PolicyDenialError',
                 operation: 'engine.agent.rate.set',
                 requiredEntitlement: 'logcraft.advanced_dsl',
+                cause: 'missing_entitlement',
             })
+            // Only the access-mode cause closes public access; a missing entitlement is the visitor's limit.
+            expect(useAuthStore.getState().publicAccessClosed).toBe(false)
         })
 
         it('throws plain Error with body.error on non-403 failures', async () => {

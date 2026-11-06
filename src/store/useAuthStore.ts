@@ -18,6 +18,13 @@ interface AuthState {
     loading: boolean
     /** User id the operator explicitly selected. Persisted so revisiting the page auto-restores the session. */
     selectedUserId: string | null
+    /**
+     * True once the server refused a password-less sign-in with 403: the deployment's
+     * `anonymous_access_enabled` flag is off, and every door a visitor could use is closed (RUL-259,
+     * DN-94.D12). While it holds, `login()` sends nothing; only `reopenPublicAccess()` asks again.
+     * Never persisted: a reload asks the server once more, which is one request, not a loop.
+     */
+    publicAccessClosed: boolean
 
     setAuth: (token: string | null, user: AuthUser, operations?: string[]) => void
     setOperations: (operations: string[]) => void
@@ -36,6 +43,10 @@ interface AuthState {
     forgetRefusedToken: (token: string) => void
     setLoading: (loading: boolean) => void
     setSelectedUserId: (userId: string | null) => void
+    /** The server refused a visitor: show the closed state and stop signing in in the background. */
+    closePublicAccess: () => void
+    /** A sign-in the server served: the closed state ends. */
+    openPublicAccess: () => void
 }
 
 /** The part of the state written to the browser: the sign-in state. */
@@ -91,6 +102,7 @@ export const useAuthStore = create<AuthState>()(
         (set, get) => ({
             ...signedOut(),
             loading: true,
+            publicAccessClosed: false,
 
             setAuth: (token, user, operations = []) =>
                 set({ token, user, operations, loading: false }),
@@ -107,11 +119,13 @@ export const useAuthStore = create<AuthState>()(
                         set({ token: fresh, user, operations: access?.operations ?? [], selectedUserId: 'visitor' })
                     })
                     .catch(() => {
-                        // Refused or unreachable: the tab stays signed out, as before, and retries nothing.
+                        // Refused, closed or unreachable: the tab stays signed out and retries nothing.
                     })
             },
             setLoading: (loading) => set({ loading }),
             setSelectedUserId: (userId) => set({ selectedUserId: userId }),
+            closePublicAccess: () => set({ publicAccessClosed: true, loading: false }),
+            openPublicAccess: () => set({ publicAccessClosed: false }),
         }),
         {
             name: 'coderoast.auth',

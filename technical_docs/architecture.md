@@ -179,7 +179,11 @@ The backend is the source of truth for access control. The front end mirrors per
 | live rate/error/burst commands | Pro |
 | cascade evaluation | Enterprise |
 
-When the backend denies a request, `PolicyDenialError` carries the denial detail from the capability profile. UI components should render that detail instead of a generic error.
+When the backend denies a request, `PolicyDenialError` carries the denial detail from the capability profile. UI components should render that detail instead of a generic error. Its `cause` is the refusing policy step's token (the server's audit vocabulary, never renamed); a token the app does not know is a denial with no specific cause, and the English `reason` is never branched on.
+
+### Public access closed
+
+The server's `anonymous_access_enabled` flag, switched off, refuses every caller without an account (`RUL-259`): the password-less `POST /login` answers `403`, and a request with no session or on a visitor session is refused, all with `cause: "anonymous_access_disabled"`; the WebSocket's denial frame and the frame a stream closes on carry the same field. Any such refusal, HTTP or WebSocket, sets `publicAccessClosed` in `useAuthStore` (never persisted), and the root layout shows the closed state in both languages (`src/components/PublicAccessClosed.tsx`): above every page, and in place of the pages made of server calls (the Lab, `/diff`, `/tiers`, marked by their route `handle`). While it holds, `login()` sends nothing and throws `PublicAccessClosedError`, so no background sign-in asks again; the visitor session is kept, refused but not ended. The one way out is the visitor's **Try again**, one `POST /login` per click and none while one is in flight; a served sign-in ends the closed state.
 
 ## Cookies And Local Storage
 

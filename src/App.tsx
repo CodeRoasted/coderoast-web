@@ -1,7 +1,8 @@
 import { useEffect, lazy, Suspense } from 'react'
-import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Outlet, useLocation, useMatches } from 'react-router-dom'
 import Home from '@/pages/Home'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import PublicAccessClosed from '@/components/PublicAccessClosed'
 import { useAuthStore } from '@/store/useAuthStore'
 import { login, whoami } from '@/services/api'
 
@@ -73,13 +74,24 @@ function HashScrollManager() {
     return null
 }
 
+/**
+ * A route whose page is made of server calls (the Lab, the diff, the access profile). While public
+ * access is closed such a page could only fail, so the closed state takes its place; every other
+ * page, the legal ones included, stays readable under the closed state.
+ */
+interface RouteHandle {
+    servedByServer?: boolean
+}
+const kServedByServer: RouteHandle = { servedByServer: true }
+
 function RootLayout() {
+    const closed = useAuthStore((state) => state.publicAccessClosed)
+    const servedByServer = useMatches().some((match) => (match.handle as RouteHandle | undefined)?.servedByServer)
     return (
         <div className="min-h-screen bg-gray-950 text-gray-100">
             <HashScrollManager />
-            <ErrorBoundary>
-                <Outlet />
-            </ErrorBoundary>
+            {closed && <PublicAccessClosed inPlaceOfPage={servedByServer} />}
+            <ErrorBoundary>{closed && servedByServer ? null : <Outlet />}</ErrorBoundary>
         </div>
     )
 }
@@ -96,22 +108,27 @@ const router = createBrowserRouter([
             },
             {
                 path: 'lab',
+                handle: kServedByServer,
                 element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="insight" /></Suspense>,
             },
             {
                 path: 'lab/logcraft',
+                handle: kServedByServer,
                 element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="logcraft" /></Suspense>,
             },
             {
                 path: 'lab/insight',
+                handle: kServedByServer,
                 element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="insight" /></Suspense>,
             },
             {
                 path: 'tiers',
+                handle: kServedByServer,
                 element: <Suspense fallback={<SpinnerFallback />}><TierMatrix /></Suspense>,
             },
             {
                 path: 'diff',
+                handle: kServedByServer,
                 element: <Suspense fallback={<SpinnerFallback />}><InsightDiff /></Suspense>,
             },
             {
@@ -141,6 +158,7 @@ const router = createBrowserRouter([
             // Legacy redirect
             {
                 path: 'playground',
+                handle: kServedByServer,
                 element: <Suspense fallback={<SpinnerFallback />}><Lab defaultMode="insight" /></Suspense>,
             },
             {

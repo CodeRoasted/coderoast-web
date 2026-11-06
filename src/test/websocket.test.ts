@@ -80,6 +80,7 @@ describe('EngineWebSocket', () => {
             operations: [],
             loading: false,
             selectedUserId: null,
+            publicAccessClosed: false,
         })
     })
 
@@ -279,6 +280,31 @@ describe('EngineWebSocket', () => {
         expect(onFatalError).toHaveBeenCalledWith('bad input')
         expect(onError).not.toHaveBeenCalled()
 
+        ws.disconnect()
+    })
+
+    // RUL-259 (DN-94.D12): with the access-mode flag off, the handshake's denial frame and the frame a
+    // stream closes on at a tick carry cause `anonymous_access_disabled`; that one cause switches the
+    // app to the closed state, any other cause stays the caller's fatal error, and neither reconnects.
+    it.each([
+        ['anonymous_access_disabled', true],
+        ['missing_entitlement', false],
+    ])('an error frame with cause %s closes public access: %s', (cause, closes) => {
+        vi.useFakeTimers()
+        const onFatalError = vi.fn()
+        const ws = new EngineWebSocket()
+        ws.connect('eng-1', { onFatalError })
+        const sock = lastSocket()
+
+        sock.receive({ type: 'error', message: 'refused', cause })
+        sock.triggerClose()
+        vi.advanceTimersByTime(60_000)
+
+        expect({
+            closed: useAuthStore.getState().publicAccessClosed,
+            fatal: onFatalError.mock.calls,
+            sockets: MockWebSocket.instances.length,
+        }).toEqual({ closed: closes, fatal: [['refused']], sockets: 1 })
         ws.disconnect()
     })
 

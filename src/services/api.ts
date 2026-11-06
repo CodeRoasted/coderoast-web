@@ -101,6 +101,13 @@ export interface CapabilityMatrix {
 }
 
 /**
+ * The denial cause the server sends when its `anonymous_access_enabled` flag is off and the caller has
+ * no account: no session, a visitor session, or the password-less login (RUL-259, DN-94.D12). A cause
+ * token is the audit record's vocabulary and is never renamed (ADR-38.D2), so it is matched exactly.
+ */
+export const kAnonymousAccessDisabled = 'anonymous_access_disabled'
+
+/**
  * Raised when the backend returns HTTP 403 on a policy-gated endpoint.
  * Carries the rich context emitted by the server's access-control middleware
  * so UI layers can show a meaningful "requires X entitlement" message.
@@ -115,6 +122,11 @@ export class PolicyDenialError extends Error {
     readonly identityKind: string
     readonly deploymentContext: string
     readonly reason: string
+    /**
+     * The refusing policy step's token (ADR-38.D2), or '' when the body carries none. A token this
+     * app does not know is a denial with no specific cause; `reason` is prose and never branched on.
+     */
+    readonly cause: string
 
     constructor(params: {
         operation: string
@@ -126,6 +138,7 @@ export class PolicyDenialError extends Error {
         identityKind: string
         deploymentContext: string
         reason: string
+        cause: string
     }) {
         super(params.reason || 'Access denied')
         this.name = 'PolicyDenialError'
@@ -138,6 +151,7 @@ export class PolicyDenialError extends Error {
         this.identityKind = params.identityKind
         this.deploymentContext = params.deploymentContext
         this.reason = params.reason
+        this.cause = params.cause
     }
 }
 
@@ -226,6 +240,7 @@ async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DE
         }
         const body = await resp.json().catch(() => ({}))
         if (resp.status === 403) {
+            if (body.cause === kAnonymousAccessDisabled) useAuthStore.getState().closePublicAccess()
             throw new PolicyDenialError({
                 operation: typeof body.operation === 'string' ? body.operation : '',
                 requiredEntitlement: typeof body.required_entitlement === 'string' ? body.required_entitlement : '',
@@ -236,6 +251,7 @@ async function requestOnce<T>(url: string, options?: RequestInit, timeoutMs = DE
                 identityKind: typeof body.identity_kind === 'string' ? body.identity_kind : '',
                 deploymentContext: typeof body.deployment_context === 'string' ? body.deployment_context : '',
                 reason: typeof body.reason === 'string' ? body.reason : 'Access denied',
+                cause: typeof body.cause === 'string' ? body.cause : '',
             })
         }
         throw new HttpError(resp.status, body.error || body.reason || `HTTP ${resp.status}`)
@@ -279,8 +295,43 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
  * the endpoints in the `public.*` family serve it.
  */
 export async function login(userId: string | null = null): Promise<LoginResponse> {
+    if (useAuthStore.getState().publicAccessClosed) throw new PublicAccessClosedError()
+    return askForSession(userId)
+}
+
+/**
+ * Raised by `login()` without a request while public access is closed: every caller that signs in
+ * in the background meets it, so none of them asks the server again (RUL-259).
+ */
+export class PublicAccessClosedError extends Error {
+    constructor() {
+        super('Public access is disabled on this deployment')
+        this.name = 'PublicAccessClosedError'
+    }
+}
+
+/**
+ * One password-less sign-in request. With the `anonymous_access_enabled` flag off the server refuses it
+ * with 403 and cause `anonymous_access_disabled`, for every user id alike (DN-94.D12 item 4), and
+ * `requestOnce` closes public access on that cause; an unreadable flag answers 503, a fault rather
+ * than a closed door. A served sign-in opens public access again.
+ */
+async function askForSession(userId: string | null): Promise<LoginResponse> {
     const body = userId ? JSON.stringify({ user_id: userId }) : undefined
-    return request(LOGIN_ROUTE, { method: 'POST', body })
+    const session = await request<LoginResponse>(LOGIN_ROUTE, { method: 'POST', body })
+    useAuthStore.getState().openPublicAccess()
+    return session
+}
+
+/**
+ * The closed state's one way out: ask the server, once, whether a visitor is served again. It is
+ * the only sign-in sent while public access is closed, and only on the visitor's own click.
+ */
+export async function reopenPublicAccess(): Promise<void> {
+    const { token, user, access } = await askForSession('visitor')
+    const store = useAuthStore.getState()
+    store.setAuth(token, user, access?.operations ?? [])
+    store.setSelectedUserId('visitor')
 }
 
 /**

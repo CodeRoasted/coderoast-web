@@ -1,5 +1,5 @@
 import type { EngineCommand, EngineSnapshot } from '@/types/engine'
-import { HttpError, PolicyDenialError, mintWsTicket } from '@/services/api'
+import { HttpError, PolicyDenialError, kAnonymousAccessDisabled, mintWsTicket } from '@/services/api'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export type WsMessageHandler = {
@@ -197,6 +197,11 @@ export class EngineWebSocket {
                         // rejection. Stop the loop and let the caller decide
                         // what to show / navigate to.
                         this.shouldReconnect = false
+                        // The handshake's denial and the frame a stream closes on at a tick carry the
+                        // same cause token as an HTTP denial (DN-94.D12).
+                        if (msg.cause === kAnonymousAccessDisabled) {
+                            useAuthStore.getState().closePublicAccess()
+                        }
                         this.handlers.onFatalError?.(msg.message as string)
                         break
                 }
