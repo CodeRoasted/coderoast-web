@@ -18,6 +18,9 @@ vi.mock('@/pages/Home', () => ({ default: () => null }))
 
 const kTitleEn = 'Public access is temporarily disabled'
 const kTitleFr = "L'accès public est temporairement désactivé"
+// The closed state offers no sign-in: the site has none yet, and the page claims nothing it cannot do.
+const kBodyEn = 'This site is not serving visitors right now. Try again later.'
+const kBodyFr = "Ce site n'accueille pas de visiteurs pour le moment. Réessayez plus tard."
 const kVisitor = { id: 'visitor', name: 'Visitor' }
 
 function json(body: unknown, status = 200): Response {
@@ -95,7 +98,10 @@ describe('the closed state: public access disabled by the server (RUL-259)', () 
 
         render(<App />)
 
-        expect(await screen.findByRole('heading', { name: kTitleEn })).toBeInTheDocument()
+        const closedState = await screen.findByRole('alert')
+        expect(closedState).toHaveTextContent(kTitleEn)
+        expect(closedState).toHaveTextContent(kBodyEn)
+        expect(closedState).not.toHaveTextContent(/sign in/i)
         expect(screen.getByRole('button', { name: 'Try again' })).toBeEnabled()
         expect(sent()).toEqual(['POST /login -'])
         expect(useAuthStore.getState()).toMatchObject({ token: null, loading: false, publicAccessClosed: true })
@@ -107,7 +113,10 @@ describe('the closed state: public access disabled by the server (RUL-259)', () 
 
         render(<App />)
 
-        expect(await screen.findByRole('heading', { name: kTitleFr })).toBeInTheDocument()
+        const closedState = await screen.findByRole('alert')
+        expect(closedState).toHaveTextContent(kTitleFr)
+        expect(closedState).toHaveTextContent(kBodyFr)
+        expect(closedState).not.toHaveTextContent(/connect/i)
         expect(screen.getByRole('button', { name: 'Réessayer' })).toBeEnabled()
     })
 

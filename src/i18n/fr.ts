@@ -1276,8 +1276,7 @@ const fr: typeof en = {
             'La capacité « {permission} » n\'est pas activée dans le déploiement actuel. Contactez votre administrateur.',
         scenarioNotAvailable: 'Ce scénario requiert des capacités non disponibles dans ce déploiement :',
         publicAccessClosedTitle: 'L\'accès public est temporairement désactivé',
-        publicAccessClosedBody:
-            'Ce site n\'accueille pas de visiteurs pour le moment. Si vous avez un compte, connectez-vous pour continuer ; sinon, réessayez plus tard.',
+        publicAccessClosedBody: 'Ce site n\'accueille pas de visiteurs pour le moment. Réessayez plus tard.',
         publicAccessRetry: 'Réessayer',
         publicAccessRetrying: 'Vérification…',
         publicAccessStillClosed: 'L\'accès public est toujours désactivé. Réessayez plus tard.',

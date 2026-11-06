@@ -1352,8 +1352,7 @@ const en = {
             'The "{permission}" capability is not enabled in the current deployment. Contact your administrator.',
         scenarioNotAvailable: 'This scenario requires capabilities that are not available in this deployment:',
         publicAccessClosedTitle: 'Public access is temporarily disabled',
-        publicAccessClosedBody:
-            'This site is not serving visitors right now. If you have an account, sign in to continue; otherwise, try again later.',
+        publicAccessClosedBody: 'This site is not serving visitors right now. Try again later.',
         publicAccessRetry: 'Try again',
         publicAccessRetrying: 'Checking…',
         publicAccessStillClosed: 'Public access is still disabled. Try again later.',
