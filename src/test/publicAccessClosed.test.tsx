@@ -10,7 +10,7 @@ import App from '@/App'
 vi.mock('@/pages/Home', () => ({ default: () => null }))
 
 /**
- * RUL-259 (DN-94.D12): with the server's `anonymous_access_enabled` flag off, the
+ * RUL-259 (ADR-35.D10): with the server's `anonymous_access_enabled` flag off, the
  * password-less login answers 403 and a request with no session or on a visitor session is refused,
  * both with cause `anonymous_access_disabled`. The app shows one closed state, keeps the visitor's
  * session (refused, never destroyed), and sends nothing more until the visitor asks.
@@ -149,7 +149,7 @@ describe('the closed state: public access disabled by the server (RUL-259)', () 
 
         expect(await screen.findByRole('heading', { name: kTitleEn })).toBeInTheDocument()
         expect(sent()).toEqual(['GET /whoami Bearer bearer-a', 'POST /engines Bearer bearer-a'])
-        // Refused, never destroyed (DN-94.D12 item 3): switched back on, the same bearer is served.
+        // Refused, never destroyed (ADR-35.D10 item 3): switched back on, the same bearer is served.
         expect(useAuthStore.getState().token).toBe('bearer-a')
     })
 

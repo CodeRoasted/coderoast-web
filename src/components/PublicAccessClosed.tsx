@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 
 /**
  * The closed state: the server refused a visitor because its `anonymous_access_enabled` flag is off
- * (RUL-259, DN-94.D12). Nothing signs in on its own while it shows; the one way out is the visitor's
+ * (RUL-259, ADR-35.D10). Nothing signs in on its own while it shows; the one way out is the visitor's
  * own click, which sends one request and cannot send a second until the first has answered.
  *
  * `inPlaceOfPage`: the closed state stands where a server-made page would have been, so it offers

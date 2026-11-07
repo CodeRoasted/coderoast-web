@@ -283,7 +283,7 @@ describe('EngineWebSocket', () => {
         ws.disconnect()
     })
 
-    // RUL-259 (DN-94.D12): with the access-mode flag off, the handshake's denial frame and the frame a
+    // RUL-259 (ADR-35.D10): with the access-mode flag off, the handshake's denial frame and the frame a
     // stream closes on at a tick carry cause `anonymous_access_disabled`; that one cause switches the
     // app to the closed state, any other cause stays the caller's fatal error, and neither reconnects.
     it.each([

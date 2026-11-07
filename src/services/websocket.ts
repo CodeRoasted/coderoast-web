@@ -198,7 +198,7 @@ export class EngineWebSocket {
                         // what to show / navigate to.
                         this.shouldReconnect = false
                         // The handshake's denial and the frame a stream closes on at a tick carry the
-                        // same cause token as an HTTP denial (DN-94.D12).
+                        // same cause token as an HTTP denial (ADR-35.D10).
                         if (msg.cause === kAnonymousAccessDisabled) {
                             useAuthStore.getState().closePublicAccess()
                         }

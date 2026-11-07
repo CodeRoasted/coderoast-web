@@ -102,7 +102,7 @@ export interface CapabilityMatrix {
 
 /**
  * The denial cause the server sends when its `anonymous_access_enabled` flag is off and the caller has
- * no account: no session, a visitor session, or the password-less login (RUL-259, DN-94.D12). A cause
+ * no account: no session, a visitor session, or the password-less login (RUL-259, ADR-35.D10). A cause
  * token is the audit record's vocabulary and is never renamed (ADR-38.D2), so it is matched exactly.
  */
 export const kAnonymousAccessDisabled = 'anonymous_access_disabled'
@@ -312,7 +312,7 @@ export class PublicAccessClosedError extends Error {
 
 /**
  * One password-less sign-in request. With the `anonymous_access_enabled` flag off the server refuses it
- * with 403 and cause `anonymous_access_disabled`, for every user id alike (DN-94.D12 item 4), and
+ * with 403 and cause `anonymous_access_disabled`, for every user id alike (ADR-35.D10 item 4), and
  * `requestOnce` closes public access on that cause; an unreadable flag answers 503, a fault rather
  * than a closed door. A served sign-in opens public access again.
  */

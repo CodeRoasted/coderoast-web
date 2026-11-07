@@ -21,7 +21,7 @@ interface AuthState {
     /**
      * True once the server refused a password-less sign-in with 403: the deployment's
      * `anonymous_access_enabled` flag is off, and every door a visitor could use is closed (RUL-259,
-     * DN-94.D12). While it holds, `login()` sends nothing; only `reopenPublicAccess()` asks again.
+     * ADR-35.D10). While it holds, `login()` sends nothing; only `reopenPublicAccess()` asks again.
      * Never persisted: a reload asks the server once more, which is one request, not a loop.
      */
     publicAccessClosed: boolean
