@@ -15,7 +15,7 @@
  * with no argument reads the VISITOR'S BROWSER, not the bundle that produced the prose
  * around it — so an FR-bundle visitor on an en-US browser read French sentences with US
  * separators, and one report rendered two ways depending on where it was opened. The
- * claim Sift sells is that output is a function of input; a shipped surface whose
+ * claim Tamys sells is that output is a function of input; a shipped surface whose
  * rendering depends on the viewer's environment contradicts that in the one place a
  * buyer looks. `sift-action` already ruled this way for the PR comment (frame.ts, same
  * regex, ',' because that surface is English-only) — same rule here, so the shipped

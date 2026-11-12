@@ -21,6 +21,14 @@
   [headers.values]
     Content-Type = "application/wasm"
 
+# The product page moved from /sift to /tamys (RUL-279). Every Action release before the first one
+# named Tamys links its report footer to /sift, and a pinned release keeps that link for good, so
+# the old path answers with a permanent redirect (ADR-6.D24 item 4: a published reader's name).
+[[redirects]]
+  from = "/sift"
+  to = "/tamys"
+  status = 301
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

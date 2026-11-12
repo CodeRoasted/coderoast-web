@@ -72,7 +72,7 @@ npm run build
 
 Build output lands in `dist/`. The build command runs `tsc -b` before Vite bundling, so type errors fail deployment.
 
-The build then judges its own output before it reports success: the `siteGate` Vite plugin (`src/siteChecks/vitePlugin.ts`) runs the same verdict `src/test/firstPartyAssets.test.ts` asserts (`src/siteChecks/builtSite.ts`). Its nine arms: every emitted file is readable by the scanner, and the scanner still reaches every construct the build carries; no load names an origin but the site's own and `api.coderoast.fr`; every own-origin resource is an emitted file; the self-hosted fonts are complete and emitted byte-identical; the bundle carries the declared API base; every emitted showcase log is a sample `src/assets/sift-showcase/MANIFEST.json` digests; and `index.html` carries the build identity. A fault in any arm fails `npm run build`, and with it the Netlify deploy, and removes `dist/`, so a refused build leaves nothing to upload. The error names each offending file, URL or digest. A clean build logs `coderoast-site-gate: 9/9 arms clean`.
+The build then judges its own output before it reports success: the `siteGate` Vite plugin (`src/siteChecks/vitePlugin.ts`) runs the same verdict `src/test/firstPartyAssets.test.ts` asserts (`src/siteChecks/builtSite.ts`). Its nine arms: every emitted file is readable by the scanner, and the scanner still reaches every construct the build carries; no load names an origin but the site's own and `api.coderoast.fr`; every own-origin resource is an emitted file; the self-hosted fonts are complete and emitted byte-identical; the bundle carries the declared API base; every emitted showcase log is a sample `src/assets/tamys-showcase/MANIFEST.json` digests; and `index.html` carries the build identity. A fault in any arm fails `npm run build`, and with it the Netlify deploy, and removes `dist/`, so a refused build leaves nothing to upload. The error names each offending file, URL or digest. A clean build logs `coderoast-site-gate: 9/9 arms clean`.
 
 ### Build Identity
 
@@ -108,6 +108,9 @@ The checked-in `netlify.toml` is the canonical static hosting config:
 ```
 
 The redirect is required because React Router owns client-side routes such as `/lab`, `/logcraft`, and `/legal/privacy`.
+
+Ahead of it, `/sift` answers `301` to `/tamys`: the product page's path before the Tamys rename, which every
+Action release before the first one named Tamys links from its report footer.
 
 Static asset headers:
 

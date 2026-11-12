@@ -1,6 +1,6 @@
-// Sift.test.tsx — the /sift page's claim boundary, enforced on the rendered DOM and the bundles.
+// Tamys.test.tsx — the /tamys page's claim boundary, enforced on the rendered DOM and the bundles.
 //
-// The page may state only what a committed record backs (the Sift study of 2026-10-22, § 4.2,
+// The page may state only what a committed record backs (the Tamys study of 2026-10-22, § 4.2,
 // left column), and every number on it names its record. Two arms make that structural rather
 // than a review habit: no copy string outside the records section carries a digit, so a number
 // can reach the page only through the figures table; and every figure links to a record entry
@@ -9,15 +9,15 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import SiftPage from '@/pages/Sift'
+import TamysPage from '@/pages/Tamys'
 import en from '@/i18n/en'
 import fr from '@/i18n/fr'
 import { products } from '@/config/products'
 
 function renderPage() {
     return render(
-        <MemoryRouter initialEntries={['/sift']}>
-            <SiftPage />
+        <MemoryRouter initialEntries={['/tamys']}>
+            <TamysPage />
         </MemoryRouter>
     )
 }
@@ -32,13 +32,13 @@ function leaves(node: unknown, prefix: string[] = [], out: [string, string][] = 
     return out
 }
 
-describe('/sift — every number names its record', () => {
+describe('/tamys — every number names its record', () => {
     it.each([
         ['en', en],
         ['fr', fr],
     ])('no %s copy string outside the records carries a digit', (_language, bundle) => {
-        const offenders = leaves(bundle.sift, ['sift'])
-            .filter(([path]) => !path.startsWith('sift.records.'))
+        const offenders = leaves(bundle.tamys, ['tamys'])
+            .filter(([path]) => !path.startsWith('tamys.records.'))
             .filter(([, value]) => /\d/.test(value))
         expect(
             offenders,
@@ -52,7 +52,7 @@ describe('/sift — every number names its record', () => {
         const figures = container.querySelectorAll<HTMLElement>('[data-figure]')
         expect(figures.length, 'the page renders no figure at all').toBeGreaterThan(0)
         for (const figure of figures) {
-            const links = figure.querySelectorAll<HTMLAnchorElement>('a[href^="#sift-record-"]')
+            const links = figure.querySelectorAll<HTMLAnchorElement>('a[href^="#tamys-record-"]')
             expect(links, `figure "${figure.dataset.figure}" carries ${links.length} record links`).toHaveLength(1)
             const target = (links[0] as HTMLAnchorElement).getAttribute('href')?.slice(1) ?? ''
             const record = container.querySelector(`[id="${target}"]`)
@@ -62,7 +62,7 @@ describe('/sift — every number names its record', () => {
     })
 })
 
-describe('/sift — the install snippet', () => {
+describe('/tamys — the install snippet', () => {
     it('installs the Action on its published major, v2', () => {
         renderPage()
         const blocks = screen.getAllByText((_, node) => node?.tagName === 'CODE')
@@ -73,20 +73,20 @@ describe('/sift — the install snippet', () => {
     })
 })
 
-// Off /sift, Sift is named in three more places: the home portfolio card, the products menu's
+// Off /tamys, Tamys is named in three more places: the home portfolio card, the products menu's
 // maturity dot (both from the product registry) and the /vision lens grid. None of them carries a
-// records section, so none may carry a number, and each must state the maturity /sift states — a
+// records section, so none may carry a number, and each must state the maturity /tamys states — a
 // design-partner beta (RUL-173), not a live product.
-describe('Sift off /sift — no unrecorded number, the same maturity', () => {
+describe('Tamys off /tamys — no unrecorded number, the same maturity', () => {
     it.each([
         ['en', en, 'beta'],
         ['fr', fr, 'bêta'],
     ])('the %s portfolio card, vision lens and vision closing', (_language, bundle, betaWord) => {
-        const lens = bundle.vision.hub.lenses.find((entry) => entry.name === 'Sift')
-        expect(lens, 'the vision lens grid names no Sift lens').toBeDefined()
+        const lens = bundle.vision.hub.lenses.find((entry) => entry.name === 'Tamys')
+        expect(lens, 'the vision lens grid names no Tamys lens').toBeDefined()
         const surfaces: [string, unknown][] = [
-            ['portfolio.sift', bundle.portfolio.sift],
-            ['vision.hub.lenses[Sift]', lens],
+            ['portfolio.tamys', bundle.portfolio.tamys],
+            ['vision.hub.lenses[Tamys]', lens],
             ['vision.closing', bundle.vision.closing],
         ]
         const offenders = surfaces
@@ -94,14 +94,14 @@ describe('Sift off /sift — no unrecorded number, the same maturity', () => {
             .filter(([, value]) => /\d/.test(value))
         expect(
             offenders,
-            'a number in off-page Sift copy names no record:\n' +
+            'a number in off-page Tamys copy names no record:\n' +
                 offenders.map(([path, value]) => `  ${path}: ${value}`).join('\n')
         ).toEqual([])
-        expect(bundle.portfolio.sift.status.toLowerCase()).toContain(betaWord)
+        expect(bundle.portfolio.tamys.status.toLowerCase()).toContain(betaWord)
         expect(lens?.status.toLowerCase()).toContain(betaWord)
     })
 
-    it('the product registry gives Sift the beta tier', () => {
-        expect(products.find((product) => product.slug === 'sift')?.tier).toBe('beta')
+    it('the product registry gives Tamys the beta tier', () => {
+        expect(products.find((product) => product.slug === 'tamys')?.tier).toBe('beta')
     })
 })

@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 
 // The home is the umbrella lobby: what CodeRoast is (Hero) → the determinism
 // promise (the funnel-top one-liner) → the product portfolio → roadmap → maker
-// note. Product deep-dives live on their own pages (/logcraft, /insight, /sift),
+// note. Product deep-dives live on their own pages (/logcraft, /insight, /tamys),
 // not here.
 const Portfolio = lazy(() => import('@/components/Portfolio'))
 const ComingSoon = lazy(() => import('@/components/ComingSoon'))

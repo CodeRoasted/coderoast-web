@@ -9,7 +9,7 @@
 //    pair's credibility.
 //
 // 2. THE BYTES ARE THE ONES WE QUOTE NUMBERS FOR. The real samples are vendored
-//    copies of coderoast-hub's showcase/sift/ artifacts. Their sha256 is recorded
+//    copies of coderoast-hub's showcase/tamys/ artifacts. Their sha256 is recorded
 //    three times — in MANIFEST.json, in diffPresets.ts, and implicitly in the
 //    files themselves — and this suite makes all three agree. Without that, a
 //    re-vendoring (or a git filter rewriting a line ending, or a BOM being eaten
@@ -17,7 +17,7 @@
 //    counts the page headlines, and nothing would say so.
 //
 // It also gates the ONE number that must never reach this surface: the raw pair's
-// higher significant-change count. Ten of those findings were Sift reading its own
+// higher significant-change count. Ten of those findings were Tamys reading its own
 // report out of our dogfooded CI log — circular. The published pair removes that
 // step as a declared transformation; the manifest keeps the raw count on the
 // record under `significant_changes_on_the_raw_pair`, and the website does not.
@@ -148,7 +148,7 @@ describe('diff presets — the real samples are the published bytes', () => {
                     actual,
                     `${preset.id}.${side}: the vendored ${sample.file} is NOT the bytes diffPresets.ts pins.\n` +
                         `  on disk : ${actual}\n  pinned  : ${sample.sha256}\n` +
-                        `Re-vendor from coderoast-hub/showcase/sift/logs/ or update the pin — but the ` +
+                        `Re-vendor from coderoast-hub/showcase/tamys/logs/ or update the pin — but the ` +
                         `published change counts belong to the pinned bytes, not to whatever is on disk.`
                 ).toBe(sample.sha256)
                 expect(
@@ -215,7 +215,7 @@ describe('diff presets — the copy may not drift from the artifact', () => {
                 expect(
                     pattern.test(blob),
                     `${lang} copy for '${preset.id}' contains ${raw} — the count on the RAW pair, ` +
-                        `which includes findings that are only our own CI's Sift step reporting on ` +
+                        `which includes findings that are only our own CI's Tamys step reporting on ` +
                         `itself. That is circular and a skeptic catches it. The published count is ` +
                         `${pair.significant_changes}.\ncopy:\n${blob}`
                 ).toBe(false)

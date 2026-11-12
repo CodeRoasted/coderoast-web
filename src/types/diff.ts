@@ -1,6 +1,6 @@
 // Types for the insight_diff hosted demo (POST /api/v1/insight/diff).
-// Mirrors insight::sift::to_json_with_markdown: the ChangeReport schema plus the markdown field,
-// produced by the same aligned entry the sift CLI runs (ADR-14.D7).
+// Mirrors insight::tamys::to_json_with_markdown: the ChangeReport schema plus the markdown field,
+// produced by the same aligned entry the tamys CLI runs (ADR-14.D7).
 
 export interface DiffRequest {
     baseline: string

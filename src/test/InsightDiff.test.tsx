@@ -26,7 +26,7 @@ vi.mock('@/services/api', () => ({
     PolicyDenialError: class PolicyDenialError extends Error {},
 }))
 
-const VENDORED = join(process.cwd(), 'src/assets/sift-showcase')
+const VENDORED = join(process.cwd(), 'src/assets/tamys-showcase')
 
 const realPresets = diffPresets.filter(
     (preset): preset is RealCiPreset => preset.provenance === 'real-ci'

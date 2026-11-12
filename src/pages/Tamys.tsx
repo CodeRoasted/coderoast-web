@@ -13,11 +13,11 @@ import {
 } from 'lucide-react'
 import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
-import { siftChrome } from '@/config/productChrome'
+import { tamysChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 import { groupThousands } from '@/utils/format'
 
-// Sift product front door (/sift). Copy is surfaced via t.sift and bounded by the Sift study of
+// Tamys product front door (/tamys). Copy is surfaced via t.tamys and bounded by the Tamys study of
 // 2026-10-22, § 4.2 (what a committed record backs): the page leads with the red build (RUL-171),
 // the green-run reveal is demoted, and every number on it comes from FIGURES below, which links
 // each one to its record in the page's records section. The mocks (PR comment, install blocks)
@@ -33,40 +33,40 @@ const fadeUp = {
 
 type Translation = ReturnType<typeof useTranslation>
 
-// The record each figure cites, in footnote order. The texts live in t.sift.records.
+// The record each figure cites, in footnote order. The texts live in t.tamys.records.
 const RECORDS = ['recall', 'falseAlarm', 'determinism', 'wallTime'] as const
 type RecordId = (typeof RECORDS)[number]
-const recordAnchor = (id: RecordId) => `sift-record-${id}`
+const recordAnchor = (id: RecordId) => `tamys-record-${id}`
 
-// The page's numbers, each beside the record that measured it (t.sift.records names engine, bank,
+// The page's numbers, each beside the record that measured it (t.tamys.records names engine, bank,
 // date and record). The Action's floating @v2 runs sift 1.10.6, so the figures are 1.10.6's.
 const FIGURES: { id: RecordId; value: string; label: (t: Translation) => string }[] = [
     {
         id: 'recall',
         value: `${groupThousands(233)} / ${groupThousands(239)}`,
-        label: (t) => t.sift.figures.recall,
+        label: (t) => t.tamys.figures.recall,
     },
     {
         id: 'falseAlarm',
         value: `${groupThousands(275)} / ${groupThousands(21264)}`,
-        label: (t) => t.sift.figures.falseAlarm.replace('{ceiling}', groupThousands(570)),
+        label: (t) => t.tamys.figures.falseAlarm.replace('{ceiling}', groupThousands(570)),
     },
     {
         id: 'determinism',
         value: `${groupThousands(21264)} / ${groupThousands(21264)}`,
-        label: (t) => t.sift.figures.determinism,
+        label: (t) => t.tamys.figures.determinism,
     },
     {
         id: 'wallTime',
         value: `${groupThousands(2680)} ms`,
-        label: (t) => t.sift.figures.wallTime.replace('{slow}', `${groupThousands(3830)} ms`),
+        label: (t) => t.tamys.figures.wallTime.replace('{slow}', `${groupThousands(3830)} ms`),
     },
 ]
 
 // PR comment showcase: the Action's red-build frame (sift-action frame.ts, the run-verdict
 // regression headline and its severity section) around the engine's FAILING unit row.
 const COMMENT = {
-    header: '🔬 Sift — structural diff of your CI logs',
+    header: '🔬 Tamys — structural diff of your CI logs',
     verdict: '🚨 Run verdict regressed: SUCCESS → FAILURE.',
     section: '🟥 CRITICAL — 1 change',
     row: '1. [regression] Failing: "build" — this unit of work changed outcome',
@@ -74,14 +74,14 @@ const COMMENT = {
 } as const
 
 // Install blocks. Both reproduce the sift-action README: the Action on its published major
-// (`v2`, turnkey `target-job` — Sift pulls the finished job's log off the API) and the
+// (`v2`, turnkey `target-job` — Tamys pulls the finished job's log off the API) and the
 // `install.sh` CLI one-liner.
 const ACTION_YAML = `- uses: CodeRoasted/sift-action@v2
   with:
-    target-job: build   # Sift pulls that finished job's log off the API`
+    target-job: build   # Tamys pulls that finished job's log off the API`
 
 const CLI_BLOCK = `curl -fsSL https://raw.githubusercontent.com/CodeRoasted/sift-action/main/install.sh | sh
-sift baseline.log changed.log`
+tamys baseline.log changed.log`
 
 // macOS-style report card chrome, shared by the hero sample and the PR comment.
 function CardChrome({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
@@ -104,7 +104,7 @@ function RecordLink({ id }: { id: RecordId }) {
     return (
         <a
             href={`#${recordAnchor(id)}`}
-            aria-label={`${t.sift.figures.recordLink} ${number}`}
+            aria-label={`${t.tamys.figures.recordLink} ${number}`}
             className="ml-1 align-super text-[10px] font-semibold text-brand-400 hover:text-brand-300"
         >
             [{number}]
@@ -116,8 +116,8 @@ function FiguresCard() {
     const t = useTranslation()
     return (
         <div className="rounded-2xl border border-gray-800 bg-gray-900/70 shadow-xl shadow-black/30 p-5 sm:p-6">
-            <p className="font-display font-semibold text-white">{t.sift.figures.title}</p>
-            <p className="mt-1 text-xs text-gray-500 leading-relaxed">{t.sift.figures.lead}</p>
+            <p className="font-display font-semibold text-white">{t.tamys.figures.title}</p>
+            <p className="mt-1 text-xs text-gray-500 leading-relaxed">{t.tamys.figures.lead}</p>
             <ul className="mt-5 space-y-4">
                 {FIGURES.map((figure) => (
                     <li key={figure.id} data-figure={figure.id} className="flex flex-col gap-0.5">
@@ -157,13 +157,13 @@ function CodeBlock({ code }: { code: string }) {
     )
 }
 
-export default function SiftPage() {
+export default function TamysPage() {
     const t = useTranslation()
-    const s = t.sift
+    const s = t.tamys
 
     return (
         <div className="bg-gray-950 text-gray-100 min-h-screen">
-            <ProductNavbar {...siftChrome(t)} />
+            <ProductNavbar {...tamysChrome(t)} />
             <main className="pt-16">
                 {/* § 1 — Hero */}
                 <section className="relative overflow-hidden border-b border-gray-800/60">

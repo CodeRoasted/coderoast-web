@@ -1,11 +1,11 @@
-// Built-in sample log pairs for the /diff (Sift) demo, so a first-time visitor
+// Built-in sample log pairs for the /diff (Tamys) demo, so a first-time visitor
 // can see a ranked report in one click without bringing their own logs.
 //
 // TWO KINDS, and the difference is disclosed in the picker (t.diff.provenance):
 //
 //   'real-ci'   — real runs of one of our own CI jobs, published verbatim except
 //                 for redacted identity spans. Vendored from coderoast-hub's
-//                 showcase/sift/ under src/assets/sift-showcase/, together with
+//                 showcase/tamys/ under src/assets/tamys-showcase/, together with
 //                 that showcase's MANIFEST.json. They are ~340-440 KB each, so
 //                 they are NOT inlined: each is emitted as a standalone asset and
 //                 fetched the first time its preset is chosen. A page most
@@ -14,7 +14,7 @@
 //                 isolating ONE narrative a real log never presents that cleanly:
 //                 baseline and changed share the SAME templates and only the
 //                 params differ, so a plain text diff sees hundreds of changed
-//                 lines while Sift suppresses them all and surfaces only the
+//                 lines while Tamys suppresses them all and surfaces only the
 //                 injected STRUCTURAL change.
 //
 // Labelling both kinds is BINDING (PRD-6 § "/diff demo presets — the
@@ -31,9 +31,9 @@
 // narrative, keyed by id under t.diff.presets); the log text itself and the engine
 // output stay English by design (the engine emits English regardless of locale).
 
-import greenAUrl from '@/assets/sift-showcase/logcraft__ci-build__green-a.log?url&no-inline'
-import greenBUrl from '@/assets/sift-showcase/logcraft__ci-build__green-b.log?url&no-inline'
-import redUrl from '@/assets/sift-showcase/logcraft__ci-build__red.log?url&no-inline'
+import greenAUrl from '@/assets/tamys-showcase/logcraft__ci-build__green-a.log?url&no-inline'
+import greenBUrl from '@/assets/tamys-showcase/logcraft__ci-build__green-b.log?url&no-inline'
+import redUrl from '@/assets/tamys-showcase/logcraft__ci-build__red.log?url&no-inline'
 
 export type DiffProvenance = 'real-ci' | 'generated'
 
@@ -47,7 +47,7 @@ export interface DiffPair {
  * `pairs[]` entry — never re-derived here.
  *
  * `significantChanges` is the PUBLISHED pair's count. The raw pair's higher count
- * is not a figure this surface may quote: it includes our own CI's Sift step
+ * is not a figure this surface may quote: it includes our own CI's Tamys step
  * reporting on itself, which the published pair removes as a declared
  * transformation. The manifest keeps it on the record; the website does not.
  */
@@ -210,7 +210,7 @@ function silentRegression(): DiffPair {
 
 // ── Error decoy: SAME errors in both runs; the real regression hides behind them ─
 // Both runs carry the identical, ongoing payment-timeout ERRORs — the decoy the
-// eye fixates on ("same errors, same problem"). Sift suppresses them (unchanged,
+// eye fixates on ("same errors, same problem"). Tamys suppresses them (unchanged,
 // proportional) and surfaces what REALLY moved: the "order completed" success
 // marker silently vanished. `grep ERROR` shows no difference between the two runs.
 function errorDecoy(): DiffPair {

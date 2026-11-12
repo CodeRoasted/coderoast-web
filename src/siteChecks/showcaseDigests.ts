@@ -4,15 +4,15 @@ import { basename, extname, join, posix } from 'node:path'
 import { dispositionOf } from './assetLoads'
 
 /**
- * The Sift showcase logs the site serves are the bytes a judging run cleared, and the digest is
- * the anchor between the two. `MANIFEST.json` is vendored from coderoast-hub's showcase/sift/,
+ * The Tamys showcase logs the site serves are the bytes a judging run cleared, and the digest is
+ * the anchor between the two. `MANIFEST.json` is vendored from coderoast-hub's showcase/tamys/,
  * written by the run that judged those logs, and its `sha256_published` is the digest of what
  * that run judged. The deploy's build re-derives the same digest over what it EMITS, in the run
  * that publishes, and refuses on any other bytes (ADR-33.D8, discharge 2). diffPresets.test.ts
  * reads the same manifest to hold the vendored sources and the preset pins to it.
  */
 
-export const SHOWCASE_DIR = posix.join('src', 'assets', 'sift-showcase')
+export const SHOWCASE_DIR = posix.join('src', 'assets', 'tamys-showcase')
 export const SHOWCASE_MANIFEST = 'MANIFEST.json'
 
 export interface ShowcaseSample {

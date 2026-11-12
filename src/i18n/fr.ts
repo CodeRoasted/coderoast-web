@@ -36,7 +36,7 @@ const fr: typeof en = {
         titleLead: 'Pas stockés. Pas échantillonnés. Pas exfiltrés.',
         titleAccent: 'Distillés.',
         subtitle:
-            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, traçable jusqu’à la ligne source exacte, et qui ne quitte jamais votre infra. Sift, détection d’anomalies, triage IA : chaque produit n’est qu’une vue sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
+            'CodeRoast distille n’importe quel flux de logs en un MetaLog — une petite empreinte déterministe de ce que votre système a réellement fait. Bit-identique d’un run à l’autre, citable, traçable jusqu’à la ligne source exacte, et qui ne quitte jamais votre infra. Tamys, détection d’anomalies, triage IA : chaque produit n’est qu’une vue sur cet unique artefact. Lire 4 Ko au lieu de stocker des gigaoctets est l’effet de bord — pas l’argument.',
         ctaPrimary: 'Diff de deux logs',
         ctaSecondary: 'Voir les produits',
         compareCta: 'Voir ce qui nous différencie',
@@ -155,7 +155,7 @@ const fr: typeof en = {
                 'La gamme grandit ; l’artefact dessous reste le même. Chaque produit est une vue différente sur la même empreinte.',
             lenses: [
                 {
-                    name: 'Sift',
+                    name: 'Tamys',
                     status: 'Bêta design partners',
                     description: 'Diff structurel de CI. Deux runs en entrée, un « ce qui a changé » classé en sortie.',
                 },
@@ -191,18 +191,18 @@ const fr: typeof en = {
             ],
         },
         closing: {
-            title: 'La vision, c’est le MetaLog. Le chemin d’entrée, c’est Sift.',
+            title: 'La vision, c’est le MetaLog. Le chemin d’entrée, c’est Tamys.',
             subtitle:
                 'Comparez deux runs CI dans votre navigateur — sans agent, sans installation, comparés sur notre serveur et jamais stockés. Installé, le même moteur tourne dans votre CI. Le même artefact alimente tout ce qui précède.',
             cta: 'Diff de deux logs',
         },
     },
-    sift: {
-        eyebrow: 'Sift · bêta design partners',
+    tamys: {
+        eyebrow: 'Tamys · bêta design partners',
         hero: {
             title: 'Votre build est rouge. Lisez ce qui a changé, pas tout le log.',
             subtitle:
-                'Sift compare le log d’un job en échec au dernier run vert du même job et classe ce qui a changé dans sa structure, job en échec compris, chaque ligne du rapport citant les lignes de log qui la fondent. Il tourne dans votre CI, sur des logs de n’importe quelle longueur, et les mêmes entrées donnent le même rapport, bit pour bit. Sans agent, sans compte.',
+                'Tamys compare le log d’un job en échec au dernier run vert du même job et classe ce qui a changé dans sa structure, job en échec compris, chaque ligne du rapport citant les lignes de log qui la fondent. Il tourne dans votre CI, sur des logs de n’importe quelle longueur, et les mêmes entrées donnent le même rapport, bit pour bit. Sans agent, sans compte.',
             ctaPrimary: 'Ajoutez l’Action',
             ctaSecondary: 'Essayez dans votre navigateur',
             trust: 'Gratuit · l’Action tourne dans votre CI, et vos logs n’en sortent jamais.',
@@ -219,12 +219,12 @@ const fr: typeof en = {
         comment: {
             title: 'Il vit là où vous bossez déjà.',
             body:
-                'Branchez Sift une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante au besoin. Un seul commentaire épinglé, mis à jour à chaque push, le même commentaire pour les mêmes entrées. Sur un build rouge, il nomme ce qui a échoué :',
+                'Branchez Tamys une fois, et chaque PR reçoit un diff structurel en commentaire — advisory par défaut, une gate bloquante au besoin. Un seul commentaire épinglé, mis à jour à chaque push, le même commentaire pour les mêmes entrées. Sur un build rouge, il nomme ce qui a échoué :',
         },
         green: {
             title: 'Sur un build vert, il liste ce qui a bougé.',
             body:
-                'Quand les deux runs passent, Sift rapporte quand même ce qui a changé dans leur structure : une ligne qui n’apparaît plus, un pattern dont la part dans le run a bougé, une erreur qui a disparu. Ces lignes sont des changements à lire, pas des verdicts — Sift ne juge pas encore si un changement sur un build vert est une régression.',
+                'Quand les deux runs passent, Tamys rapporte quand même ce qui a changé dans leur structure : une ligne qui n’apparaît plus, un pattern dont la part dans le run a bougé, une erreur qui a disparu. Ces lignes sont des changements à lire, pas des verdicts — Tamys ne juge pas encore si un changement sur un build vert est une régression.',
         },
         free: {
             title: 'Tout le produit sans état est gratuit. Sans conditions.',
@@ -235,12 +235,12 @@ const fr: typeof en = {
         trust: {
             title: 'Un signal déterministe, fiable, conçu pour conditionner un déploiement.',
             body:
-                'Mêmes entrées, même rapport, bit pour bit — le relevé ci-dessus le mesure entre un build depuis les sources et le binaire publié. C’est ce qui vous permet de mettre Sift derrière une gate CI bloquante : une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — l’Action et la CLI tournent dans votre CI, et vos logs restent sur votre infra.',
+                'Mêmes entrées, même rapport, bit pour bit — le relevé ci-dessus le mesure entre un build depuis les sources et le binaire publié. C’est ce qui vous permet de mettre Tamys derrière une gate CI bloquante : une gate instable est désactivée en moins d’une journée, et « notre IA trouve ça préoccupant » n’est pas une gate. Rien n’est uploadé, pas de compte utilisateur, aucun agent à installer — l’Action et la CLI tournent dans votre CI, et vos logs restent sur votre infra.',
             cta: 'Comment on construit',
         },
         install: {
             title: 'Deux fichiers de logs en entrée. Un rapport classé en sortie.',
-            beta: 'Sift est en bêta avec des design partners. L’Action et la CLI s’installent gratuitement dès aujourd’hui.',
+            beta: 'Tamys est en bêta avec des design partners. L’Action et la CLI s’installent gratuitement dès aujourd’hui.',
             actionLabel: 'L’Action',
             cliLabel: 'La CLI',
             cliLead: 'un seul binaire statique, aucun runtime —',
@@ -255,12 +255,12 @@ const fr: typeof en = {
             determinism:
                 'Des builds depuis les sources aux tags v1.10.5 et v1.10.6 ont écrit des rapports identiques à l’octet à ceux des binaires publiés, sur 21 264 des 21 264 paires gg-v3 chacun. Mesuré le 2026-10-10, relevé recall_dip_bisect_n371 (ses contrôles de méthode).',
             wallTime:
-                'Toute l’étape de l’Action Sift — démarrage de Node, téléchargement du moteur, le diff et le rapport — chronométrée sur 113 runs de l’étape CI de l’Action elle-même, sur des runners ubuntu-latest hébergés par GitHub : médiane 2,68 s, 90e centile 3,83 s, maximum 22 s ; le diff lui-même pèse 0,6 % de l’étape. Moteur épinglé 1.10.2. Étude STU-16, le temps d’exécution de Sift et ce que l’Action coûte à un run CI, 2026-08-30.',
-            scope: 'Chaque chiffre de cette page est mesuré sur des logs GitHub Actions. Sift lit aussi les logs GitLab et Jenkins ; aucun chiffre ici n’est revendiqué pour eux.',
+                'Toute l’étape de l’Action Tamys — démarrage de Node, téléchargement du moteur, le diff et le rapport — chronométrée sur 113 runs de l’étape CI de l’Action elle-même, sur des runners ubuntu-latest hébergés par GitHub : médiane 2,68 s, 90e centile 3,83 s, maximum 22 s ; le diff lui-même pèse 0,6 % de l’étape. Moteur épinglé 1.10.2. Étude STU-16, le temps d’exécution de Tamys et ce que l’Action coûte à un run CI, 2026-08-30.',
+            scope: 'Chaque chiffre de cette page est mesuré sur des logs GitHub Actions. Tamys lit aussi les logs GitLab et Jenkins ; aucun chiffre ici n’est revendiqué pour eux.',
         },
     },
     diff: {
-        eyebrow: 'SIFT',
+        eyebrow: 'TAMYS',
         title: 'Ce qui a changé entre deux logs — et ce qui n’est que du bruit',
         subtitle:
             'Collez deux flux de logs (un run de référence et un run modifié). InSight ingère les deux et classe les changements structurellement significatifs — survolez ou épinglez un changement pour voir exactement les lignes qu’il touche. Ce que vous collez ici part sur le serveur de CodeRoast pour être comparé : ne collez pas de logs que vous ne pouvez pas partager. Installées, la CLI et l’Action font tourner le même moteur dans votre CI, et vos logs n’en sortent jamais.',
@@ -341,7 +341,7 @@ const fr: typeof en = {
         },
         figures: {
             plainDiff: 'lignes signalées par un diff texte',
-            sift: 'changements signalés par Sift',
+            tamys: 'changements signalés par Tamys',
         },
         presets: {
             'real-ci-noise': {
@@ -351,7 +351,7 @@ const fr: typeof en = {
                 story: [
                     'Quelqu’un a ajouté neuf tests. C’est tout le changement.',
                     'Le runner de tests a renuméroté chaque ligne qu’il affiche — 762 tests sont devenus 771 — et le build a renuméroté chaque étape avec lui, […/700] → […/704]. Un diff texte, timestamps déjà retirés, signale 5 571 lignes modifiées. Rien n’a cassé. Rien ne va mal.',
-                    'Sur cette paire, Sift ne signale aucun changement significatif.',
+                    'Sur cette paire, Tamys ne signale aucun changement significatif.',
                     'C’est le chiffre sur lequel repose tout le reste de la page. N’importe quel outil sait trouver une panne dans un build en échec. La vraie question, c’est ce qu’un outil dit quand rien ne va mal — et un outil qui vous rend cinq mille lignes à lire est un outil que vous désactivez en une semaine.',
                 ],
             },
@@ -360,7 +360,7 @@ const fr: typeof en = {
                 description:
                     'Le même run réussi face au run en échec. Le trio de tête, c’est l’échec et sa cause.',
                 story: [
-                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Sift en signale 10 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis l’erreur qu’elle a levée.',
+                    'Le même job, vert puis en échec. Un diff texte signale 4 889 lignes modifiées. Tamys en signale 10 — et le trio de tête raconte toute l’histoire : l’étape est sortie en erreur, puis l’erreur qu’elle a levée.',
                     'Pas « on a trouvé le mot ERROR ». La ligne fautive était déjà dans le log — grep vous l’aurait rendue en même temps que des milliers de lignes de bruit de build qui ont bougé au même moment. Ce qu’un diff texte ne peut pas vous dire, c’est laquelle d’entre elles est celle qui compte.',
                 ],
             },
@@ -486,10 +486,10 @@ const fr: typeof en = {
         title: 'Un moteur. Une surface pour chaque usage.',
         subtitle:
             'Chaque produit CodeRoast transforme le bruit des logs en signal pour un usage précis — choisissez celui qui correspond au problème que vous avez sous les yeux. La gamme s’étoffe ; le moteur sous-jacent reste le même.',
-        sift: {
-            name: 'Sift',
+        tamys: {
+            name: 'Tamys',
             description:
-                'Collez un run de référence et un run modifié. Sift classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, rien n’est stocké.',
+                'Collez un run de référence et un run modifié. Tamys classe les changements structurellement significatifs et supprime le bruit sous lequel un diff classique vous ensevelit — la porte d’entrée CI/CD : zéro infra, rien n’est stocké.',
             status: 'Bêta design partners · démo gratuite',
             highlights: [
                 '« Ce qui a changé » classé par pertinence, bruit supprimé',
@@ -670,7 +670,7 @@ const fr: typeof en = {
         canonOpen: {
             title: 'On ouvre le langage — le moat reste intact.',
             description:
-                'La façon dont Sift lit un log CI ou de compilation — la grammaire, les paquets sémantiques, le contrat que vous étendez pour lui apprendre un nouveau format — est Apache-2.0, publique. Lisez exactement comment on comprend vos logs. Ça n’a jamais été le moat : comprendre un log, ce n’est pas détecter ce qui a changé. On donne le langage, on garde l’intelligence.',
+                'La façon dont Tamys lit un log CI ou de compilation — la grammaire, les paquets sémantiques, le contrat que vous étendez pour lui apprendre un nouveau format — est Apache-2.0, publique. Lisez exactement comment on comprend vos logs. Ça n’a jamais été le moat : comprendre un log, ce n’est pas détecter ce qui a changé. On donne le langage, on garde l’intelligence.',
         },
         closing: 'On tient en interne la discipline qu’on vend en externe. C’est tout l’enjeu.',
         cta: 'Diff de deux logs',
@@ -707,7 +707,7 @@ const fr: typeof en = {
             body:
                 'Tant mieux — vos logs sont déjà bien formés, donc il y a encore moins de raison de les exfiltrer quelque part pour leur donner du sens. On les distille là où ils sont, et vous gardez une empreinte souveraine qui vous appartient. Mêmes entrées, même réponse. Gardez vos logs.',
             depth:
-                'Et si vous émettez des spans, Sift diffe la trace elle-même : un nouveau span, une chaîne parent cassée, une explosion de latence — remontés comme un seul changement structurel classé, de façon déterministe, sur votre infra. Honeycomb et Spectroscope vous montrent la trace en direct et magnifiquement ; nous, on vous dit ce qui a changé entre deux runs, bit pour bit, et on met une gate dessus — la lecture qu’un dashboard ne peut pas donner. (La profondeur trace exige de la télémétrie de spans ; elle est inerte sur des logs CI en texte brut — un axe distinct du diff CI, revendiqué uniquement là où il y a des spans.)',
+                'Et si vous émettez des spans, Tamys diffe la trace elle-même : un nouveau span, une chaîne parent cassée, une explosion de latence — remontés comme un seul changement structurel classé, de façon déterministe, sur votre infra. Honeycomb et Spectroscope vous montrent la trace en direct et magnifiquement ; nous, on vous dit ce qui a changé entre deux runs, bit pour bit, et on met une gate dessus — la lecture qu’un dashboard ne peut pas donner. (La profondeur trace exige de la télémétrie de spans ; elle est inerte sur des logs CI en texte brut — un axe distinct du diff CI, revendiqué uniquement là où il y a des spans.)',
         },
         cta: 'Diff de deux logs',
     },

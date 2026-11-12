@@ -48,17 +48,17 @@ export function insightChrome(t: Translation): ProductNavbarConfig {
     }
 }
 
-export function siftChrome(t: Translation): ProductNavbarConfig {
+export function tamysChrome(t: Translation): ProductNavbarConfig {
     return {
         brand: (
             <span className="font-display font-bold text-xl text-white">
                 <span className="bg-gradient-to-r from-brand-500 to-orange-400 bg-clip-text text-transparent">
-                    Sift
+                    Tamys
                 </span>
             </span>
         ),
-        homeTo: '/sift',
-        links: [{ label: t.nav.product, to: '/sift', end: true }, contact(t), pricing(t)],
+        homeTo: '/tamys',
+        links: [{ label: t.nav.product, to: '/tamys', end: true }, contact(t), pricing(t)],
         cta: { label: t.hero.cta, to: '/diff', Icon: GitCompareArrows },
     }
 }

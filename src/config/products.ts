@@ -7,7 +7,7 @@ import { Bird, Eye, GitCompareArrows, Layers, ScrollText } from 'lucide-react'
 // hero/nav never change as the slate grows. Display copy lives in i18n under
 // `t.portfolio[slug]`; this holds only the structural metadata.
 
-export type ProductSlug = 'sift' | 'logcraft' | 'insight' | 'metalogForwarding' | 'canary'
+export type ProductSlug = 'tamys' | 'logcraft' | 'insight' | 'metalogForwarding' | 'canary'
 
 export type ProductTier = 'beta' | 'soon'
 
@@ -20,19 +20,19 @@ export interface ProductDef {
     tool?: string // interactive surface (Lab / tool) route
 }
 
-// Order = portfolio display order: Sift first as the way in, then beta → soon.
-// A tier states maturity and must match the product's card and page (Sift: a design-partner
+// Order = portfolio display order: Tamys first as the way in, then beta → soon.
+// A tier states maturity and must match the product's card and page (Tamys: a design-partner
 // beta, RUL-173; LogCraft: a beta, free to try in the Lab; productTiers.test.ts holds it).
 // No product is generally available, so there is no `live` tier. Cards link to `page`
 // when a dedicated product page exists, else fall back to the `tool` surface;
 // a `soon` entry with neither is a non-clickable teaser of the slate to come.
 export const products: ProductDef[] = [
     {
-        slug: 'sift',
+        slug: 'tamys',
         tier: 'beta',
         accent: 'from-brand-500 to-orange-500',
         Icon: GitCompareArrows,
-        page: '/sift',
+        page: '/tamys',
         tool: '/diff',
     },
     {

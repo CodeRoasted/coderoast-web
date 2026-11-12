@@ -42,7 +42,7 @@ vi.mock('@/services/api', () => ({
     PolicyDenialError: class PolicyDenialError extends Error {},
 }))
 
-const VENDORED = join(process.cwd(), 'src/assets/sift-showcase')
+const VENDORED = join(process.cwd(), 'src/assets/tamys-showcase')
 
 /** LogPane renders div + line-number span + text span for each line. */
 const ELEMENTS_PER_ROW = 3

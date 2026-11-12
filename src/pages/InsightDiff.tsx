@@ -33,7 +33,7 @@ import { runInsightDiff, PolicyDenialError } from '@/services/api'
 import type { ChangeReportResponse, DiffRankedChange, DiffSeverity } from '@/types/diff'
 import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
-import { siftChrome } from '@/config/productChrome'
+import { tamysChrome } from '@/config/productChrome'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { TranslationKey } from '@/i18n/translations'
 import { diffPresets, type DiffPreset, type DiffProvenance } from '@/data/diffPresets'
@@ -521,7 +521,7 @@ export default function InsightDiff() {
 
     return (
         <>
-            <ProductNavbar {...siftChrome(t)} />
+            <ProductNavbar {...tamysChrome(t)} />
             <main className="bg-gray-950 min-h-screen pt-28 pb-16">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-2 text-brand-400 text-xs font-semibold mb-3">
@@ -622,7 +622,7 @@ export default function InsightDiff() {
                                                 {groupThousands(selected.figures.significantChanges)}
                                             </p>
                                             <p className="text-[11px] text-gray-500 mt-1">
-                                                {t.diff.figures.sift}
+                                                {t.diff.figures.tamys}
                                             </p>
                                         </div>
                                     </div>

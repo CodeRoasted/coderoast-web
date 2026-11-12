@@ -34,7 +34,7 @@ const en = {
         titleLead: 'Not stored. Not sampled. Not shipped.',
         titleAccent: 'Distilled.',
         subtitle:
-            'CodeRoast distils any log stream into a MetaLog — a small, deterministic fingerprint of what your system actually did. Bit-identical across runs, citable, re-derivable to the exact source line, and it never leaves your box. Sift, anomaly detection, AI triage: every product is just a lens on that one artifact. Reading 4 KB instead of storing gigabytes is the side effect — not the pitch.',
+            'CodeRoast distils any log stream into a MetaLog — a small, deterministic fingerprint of what your system actually did. Bit-identical across runs, citable, re-derivable to the exact source line, and it never leaves your box. Tamys, anomaly detection, AI triage: every product is just a lens on that one artifact. Reading 4 KB instead of storing gigabytes is the side effect — not the pitch.',
         ctaPrimary: 'Diff two logs',
         ctaSecondary: 'See the products',
         compareCta: 'See how we compare',
@@ -162,7 +162,7 @@ const en = {
                 'The slate grows; the artifact underneath stays the same. Each product is a different lens on the same fingerprint.',
             lenses: [
                 {
-                    name: 'Sift',
+                    name: 'Tamys',
                     status: 'Design-partner beta',
                     description: 'Structural CI diff. Two runs in, a ranked “what changed” out.',
                 },
@@ -198,26 +198,26 @@ const en = {
             ],
         },
         closing: {
-            title: 'The vision is the MetaLog. The way in is Sift.',
+            title: 'The vision is the MetaLog. The way in is Tamys.',
             subtitle:
                 'Diff two CI runs in your browser — no agent, no setup, compared on our server and never stored. Installed, the same engine runs inside your CI. The same artifact powers everything above.',
             cta: 'Diff two logs',
         },
     },
-    // Sift product front door (/sift). Copy governed by
-    // PRD-6 § "Page: Sift" — final, not paraphrased.
+    // Tamys product front door (/tamys). Copy governed by
+    // PRD-6 § "Page: Tamys" — final, not paraphrased.
     // Engine-output mocks (the sample report rows, PR comment, install blocks)
     // are language-neutral CLI/comment output and live in the page component, not
     // here — only translatable prose is keyed.
-    sift: {
-        eyebrow: 'Sift · design-partner beta',
+    tamys: {
+        eyebrow: 'Tamys · design-partner beta',
         // The page leads with the red build (RUL-171) and states only what a committed record
-        // backs (the Sift study of 2026-10-22, § 4.2). No string here carries a digit: every
-        // number reaches the page through the figures table in Sift.tsx, beside its record.
+        // backs (the Tamys study of 2026-10-22, § 4.2). No string here carries a digit: every
+        // number reaches the page through the figures table in Tamys.tsx, beside its record.
         hero: {
             title: 'Your build went red. Read what changed, not the whole log.',
             subtitle:
-                'Sift diffs a failed job’s log against the same job’s last green run and ranks what changed in its structure, the job that failed included, each row citing the log lines behind it. It runs inside your CI, on logs of any length, and the same inputs give the same report, bit for bit. No agent, no account.',
+                'Tamys diffs a failed job’s log against the same job’s last green run and ranks what changed in its structure, the job that failed included, each row citing the log lines behind it. It runs inside your CI, on logs of any length, and the same inputs give the same report, bit for bit. No agent, no account.',
             ctaPrimary: 'Add the Action',
             ctaSecondary: 'Try it in your browser',
             trust: 'Free · the Action runs in your CI, and your logs never leave it.',
@@ -234,12 +234,12 @@ const en = {
         comment: {
             title: 'It lives where you already work.',
             body:
-                'Wire Sift in once and every PR gets a structural diff as a comment — advisory by default, a hard gate when you want one. One sticky comment, updated in place, the same comment for the same inputs. On a red build it names what failed:',
+                'Wire Tamys in once and every PR gets a structural diff as a comment — advisory by default, a hard gate when you want one. One sticky comment, updated in place, the same comment for the same inputs. On a red build it names what failed:',
         },
         green: {
             title: 'On a green build, it lists what moved.',
             body:
-                'When both runs pass, Sift still reports what changed in their structure: a line that stopped appearing, a pattern whose share of the run moved, an error that cleared. Those rows are changes for you to read, not verdicts — Sift does not yet grade whether a change on a green build is a regression.',
+                'When both runs pass, Tamys still reports what changed in their structure: a line that stopped appearing, a pattern whose share of the run moved, an error that cleared. Those rows are changes for you to read, not verdicts — Tamys does not yet grade whether a change on a green build is a regression.',
         },
         free: {
             title: 'The whole stateless product is free. We mean it.',
@@ -250,12 +250,12 @@ const en = {
         trust: {
             title: 'A fact you can gate on.',
             body:
-                'Same inputs, same report, bit for bit — the record above measures it between a source build and the released binary. That is what lets you put Sift behind a hard CI gate: a flaky gate gets disabled within a day, and “our AI thinks this looks concerning” is not a gate. Nothing is uploaded, no account, no agent — the Action and the CLI run in your CI, and your logs stay on your infrastructure.',
+                'Same inputs, same report, bit for bit — the record above measures it between a source build and the released binary. That is what lets you put Tamys behind a hard CI gate: a flaky gate gets disabled within a day, and “our AI thinks this looks concerning” is not a gate. Nothing is uploaded, no account, no agent — the Action and the CLI run in your CI, and your logs stay on your infrastructure.',
             cta: 'How we build',
         },
         install: {
             title: 'Two log files in. A ranked report out.',
-            beta: 'Sift is in a design-partner beta. The Action and the CLI are free to install today.',
+            beta: 'Tamys is in a design-partner beta. The Action and the CLI are free to install today.',
             actionLabel: 'The Action',
             cliLabel: 'The CLI',
             cliLead: 'one static binary, no runtime —',
@@ -272,11 +272,11 @@ const en = {
             determinism:
                 'Builds from source at tags v1.10.5 and v1.10.6 wrote reports byte-identical to the released binaries’ reports on 21 264 of 21 264 gg-v3 pairs each. Measured 2026-10-10, record recall_dip_bisect_n371 (its method controls).',
             wallTime:
-                'The whole Sift Action step — Node start-up, engine download, the diff and the report — timed over 113 runs of the Action’s own CI step on GitHub-hosted ubuntu-latest runners: median 2.68 s, 90th percentile 3.83 s, maximum 22 s; the diff itself is 0.6 % of the step. Engine pin 1.10.2. Study STU-16, Sift’s wall time and what the Action costs a CI run, 2026-08-30.',
-            scope: 'Every figure on this page is measured on GitHub Actions logs. Sift also reads GitLab and Jenkins logs; no figure here is claimed for them.',
+                'The whole Tamys Action step — Node start-up, engine download, the diff and the report — timed over 113 runs of the Action’s own CI step on GitHub-hosted ubuntu-latest runners: median 2.68 s, 90th percentile 3.83 s, maximum 22 s; the diff itself is 0.6 % of the step. Engine pin 1.10.2. Study STU-16, Tamys’s wall time and what the Action costs a CI run, 2026-08-30.',
+            scope: 'Every figure on this page is measured on GitHub Actions logs. Tamys also reads GitLab and Jenkins logs; no figure here is claimed for them.',
         },
     },
-    // The /diff (in-browser Sift) page chrome (InsightDiff.tsx). Only translatable
+    // The /diff (in-browser Tamys) page chrome (InsightDiff.tsx). Only translatable
     // UI strings live here. NOT keyed (language-neutral by design, engine emits
     // English regardless of locale): the diffPresets.ts log fixtures, the engine
     // report rows (change.summary/evidence), and the result stat line ("N changes,
@@ -284,7 +284,7 @@ const en = {
     // display labels for the engine enums (chrome); presets carry the picker labels
     // + tooltips moved out of diffPresets.ts (now fixtures-only).
     diff: {
-        eyebrow: 'SIFT',
+        eyebrow: 'TAMYS',
         title: 'What changed between two logs — and what\'s just noise',
         subtitle:
             'Paste two log streams (a baseline run and a changed run). InSight ingests both and ranks the structurally significant changes — hover or pin a change to see exactly which lines it touched. What you paste here goes to CodeRoast’s server to be compared, so don’t paste logs you can’t share. Installed, the CLI and the Action run the same engine in your CI, and your logs never leave it.',
@@ -395,7 +395,7 @@ const en = {
         // Captions for a real pair's two published figures (MANIFEST.json's own).
         figures: {
             plainDiff: 'lines a plain text diff reports',
-            sift: 'changes Sift reports',
+            tamys: 'changes Tamys reports',
         },
         // Preset-picker labels + tooltips + the narrative shown once a preset is
         // selected, keyed by diffPresets.ts id (the log text itself stays in
@@ -408,7 +408,7 @@ const en = {
                 story: [
                     'Somebody added nine tests. That is the whole change.',
                     'The test runner renumbered every line it prints — 762 tests became 771 — and the build renumbered every step with it, […/700] → […/704]. A plain text diff, with timestamps already stripped, reports 5 571 changed lines. Nothing broke. Nothing is wrong.',
-                    'On this pair, Sift reports no significant change.',
+                    'On this pair, Tamys reports no significant change.',
                     'This is the number the rest of the page rests on. Every tool can find a failure in a failing build. The question is what a tool says when nothing is wrong — and a tool that hands you five thousand lines to read is one you turn off inside a week.',
                 ],
             },
@@ -429,7 +429,7 @@ const en = {
                 description:
                     'The same passing run against the failing one. The top three are the failure and its cause.',
                 story: [
-                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Sift reports 10 — and the top three are the whole story: the step exited non-zero, then the error it raised.',
+                    'The same job, green then failing. A plain text diff reports 4 889 changed lines. Tamys reports 10 — and the top three are the whole story: the step exited non-zero, then the error it raised.',
                     'Not “we found the word ERROR.” The failing line was already in the log — grep would have handed it to you along with thousands of lines of build chatter that moved at the same time. What a plain diff cannot tell you is which of them is the one that mattered.',
                 ],
             },
@@ -557,10 +557,10 @@ const en = {
         title: 'One engine. A surface for every job.',
         subtitle:
             'Every CodeRoast product turns log noise into signal for a specific job — pick the one that matches the problem in front of you. The slate grows; the engine underneath stays the same.',
-        sift: {
-            name: 'Sift',
+        tamys: {
+            name: 'Tamys',
             description:
-                'Paste a baseline run and a changed run. Sift ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, nothing stored.',
+                'Paste a baseline run and a changed run. Tamys ranks the structurally significant changes and suppresses the noise a plain diff buries you in — the CI/CD wedge: zero-infra, nothing stored.',
             status: 'Design-partner beta · free demo',
             highlights: [
                 'Ranked “what changed”, noise suppressed',
@@ -745,7 +745,7 @@ const en = {
         canonOpen: {
             title: 'We open the language — the moat is untouched.',
             description:
-                'How Sift reads a CI or compiler log — the grammar, the semantic packages, the contract you extend to teach it a new format — is Apache-2.0, public. Read exactly how we understand your logs. That was never the moat: understanding a log is not detecting what changed. We give away the language and keep the intelligence.',
+                'How Tamys reads a CI or compiler log — the grammar, the semantic packages, the contract you extend to teach it a new format — is Apache-2.0, public. Read exactly how we understand your logs. That was never the moat: understanding a log is not detecting what changed. We give away the language and keep the intelligence.',
         },
         closing: 'We hold internally the discipline we sell externally. That’s the whole point.',
         cta: 'Diff two logs',
@@ -782,7 +782,7 @@ const en = {
             body:
                 'Good — your logs are already well-formed, which means there’s even less reason to ship them somewhere to make sense of them. We distil them where they are, and you keep a sovereign fingerprint you own. Same inputs, same answer. Keep your logs.',
             depth:
-                'And if you emit spans, Sift diffs the trace itself: a new span, a broken parent chain, a latency blow-up — surfaced as one ranked structural change, deterministically, on your infrastructure. Honeycomb and Spectroscope show you the trace live and beautifully; we tell you what changed between two runs, bit-for-bit, and gate on it — the read a dashboard can’t give you. (Trace depth needs span telemetry; it’s inert on plaintext CI logs — a different axis from the CI-log diff above, claimed only where spans exist.)',
+                'And if you emit spans, Tamys diffs the trace itself: a new span, a broken parent chain, a latency blow-up — surfaced as one ranked structural change, deterministically, on your infrastructure. Honeycomb and Spectroscope show you the trace live and beautifully; we tell you what changed between two runs, bit-for-bit, and gate on it — the read a dashboard can’t give you. (Trace depth needs span telemetry; it’s inert on plaintext CI logs — a different axis from the CI-log diff above, claimed only where spans exist.)',
         },
         cta: 'Diff two logs',
     },

@@ -12,7 +12,7 @@ const InsightDiff = lazy(() => import('@/pages/InsightDiff'))
 const TierMatrix = lazy(() => import('@/pages/TierMatrix'))
 const UseCases = lazy(() => import('@/pages/UseCases'))
 const InsightProductPage = lazy(() => import('@/pages/Insight'))
-const SiftPage = lazy(() => import('@/pages/Sift'))
+const TamysPage = lazy(() => import('@/pages/Tamys'))
 const VisionPage = lazy(() => import('@/pages/Vision'))
 const HowWeBuildPage = lazy(() => import('@/pages/HowWeBuild'))
 const HowWeComparePage = lazy(() => import('@/pages/HowWeCompare'))
@@ -132,8 +132,8 @@ const router = createBrowserRouter([
                 element: <Suspense fallback={<SpinnerFallback />}><InsightDiff /></Suspense>,
             },
             {
-                path: 'sift',
-                element: <Suspense fallback={<SpinnerFallback />}><SiftPage /></Suspense>,
+                path: 'tamys',
+                element: <Suspense fallback={<SpinnerFallback />}><TamysPage /></Suspense>,
             },
             {
                 path: 'insight',
