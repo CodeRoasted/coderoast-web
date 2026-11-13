@@ -316,7 +316,7 @@ describe('/diff — the suppression footer reads the census gap', () => {
 // `/diff` grouped its census numbers with `toLocaleString()` and no locale argument, which
 // reads the BROWSER — not the i18n bundle that produced the prose around them. An FR-bundle
 // visitor on an en-US browser therefore read French sentences carrying US separators, and one
-// report rendered two ways depending on where it was opened. `sift-action` had already ruled
+// report rendered two ways depending on where it was opened. `tamys-action` had already ruled
 // the other way for the PR comment (frame.ts `groupThousands`, "no toLocaleString"), so the
 // two shipped surfaces disagreed on the policy while the product's whole claim is that output
 // is a function of input.
@@ -364,7 +364,7 @@ describe('/diff — figures are grouped locale-independently', () => {
                 'a render path called Number#toLocaleString, so at least one figure on this ' +
                     'surface is formatted by the visitor\'s browser rather than by the page. ' +
                     'That is the one option ruled off the table: group locale-independently ' +
-                    '(groupThousands, as sift-action does) or drive the locale from the SAME ' +
+                    '(groupThousands, as tamys-action does) or drive the locale from the SAME ' +
                     'i18n bundle that produced the prose.'
             ).toBe(0)
         } finally {

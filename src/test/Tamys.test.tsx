@@ -66,10 +66,10 @@ describe('/tamys — the install snippet', () => {
     it('installs the Action on its published major, v2', () => {
         renderPage()
         const blocks = screen.getAllByText((_, node) => node?.tagName === 'CODE')
-        const uses = blocks.map((block) => block.textContent ?? '').filter((text) => text.includes('sift-action@'))
+        const uses = blocks.map((block) => block.textContent ?? '').filter((text) => text.includes('tamys-action@'))
         expect(uses, `install blocks: ${JSON.stringify(blocks.map((block) => block.textContent))}`).toHaveLength(1)
-        expect(uses[0]).toContain('uses: CodeRoasted/sift-action@v2')
-        expect(document.body.textContent, 'a stale @v1 reference is still on the page').not.toContain('sift-action@v1')
+        expect(uses[0]).toContain('uses: CodeRoasted/tamys-action@v2')
+        expect(document.body.textContent, 'a stale @v1 reference is still on the page').not.toContain('tamys-action@v1')
     })
 })
 

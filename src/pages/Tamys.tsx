@@ -63,7 +63,7 @@ const FIGURES: { id: RecordId; value: string; label: (t: Translation) => string 
     },
 ]
 
-// PR comment showcase: the Action's red-build frame (sift-action frame.ts, the run-verdict
+// PR comment showcase: the Action's red-build frame (tamys-action frame.ts, the run-verdict
 // regression headline and its severity section) around the engine's FAILING unit row.
 const COMMENT = {
     header: '🔬 Tamys — structural diff of your CI logs',
@@ -73,14 +73,14 @@ const COMMENT = {
     footer: 'Deterministic — same inputs, same comment. Runs in your CI; your logs never leave it.',
 } as const
 
-// Install blocks. Both reproduce the sift-action README: the Action on its published major
+// Install blocks. Both reproduce the tamys-action README: the Action on its published major
 // (`v2`, turnkey `target-job` — Tamys pulls the finished job's log off the API) and the
 // `install.sh` CLI one-liner.
-const ACTION_YAML = `- uses: CodeRoasted/sift-action@v2
+const ACTION_YAML = `- uses: CodeRoasted/tamys-action@v2
   with:
     target-job: build   # Tamys pulls that finished job's log off the API`
 
-const CLI_BLOCK = `curl -fsSL https://raw.githubusercontent.com/CodeRoasted/sift-action/main/install.sh | sh
+const CLI_BLOCK = `curl -fsSL https://raw.githubusercontent.com/CodeRoasted/tamys-action/main/install.sh | sh
 tamys baseline.log changed.log`
 
 // macOS-style report card chrome, shared by the hero sample and the PR comment.

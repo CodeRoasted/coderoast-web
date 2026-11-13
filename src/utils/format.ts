@@ -17,7 +17,7 @@
  * separators, and one report rendered two ways depending on where it was opened. The
  * claim Tamys sells is that output is a function of input; a shipped surface whose
  * rendering depends on the viewer's environment contradicts that in the one place a
- * buyer looks. `sift-action` already ruled this way for the PR comment (frame.ts, same
+ * buyer looks. `tamys-action` already ruled this way for the PR comment (frame.ts, same
  * regex, ',' because that surface is English-only) — same rule here, so the shipped
  * surfaces no longer disagree about the policy.
  *
