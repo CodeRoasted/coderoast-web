@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import InsightPanel from '@/components/playground/InsightPanel'
-import type { InsightReport, InsightStatus } from '@/types/engine'
+import type { AcuteDiffSummary, InsightLatestWindow, InsightReport, InsightStatus } from '@/types/engine'
 
 const status: InsightStatus = {
     engine_id: 'eng-1',
@@ -66,5 +66,49 @@ describe('InsightPanel', () => {
 
         expect(screen.getAllByText('AI augmented').length).toBeGreaterThan(0)
         expect(screen.getByText('gpt-4o-mini')).toBeInTheDocument()
+    })
+})
+
+// DN-56.D19: a count the MetaLog diff states incomparable is omitted from the summary, and the
+// panel must say so with the reason rather than read the absence as "no change".
+describe('InsightPanel acute diff (DN-56.D19)', () => {
+    const windowWith = (acuteDiff: AcuteDiffSummary): InsightLatestWindow => ({
+        metalog: {
+            version: '1',
+            window: { start: '2026-09-29T10:00:01Z', end: '2026-09-29T10:00:25Z', duration_seconds: 24, lines_observed: 480 },
+            stats: { unique_templates: 7, tail_count: 0, tail_unique: 0, top_k: [] },
+        },
+        acuteDiff,
+        detectionReports: [],
+        contextPackets: [],
+    })
+    const counts = { version: '1', new_templates_count: 0, vanished_templates_count: 0, template_delta_count: 0 }
+
+    const renderMetalog = (acuteDiff: AcuteDiffSummary) => {
+        render(
+            <InsightPanel
+                engineId={null}
+                status={status}
+                reports={[report]}
+                latestWindow={windowWith(acuteDiff)}
+                loading={false}
+                error={null}
+            />,
+        )
+        fireEvent.click(screen.getByRole('tab', { name: /MetaLog/ }))
+    }
+
+    it('renders an incomparable branching property with its reason, never a branching count', () => {
+        renderMetalog({ ...counts, field_histogram_delta_count: 0, incomparable_signals: { branching_delta: 'absent_in_one_input' } })
+
+        expect(screen.getByText('Branching: not comparable (absent from one of the two windows)')).toBeInTheDocument()
+        expect(screen.queryByText(/branching delta/i)).not.toBeInTheDocument()
+    })
+
+    it('control: a compared branching count renders the chip as before', () => {
+        renderMetalog({ ...counts, branching_delta_count: 2, field_histogram_delta_count: 0 })
+
+        expect(screen.getByText('2 branching deltas')).toBeInTheDocument()
+        expect(screen.queryByText(/not comparable/)).not.toBeInTheDocument()
     })
 })

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Activity, Clock, FileText, Gauge, GitBranch, Layers, Lightbulb, Search, Settings, Zap } from 'lucide-react'
-import type { InsightLatestWindow, InsightReport, InsightStatus } from '@/types/engine'
+import type { AcuteDiffSummary, IncomparableProperty, IncomparableReason, InsightLatestWindow, InsightReport, InsightStatus } from '@/types/engine'
 import { ConfigRow, EmptyState, ExplainModeBadge, Metric, PyramidMaturityBadge, SectionTitle, WindowStamp } from './InsightPrimitives'
 import { EvidencePacketCard, InsightCard } from './InsightCards'
 import { ReconfigurePanel } from './ReconfigurePanel'
@@ -9,6 +9,17 @@ import type { InsightCopy } from './insightFormat'
 
 // One body per capability tab. Split from the panel shell because the shell owns
 // WHICH tab is active and the derived counts; this owns what each tab renders.
+
+// The properties a window pair made incomparable, in the diff's declaration order (DN-56.D19).
+const incomparableOrder: IncomparableProperty[] = ['ngram_delta', 'branching_delta', 'cube_diff', 'reservoir_delta', 'field_histogram_deltas']
+
+function incomparableEntries(acuteDiff: AcuteDiffSummary): [IncomparableProperty, IncomparableReason][] {
+    const signals = acuteDiff.incomparable_signals ?? {}
+    return incomparableOrder.flatMap((property) => {
+        const reason = signals[property]
+        return reason ? [[property, reason] as [IncomparableProperty, IncomparableReason]] : []
+    })
+}
 
 export type CapabilityKey = 'explain' | 'detect' | 'metalog' | 'templates' | 'evidence' | 'ingest' | 'config'
 
@@ -213,12 +224,20 @@ export function renderCapability({
                                         <Metric label={copy.metalogStabilityScore} value={`${(acuteDiff.stability_score * 100).toFixed(0)}%`} large />
                                     )}
                                 </div>
-                                {acuteDiff.branching_delta_count > 0 && (
+                                {acuteDiff.branching_delta_count != null && acuteDiff.branching_delta_count > 0 && (
                                     <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
                                         <GitBranch className="w-3 h-3" />
-                                        {acuteDiff.branching_delta_count} branching delta{acuteDiff.branching_delta_count !== 1 ? 's' : ''}
+                                        {(acuteDiff.branching_delta_count === 1 ? copy.acuteDiffBranchingOne : copy.acuteDiffBranchingMany)
+                                            .replace('{count}', String(acuteDiff.branching_delta_count))}
                                     </div>
                                 )}
+                                {incomparableEntries(acuteDiff).map(([property, reason]) => (
+                                    <div key={property} className="inline-flex items-center gap-1.5 rounded-full border border-gray-700 bg-gray-900/60 px-2 py-0.5 text-[10px] text-gray-400">
+                                        {copy.acuteDiffIncomparable
+                                            .replace('{property}', copy.acuteDiffIncomparableProperty[property])
+                                            .replace('{reason}', copy.acuteDiffIncomparableReason[reason])}
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </div>

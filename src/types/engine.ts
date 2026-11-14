@@ -268,12 +268,18 @@ export interface AcuteDiffSummary {
     new_templates_count: number
     vanished_templates_count: number
     template_delta_count: number
-    branching_delta_count: number
-    field_histogram_delta_count: number
+    // Absent when the diff states the property incomparable (DN-56.D19): never read absence as 0.
+    branching_delta_count?: number
+    field_histogram_delta_count?: number
     js_divergence?: number
     kl_divergence?: number
     stability_score?: number
+    incomparable_signals?: Partial<Record<IncomparableProperty, IncomparableReason>>
 }
+
+// The MetaLog diff's signal properties a window pair can make incomparable, and the four reasons.
+export type IncomparableProperty = 'ngram_delta' | 'branching_delta' | 'cube_diff' | 'reservoir_delta' | 'field_histogram_deltas'
+export type IncomparableReason = 'ngram_size_differs' | 'absent_in_one_input' | 'cube_axes_differ' | 'histogram_caps_differ'
 
 export interface ContextPacketAnnotation {
     pattern: string
