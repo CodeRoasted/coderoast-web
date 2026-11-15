@@ -69,9 +69,9 @@ describe('InsightPanel', () => {
     })
 })
 
-// DN-56.D19: a count the MetaLog diff states incomparable is omitted from the summary, and the
+// ADR-25.D13: a count the MetaLog diff states incomparable is omitted from the summary, and the
 // panel must say so with the reason rather than read the absence as "no change".
-describe('InsightPanel acute diff (DN-56.D19)', () => {
+describe('InsightPanel acute diff (ADR-25.D13)', () => {
     const windowWith = (acuteDiff: AcuteDiffSummary): InsightLatestWindow => ({
         metalog: {
             version: '1',

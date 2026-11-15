@@ -10,7 +10,7 @@ import type { InsightCopy } from './insightFormat'
 // One body per capability tab. Split from the panel shell because the shell owns
 // WHICH tab is active and the derived counts; this owns what each tab renders.
 
-// The properties a window pair made incomparable, in the diff's declaration order (DN-56.D19).
+// The properties a window pair made incomparable, in the diff's declaration order (ADR-25.D13).
 const incomparableOrder: IncomparableProperty[] = ['ngram_delta', 'branching_delta', 'cube_diff', 'reservoir_delta', 'field_histogram_deltas']
 
 function incomparableEntries(acuteDiff: AcuteDiffSummary): [IncomparableProperty, IncomparableReason][] {

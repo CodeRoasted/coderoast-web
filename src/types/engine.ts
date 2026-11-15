@@ -268,7 +268,7 @@ export interface AcuteDiffSummary {
     new_templates_count: number
     vanished_templates_count: number
     template_delta_count: number
-    // Absent when the diff states the property incomparable (DN-56.D19): never read absence as 0.
+    // Absent when the diff states the property incomparable (ADR-25.D13): never read absence as 0.
     branching_delta_count?: number
     field_histogram_delta_count?: number
     js_divergence?: number
