@@ -23,7 +23,7 @@ jobs:
       contents: write        # Tamys dogfood: the commit comment on a regression
       pull-requests: write   # Tamys dogfood: comment on same-repo PRs + seed on push; fork PRs skipped (read-only token anyway)
       actions: write         # Tamys dogfood: upload the baseline-log artifact (+ read for last-green resolution)
-    uses: CodeRoasted/malf-toolchain/.github/workflows/coderoast-node-ci.yml@99a67dad6ad3234cf03a3876d2017974efd3cc04
+    uses: CodeRoasted/malf-toolchain/.github/workflows/coderoast-node-ci.yml@e103214ca76fa8d4a7a5ede9a6107a36d6822037
     with:
       node-version: '22'
       logged: |
