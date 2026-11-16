@@ -320,6 +320,7 @@ const fr: typeof en = {
             span_path_changed: 'chemin d’appel modifié',
             service_edge_changed: 'dépendance modifiée',
             causal_chain: 'dégradation en cascade',
+            generation_moved: 'génération de log changée',
             fallback: 'modifié',
         },
         error: {

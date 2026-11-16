@@ -357,6 +357,7 @@ const en = {
             span_path_changed: 'call path changed',
             service_edge_changed: 'dependency changed',
             causal_chain: 'cascading degradation',
+            generation_moved: 'log generation moved',
             fallback: 'changed',
         },
         error: {

@@ -16,6 +16,7 @@ import {
     FolderPlus,
     Gauge,
     GitCompareArrows,
+    History,
     Link,
     Loader2,
     Network,
@@ -126,6 +127,9 @@ const KIND_ICON: Record<ChangeKindName, typeof Activity> = {
     service_edge_changed: Network,
     // A degradation propagating along service edges, folded to one incident at its sink.
     causal_chain: Link,
+    // A step compared across a move of the CI platform's log generation (DN-162.D7): an
+    // informational notice, so a clock-history glyph rather than a change arrow.
+    generation_moved: History,
 }
 
 // Provenance is a two-value closed set (see t.diff.provenance). Its chrome —
